@@ -12,7 +12,7 @@ It is mainly based on following techs, plus couple of other dependencies and too
 
 #### Requirements
 
-- PHP 8.0.2+
+- PHP 8.3.6
 - Mysql / MariaDB (5.7/8.X)
 - Apache & mod_rewrite / Nginx
 - Node, Composer & at least 2GB of RAM for dev builds
