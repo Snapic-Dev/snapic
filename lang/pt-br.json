@@ -101,43 +101,30 @@
   "Don't hesitate to send us a message at": "Não hesite em nos enviar uma mensagem para",
   "Send a tip to this user": "Enviar uma gorjeta para este usuário",
   "Your payment have been successfully initiated but needs to await for approval": "Seu pagamento foi iniciado com sucesso, mas precisa aguardar aprovação",
-
   "Main features": "Principais recursos",
   "Here's a glimpse at the main features our script offers": "Aqui está uma visão geral dos principais recursos que nosso script oferece",
-
   "Mobile Ready": "Pronto para dispositivos móveis",
   "Cross compatible & mobile first design.": "Compatível com múltiplas plataformas e design focado em dispositivos móveis.",
-
   "Advanced Admin panel": "Painel de administração avançado",
   "Easy to use, fully featured admin panel.": "Painel de administração fácil de usar e completo.",
-
   "User subscriptions": "Assinaturas de usuários",
   "Easy to use and reliable subscriptions system.": "Sistema de assinaturas fácil de usar e confiável.",
-
   "User feed & Locked posts": "Feed de usuários e postagens bloqueadas",
   "Advanced feed system, pay to unlock posts.": "Sistema de feed avançado, pague para desbloquear postagens.",
-
   "Light & Dark themes": "Temas claro e escuro",
   "Eazy to customize themes, dark & light mode.": "Temas fáceis de personalizar, modo claro e escuro.",
-
   "RTL & Locales": "RTL e Localizações",
   "Fully localize your site with languages & RTL.": "Localize totalmente seu site com idiomas e RTL.",
-
   "Live chat & Notifications": "Chat ao vivo e notificações",
   "Live user messenger & User notifications.": "Mensagens ao vivo entre usuários e notificações.",
-
   "Post Bookmarks & User lists": "Favoritos de postagens e listas de usuários",
   "Stay updated with list users and bookmarks.": "Mantenha-se atualizado com listas de usuários e favoritos.",
-
   "Content flagging and User reports": "Marcação de conteúdo e relatórios de usuários",
   "Stay safe with user and content reporting.": "Mantenha-se seguro com relatórios de usuários e conteúdos.",
-
   "Technologies used": "Tecnologias utilizadas",
   "Built on secure, scalable and reliable techs": "Construído com tecnologias seguras, escaláveis e confiáveis",
-
   "Contact us": "Contate-nos",
   "Don't hesitate to contact us for any matter. We will get back to you asap.": "Não hesite em nos contatar para qualquer assunto. Nós retornaremos o mais rápido possível.",
-
   "Message sent.": "Mensagem enviada.",
   "Email address": "Endereço de email",
   "Subject": "Assunto",
@@ -161,7 +148,7 @@
   "Missing notifications": "Nenhuma notificação ainda.",
   "More": "Mais",
   "My profile": "Meu perfil",
-  "Name": "Nome",
+  "Name": "Apelido",
   "New message received": "Nova mensagem recebida",
   "You successfully unlocked this message.": "Você desbloqueou esta mensagem com sucesso.",
   "New password": "Nova senha",
@@ -248,7 +235,6 @@
   "Partially paid payment": "Pagamento parcialmente pago",
   "There is a partially paid payment done with NowPayments that requires your attention. (:paymentId)": "Há um pagamento parcialmente pago feito com NowPayments que requer sua atenção. (:paymentId)",
   "Check payment": "Verificar pagamento",
-
   "Type": "Tipo",
   "Update your bio, cover and avatar": "Atualize sua biografia, capa e avatar",
   "Upload a government issued ID card.": "Envie um documento de identidade emitido pelo governo.",
@@ -262,10 +248,8 @@
   "Send message": "Enviar mensagem",
   "Message price": "Preço da mensagem",
   "You got no messages yet.": "Você ainda não tem mensagens.",
-
   "Attachment removed.": "Anexo removido.",
   "Failed to remove the attachment.": "Falha ao remover o anexo.",
-
   "You need to login first": "Você precisa fazer login primeiro",
   "Your active subscriptions": "Suas assinaturas ativas",
   "Subscribe to": "Assine :username por :currency:amount para cada :subscription_interval",
@@ -302,20 +286,16 @@
   "to access": "para acessar",
   "with your content": "com seu conteúdo",
   "DMs unavailable without subscription": "Chat disponível apenas para assinantes/seguidores",
-
   "Success": "Sucesso",
   "Error": "Erro",
-
   "You have been credited :currencySymbol:amount Happy spending!": "Pagamento realizado. Você recebeu um crédito de :currencySymbol:amount. Aproveite!",
   "You have been credited :amount:currencySymbol Happy spending!": "Pagamento realizado. Você recebeu um crédito de :amount:currencySymbol. Aproveite!",
   "You successfully sent a tip of :currencySymbol:amount.": "Você enviou com sucesso uma gorjeta de :currencySymbol:amount.",
   "You successfully sent a tip of :amount:currencySymbol.": "Você enviou com sucesso uma gorjeta de :amount:currencySymbol.",
   "Payment summary": "Resumo do pagamento",
   "Comment added": "Comentário adicionado.",
-
   "List added": "Lista adicionada",
   "List renamed": "Lista renomeada",
-
   "New comment received": "Novo comentário recebido",
   "Upcoming renewals": "Renovações futuras",
   "Received a tip": "Recebeu uma gorjeta",
@@ -336,11 +316,9 @@
   "and an": "e uma",
   "one time fee": "taxa única",
   "Chat locked. Unlock the stream to see the messages.": "Chat bloqueado. Desbloqueie a transmissão para ver as mensagens.",
-
   "Cancel subscription": "Cancelar assinatura",
   "Are you sure you want to cancel this subscription?": "Tem certeza de que deseja cancelar esta assinatura?",
   "Confirm": "Confirmar",
-
   "Due": "Devido",
   "Number": "Número",
   "Date": "Data",
@@ -355,7 +333,6 @@
   "View invoice": "Ver fatura",
   "Description": "Descrição",
   "Total taxes": "Total de impostos",
-
   "pending": "pendente",
   "completed": "completo",
   "suspended": "suspenso",
@@ -363,12 +340,10 @@
   "canceled": "cancelado",
   "expired": "expirado",
   "disapproved": "reprovado",
-
   "approved": "aprovado",
   "declined": "recusado",
   "refunded": "reembolsado",
   "initiated": "iniciado",
-
   "tip": "Gorjeta",
   "deposit": "Depósito",
   "one-month-subscription": "Assinatura de um mês",
@@ -380,7 +355,6 @@
   "post-unlock": "desbloqueio de postagem",
   "message-unlock": "mensagem paga",
   "chat-tip": "gorjeta de chat",
-
   "post notification": "notificação de postagem",
   ":name added a new comment on your": ":name adicionou um novo comentário na sua",
   "Send you a message: `:message`": "Enviou-lhe uma mensagem: `:message`",
@@ -405,7 +379,6 @@
   "Your subscription renewal": "Sua renovação de assinatura",
   "Email subscription updated": "Sua assinatura do perfil :name :message",
   "Back": "Voltar",
-
   "Please add your withdrawal notes: EG: Paypal or Bank account.": "Por favor, adicione suas notas de saque: Ex.: Paypal ou conta bancária.",
   "Your withdrawal request has been denied.": "Sua solicitação de saque foi negada.",
   "Your withdrawal request has been approved.": "Sua solicitação de saque foi aprovada.",
@@ -414,26 +387,20 @@
   "Email withdrawal processed": "Sua solicitação de saque no :siteName foi :status",
   "Email payment request processed": "Sua solicitação de pagamento no :siteName foi :status",
   "has been sent to your account.": "foi enviado para sua conta.",
-
   "requested": "solicitado",
   "rejected": "rejeitado",
   "verified": "verificado",
-
   "Email identity checked": "Sua verificação de identidade no :siteName foi :status.",
-
   "Your identity check failed.": "Sua verificação de identidade falhou.",
   "Your identity check passed.": "Sua verificação de identidade foi aprovada.",
   "Create a post": "Criar uma postagem",
   "Confirm action": "Confirmar ação",
   "Some attachments are still being uploaded.": "Alguns anexos ainda estão sendo carregados.",
   "Are you sure you want to continue?": "Tem certeza de que deseja continuar?",
-
   "Email new message title": "Você recebeu uma nova mensagem no :siteName!",
   "View your messages": "Ver suas mensagens",
-
   "Upcoming renewal": "Renovação futura",
   "Thanks": "Obrigado",
-
   "Platform statistics": "Estatísticas da plataforma",
   "Users registered": "Usuários registrados",
   "New posts": "Novas postagens",
@@ -450,7 +417,6 @@
   "Go to users": "Ir para usuários",
   "Go to payments": "Ir para pagamentos",
   "Go to content": "Ir para conteúdo",
-
   "New users": "Novos usuários",
   "No prior data": "Sem dados anteriores",
   "thousands_separator": ".",
@@ -466,13 +432,10 @@
   "Visit the official product docs": "Visite a documentação oficial do produto",
   "Changelog": "Changelog",
   "Visit the official product changelog": "Visite o changelog oficial do produto",
-
   "Complete your verification": "Complete sua verificação",
   "Please attach clear photos of your ID card back and front side.": "Por favor, anexe fotos nítidas do verso e frente do seu documento de identidade.",
   "Your info looks good, you're all set to post new content!": "Suas informações estão corretas, você está pronto para postar novos conteúdos!",
-
   "The payouts are manually and it usually take up to 24 hours for a withdrawal to be processed, we will notify you as soon as your request is processed": "Os pagamentos são manuais e geralmente levam até 24 horas para serem processados. Notificaremos você assim que sua solicitação for processada",
-
   "Admin & Site": "Administração & Site",
   "Domain url or full installation path": "URL do domínio ou caminho completo da instalação",
   "Install script": "Instalar script",
@@ -483,49 +446,40 @@
   "FFMpeg paths are configured in admin panel. If not available, videos formats will fallback to mp4, uncompressed videos.": "Os caminhos do FFmpeg estão configurados no painel de administração. Se não estiver disponível, os formatos de vídeo serão revertidos para mp4, vídeos não comprimidos.",
   "Update the platform": "Atualizar a plataforma",
   "Looks like there are no available updates on the current installation": "Parece que não há atualizações disponíveis na instalação atual",
-
   "You've backed up your files.": "Você fez backup dos seus arquivos.",
   "You've backed up your database.": "Você fez backup do seu banco de dados.",
   "You've copied the updated files onto your public directory.": "Você copiou os arquivos atualizados para o seu diretório público.",
   "Go home": "Ir para a página inicial",
   "Update": "Atualizar",
-
   "Before being able to publish an item, you need to complete your": "Antes de poder publicar um item, você precisa completar sua",
   "profile verification": "verificação de perfil",
   "Contact": "Contato",
   "Credit": "Crédito",
   "Copyright": "Direitos autorais",
-
   "Verify email": "Verificar email",
   "Please verify your account": "Por favor, verifique seu email",
   "Your email address is not verified.": "Seu endereço de e-mail não está verificado.",
   "Click here": "Clique aqui",
   "to re-send the confirmation email.": "para reenviar o e-mail de confirmação.",
   "Page not found": "Página não encontrada",
-
   "Install the script": "Instalar o script",
   "Update the script": "Atualizar o script",
-
   "Your feed": "Seu feed",
   "Invoice": "Fatura",
   "Your lists": "Suas listas",
   "Post": "Postagem",
-
   "Please select an user first": "Por favor, selecione um usuário primeiro",
   "Please enter your message": "Por favor, insira sua mensagem",
   "These credentials do not match our records.": "Essas credenciais não correspondem aos nossos registros.",
-
   "Suggestions list refreshed": "Lista de sugestões atualizada",
   "Error fetching suggestions": "Erro ao buscar sugestões",
   "Attachments removed successfully": "Anexos removidos com sucesso",
   "List deleted successfully.": "Lista excluída com sucesso.",
   "Not authorized": "Não autorizado",
-
   "List not found.": "Lista não encontrada.",
   "List cleared.": "Lista limpa.",
   "Report sent.": "Relatório enviado.",
   "Looks like the payment process has been cancelled.": "Parece que o processo de pagamento foi cancelado.",
-
   "User not verified. Can not post content.": "Usuário não verificado. Não pode postar conteúdo.",
   "Not found": "Não encontrado",
   "Post not found": "Postagem não encontrada",
@@ -535,33 +489,25 @@
   "removed successfully": "removido com sucesso",
   "Invalid setting key": "Chave de configuração inválida",
   "This subscription is already canceled.": "Esta assinatura já está cancelada.",
-
   "Reaction added.": "Reação adicionada.",
   "Reaction removed.": "Reação removida.",
-
   "Database username": "Nome de usuário do banco de dados",
   "Database password": "Senha do banco de dados",
-
   "Uploaded videos can not longer than :length seconds.": "Os vídeos carregados não podem ter mais de :length segundos.",
-
   "Warning": "Aviso",
   "Confirmation email sent. Please check your inbox and spam folder.": "E-mail de confirmação enviado. Por favor, verifique sua caixa de entrada e pasta de spam.",
   "You have not confirmed your email address yet": "Você ainda não confirmou seu endereço de e-mail",
   "Click on": "Clique em",
   "this link": "este link",
   "to resend the confirmation email": "para reenviar o e-mail de confirmação",
-
   "Add attachments": "Adicionar anexos",
-
   "Top": "Topo",
   "Latest": "Últimos",
   "View": "Visualizar",
   "No users were found": "Nenhum usuário encontrado",
-
   ":username post": "Postagem de :username",
   "Get profile QR code": "Obter QR code do perfil",
   "Username QR Code": "QR code de :username",
-
   "Filters": "Filtros",
   "Gender": "Gênero",
   "Gender pronoun": "Pronome de gênero",
@@ -570,13 +516,10 @@
   "Couple": "Casal",
   "Min age": "Idade mínima",
   "Max age": "Idade máxima",
-
   "This user is not authorized to go live": "Este usuário não está autorizado a fazer transmissão ao vivo",
   "Email address successfully verified": "Endereço de e-mail verificado com sucesso",
-
   "Verify your email": "Verifique seu e-mail",
   "Verify your email address": "Verifique seu endereço de e-mail",
-
   "Verify your new device": "Verifique seu novo dispositivo",
   "A fresh verification code has been sent to your email address.": "Um novo código de verificação foi enviado para seu endereço de e-mail.",
   "For security reasons, we’ve sent you a code to your email to validate your account.": "Por razões de segurança, enviamos um código para seu e-mail para validar sua conta.",
@@ -597,20 +540,15 @@
   "Delete device": "Excluir dispositivo",
   "Are you sure you want to delete this device?": "Tem certeza de que deseja excluir este dispositivo?",
   "Device deleted.": "Dispositivo excluído.",
-
   "Paypal": "Paypal",
   "Stripe": "Stripe",
   "Coinbase": "Coinbase",
   "NowPayments Crypto": "NowPayments Crypto",
   "Manual": "Transferência bancária",
-
   "minute": "minuto|minutos",
-
   "streams": "stream|streams",
-
   "User": "Usuário",
   "Stream": "Stream",
-
   "Streams": "Streams",
   "Active streams": "Streams ativos",
   "Previous streams": "Streams anteriores",
@@ -627,7 +565,6 @@
   "There are no active streams. Click the button above to start a new one.": "Não há streams ativas. Clique no botão acima para iniciar uma nova.",
   "There are no previous streams.": "Não há streams anteriores.",
   "New stream": "Novo stream",
-
   "Stream updated successfully.": "Stream atualizado com sucesso.",
   "No active streams available.": "Nenhuma stream ativa disponível.",
   "The stream has been queued to be stopped": "A stream foi agendada para ser interrompida",
@@ -670,11 +607,9 @@
   "Before being able to start a new stream, you need to complete your": "Antes de iniciar um novo stream, você precisa concluir seu",
   "Please confirm your ID first.": "Por favor, confirme seu ID primeiro.",
   "Drop files here to upload": "Solte os arquivos aqui para enviar",
-
   "Expiring subscriptions": "Assinaturas expirando",
   "Hello, :subscriberName": "Olá, :subscriberName",
   "Your subscription to :creatorName is about to expire in the next 24h hours. Please top up your credit in order to keep your subscription going.": "Sua assinatura para :creatorName está prestes a expirar nas próximas 24 horas. Por favor, recarregue seu crédito para continuar com sua assinatura.",
-
   "Add payment details": "Detalhes do pagamento",
   "Bank transfer": "Transferência bancária",
   "Please attach clear photos with one of the following: check, money order or bank transfer.": "Por favor, anexe fotos claras com um dos seguintes: cheque, ordem de pagamento ou transferência bancária.",
@@ -688,7 +623,6 @@
   "Account owner": "Proprietário da conta",
   "Account number": "Número da conta",
   "Routing number": "Número de roteamento",
-
   "Search": "Buscar",
   "First name": "Nome",
   "Last name": "Sobrenome",
@@ -700,33 +634,27 @@
   "Address": "Endereço",
   "Street address, apartment, suite, unit": "Endereço completo, apartamento, bloco",
   "Please complete all billing details": "Por favor, preencha todos os detalhes de cobrança",
-
   "Member added to list.": "Membro adicionado à lista.",
   "The field is required.": "Este campo é obrigatório.",
-
   "Enter only if you are over 18": "Digite apenas se você tiver mais de 18 anos",
   "The website contains content of adult nature and is only available to adults. If you are under the age of 18 (or 21 in some countries), if it is illegal to view such material in your jurisdiction, or if it offends you, please do not continue.": "O site contém conteúdo adulto e é destinado apenas a adultos. Se você tem menos de 18 anos (ou 21 em alguns países), se for ilegal visualizar esse tipo de material em sua jurisdição, ou se isso lhe ofende, por favor, não prossiga.",
   "Yes": "Sim",
   "No": "Não",
   "You can learn more by checking our": "Você pode aprender mais conferindo nossos",
   "terms of usage": "termos de uso",
-
   "You already paid access for this message": "Você já pagou pelo acesso a esta mensagem",
   "Unlock message": "Desbloquear mensagem",
   "Unlock message for": "Desbloquear mensagem para",
   "post": "postagem",
   "Latest media not available.": "Últimas mídias não disponíveis.",
-
   "Having your profile set to private means:": "Ter seu perfil definido como privado significa:",
   "It will be hidden for search engines and unregistered users entirely.": "Ele será oculto para mecanismos de busca e usuários não registrados completamente.",
   "It will also be generally hidden from suggestions and user searches on our platform.": "Também será geralmente oculto de sugestões e buscas de usuários em nossa plataforma.",
-
   "Payment method": "Método de pagamento",
   "Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.": "Nota: Após clicar no botão, você será direcionado para uma plataforma segura para realizar o pagamento. Após concluir o processo de pagamento, você será redirecionado de volta ao site.",
   "Billing agreement details": "Detalhes do acordo de cobrança",
   "Add user to list": "Adicionar usuário à lista",
   "Choose the list you want to add the user into.": "Escolha a lista à qual deseja adicionar o usuário.",
-
   "Follow": "Seguir",
   "Add list": "Adicionar lista",
   "Withdraw": "Retirar",
@@ -735,7 +663,6 @@
   "Follow this creator": "Seguir este criador",
   "The selected username is invalid.": "O nome de usuário selecionado é inválido.",
   "Paid profile": "Perfil pago",
-
   "Hello!": "Olá!",
   "Regards": "Atenciosamente",
   "A fresh verification link has been sent to your email address.": "Um novo link de verificação foi enviado para o seu endereço de e-mail.",
@@ -744,29 +671,23 @@
   "If you did not create an account, no further action is required.": "Se você não criou uma conta, nenhuma ação adicional é necessária.",
   "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Se você está tendo dificuldades para clicar no botão \":actionText\", copie e cole o URL abaixo\nno seu navegador web:",
   "Something went wrong when cancelling this subscription": "Ocorreu um problema ao cancelar esta assinatura",
-
   "Enable Geo-blocking": "Ativar bloqueio geográfico",
   "If enabled, visitors from certain countries will be restricted access.": "Se ativado, visitantes de certos países terão acesso restrito.",
-
   "Open profile": "Perfil aberto",
   "Having your profile set to open means:": "Ter seu perfil definido como aberto significa:",
   "Both registered and unregistered users will be able to see your posts.": "Usuários registrados e não registrados poderão ver suas postagens.",
   "If the account is private, the content will only be available for registered users.": "Se a conta for privada, o conteúdo estará disponível apenas para usuários registrados.",
   "Paid posts will still be locked for open profiles.": "Postagens pagas ainda estarão bloqueadas para perfis abertos.",
-
   "A :feeAmount% fee will be applied.": "Será aplicada uma taxa de :feeAmount%.",
   "Cannot subscribe to yourself.": "Não é possível se inscrever em si mesmo.",
   "Cannot pay to yourself.": "Não é possível pagar a si mesmo.",
-
   "Profile access is denied.": "Acesso ao perfil negado.",
   "This content is not available for you at the moment.": "Este conteúdo não está disponível para você no momento.",
-
   "Locked message": "Mensagem bloqueada",
   "Unlock for": "Desbloquear para",
   "Set message price": "Definir preço da mensagem",
   "Paid messages are locked for subscribers as well. Text is not locked, only media.": "As mensagens pagas estão bloqueadas também para assinantes. O texto não é bloqueado, apenas as mídias.",
   "Locked posts must contain at least one attachment.": "As postagens bloqueadas devem conter pelo menos um anexo.",
-
   "There are no referrals to show.": "Não há referências para mostrar.",
   "Referral": "Referência",
   "Copied!": "Copiado!",
@@ -778,7 +699,6 @@
   "Your referral list": "Sua lista de referências",
   "Earned": "Ganho",
   "The bio may not be greater than :chars characters.": "A bio não pode ter mais de :chars caracteres.",
-
   "You": "Você",
   "To...": "Para...",
   "Your message": "Sua mensagem",
