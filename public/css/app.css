@@ -47,6 +47,16 @@ body {
     width: 200px;
 }
 
+.footer-brand-logo {
+    width: 200px;
+    scale:1.2;
+    object-fit: contain;
+}
+
+.logo-size {
+    scale: 1.5;
+}
+
 .rounded-lg{
     border-radius: 0.4rem!important;
 }

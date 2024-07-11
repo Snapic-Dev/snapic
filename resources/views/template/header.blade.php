@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white'))}} shadow-sm ">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}" class="d-inline-block align-top mr-1 ml-3" alt="{{__("Site logo")}}">
+            <img src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic.png' : '/img/snapic.png') : (Cookie::get('app_theme') == 'dark' ? getSetting('/img/snapic_black.png') : '/img/snapic.png')) )}}" class="d-inline-block align-top mr-1 ml-3 logo-size" alt="{{__("Site logo")}}">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}" >
             <span class="navbar-toggler-icon"></span>

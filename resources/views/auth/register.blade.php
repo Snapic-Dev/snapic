@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-lg-7 col-xl-6 mx-auto">
                                 <a href="{{action('HomeController@index')}}">
-                                    <img class="brand-logo pb-4" src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}">
+                                    <img src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic.png' : '/img/snapic.png') : (Cookie::get('app_theme') == 'dark' ? getSetting('/img/snapic_black.png') : '/img/snapic.png')) )}}" class="d-inline-block align-top mr-1 ml-3 brand-logo" alt="{{__("Site logo")}}">
                                 </a>
                                 @include('auth.register-form')
                                 @include('auth.social-login-box')

@@ -7,7 +7,7 @@
                         <!-- About -->
                         <div class="headline d-flex">
                             <a href="{{route('home')}}">
-                                <img class="brand-logo d-inline-block align-top" src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}" alt="{{__("Site logo")}}">
+                                <img class="footer-brand-logo d-inline-block align-top"  src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic.png' : '/img/snapic.png') : (Cookie::get('app_theme') == 'dark' ? getSetting('/img/snapic_black.png') : '/img/snapic.png')) )}}">
                             </a>
                         </div>
                     </div>
