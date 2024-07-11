@@ -805,7 +805,7 @@ class InsertDefaultAdminSettings extends Migration
                     'id' => 113,
                     'key' => 'site.default_site_language',
                     'display_name' => 'Default site language',
-                    'value' => 'en',
+                    'value' => 'pt-br',
                     'details' => '{
 "description" : "Language code. Must have a present language file in the resources/lang directory."
 }',

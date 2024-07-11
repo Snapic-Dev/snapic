@@ -22,7 +22,7 @@ return [
         'favicon' => '/img/rounded-logo-gradient.svg',
         'currency_code' => 'USD',
         'currency_symbol' => '$',
-        'default_site_language' => 'en',
+        'default_site_language' => 'pt-br',
         'allow_pwa_installs' => false,
     ],
 
@@ -111,7 +111,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pt-br',
 
     /*
     |--------------------------------------------------------------------------
@@ -124,7 +124,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'pt-br',
 
     /*
     |--------------------------------------------------------------------------

@@ -34,7 +34,7 @@ class LocaleSetter
         // Avoiding any 500 errors
         if (! file_exists($langPath.'.json')) {
             $langPath = app()->langPath().'/en';
-            LocalesServiceProvider::setLocale('en');
+            LocalesServiceProvider::setLocale('pt-br');
         }
         // Here, we could read and cache all translationsm, and put the active one in the session
         session()->put('app_translations', file_get_contents($langPath.'.json'));
