@@ -150,6 +150,9 @@
                     <a class="scroll-link d-flex align-items-center"
                         href="URL_DO_SEU_LIVE_CHAT">{{ __('Live Chat') }}</a>
                 </li>
+                <li>
+                    <a class="scroll-link d-flex align-items-center" href="/contact">{{ __('Entre em contato') }}</a>
+                </li>
             </ul>
         </li>
         @if (getSetting('site.allow_language_switch'))
