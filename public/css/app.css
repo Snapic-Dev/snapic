@@ -53,10 +53,12 @@ body {
     object-fit: contain;
 }
 
-.logo-size {
-    scale: 1.5;
-}
 
+.brand-logo-form {
+    position: relative;
+    right: 35px;
+    margin-bottom: 50px;
+}
 .rounded-lg{
     border-radius: 0.4rem!important;
 }

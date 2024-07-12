@@ -1,12 +1,20 @@
 @extends('layouts.no-nav')
-@section('page_title', __('Login'))
+@section('page_title', __('Register'))
+
 
 @section('page_description', getSetting('site.description'))
 @section('share_url', route('home'))
-@section('share_title', getSetting('site.name') . ' - ' . __('Login'))
+@section('share_title', getSetting('site.name') . ' - ' . __('Register'))
 @section('share_description', getSetting('site.description'))
 @section('share_type', 'article')
 @section('share_img', GenericHelper::getOGMetaImage())
+
+
+@if(getSetting('security.recaptcha_enabled') && !Auth::check())
+    @section('meta')
+    {!! NoCaptcha::renderJs() !!}
+    @stop
+@endif
 
 @section('content')
 <div class="container-fluid">
@@ -21,7 +29,7 @@
                                     class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
                                     alt="{{__("Site logo")}}">
                             </a>
-                            @include('auth.login-form')
+                            @include('auth.register-influencer-form')
                             @include('auth.social-login-box')
                         </div>
                     </div>

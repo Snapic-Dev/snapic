@@ -2,6 +2,7 @@
 <html class="h-100" dir="{{GenericHelper::getSiteDirection()}}" lang="{{session('locale')}}">
 <head>
     @include('template.head')
+    <link rel="shortcut icon" href="{{ getSetting('/img/miniLogoHeader.png') }}" type="image/x-icon">
 </head>
 <body class="d-flex flex-column">
 @include('elements.impersonation-header')
