@@ -1,6 +1,6 @@
 <div class="side-menu px-1 px-md-2 px-lg-3">
     <div class="user-details mb-4 d-flex pointer-cursor flex-row-no-rtl">
-        <div class="ml-0 ml-md-2">
+        <div class="ml-0 ml-md-2 mt-1">
             @if (Auth::check())
                 <img src="{{ Auth::user()->avatar }}" class="rounded-circle user-avatar open-menu">
             @else
@@ -27,8 +27,8 @@
                             </span>
                         </a>
                         <!--
-                                                                                                                                                                                        <span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>
-                                                                                                                                                                                    -->
+                                                                                                                                                                                                                    <span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>
+                                                                                                                                                                                                                -->
                     </div>
                 </div>
             </div>

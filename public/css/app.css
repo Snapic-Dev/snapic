@@ -638,3 +638,8 @@ footer .brand-logo{
 .feed-widgets .swiper-pagination{
     position: relative;
 }
+
+.messageArea {
+    position: relative;
+    bottom: 100px;
+ }
