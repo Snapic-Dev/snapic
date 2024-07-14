@@ -1,13 +1,21 @@
-<nav class="navbar navbar-expand-md {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white'))}} shadow-sm ">
+<nav
+    class="navbar navbar-expand-md {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white'))}} shadow-sm ">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}" class="d-inline-block align-top mr-1 ml-3" alt="{{__("Site logo")}}">
+            <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+                class="d-inline-block align-top mr-1 ml-3 brand-logo" alt="{{__("Site logo")}}">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}" >
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse pl-3 pl-md-0" id="navbarSupportedContent">
+            <div class="d-flex justify-content-end w-100 mr-5">
+                @include('elements.footer.dark-mode-switcher')
+                {{-- @include('elements.footer.direction-switcher') --}}
+                @include('elements.footer.language-switcher')
+            </div>
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 @if(Auth::check())
@@ -36,8 +44,11 @@
                     @endif
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle text-right text-truncate d-flex align-items-center" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="text-truncate max-width-150">{{ Auth::user()->name }}</div> <img src="{{Auth::user()->avatar}}" class="rounded-circle home-user-avatar">
+                        <a id="navbarDropdown"
+                            class="nav-link dropdown-toggle text-right text-truncate d-flex align-items-center" href="#"
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="text-truncate max-width-150">{{ Auth::user()->name }}</div> <img
+                                src="{{Auth::user()->avatar}}" class="rounded-circle home-user-avatar">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{route('feed')}}">
@@ -46,18 +57,18 @@
                             <a class="dropdown-item" href="{{route('my.settings')}}">
                                 {{__('Settings')}}
                             </a>
-                            <a class="dropdown-item" href="{{route('profile',['username'=>Auth::user()->username])}}">
+                            <a class="dropdown-item" href="{{route('profile', ['username' => Auth::user()->username])}}">
                                 {{__('Profile')}}
                             </a>
-                            <a class="dropdown-item" href="{{route('my.settings',['type'=>'subscriptions'])}}">
+                            <a class="dropdown-item" href="{{route('my.settings', ['type' => 'subscriptions'])}}">
                                 {{__('Subscriptions')}}
                             </a>
-                            <a class="dropdown-item" href="{{route('my.settings',['type'=>'payments'])}}">
+                            <a class="dropdown-item" href="{{route('my.settings', ['type' => 'payments'])}}">
                                 {{__('Payments')}}
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                onclick="event.preventDefault();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

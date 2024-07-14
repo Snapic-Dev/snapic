@@ -47,6 +47,18 @@ body {
     width: 200px;
 }
 
+.footer-brand-logo {
+    width: 200px;
+    scale:1.2;
+    object-fit: contain;
+}
+
+
+.brand-logo-form {
+    position: relative;
+    right: 35px;
+    margin-bottom: 50px;
+}
 .rounded-lg{
     border-radius: 0.4rem!important;
 }
@@ -296,6 +308,13 @@ body {
     display: block;
     height: 100%;
     width: 100%;
+}
+
+.walletPerfil {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap:5px;
 }
 
 .icon-large{

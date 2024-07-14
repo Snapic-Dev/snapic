@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @yield('meta')
     {{-- Favicon --}}
-    <link rel="shortcut icon" href="{{  asset(config('app.site.favicon')) }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ getSetting('/img/miniLogoHeader.png') }}" type="image/x-icon">
     {{-- (Preloading) Fonts --}}
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300" rel="preload" as="style">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,500,600,700" rel="preload" as="style">
