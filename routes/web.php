@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
         Route::post('/settings/verify/upload/delete', ['uses' => 'SettingsController@deleteVerifyAsset', 'as' => 'settings.verify.delete']);
         Route::post('/settings/verify/save', ['uses' => 'SettingsController@saveVerifyRequest', 'as' => 'settings.verify.save']);
         Route::get('/settings/privacy/countries', ['uses' => 'SettingsController@getCountries', 'as' => 'settings.verify.countries']);
+        Route::get('/settings/referrals', ['uses' => 'SettingsController@renderSettingReferrals', 'as' => 'settings.referrals']);
 
         // Profile save
         Route::get('/settings/{type?}', ['uses' => 'SettingsController@index', 'as' => 'settings']);
@@ -131,7 +132,6 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::delete('delete', ['uses' => 'StreamsController@deleteStream', 'as' => 'delete']);
             Route::post('poster-upload', ['uses' => 'StreamsController@posterUpload', 'as' => 'poster.upload']);
         });
-
     });
 
     Route::post('authorizeStreamPresence', ['uses' => 'StreamsController@authorizeUser', 'as' => 'public.stream.authorizeUser']);
