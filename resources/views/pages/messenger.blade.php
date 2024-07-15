@@ -1,6 +1,8 @@
 @extends('layouts.user-no-nav')
 
+
 @section('page_title', __('Messenger'))
+
 
 @section('styles')
     {!!
@@ -99,14 +101,16 @@
                                 </div>
                             </form>
                             <div class="messenger-buttons-wrapper d-flex">
-                                @if((GenericHelper::creatorCanEarnMoney(Auth::user()) && !(!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks'))) /*|| Auth::user()->role_id === 1*/)
-                                    <button class="btn btn-outline-primary btn-rounded-icon messenger-button mx-2 to-tooltip" data-placement="top" title="{{__('Message price')}}" onClick="messenger.showSetPriceDialog()">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <span class="message-price-lock">@include('elements.icon',['icon'=>'lock-open','variant'=>''])</span>
-                                            <span class="message-price-close d-none">@include('elements.icon',['icon'=>'lock-closed','variant'=>''])</span>
-                                        </div>
-                                    </button>
-                                @endif
+                            @if((GenericHelper::creatorCanEarnMoney(Auth::user()) && !(!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks'))) && Auth::user()->paid_profile=== 1)
+                                <button class="btn btn-outline-primary btn-rounded-icon messenger-button mx-2 to-tooltip" data-placement="top" title="{{__('Message price')}}" onClick="messenger.showSetPriceDialog()">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <span class="message-price-lock">@include('elements.icon',['icon'=>'lock-open','variant'=>''])</span>
+                                        <span class="message-price-close d-none">@include('elements.icon',['icon'=>'lock-closed','variant'=>''])</span>
+                                    </div>
+                                </button>
+                            @else
+                            
+                            @endif
                                 <button class="btn btn-outline-primary btn-rounded-icon messenger-button send-message mr-2 to-tooltip" onClick="messenger.sendMessage()" data-placement="top" title="{{__('Send message')}}">
                                     <div class="d-flex justify-content-center align-items-center">
                                         @include('elements.icon',['icon'=>'paper-plane','variant'=>''])

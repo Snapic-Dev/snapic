@@ -310,6 +310,13 @@ body {
     width: 100%;
 }
 
+.walletPerfil {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap:5px;
+}
+
 .icon-large{
     font-size: 32px;
 }
@@ -631,3 +638,8 @@ footer .brand-logo{
 .feed-widgets .swiper-pagination{
     position: relative;
 }
+
+.messageArea {
+    position: relative;
+    bottom: 100px;
+ }
