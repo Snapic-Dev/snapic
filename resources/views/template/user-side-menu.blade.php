@@ -22,15 +22,15 @@
             </div>
             <div class="pl-2 d-flex justify-content-center flex-column">
                 @if (Auth::check())
-                    <div class=""><span class=""><span>@</span>{{ Auth::check() ? Auth::user()->username : '@username'
-                            }}</span>
+                    <div class=""><span
+                            class=""><span>@</span>{{ Auth::check() ? Auth::user()->username : '@username' }}</span>
                     </div>
                     <a class="walletPerfil mt-1" href="/my/settings/wallet">
                         <div class="d-flex justify-content-center align-items-center">
                             @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
                         </div>
                         <span class="font-weight-medium wallet-total-amount">
-                            {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}
+                            {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
                         </span>
                     </a>
                     <!--
@@ -47,98 +47,96 @@
 
     <ul class="list-unstyled menu-elements p-0">
         @if (GenericHelper::isEmailEnforcedAndValidated())
-                <li
-                    class="{{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }}">
-                    <a class="scroll-link d-flex align-items-center"
-                        href="{{ route('profile', ['username' => Auth::user()->username]) }}">
-                        @include('elements.icon', [
-                'icon' => 'person-circle-outline',
-                'variant' => 'medium',
-                'centered' => false,
-                'classes' => 'mr-2',
-            ])
-                        {{ __('My profile') }}</a>
-                </li>
-                @if (getSetting('streams.allow_streams'))
-                    <li
-                        class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
-                        <a class="scroll-link d-flex align-items-center" href="{{ route('my.streams.get') }}">
-                            @include('elements.icon', [
-                        'icon' => 'play-circle-outline',
+            <li
+                class="{{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }}">
+                <a class="scroll-link d-flex align-items-center"
+                    href="{{ route('profile', ['username' => Auth::user()->username]) }}">
+                    @include('elements.icon', [
+                        'icon' => 'person-circle-outline',
                         'variant' => 'medium',
                         'centered' => false,
                         'classes' => 'mr-2',
                     ])
-                            {{ __('Streams') }}</a>
-                    </li>
-                @endif
-                <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">
-                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.bookmarks') }}">
+                    {{ __('My profile') }}</a>
+            </li>
+            @if (getSetting('streams.allow_streams'))
+                <li
+                    class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
+                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.streams.get') }}">
                         @include('elements.icon', [
-                'icon' => 'bookmarks-outline',
-                'variant' => 'medium',
-                'centered' => false,
-                'classes' => 'mr-2',
-            ])
-                        {{ __('Bookmarks') }}</a>
+                            'icon' => 'play-circle-outline',
+                            'variant' => 'medium',
+                            'centered' => false,
+                            'classes' => 'mr-2',
+                        ])
+                        {{ __('Streams') }}</a>
                 </li>
-                <li class="{{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }}">
-                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.lists.all') }}">
-                        @include('elements.icon', [
-                'icon' => 'list',
-                'variant' => 'medium',
-                'centered' => false,
-                'classes' => 'mr-2',
-            ])
-                        {{ __('Lists') }}</a>
-                </li>
-                <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
-                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
-                        @include('elements.icon', [
-                'icon' => 'settings-outline',
-                'variant' => 'medium',
-                'centered' => false,
-                'classes' => 'mr-2',
-            ])
-                        {{ __('Settings') }}</a>
-                </li>
-                <div class="menu-divider"></div>
+            @endif
+            <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">
+                <a class="scroll-link d-flex align-items-center" href="{{ route('my.bookmarks') }}">
+                    @include('elements.icon', [
+                        'icon' => 'bookmarks-outline',
+                        'variant' => 'medium',
+                        'centered' => false,
+                        'classes' => 'mr-2',
+                    ])
+                    {{ __('Bookmarks') }}</a>
+            </li>
+            <li class="{{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }}">
+                <a class="scroll-link d-flex align-items-center" href="{{ route('my.lists.all') }}">
+                    @include('elements.icon', [
+                        'icon' => 'list',
+                        'variant' => 'medium',
+                        'centered' => false,
+                        'classes' => 'mr-2',
+                    ])
+                    {{ __('Lists') }}</a>
+            </li>
+            <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
+                <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
+                    @include('elements.icon', [
+                        'icon' => 'settings-outline',
+                        'variant' => 'medium',
+                        'centered' => false,
+                        'classes' => 'mr-2',
+                    ])
+                    {{ __('Settings') }}</a>
+            </li>
+            <div class="menu-divider"></div>
         @endif
         <li>
             <a class="scroll-link d-flex align-items-center" href="{{ route('pages.get', ['slug' => 'help']) }}">
                 @include('elements.icon', [
-    'icon' => 'help-circle-outline',
-    'variant' => 'medium',
-    'centered' => false,
-    'classes' => 'mr-2',
-])
+                    'icon' => 'help-circle-outline',
+                    'variant' => 'medium',
+                    'centered' => false,
+                    'classes' => 'mr-2',
+                ])
                 {{ __('Help and support') }}</a>
         </li>
         @if (getSetting('site.allow_theme_switch'))
-                <li>
-                    <a class="scroll-link d-flex align-items-center dark-mode-switcher" href="#">
-                        @if (
-                                Cookie::get('app_theme') == 'dark' ||
-                                (!Cookie::get('app_theme') && getSetting('site.default_user_theme') == 'dark')
-                            )
-                                        @include('elements.icon', [
-                                    'icon' => 'contrast-outline',
-                                    'variant' => 'medium',
-                                    'centered' => false,
-                                    'classes' => 'mr-2',
-                                ])
-                                        {{ __('Light mode') }}
-                        @else
-                                    @include('elements.icon', [
-                                'icon' => 'contrast',
-                                'variant' => 'medium',
-                                'centered' => false,
-                                'classes' => 'mr-2',
-                            ])
-                                    {{ __('Dark mode') }}
-                        @endif
-                    </a>
-                </li>
+            <li>
+                <a class="scroll-link d-flex align-items-center dark-mode-switcher" href="#">
+                    @if (Cookie::get('app_theme') == 'dark' ||
+                            (!Cookie::get('app_theme') && getSetting('site.default_user_theme') == 'dark'))
+                        @include('elements.icon', [
+                            'icon' => 'contrast-outline',
+                            'variant' => 'medium',
+                            'centered' => false,
+                            'classes' => 'mr-2',
+                        ])
+                        {{ __('Light mode') }}
+                    @else
+                        @include('elements.icon', [
+                            'icon' => 'contrast',
+                            'variant' => 'medium',
+                            'centered' => false,
+                            'classes' => 'mr-2',
+                        ])
+                        {{ __('Dark mode') }}
+                    @endif
+                </a>
+            </li>
         @endif
         {{-- @if (getSetting('site.allow_direction_switch'))
         <li>
@@ -151,11 +149,11 @@
             <a href="#supportSection" class="d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
                 class="dropdown-toggle" role="button" aria-controls="supportSection">
                 @include('elements.icon', [
-    'icon' => 'headset',
-    'variant' => 'medium',
-    'centered' => false,
-    'classes' => 'mr-2',
-])
+                    'icon' => 'headset',
+                    'variant' => 'medium',
+                    'centered' => false,
+                    'classes' => 'mr-2',
+                ])
                 {{ __('Support') }}
             </a>
             <ul class="collapse list-unstyled" id="supportSection">
@@ -168,7 +166,7 @@
                 </li>
             </ul>
         </li>
-        @if (getSetting('site.allow_language_switch'))
+        {{--  @if (getSetting('site.allow_language_switch'))
                 <li>
                     <a href="#otherSections" class="d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
                         class="dropdown-toggle" role="button" aria-controls="otherSections">
@@ -191,32 +189,32 @@
                         @endforeach
                     </ul>
                 </li>
-        @endif
+        @endif  --}}
         <div class="menu-divider"></div>
         <li>
             @if (Auth::check())
-                        <a class="scroll-link d-flex align-items-center pointer-cursor"
-                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            @include('elements.icon', [
-                    'icon' => 'log-out-outline',
-                    'variant' => 'medium',
-                    'centered' => false,
-                    'classes' => 'mr-2',
-                ])
-                            {{ __('Log out') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
+                <a class="scroll-link d-flex align-items-center pointer-cursor"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    @include('elements.icon', [
+                        'icon' => 'log-out-outline',
+                        'variant' => 'medium',
+                        'centered' => false,
+                        'classes' => 'mr-2',
+                    ])
+                    {{ __('Log out') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
             @else
-                        <a class="scroll-link d-flex align-items-center" href="{{ route('login') }}">
-                            @include('elements.icon', [
-                    'icon' => 'log-in-outline',
-                    'variant' => 'medium',
-                    'centered' => false,
-                    'classes' => 'mr-2',
-                ])
-                            </i> {{ __('Login') }}</a>
+                <a class="scroll-link d-flex align-items-center" href="{{ route('login') }}">
+                    @include('elements.icon', [
+                        'icon' => 'log-in-outline',
+                        'variant' => 'medium',
+                        'centered' => false,
+                        'classes' => 'mr-2',
+                    ])
+                    </i> {{ __('Login') }}</a>
             @endif
         </li>
     </ul>
