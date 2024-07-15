@@ -28,7 +28,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="true">
+        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -63,7 +63,7 @@
                                 <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
                             </div>
                         </div>
-                        <!-- 
+
                         <div id="accordion" class="mb-3">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between" id="headingOne" data-toggle="collapse" data-target="#billingInformation" aria-expanded="true" aria-controls="billingInformation">
@@ -78,6 +78,7 @@
                                     <div class="card-body">
                                         <form id="billing-agreement-form">
                                             <div class="tab-content">
+                                                <!-- credit card info-->
                                                 <div id="individual" class="tab-pane fade show active pt-1">
                                                     <div class="row form-group">
                                                         <div class="col-sm-6 col-6">
@@ -143,7 +144,7 @@
                                 </div>
                             </div>
                         </div>
-                         -->
+
                         <div class="mb-3">
                             <h6>{{__('Payment summary')}}</h6>
                             <div class="subtotal row">
@@ -151,6 +152,9 @@
                                 <span class="subtotal-amount col-sm right text-right">
                                     <b>$0.00</b>
                                 </span>
+                            </div>
+                            <div class="taxes row">
+                                <span class="col-sm left"><b>{{__('Taxes')}}</b></span>
                             </div>
                             <div class="taxes-details"></div>
                             <div class="total row">
@@ -160,12 +164,78 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="total row">
-                            <span class="col-sm left"><b>{{__("Wallet")}}</b></span>
-                            <span class="total-amount col-sm right text-right">
-                                <div class="available-credit">({{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount('0')}})</div>
-                            </span>
+
+                        <div>
+                            <h6>{{__('Payment method')}}</h6>
+                            <div class="d-flex text-left radio-group row px-2">
+                                @if(getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 stripe-payment-method">
+                                    <div class="radio mx-auto stripe-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="stripe">
+                                        <img src="{{asset('/img/logos/stripe.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(config('paypal.client_id') && config('paypal.secret') && !getSetting('payments.paypal_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 paypal-payment-method">
+                                    <div class="radio mx-auto paypal-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="paypal">
+                                        <img src="{{asset('/img/logos/paypal.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(getSetting('payments.coinbase_api_key') && !getSetting('payments.coinbase_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none coinbase-payment-method">
+                                    <div class="radio mx-auto coinbase-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="coinbase">
+                                        <img src="{{asset('/img/logos/coinbase.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(getSetting('payments.nowpayments_api_key') && !getSetting('payments.nowpayments_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none nowpayments-payment-method">
+                                    <div class="radio mx-auto nowpayments-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="nowpayments">
+                                        <img src="{{asset('/img/logos/nowpayments.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(\App\Providers\PaymentsServiceProvider::ccbillCredentialsProvided())
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none ccbill-payment-method">
+                                    <div class="radio mx-auto ccbill-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="ccbill">
+                                        <img src="{{asset('/img/logos/ccbill.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(getSetting('payments.paystack_secret_key') && !getSetting('payments.paystack_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none paystack-payment-method">
+                                    <div class="radio mx-auto paystack-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="paystack">
+                                        <img src="{{asset('/img/logos/paystack.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled') && getSetting('payments.stripe_oxxo_provider_enabled'))
+                                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none oxxo-payment-method">
+                                    <div class="radio mx-auto oxxo-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="oxxo">
+                                        <img src="{{asset('/img/logos/oxxo.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(getSetting('payments.mercado_access_token') && !getSetting('payments.mercado_checkout_disabled'))
+                                <div class="p-1 col-6 col-md-3 d-none mercado-payment-method">
+                                    <div class="radio mx-auto mercado-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="mercado">
+                                        <img src="{{asset('/img/logos/mercado.svg')}}">
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="credit-payment-method p-1 col-6 col-md-3 col-lg-3 col-md-3" {!! !Auth::check() || Auth::user()->wallet->total <= 0 ? 'data-toggle="tooltip" data-placement="right"' : '' !!} title="{{__('You can use the wallet deposit page to add credit.')}}">
+                                        <div class="radio mx-auto credit-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center selected" data-value="credit">
+                                            <div class="credit-provider-text">
+                                                <b>{{__("Credit")}}</b>
+                                                <div class="available-credit">({{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount('0')}})</div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
+                        <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Cancel')}}</button>
@@ -175,12 +245,8 @@
                             </div>
                         </button>
                     </div>
-                    <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
-                    <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 </div>
