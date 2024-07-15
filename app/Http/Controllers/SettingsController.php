@@ -220,6 +220,8 @@ class SettingsController extends Controller
             ]
         ));
     }
+
+
     public function renderSettingReferrals($route, $data = [])
     {
         $currentTab = $route ? $route : 'referrals';
@@ -690,5 +692,14 @@ class SettingsController extends Controller
 
     protected function checkReferralAccess()
     {
+        if (!getSetting('referrals.enabled')) {
+            unset($this->availableSettings['referrals']);
+        }
+        if (getSetting('referrals.disable_for_non_verified')) {
+            $user = Auth::user();
+            if (!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))) {
+                unset($this->availableSettings['referrals']);
+            }
+        }
     }
 }
