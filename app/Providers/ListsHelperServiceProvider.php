@@ -104,7 +104,8 @@ class ListsHelperServiceProvider extends ServiceProvider
      * Creates a "virtual" list, holding all of the user followers
      * @return UserList
      */
-    public static function getUserFollowersList(){
+    public static function getUserFollowersList()
+    {
         $followersList = new UserList();
         $followersList->name = __("Followers");
         $followersList->type = UserList::FOLLOWERS_TYPE;
@@ -112,16 +113,17 @@ class ListsHelperServiceProvider extends ServiceProvider
         $followersList->posts_count = 0;
         $followers = ListsHelperServiceProvider::getUserFollowers(Auth::user()->id);
         $followers = collect($followers)->pluck('user_id');
-        $followers = User::whereIn('id',$followers)->withCount('posts')->get();
+        $followers = User::whereIn('id', $followers)->withCount('posts')->get();
         $followersList->posts_count = 0;
-        foreach($followers as $follower){
+        foreach ($followers as $follower) {
             $followersList->posts_count += $follower->posts_count;
         }
         $followersList->members = $followers;
         return $followersList;
     }
 
-    public static function getUsersForListMembers($members){
+    public static function getUsersForListMembers($members)
+    {
         $filteredUsers = [];
         foreach ($members as $member) {
             $filteredUsers[] = $member->user;
@@ -197,7 +199,7 @@ class ListsHelperServiceProvider extends ServiceProvider
                 return response()->json(['success' => true, 'message' => __('Member added to list.')]);
             }
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message'=>$exception->getMessage()]);
+            return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message' => $exception->getMessage()]);
         }
     }
 
@@ -223,7 +225,7 @@ class ListsHelperServiceProvider extends ServiceProvider
                 return response()->json(['success' => true, 'message' => __('Member removed from list.')]);
             }
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message'=>$exception->getMessage()]);
+            return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message' => $exception->getMessage()]);
         }
     }
 
@@ -243,7 +245,7 @@ class ListsHelperServiceProvider extends ServiceProvider
      */
     public static function loggedUserIsFollowingUser($userId)
     {
-        if(Auth::user()){
+        if (Auth::user()) {
             $loggedUserId = Auth::user()->id;
             $userFollowersListId = UserList::query()->where(['user_id' => $loggedUserId, 'type' => 'following'])->select('id')->first();
             if ($userFollowersListId != null) {
@@ -262,7 +264,8 @@ class ListsHelperServiceProvider extends ServiceProvider
      * @param $toUserID
      * @return bool
      */
-    public static function isUserFollowing($fromUserID, $toUserID){
+    public static function isUserFollowing($fromUserID, $toUserID)
+    {
         $loggedUserId = $fromUserID;
         $userId = $toUserID;
         $userFollowersListId = UserList::query()->where(['user_id' => $loggedUserId, 'type' => 'following'])->select('id')->first();
@@ -284,20 +287,21 @@ class ListsHelperServiceProvider extends ServiceProvider
     public static function getUserFollowingType($userId, $getTranslated = false)
     {
         if (self::loggedUserIsFollowingUser($userId)) {
-            if($getTranslated){
+            if ($getTranslated) {
                 return __('Unfollow');
             }
             return 'unfollow';
         } else {
-            if($getTranslated){
+            if ($getTranslated) {
                 return __('Follow');
             }
             return 'follow';
         }
     }
 
-    public static function getUserFollowers($userID){
-        $followers = UserListMember::select('user_lists.user_id','users.email', 'users.settings', 'users.name')
+    public static function getUserFollowers($userID)
+    {
+        $followers = UserListMember::select('user_lists.user_id', 'users.email', 'users.settings', 'users.name')
             ->join('user_lists', 'user_list_members.list_id', '=', 'user_lists.id')
             ->join('users', 'users.id', '=', 'user_lists.user_id')
             ->where('user_list_members.user_id', $userID)

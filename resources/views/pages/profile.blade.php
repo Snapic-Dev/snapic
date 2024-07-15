@@ -73,61 +73,65 @@
             </div>
             <div>
                 @if(!Auth::check() || Auth::user()->id !== $user->id)
-                    <div class="d-flex flex-row">
-                        <button class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
-                            title="{{__('+ Seguir')}}" onclick="Lists.manageFollowsAction('{{$user->id}}')">
-                            @include('elements.icon', ['icon' => "person-add-outline"])
-                        </button>
-                        @if(Auth::check())
-                            <div class="">
-                                <span class="p-pill ml-2 pointer-cursor to-tooltip" @if(!Auth::user()->email_verified_at && getSetting('site.enforce_email_validation')) data-placement="top"
-                                    title="{{__('Please verify your account')}}"
-                                @elseif(!\App\Providers\GenericHelperServiceProvider::creatorCanEarnMoney($user))
-                                data-placement="top" title="{{__('This creator cannot earn money yet')}}" @else
-                                    data-placement="top" title="{{__('Send a tip')}}" data-toggle="modal"
-                                    data-target="#checkout-center" data-type="tip"
-                                    data-first-name="{{Auth::user()->first_name}}" data-last-name="{{Auth::user()->last_name}}"
-                                    data-billing-address="{{Auth::user()->billing_address}}"
-                                    data-country="{{Auth::user()->country}}" data-city="{{Auth::user()->city}}"
-                                    data-state="{{Auth::user()->state}}" data-postcode="{{Auth::user()->postcode}}"
-                                    data-available-credit="{{Auth::user()->wallet->total}}" data-username="{{$user->username}}"
-                                    data-name="{{$user->name}}" data-avatar="{{$user->avatar}}"
-                                data-recipient-id="{{$user->id}}" @endif>
-                                    @include('elements.icon', ['icon' => 'cash-outline'])
-                                </span>
-                            </div>
-                            <div class="">
-                                @if($hasSub || $viewerHasChatAccess)
-                                    <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
-                                        title="{{__('Send a message')}}" onclick="messenger.showNewMessageDialog()">
-                                        @include('elements.icon', ['icon' => 'chatbubbles-outline'])
+                                <div class="d-flex flex-row">
+                                    @php
+                                        $followingUser = \App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)
+                                    @endphp
+                                    <span
+                                        class="d-flex flex-row align-items-center ml-2 p-1 pointer-cursor btn-follow-user border {{ $followingUser === __('Follow') ? 'btnFollow' : 'btnUnfollow' }}"
+                                        border btn-follow-user text-sm" data-toggle="tooltip" data-placement="top"
+                                        title="{{ $followingUser === __('Follow') ? __('Seguir') : __('Seguindo') }}"
+                                        onclick="Lists.manageFollowsAction('{{$user->id}}')">
+                                        <span class="manage-follows-text text-sm">
+                                            {{ $followingUser }}
+                                        </span>
                                     </span>
-                                @else
+                                    @if(Auth::check())
+                                        <div class="">
+                                            <span class="p-pill ml-2 pointer-cursor to-tooltip" @if(!Auth::user()->email_verified_at && getSetting('site.enforce_email_validation')) data-placement="top"
+                                                title="{{__('Please verify your account')}}"
+                                            @elseif(!\App\Providers\GenericHelperServiceProvider::creatorCanEarnMoney($user))
+                                            data-placement="top" title="{{__('This creator cannot earn money yet')}}" @else
+                                                data-placement="top" title="{{__('Send a tip')}}" data-toggle="modal"
+                                                data-target="#checkout-center" data-type="tip"
+                                                data-first-name="{{Auth::user()->first_name}}" data-last-name="{{Auth::user()->last_name}}"
+                                                data-billing-address="{{Auth::user()->billing_address}}"
+                                                data-country="{{Auth::user()->country}}" data-city="{{Auth::user()->city}}"
+                                                data-state="{{Auth::user()->state}}" data-postcode="{{Auth::user()->postcode}}"
+                                                data-available-credit="{{Auth::user()->wallet->total}}" data-username="{{$user->username}}"
+                                                data-name="{{$user->name}}" data-avatar="{{$user->avatar}}"
+                                            data-recipient-id="{{$user->id}}" @endif>
+                                                @include('elements.icon', ['icon' => 'cash-outline'])
+                                            </span>
+                                        </div>
+                                        <div class="">
+                                            @if($hasSub || $viewerHasChatAccess)
+                                                <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
+                                                    title="{{__('Send a message')}}" onclick="messenger.showNewMessageDialog()">
+                                                    @include('elements.icon', ['icon' => 'chatbubbles-outline'])
+                                                </span>
+                                            @else
+                                                <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
+                                                    title="{{__('DMs unavailable without subscription')}}">
+                                                    @include('elements.icon', ['icon' => 'chatbubbles-outline'])
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <!--<span>@include('elements.icon',['icon'=>'list-outline'])</span>-->
+                                    @endif
+                                    @if(getSetting('profiles.allow_profile_qr_code'))
+                                        <div>
+                                            <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
+                                                title="{{__('Get profile QR code')}}" onclick="Profile.getProfileQRCode()">
+                                                @include('elements.icon', ['icon' => 'qr-code-outline'])
+                                            </span>
+                                        </div>
+                                    @endif
                                     <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
-                                        title="{{__('DMs unavailable without subscription')}}">
-                                        @include('elements.icon', ['icon' => 'chatbubbles-outline'])
+                                        title="{{__('Copy profile link')}}" onclick="shareOrCopyLink()">
+                                        @include('elements.icon', ['icon' => 'share-social-outline'])
                                     </span>
-                                @endif
-                            </div>
-                            <!--
-                                                                                                                                                                                                                                                                                                                                                        <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top" title="{{__('Add to your lists')}}" onclick="Lists.showListAddModal();">
-                                                                                                                                                                                                                                                                                                                                                        @include('elements.icon',['icon'=>'list-outline'])
-                                                                                                                                                                                                                                                                                                                                                        </span>
-                                                                                                                                                                                                                                                                                                                                                    -->
-                        @endif
-                        @if(getSetting('profiles.allow_profile_qr_code'))
-                            <div>
-                                <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
-                                    title="{{__('Get profile QR code')}}" onclick="Profile.getProfileQRCode()">
-                                    @include('elements.icon', ['icon' => 'qr-code-outline'])
-                                </span>
-                            </div>
-                        @endif
-                        <span class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top"
-                            title="{{__('Copy profile link')}}" onclick="shareOrCopyLink()">
-                            @include('elements.icon', ['icon' => 'share-social-outline'])
-                        </span>
-                    </div>
+                                </div>
                 @else
                     <div class="d-flex flex-row">
                         <div class="mr-2">
@@ -190,14 +194,15 @@
                     @endif
                 </div>
                 @if($user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt'))
-                    <span class="text-primary pointer-cursor" onclick="Profile.toggleFullDescription()">
-                        <span class="label-more">{{__('More info')}}</span>
-                        <span class="label-less d-none">{{__('Show less')}}</span>
-                    </span>
+                    <div class="text-primary pointer-cursor bioMoreContentArea" onclick="Profile.toggleFullDescription()">
+                        <span class="label-more text-md">{{__('More info')}}</span>
+                        <span class="label-less d-none text-md">{{__('Show less')}}</span>
+                    </div>
                 @endif
             </div>
 
-            <div class="d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-1">
+            <div
+                class=" d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-2 followAndFollowingArea">
 
                 <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                     <div class="text-truncate">
@@ -242,13 +247,13 @@
 
             </div>
 
-            <div class="bg-separator border-top border-bottom"></div>
+            <!--<div class="bg-separator border-top border-bottom"></div>-->
 
             @include('elements.message-alert', ['classes' => 'px-2 pt-4'])
             @if($user->paid_profile && (!getSetting('profiles.allow_users_enabling_open_profiles') || (getSetting('profiles.allow_users_enabling_open_profiles') && !$user->open_profile)))
                 @if((!Auth::check() || Auth::user()->id !== $user->id) && !$hasSub)
-                    <div class="p-4 subscription-holder">
-                        <h6 class="font-weight-bold text-uppercase mb-3">{{__('Subscription')}}</h6>
+                    <div class="p-4 subscription-holder holder">
+                        <!--<h6 class="font-weight-bold text-uppercase mb-3">{{__('Subscription')}}</h6>-->
                         @if(count($offer))
                             <h5 class="m-0 text-bold">
                                 {{__('Limited offer main label', ['discount' => round($offer['discountAmount']), 'days_remaining' => $offer['daysRemaining']])}}
@@ -301,7 +306,6 @@
                                     @if($user->profile_access_price_12_months)
                                         @include('elements.checkout.subscribe-button-365')
                                     @endif
-
                                 </div>
                             @endif
                         @endif
@@ -309,21 +313,22 @@
                     <div class="bg-separator border-top border-bottom"></div>
                 @endif
             @elseif(!Auth::check() || (Auth::check() && Auth::user()->id !== $user->id))
-                <div class=" p-4 subscription-holder">
-                    <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
-                    @if(Auth::check())
-                        <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button"
-                            onclick="Lists.manageFollowsAction('{{$user->id}}')">
-                            <span
-                                class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
-                        </button>
-                    @else
-                        <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal"
-                            data-target="#login-dialog">
-                            <span class="">{{__('Follow')}}</span>
-                        </button>
-                    @endif
-                </div>
+                <!--<div class=" p-4 subscription-holder">
+                                                                                                                        <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
+                                                                                                                        @if(Auth::check())
+                                                                                                                            <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button"
+                                                                                                                                onclick="Lists.manageFollowsAction('{{$user->id}}')">
+                                                                                                                                <span
+                                                                                                                                    class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
+                                                                                                                            </button>
+                                                                                                                        @else
+                                                                                                                            <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal"
+                                                                                                                                data-target="#login-dialog">
+                                                                                                                                <span class="">{{__('Follow')}}</span>
+                                                                                                                            </button>
+                                                                                                                        @endif
+                                                                                                                    </div>
+                                                                                                        -->
                 <div class="bg-separator border-top border-bottom"></div>
             @endif
             <div class="mt-3 inline-border-tabs">
