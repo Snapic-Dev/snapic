@@ -12,3 +12,4 @@ public/dist
 app/cloudfront/*
 .php-cs-fixer.cache
 public/sitemap.xml
+.env
