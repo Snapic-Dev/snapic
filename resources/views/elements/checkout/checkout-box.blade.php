@@ -28,38 +28,50 @@
         </div>
 
         <!-- Modal -->
-        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="true">
+        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog"
+            aria-labelledby="checkout" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="payment-title"></h5>
+                        <h5 class="modal-title text-md p-2 font-weight-bold" id="payment-title"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="{{__('Close')}}">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="payment-body">
-                            <div class="d-flex flex-row">
+                            <div class="d-flex flex-row mt-1">
                                 <div class="ml-0 ml-md-2 mb-2">
                                     <img src="" class="rounded-circle user-avatar">
                                 </div>
                                 <div class="d-lg-block">
                                     <div class="pl-2 d-flex justify-content-center flex-column">
-                                        <div class="ml-2 ">
-                                            <div class="text-bold {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}} name"></div>
-                                            <div class="text-muted username"><span>@</span></div>
+                                        <div class="ml-2">
+                                            <div
+                                                class="text-bold {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}} name">
+                                            </div>
+                                            <a class="walletPerfil mt-1" href="/my/settings/wallet">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
+                                                </div>
+                                                <span class=" font-weight-medium wallet-total-amount">
+                                                    {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
+                                                </span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="payment-description mb-3 d-none"></div>
-                            <div class="input-group mb-3 checkout-amount-input d-none">
+                            <div class="input-group mb-3 checkout-amount-input d-none mt-3 p-2">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="amount-label">
-                                        @include('elements.icon',['icon'=>'cash-outline','variant'=>'medium','centered'=>false])
+                                        @include('elements.icon', ['icon' => 'cash-outline', 'variant' => 'medium', 'centered' => false])
                                     </span>
                                 </div>
-                                <input class="form-control uifield-amount" placeholder="{{__(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)',['min'=>getSetting('payments.min_tip_value'),'max'=>getSetting('payments.max_tip_value'),'currency'=>config('app.site.currency_symbol')])}}" aria-label="Username" aria-describedby="amount-label" id="checkout-amount" type="number" min="0" step="1" max="500">
+                                <input class="form-control uifield-amount"
+                                    placeholder="{{__(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)', ['min' => getSetting('payments.min_tip_value'), 'max' => getSetting('payments.max_tip_value'), 'currency' => config('app.site.currency_symbol')])}}"
+                                    aria-label="Username" aria-describedby="amount-label" id="checkout-amount"
+                                    type="number" min="0" step="1" max="500">
                                 <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
                             </div>
                         </div>
@@ -145,38 +157,49 @@
                         </div>
                          -->
                         <div class="mb-3">
-                            <h6>{{__('Payment summary')}}</h6>
-                            <div class="subtotal row">
+                            <!--<h6>{{__('Payment summary')}}</h6>-->
+                            <!--<div class="subtotal row">
                                 <span class="col-sm left"><b>{{__('Subtotal')}}:</b></span>
                                 <span class="subtotal-amount col-sm right text-right">
                                     <b>$0.00</b>
                                 </span>
-                            </div>
+                            </div>-->
                             <div class="taxes-details"></div>
-                            <div class="total row">
+                            <!--<div class="total row mt-1">
                                 <span class="col-sm left"><b>{{__('Total')}}:</b></span>
                                 <span class="total-amount col-sm right text-right">
                                     <b>$0.00</b>
                                 </span>
-                            </div>
+                            </div>-->
                         </div>
-                        <div class="total row">
+                        <!--
+                        <div class="total row p-3">
                             <span class="col-sm left"><b>{{__("Wallet")}}</b></span>
                             <span class="total-amount col-sm right text-right">
-                                <div class="available-credit">({{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount('0')}})</div>
+                                <div class="available-credit">
+                                    ({{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount('0')}})</div>
                             </span>
-                        </div>
+                            </div>
+                        -->
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Cancel')}}</button>
-                        <button type="submit" class="btn btn-primary checkout-continue-btn">{{__('Continue')}}
+                    <div class="modal-footer p-4">
+                        <button type="button" class="btn btn-round border"
+                            data-dismiss="modal">{{__('Cancel')}}</button>
+                        <button type="submit" class="btn btn-primary checkout-continue-btn btn-round">{{__('Confirm')}}
                             <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
                                 <span class="sr-only">{{__('Loading...')}}</span>
                             </div>
                         </button>
                     </div>
-                    <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
-                    <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
+                    <div class="payment-error error text-danger text-bold d-none mb-1">
+                        {{__('Please select your payment method')}}
+                    </div>
+                    <p class="text-muted mt-1 text-sm ml-2 mr-2 pl-4 pr-4 pb-4 pt-1 text-left">
+                        <strong>{{__('Nota:')}}</strong>
+                        {{__('Após clicar no botão, o valor correspondente será deduzido da sua carteira e enviado diretamente para o influenciador.')}}
+                        <span
+                            class="font-weight-bold">{{__('Todo o processo de pagamento será realizado na mesma página.')}}</span>
+                    </p>
                 </div>
 
             </div>

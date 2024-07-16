@@ -17,18 +17,17 @@
                 <div class="pl-2 d-flex justify-content-center flex-column overflow-hidden">
                     <div class="ml-2 d-flex flex-column overflow-hidden">
                         <span
-                            class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}</span>
+                            class="text-bold text-truncate mt-1 ml-2 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}
+                        </span>
                         <a class="walletPerfil" href="/my/settings/wallet">
-                            <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex justify-content-center align-items-center ml-2">
                                 @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
                             </div>
                             <span class="font-weight-medium wallet-total-amount mt-1">
                                 {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}
                             </span>
                         </a>
-                        <!--
-                                                                                                                                                                                                                    <span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>
-                                                                                                                                                                                                                -->
+                        <!--<span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>-->
                     </div>
                 </div>
             </div>

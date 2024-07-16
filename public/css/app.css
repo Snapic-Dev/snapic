@@ -1,5 +1,6 @@
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
     min-height: 100%!important;
 }
 /* Top Navbar Menu */
