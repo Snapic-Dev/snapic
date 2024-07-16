@@ -25,10 +25,21 @@
                     <div class=""><span
                             class=""><span>@</span>{{ Auth::check() ? Auth::user()->username : '@username' }}</span>
                     </div>
-                    <small
-                        class="p-0 m-0">{{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
-                        -
-                        {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}</small>
+                    <a class="walletPerfil mt-1" href="/my/settings/wallet">
+                        <div class="d-flex justify-content-center align-items-center">
+                            @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
+                        </div>
+                        <span class="font-weight-medium wallet-total-amount">
+                            {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
+                        </span>
+                    </a>
+                    <!--
+                                                    <small
+                                                        class="p-0 m-0">{{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
+                                                        -
+                                                    {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
+                                                    </small>
+                                                -->
                 @endif
             </div>
         </div>
@@ -127,13 +138,13 @@
                 </a>
             </li>
         @endif
-        {{--  @if (getSetting('site.allow_direction_switch'))
-            <li>
-                <a class="scroll-link d-flex align-items-center rtl-mode-switcher" href="#">
-                    @include('elements.icon',['icon'=>'return-up-back','variant'=>'medium','centered'=>false,'classes'=>'mr-2'])
-                    {{__("RTL")}}</a>
-            </li>
-        @endif  --}}
+        {{-- @if (getSetting('site.allow_direction_switch'))
+        <li>
+            <a class="scroll-link d-flex align-items-center rtl-mode-switcher" href="#">
+                @include('elements.icon',['icon'=>'return-up-back','variant'=>'medium','centered'=>false,'classes'=>'mr-2'])
+                {{__("RTL")}}</a>
+        </li>
+        @endif --}}
         <li>
             <a href="#supportSection" class="d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
                 class="dropdown-toggle" role="button" aria-controls="supportSection">
@@ -155,30 +166,30 @@
                 </li>
             </ul>
         </li>
-        @if (getSetting('site.allow_language_switch'))
-            <li>
-                <a href="#otherSections" class="d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
-                    class="dropdown-toggle" role="button" aria-controls="otherSections">
-                    @include('elements.icon', [
-                        'icon' => 'language',
-                        'variant' => 'medium',
-                        'centered' => false,
-                        'classes' => 'mr-2',
-                    ])
-                    {{ __('Language') }}
-                </a>
-                <ul class="collapse list-unstyled" id="otherSections">
-                    @foreach (LocalesHelper::getAvailableLanguages() as $languageCode)
-                        @if (LocalesHelper::getLanguageName($languageCode))
-                            <li>
-                                <a class="scroll-link d-flex align-items-center"
-                                    href="{{ route('language', ['locale' => $languageCode]) }}">{{ ucfirst(__(LocalesHelper::getLanguageName($languageCode))) }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                </ul>
-            </li>
-        @endif
+        {{--  @if (getSetting('site.allow_language_switch'))
+                <li>
+                    <a href="#otherSections" class="d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle" role="button" aria-controls="otherSections">
+                        @include('elements.icon', [
+                'icon' => 'language',
+                'variant' => 'medium',
+                'centered' => false,
+                'classes' => 'mr-2',
+            ])
+                        {{ __('Language') }}
+                    </a>
+                    <ul class="collapse list-unstyled" id="otherSections">
+                        @foreach (LocalesHelper::getAvailableLanguages() as $languageCode)
+                            @if (LocalesHelper::getLanguageName($languageCode))
+                                <li>
+                                    <a class="scroll-link d-flex align-items-center"
+                                        href="{{ route('language', ['locale' => $languageCode]) }}">{{ ucfirst(__(LocalesHelper::getLanguageName($languageCode))) }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </li>
+        @endif  --}}
         <div class="menu-divider"></div>
         <li>
             @if (Auth::check())
