@@ -74,7 +74,7 @@
                             </div>
                         </div>
 
-                        <div id="accordion" class="mb-3">
+                        {{--  <div id="accordion" class="mb-3">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between" id="headingOne"
                                     data-toggle="collapse" data-target="#billingInformation" aria-expanded="true"
@@ -180,9 +180,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>  --}}
 
-                        <div class="mb-3">
+                        {{--  <div class="mb-3">
                             <h6>{{ __('Payment summary') }}</h6>
                             <div class="subtotal row">
                                 <span class="col-sm left"><b>{{ __('Subtotal') }}:</b></span>
@@ -205,9 +205,7 @@
                         <div>
                             <h6>{{ __('Payment method') }}</h6>
                             <div class="d-flex text-left radio-group row px-2">
-                                @if (getSetting('payments.stripe_secret_key') &&
-                                        getSetting('payments.stripe_public_key') &&
-                                        !getSetting('payments.stripe_checkout_disabled'))
+                                @if (getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled'))
                                     <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 stripe-payment-method">
                                         <div class="radio mx-auto stripe-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center"
                                             data-value="stripe">
@@ -256,10 +254,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if (getSetting('payments.stripe_secret_key') &&
-                                        getSetting('payments.stripe_public_key') &&
-                                        !getSetting('payments.stripe_checkout_disabled') &&
-                                        getSetting('payments.stripe_oxxo_provider_enabled'))
+                                @if (getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled') && getSetting('payments.stripe_oxxo_provider_enabled'))
                                     <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none oxxo-payment-method">
                                         <div class="radio mx-auto oxxo-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center"
                                             data-value="oxxo">
@@ -289,12 +284,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="payment-error error text-danger text-bold d-none mb-1">
+                        </div>  --}}
+                        {{--  <div class="payment-error error text-danger text-bold d-none mb-1">
                             {{ __('Please select your payment method') }}</div>
                         <p class="text-muted mt-1">
                             {{ __('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.') }}
-                        </p>
+                        </p>  --}}
                     </div>
                     <div class="modal-footer p-4">
                         <button type="button" class="btn btn-round border"
