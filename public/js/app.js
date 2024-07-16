@@ -677,3 +677,17 @@ function getTaxDescription(taxName, taxPercentage, taxType){
     return taxName;
 }
 
+
+// Função para mostrar a imagem selecionada no campo de CNH
+function previewImage(input, imgElement) {
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+        imgElement.src = e.target.result;
+        imgElement.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+}
+
