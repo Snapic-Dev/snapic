@@ -580,11 +580,10 @@ function updateButtonState(
             <div class="spinner-border text-${loadingColor} spinner-border-sm" role="status">
             <span class="sr-only">${trans("Loading...")}</span>
             </div>
-            ${
-              buttonContent !== false
-                ? '<div class="ml-2">' + buttonContent + "</div>"
-                : ""
-            }
+            ${buttonContent !== false
+        ? '<div class="ml-2">' + buttonContent + "</div>"
+        : ""
+      }
             </div>`);
     buttonElement.addClass("disabled");
   }
@@ -595,7 +594,7 @@ function updateButtonState(
  * @param callback
  */
 // eslint-disable-next-line no-unused-vars
-function sendEmailConfirmation(callback = function () {}) {
+function sendEmailConfirmation(callback = function () { }) {
   $(".unverified-email-box").attr("onClick", "");
   $.ajax({
     url: app.baseUrl + "/resendVerification",
@@ -612,7 +611,7 @@ function sendEmailConfirmation(callback = function () {}) {
       );
       callback();
     },
-    error: function () {},
+    error: function () { },
   });
 }
 
@@ -742,14 +741,56 @@ function getTaxDescription(taxName, taxPercentage, taxType) {
 
 // Função para mostrar a imagem selecionada no campo de CNH
 function previewImage(input, imgElement) {
-    var file = input.files[0];
-    var reader = new FileReader();
+  var file = input.files[0];
+  var reader = new FileReader();
 
-    reader.onload = function(e) {
-        imgElement.src = e.target.result;
-        imgElement.style.display = 'block';
-    };
+  reader.onload = function (e) {
+    imgElement.src = e.target.result;
+    imgElement.style.display = 'block';
+  };
 
-    reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Adiciona evento de clique no link de Registro na barra de navegação
+  document.getElementById('registerLink').addEventListener('click', function (e) {
+      e.preventDefault(); // Previne o comportamento padrão do link
+
+      // Exibe o modal de registro
+      $('#registerModal').modal('show');
+  });
+
+  // Adiciona evento de clique no botão de Confirmação no modal
+  document.getElementById('confirmRegisterBtn').addEventListener('click', function () {
+      var assinanteCheckbox = document.getElementById('assinanteCheckbox');
+      var influencerCheckbox = document.getElementById('influencerCheckbox');
+
+      // Verifica se pelo menos um checkbox está marcado
+      if (assinanteCheckbox.checked ){
+          window.location.href = "/register"; 
+          $('#registerModal').modal('hide'); 
+      } else if (influencerCheckbox.checked){
+        window.location.href = "/influencer/register"; 
+      } else {
+          alert('Por favor, selecione uma opção.'); // Mostra um alerta se nenhum checkbox estiver marcado
+      }
+  });
+
+  // Adiciona eventos para desmarcar um checkbox quando o outro é marcado
+  var assinanteCheckbox = document.getElementById('assinanteCheckbox');
+  var influencerCheckbox = document.getElementById('influencerCheckbox');
+
+  assinanteCheckbox.addEventListener('change', function () {
+      if (assinanteCheckbox.checked) {
+          influencerCheckbox.checked = false;
+      }
+  });
+
+  influencerCheckbox.addEventListener('change', function () {
+      if (influencerCheckbox.checked) {
+          assinanteCheckbox.checked = false;
+      }
+  });
+});
