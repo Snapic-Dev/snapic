@@ -186,7 +186,7 @@
         @if (GenericHelper::isEmailEnforcedAndValidated())
             @if (getSetting('streams.allow_streams'))
                 <li class="nav-item-live mt-2 mb-0">
-                    <a role="button" class="btn btn-round btn-outline-danger btn-block px-3"
+                    <a role="button" class="btn btn-block btn-round px-3 p-3 mt-3 border"
                         href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}">
                         <div
                             class="d-none d-md-flex d-xl-flex d-lg-flex justify-content-center align-items-center ml-1 text-truncate new-post-label">
@@ -208,7 +208,7 @@
                     'variant' => '',
                     'classes' => 'flex-shrink-0 text-danger',
                 ])</div>
-                                        <div class="ml-1">{{ __('Go live') }} </div>
+                                        <div class="ml-4">{{ __('Go live') }} </div>
                                     </div>
 
                         </div>
@@ -228,8 +228,8 @@
 
         @if (!getSetting('site.hide_create_post_menu'))
             @if (GenericHelper::isEmailEnforcedAndValidated())
-                <li class="nav-item">
-                    <a role="button" class="btn btn-round btn-primary btn-block " href="{{ route('posts.create') }}">
+                <li class="nav-item mt-4">
+                    <a role="button" class="btn btn-round border btn-primary btn-block p-3" href="{{ route('posts.create') }}">
                         <span
                             class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('New post') }}</span>
                         <span class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
