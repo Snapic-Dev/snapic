@@ -83,7 +83,7 @@
                         @include('elements.preloading.messenger-conversation-box')
                         <div class="conversation-content pt-4 pb-1 px-3 flex-fill"></div>
                         <div class="dropzone-previews dropzone w-100 ppl-0 pr-0 pt-1 pb-1"></div>
-                        <div class="conversation-writeup pt-1 pb-1 d-flex align-items-center mb-1 {{ !$lastContactID ? 'hidden' : '' }}">
+                        <div class="conversation-writeup pt-1 pb-3 d-flex align-items-center {{ !$lastContactID ? 'hidden' : '' }}">
                             <div class="messenger-buttons-wrapper d-flex pl-2">
                                 <button class="btn btn-outline-primary btn-rounded-icon messenger-button attach-file mx-2 file-upload-button to-tooltip" data-placement="top" title="{{ __('Attach file') }}">
                                     <div class="d-flex justify-content-center align-items-center">

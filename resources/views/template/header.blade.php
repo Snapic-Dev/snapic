@@ -11,20 +11,20 @@
         </button>
 
         <div class="collapse navbar-collapse pl-3 pl-md-0" id="navbarSupportedContent">
-            <div class="d-flex justify-content-end w-100 mr-5">
+            <div class="d-flex justify-content-end w-100 mr-2">
                 @include('elements.footer.dark-mode-switcher')
                 {{-- @include('elements.footer.direction-switcher') --}}
-                @include('elements.footer.language-switcher')
+                <!-- @include('elements.footer.language-switcher') -->
             </div>
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 @if(Auth::check())
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link ml-0 ml-md-2" href="{{ route('posts.create') }}">{{ __('Create') }}</a>
-                    </li>
-                    <li class="nav-item">
+                    </li> -->
+                    <!--<li class="nav-item">
                         <a class="nav-link ml-0 ml-md-2" href="{{ route('feed') }}">{{ __('Feed') }}</a>
-                    </li>
+                    </li> -->
                 @endif
             </ul>
 
