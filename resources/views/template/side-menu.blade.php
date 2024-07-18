@@ -13,24 +13,24 @@
             @endif
         </div>
         @if (Auth::check())
-        <div class="d-none d-lg-block overflow-hidden">
-            <div class="pl-2 d-flex justify-content-center flex-column overflow-hidden">
-                <div class="ml-2 d-flex flex-column overflow-hidden">
-                    <span class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}</span>
-                    <a class="walletPerfil" href="/my/settings/wallet">
-                        <div class="d-flex justify-content-center align-items-center">
-                            @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
-                        </div>
-                        <span class="font-weight-medium wallet-total-amount mt-1">
-                            {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}
+            <div class="d-none d-lg-block overflow-hidden">
+                <div class="pl-2 d-flex justify-content-center flex-column overflow-hidden">
+                    <div class="ml-2 d-flex flex-column overflow-hidden">
+                        <span
+                            class="text-bold text-truncate mt-1 ml-2 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}
                         </span>
-                    </a>
-                    <!--
-                                                                                                                                                                                                                    <span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>
-                                                                                                                                                                                                                -->
+                        <a class="walletPerfil" href="/my/settings/wallet">
+                            <div class="d-flex justify-content-center align-items-center ml-2">
+                                @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
+                            </div>
+                            <span class="font-weight-medium wallet-total-amount mt-1">
+                                {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}
+                            </span>
+                        </a>
+                        <!--<span class=" text-muted"><span>@</span>{{ Auth::user()->username }}</span>-->
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
     </div>
     <ul class="nav flex-column user-side-menu">
@@ -184,28 +184,32 @@
         </li>
 
         @if (GenericHelper::isEmailEnforcedAndValidated())
-        @if (getSetting('streams.allow_streams'))
-        <li class="nav-item-live mt-2 mb-0">
-            <a role="button" class="btn btn-round btn-outline-danger btn-block px-3" href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}">
-                <div class="d-none d-md-flex d-xl-flex d-lg-flex justify-content-center align-items-center ml-1 text-truncate new-post-label">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <div class="stream-on-label w-100 {{ StreamsHelper::getUserInProgressStream() ? '' : 'd-none' }}">
-                            <div class="d-flex align-items-center w-100">
-                                <div class="mr-4">
-                                    <div class="blob red"></div>
+            @if (getSetting('streams.allow_streams'))
+                <li class="nav-item-live mt-2 mb-0">
+                    <a role="button" class="btn btn-round btn-outline-danger btn-block px-3"
+                        href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}">
+                        <div
+                            class="d-none d-md-flex d-xl-flex d-lg-flex justify-content-center align-items-center ml-1 text-truncate new-post-label">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <div
+                                    class="stream-on-label w-100 {{ StreamsHelper::getUserInProgressStream() ? '' : 'd-none' }}">
+                                    <div class="d-flex align-items-center w-100">
+                                        <div class="mr-4">
+                                            <div class="blob red"></div>
+                                        </div>
+                                        <div class="ml-2">{{ __('On air') }} </div>
+                                    </div>
                                 </div>
-                                <div class="ml-2">{{ __('On air') }} </div>
-                            </div>
-                        </div>
-                        <div class="stream-off-label w-100 {{ StreamsHelper::getUserInProgressStream() ? 'd-none' : '' }}">
-                            <div class="d-flex  align-items-center w-100">
-                                <div class="mr-3"> @include('elements.icon', [
-                                    'icon' => 'ellipse',
-                                    'variant' => '',
-                                    'classes' => 'flex-shrink-0 text-danger',
-                                    ])</div>
-                                <div class="ml-1">{{ __('Go live') }} </div>
-                            </div>
+                                <div
+                                    class="stream-off-label w-100 {{ StreamsHelper::getUserInProgressStream() ? 'd-none' : '' }}">
+                                    <div class="d-flex  align-items-center w-100">
+                                        <div class="mr-3"> @include('elements.icon', [
+                    'icon' => 'ellipse',
+                    'variant' => '',
+                    'classes' => 'flex-shrink-0 text-danger',
+                ])</div>
+                                        <div class="ml-1">{{ __('Go live') }} </div>
+                                    </div>
 
                         </div>
                     </div>
@@ -223,11 +227,12 @@
         @endif
 
         @if (!getSetting('site.hide_create_post_menu'))
-        @if (GenericHelper::isEmailEnforcedAndValidated())
-        <li class="nav-item">
-            <a role="button" class="btn btn-round btn-primary btn-block " href="{{ route('posts.create') }}">
-                <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('New post') }}</span>
-                <span class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
+            @if (GenericHelper::isEmailEnforcedAndValidated())
+                <li class="nav-item">
+                    <a role="button" class="btn btn-round btn-primary btn-block " href="{{ route('posts.create') }}">
+                        <span
+                            class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('New post') }}</span>
+                        <span class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
                     'icon' => 'add-circle-outline',
                     'variant' => 'medium',
                     'classes' => 'flex-shrink-0',

@@ -94,7 +94,12 @@
 
 .sender .message-bubble a:hover{}
 
-.conversation-writeup textarea{}
+.conversation-writeup textarea{
+}
+
+.conversation-writeup {
+    height: 300px;
+}
 
 .messageBoxInput{
     min-height: 45px!important;

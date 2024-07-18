@@ -1,6 +1,7 @@
 body {
-    font-family: Verdana, Arial, Helvetica;
-    min-height: 100% !important;
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
+    min-height: 100%!important;
 }
 
 /* Top Navbar Menu */

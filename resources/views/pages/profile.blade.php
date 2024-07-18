@@ -26,7 +26,7 @@
         '/js/LoginModal.js',
         '/js/messenger/messenger.js',
     ], $additionalAssets))->withFullUrl()
-    !!}
+!!}
 @stop
 
 @section('styles')
@@ -42,7 +42,7 @@
         '/css/pages/lists.css',
         '/css/posts/post.css'
     ])->withFullUrl()
-    !!}
+!!}
 @if(getSetting('feed.post_box_max_height'))
     @include('elements.feed.fixed-height-feed-posts', ['height' => getSetting('feed.post_box_max_height')])
 @endif
@@ -162,30 +162,46 @@
 
         <div class="container pt-2 pl-0 pr-0">
 
-            <div class="pt-2 pl-4 pr-4">
-                <h5 class="text-bold d-flex align-items-center">
-                    <span>{{$user->name}}</span>
-                    @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
-                        <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                            @include('elements.icon', ['icon' => 'checkmark-circle-outline', 'centered' => true, 'classes' => 'ml-1 text-primary'])
-                        </span>
+            <div class="pt-2 pl-4 pr-4 d-flex justify-content-between">
+                <div>
+                    <h5 class="text-bold d-flex align-items-center ml-2">
+                        <span>{{$user->name}}</span>
+                        @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
+                            <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
+                                @include('elements.icon', ['icon' => 'checkmark-circle-outline', 'centered' => true, 'classes' => 'ml-1 text-primary'])
+                            </span>
+                        @endif
+                        @if($hasActiveStream)
+                            <span data-toggle="tooltip" data-placement="right" title="{{__('Live streaming')}}">
+                                <div class="blob red ml-3"></div>
+                            </span>
+                        @endif
+                    </h5>
+                    <h6 class="text-muted ml-2"><span class="text-bold"><span>@</span>{{$user->username}}</span> {{--- Last
+                        seen
+                        X time ago--}}
+                    </h6>
+                </div>
+                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0 ml-2 mt-3">
+                    @if (Auth::check())
+                        <div class="text-truncate">
+                            <a class="p-0 m-0 text-bold mr-1" href="/my/lists/followers">
+                                {{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
+                            </a>
+                            <a class="p-0 m-0 text-bold ml-1" href="{{ url('/my/lists/' . (Auth::user()->id + 2)) }}">
+                                {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
+                            </a>
+                        </div>
                     @endif
-                    @if($hasActiveStream)
-                        <span data-toggle="tooltip" data-placement="right" title="{{__('Live streaming')}}">
-                            <div class="blob red ml-3"></div>
-                        </span>
-                    @endif
-                </h5>
-                <h6 class="text-muted"><span class="text-bold"><span>@</span>{{$user->username}}</span> {{--- Last seen
-                    X time ago--}}</h6>
+                </div>
             </div>
 
-            <div class="pt-2 pb-2 pl-4 pr-4 profile-description-holder">
+            <div class="pt-2 pb-2 pl-4 pr-4 profile-description-holder ml-2">
                 <div
-                    class="description-content {{$user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt') ? 'line-clamp-3' : ''}}">
+                    class="description-content mt-2 {{$user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt') ? 'line-clamp-3' : ''}}">
                     @if($user->bio)
                         @if(getSetting('profiles.allow_profile_bio_markdown'))
-                            {!!  GenericHelper::parseProfileMarkdownBio($user->bio) !!}
+                            {!! GenericHelper::parseProfileMarkdownBio($user->bio) !!}
                         @else
                             {{$user->bio}}
                         @endif
@@ -194,7 +210,7 @@
                     @endif
                 </div>
                 @if($user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt'))
-                    <div class="text-primary pointer-cursor bioMoreContentArea" onclick="Profile.toggleFullDescription()">
+                    <div class="text-primary pointer-cursor bioMoreContentArea mt-3" onclick="Profile.toggleFullDescription()">
                         <span class="label-more text-md">{{__('More info')}}</span>
                         <span class="label-less d-none text-md">{{__('Show less')}}</span>
                     </div>
@@ -203,17 +219,7 @@
 
             <div
                 class=" d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-2 followAndFollowingArea">
-
-                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                    <div class="text-truncate">
-                        <a class="p-0 m-0 text-bold mr-1"
-                            href="/my/lists/followers">{{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
-                        </a>
-                        <a class="p-0 m-0 text-bold ml-1" href="{{ url('/my/lists/' . Auth::user()->id) }}">
-                            {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
-                        </a>
-                    </div>
-                </div>
+                <!--
                 @if($user->location)
                     <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                         @include('elements.icon', ['icon' => 'location-outline', 'centered' => false, 'classes' => 'mr-1'])
@@ -222,6 +228,7 @@
                         </div>
                     </div>
                 @endif
+                -->
                 @if(!getSetting('profiles.disable_website_link_on_profile'))
                     @if($user->website)
                         <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
@@ -234,6 +241,7 @@
                         </div>
                     @endif
                 @endif
+                <!--
                 @if(getSetting('profiles.allow_gender_pronouns'))
                     @if($user->gender_pronoun)
                         <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
@@ -244,7 +252,7 @@
                         </div>
                     @endif
                 @endif
-
+                -->
             </div>
 
             <!--<div class="bg-separator border-top border-bottom"></div>-->
@@ -314,21 +322,20 @@
                 @endif
             @elseif(!Auth::check() || (Auth::check() && Auth::user()->id !== $user->id))
                 <!--<div class=" p-4 subscription-holder">
-                                                                                                                        <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
-                                                                                                                        @if(Auth::check())
-                                                                                                                            <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button"
-                                                                                                                                onclick="Lists.manageFollowsAction('{{$user->id}}')">
-                                                                                                                                <span
-                                                                                                                                    class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
-                                                                                                                            </button>
-                                                                                                                        @else
-                                                                                                                            <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal"
-                                                                                                                                data-target="#login-dialog">
-                                                                                                                                <span class="">{{__('Follow')}}</span>
-                                                                                                                            </button>
-                                                                                                                        @endif
-                                                                                                                    </div>
-                                                                                                        -->
+                                                                                                    <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
+                                                                                                    @if(Auth::check())
+                                                                                                    <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button"
+                                                                                                   onclick="Lists.manageFollowsAction('{{$user->id}}')">
+                                                                                                    <span class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
+                                                                                                    </button>
+                                                                                                    @else
+                                                                                                    <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal"
+                                                                                                    data-target="#login-dialog">
+                                                                                                    <span class="">{{__('Follow')}}</span>
+                                                                                                    </button>
+                                                                                                    @endif
+                                                                                                    </div>
+                                                                                            -->
                 <div class="bg-separator border-top border-bottom"></div>
             @endif
             <div class="mt-3 inline-border-tabs">
