@@ -946,5 +946,6 @@
   "voyager::settings.save": "Salvar",
   "voyager::settings.moved_order_up": "Ordem Movida para Cima",
   "voyager::settings.delete_confirm": "Tem certeza que deseja excluir?",
-  "Settings saved.": "Configurações salvas"
+  "Settings saved.": "Configurações salvas",
+  "Your post must contain more than 10 characters": "Seu post deve conter mais de 10 caracteres"
 }

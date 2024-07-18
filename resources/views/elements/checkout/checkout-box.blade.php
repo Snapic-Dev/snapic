@@ -48,13 +48,13 @@
                                         <div class="ml-2">
                                             <div class="text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }} name">
                                             </div>
-                                            <a class="walletPerfil mt-1" href="/my/settings/wallet">
+                                            <a class="walletPerfil mt-1 d-flex" href="/my/settings/wallet">
                                                 <div class="d-flex justify-content-center align-items-center"">
                                                     @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
                                                 </div>
-                                                <span class=" font-weight-medium wallet-total-amount">
+                                                <span class=" font-weight-medium wallet-total-amount ml-1">
                                                     {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
-                                                </span>
+                                                    </span>
                                             </a>
                                         </div>
                                     </div>
