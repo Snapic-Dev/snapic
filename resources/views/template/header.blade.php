@@ -38,8 +38,8 @@
                         </li>
                         @if (Route::has('register'))
                             <!-- <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li> -->
+                                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                            </li> -->
                             <li class="nav-item">
                                 <a class="nav-link" href="#" id="registerLink">{{ __('Register') }}</a>
                             </li>
@@ -92,7 +92,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="registerModalLabel">Opção de Registro</h5>
+                <h5 class="modal-title" id="registerModalLabel">Quero me registrar como</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -101,13 +101,13 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="assinanteCheckbox">
                     <label class="form-check-label" for="assinanteCheckbox">
-                        Sou Assinante
+                        Assinante
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="influencerCheckbox">
                     <label class="form-check-label" for="influencerCheckbox">
-                        Sou Influencer
+                        Influencer
                     </label>
                 </div>
             </div>

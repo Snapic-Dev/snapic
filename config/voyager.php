@@ -100,7 +100,7 @@ return [
         /*
          * Set whether or not the multilingual is supported by the BREAD input.
          */
-        'enabled' => false,
+        'enabled' => true,
 
         /*
          * Select default language
@@ -144,9 +144,7 @@ return [
             ],
         ],
 
-        'widgets' => [
-
-        ],
+        'widgets' => [],
 
     ],
 
@@ -182,7 +180,7 @@ return [
     |
     */
 
-    'primary_color' => '#cb0c9f',
+    'primary_color' => '#673AB7',
 
     'show_dev_tips' => env('APP_DEBUG'), // Show development tip "How To Use:" in Menu and Settings
 
