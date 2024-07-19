@@ -28,10 +28,9 @@ class AttachmentController extends Controller
     public function upload(UploadAttachamentRequest $request, $type = false, $chunkedFile = false)
     {
 
-        if($chunkedFile){
+        if ($chunkedFile) {
             $file = $chunkedFile;
-        }
-        else{
+        } else {
             $file = $request->file('file');
         }
 
@@ -70,21 +69,20 @@ class AttachmentController extends Controller
 
             $generateThumbnail = false;
             if ($type == 'post') {
-                $directory = 'posts/'.$directory;
+                $directory = 'posts/' . $directory;
                 $generateThumbnail = true;
             } elseif ($type == 'message') {
-                $directory = 'messenger/'.$directory;
+                $directory = 'messenger/' . $directory;
                 $generateThumbnail = true;
-            } elseif ($type == 'payment-request'){
-                $directory = 'payment-request/'.$directory;
+            } elseif ($type == 'payment-request') {
+                $directory = 'payment-request/' . $directory;
             }
 
             $attachment = AttachmentServiceProvider::createAttachment($file, $directory, $generateThumbnail);
 
-            if($chunkedFile){
+            if ($chunkedFile) {
                 unlink($file->getPathname());
             }
-
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [$exception->getMessage(), $exception->getTrace()], 'message' => $exception->getMessage()], 500);
         }
@@ -107,7 +105,8 @@ class AttachmentController extends Controller
      * @throws UploadMissingFileException
      * @throws \Pion\Laravel\ChunkUpload\Exceptions\UploadFailedException
      */
-    public function uploadChunk(Request $request, $type = false){
+    public function uploadChunk(Request $request, $type = false)
+    {
         $receiver = new FileReceiver("file", $request, HandlerFactory::classFromRequest($request));
         if ($receiver->isUploaded() === false) {
             throw new UploadMissingFileException();
@@ -115,13 +114,13 @@ class AttachmentController extends Controller
         $save = $receiver->receive();
         // check if the upload has finished (in chunk mode it will send smaller files)
         if ($save->isFinished()) {
-            $saveRequest = new UploadAttachamentRequest(['file'=>$save->getFile()]);
+            $saveRequest = new UploadAttachamentRequest(['file' => $save->getFile()]);
             $saveRequest->validate($saveRequest->rules());
             return $this->upload($saveRequest, $type, $save->getFile());
         }
         // we are in chunk mode, lets send the current progress
         $handler = $save->handler();
-        return response()->json(['success' => true, 'data' => ['percentage'=>$handler->getPercentageDone()]]);
+        return response()->json(['success' => true, 'data' => ['percentage' => $handler->getPercentageDone()]]);
     }
 
     /**
@@ -151,7 +150,8 @@ class AttachmentController extends Controller
      * @throws \Pusher\ApiErrorException
      * @throws \Pusher\PusherException
      */
-    public static function handleCoconutHook(Request $request){
+    public static function handleCoconutHook(Request $request)
+    {
 
         Log::channel('coconut')->info(__("New coconut payload available"));
         Log::channel('coconut')->info(json_encode($request->all()));
@@ -160,7 +160,7 @@ class AttachmentController extends Controller
         $attachment = Attachment::where('id', $attachmentID)->first();
         $username = $attachment->user->username;
 
-        if(config('broadcasting.connections.pusher.key')){
+        if (!config('broadcasting.connections.pusher.key')) {
             $options = [
                 'cluster' => config('broadcasting.connections.pusher.options.cluster'),
                 'useTLS' => true,
@@ -173,7 +173,7 @@ class AttachmentController extends Controller
             );
         }
 
-        if($request->get('event') === 'job.completed'){
+        if ($request->get('event') === 'job.completed') {
             // 2. Delete the temporary attachment that got transcoded
             $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
             $storage->delete($attachment->filename);
@@ -184,22 +184,19 @@ class AttachmentController extends Controller
             $attachment->save();
 
             // Notify the UI via a websocket call
-            if(config('broadcasting.connections.pusher.key')){
+            if (config('broadcasting.connections.pusher.key')) {
                 unset($attachment->user);
                 $attachment->setAttribute('success', true);
                 $pusher->trigger($username, 'video-processing', $attachment);
             }
-        }
-        elseif($request->get('event') === 'job.failed' || $request->get('event') === 'output.failed'){
+        } elseif ($request->get('event') === 'job.failed' || $request->get('event') === 'output.failed') {
             // Notify the UI via a websocket call
-            if(config('broadcasting.connections.pusher.key')){
+            if (config('broadcasting.connections.pusher.key')) {
                 $attachment->setAttribute('success', false);
                 $pusher->trigger($username, 'video-processing', $attachment);
             }
         }
 
         return response()->json(['success' => true, 'message' => __("Video updated")], 200);
-
     }
 }
-

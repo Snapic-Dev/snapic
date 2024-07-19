@@ -17,7 +17,7 @@
         </div>
     @endif
     <div class="form-group">
-        <label for="name" class="col-form-label">{{ __('Name') }}</label>
+        <label for="name" class="col-form-label required-label">{{ __('Name') }}</label>
         <div class="">
             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"
                 value="{{ old('name') }}" autocomplete="name" autofocus>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-group">
-        <label for="password" class="col-form-label">{{ __('Password') }}</label>
+        <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
         <div class="">
             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                 name="password" autocomplete="current-password">
@@ -78,9 +78,48 @@
                 <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('register')"
                     class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
             @else
-                <a href="{{ route('register') }}"
+                <!-- <a href="{{ route('register') }}"
                     class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
+                 -->
+                <a id="registerLink" class="text-primary text-gradient font-weight-bold"
+                    style="cursor: pointer;">{{ __('Sign up') }}</a>
+
+                <!-- <a class="nav-link" href="#" id="registerLink">{{ __('Register') }}</a> -->
             @endif
         </p>
     </div>
 @endif
+
+
+<!-- Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Quero me registrar como</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="assinanteCheckbox">
+                    <label class="form-check-label" for="assinanteCheckbox">
+                        Assinante
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="influencerCheckbox">
+                    <label class="form-check-label" for="influencerCheckbox">
+                        Influencer
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="confirmRegisterBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
