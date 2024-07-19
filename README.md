@@ -12,7 +12,7 @@ It is mainly based on following techs, plus couple of other dependencies and too
 
 #### Requirements
 
-- PHP 8.0.2+
+- PHP 8.3.6
 - Mysql / MariaDB (5.7/8.X)
 - Apache & mod_rewrite / Nginx
 - Node, Composer & at least 2GB of RAM for dev builds
@@ -28,7 +28,7 @@ It is mainly based on following techs, plus couple of other dependencies and too
 7) php artisan key:generate
 8) php artisan migrate
 9) php artisan db:seed
-10) php artisan voyager:admin your@email.com # To add new admin user
+10) php artisan voyager:admin snapic.supporte@gmail.com To add new admin user
 ```
 
 _Note\*_ If having issues with composer install, try `php -d memory_limit=1G /usr/bin/composer install`

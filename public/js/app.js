@@ -8,61 +8,71 @@
 
 // Init
 $(function () {
-
-    log('🚀 © JustFans Loaded © 🚀');
+    log("🚀 © JustFans Loaded © 🚀");
 
     // Instantiating default actions if installed
-    if(typeof app !== 'undefined'){
-
-        if(app.showCookiesBox !== null){
+    if (typeof app !== "undefined") {
+        if (app.showCookiesBox !== null) {
             var br = bootstrapDetectBreakpoint();
-            if(br === null){
-                br = {name : 'lg'};
+            if (br === null) {
+                br = { name: "lg" };
             }
             let cookiesConsetOptions = {
-                "theme": "classic",
-                "position": (br.name !== 'xs' ? "bottom-right" : "bottom"),
+                theme: "classic",
+                position: br.name !== "xs" ? "bottom-right" : "bottom",
                 dismissOnScroll: 100,
                 dismissOnWindowClick: true,
-                "palette": {
-                    "popup": {
-                        "background": "#efefef",
-                        "text": "#404040"
+                palette: {
+                    popup: {
+                        background: "#efefef",
+                        text: "#404040",
                     },
-                    "button": {
-                        "background": "#007BFF",
-                        "text": "#ffffff"
-                    }
+                    button: {
+                        background: "#007BFF",
+                        text: "#ffffff",
+                    },
                 },
                 content: {
-                    message: trans( `🍪 ${trans('This website uses cookies to improve your experience.')}`),
+                    message: trans(
+                        `🍪 ${trans(
+                            "This website uses cookies to improve your experience."
+                        )}`
+                    ),
                     dismiss: trans(`Got it!`),
-                    link: trans('Learn more'),
-                    href: "http://cookies.insites.com/about-cookies"
+                    link: trans("Learn more"),
+                    href: "http://cookies.insites.com/about-cookies",
                 },
             };
-            if(br.name === 'xs'){
+            if (br.name === "xs") {
                 cookiesConsetOptions.dismissOnScroll = 100;
             }
             window.cookieconsent.initialise(cookiesConsetOptions);
         }
 
-
-        if(app.enable_age_verification_dialog && !(app.tosPageSlug !== null && window.location.href.indexOf(app.tosPageSlug)  >= 1) && !(app.privacyPageSlug !== null && window.location.href.indexOf(app.privacyPageSlug)  >= 1)
-        ){
-            if(!getCookie('site_entry_approval')){
-                $('#site-entry-approval-dialog').modal('show');
-                $('body .flex-fill').addClass('blurred');
+        if (
+            app.enable_age_verification_dialog &&
+      !(
+          app.tosPageSlug !== null &&
+        window.location.href.indexOf(app.tosPageSlug) >= 1
+      ) &&
+      !(
+          app.privacyPageSlug !== null &&
+        window.location.href.indexOf(app.privacyPageSlug) >= 1
+      )
+        ) {
+            if (!getCookie("site_entry_approval")) {
+                $("#site-entry-approval-dialog").modal("show");
+                $("body .flex-fill").addClass("blurred");
             }
-            $('#site-entry-approval-dialog').on('hidden.bs.modal', function () {
-                $('body .flex-fill').removeClass('blurred');
+            $("#site-entry-approval-dialog").on("hidden.bs.modal", function () {
+                $("body .flex-fill").removeClass("blurred");
             });
         }
 
         // Auto-including the CSRF token in all AJAX Requests
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
         });
 
@@ -70,44 +80,47 @@ $(function () {
         // TODO: Decide if this should be left enabled on prod mode or if it would help clients more
         $(document).ajaxError(function (event, jqXHR) {
             if (jqXHR.status === 0) {
-                log('Not connect.n Verify Network.', 'error');
+                log("Not connect.n Verify Network.", "error");
             } else if (jqXHR.status === 404) {
-                log('Requested page not found. [404]', 'error');
+                log("Requested page not found. [404]", "error");
             } else if (jqXHR.status === 500) {
-                log('Internal Server Error [500].', 'error');
+                log("Internal Server Error [500].", "error");
             } else if (jqXHR.status === 401) {
-                log('Session expired. Redirecting you to refresh the session.', 'error');
+                log(
+                    "Session expired. Redirecting you to refresh the session.",
+                    "error"
+                );
                 redirect(app.baseUrl);
             } else if (jqXHR.status === 408) {
                 reload();
             } else {
-                log('Uncaught Error.n' + jqXHR.responseText, 'error');
+                log("Uncaught Error.n" + jqXHR.responseText, "error");
             }
         });
 
         // Displaying error messages for expired sessions
-        if (app.sessionStatus === 'expired') {
-            launchToast('info', 'Session expired ', 'Page refreshed', 'now');
+        if (app.sessionStatus === "expired") {
+            launchToast("info", "Session expired ", "Page refreshed", "now");
         }
 
         // Dark mode switcher event
-        $('.dark-mode-switcher').on('click', function () {
-            let currentTheme = getCookie('app_theme');
-            if (currentTheme === 'dark') {
-                setCookie('app_theme', 'light', 365);
+        $(".dark-mode-switcher").on("click", function () {
+            let currentTheme = getCookie("app_theme");
+            if (currentTheme === "dark") {
+                setCookie("app_theme", "light", 365);
             } else {
-                setCookie('app_theme', 'dark', 365);
+                setCookie("app_theme", "dark", 365);
             }
             reload();
         });
 
         // RTL mode switcher event
-        $('.rtl-mode-switcher').on('click', function () {
-            let currentTheme = getCookie('app_rtl');
-            if (currentTheme === 'rtl') {
-                setCookie('app_rtl', 'ltr', 365);
+        $(".rtl-mode-switcher").on("click", function () {
+            let currentTheme = getCookie("app_rtl");
+            if (currentTheme === "rtl") {
+                setCookie("app_rtl", "ltr", 365);
             } else {
-                setCookie('app_rtl', 'rtl', 365);
+                setCookie("app_rtl", "rtl", 365);
             }
             reload();
         });
@@ -115,12 +128,12 @@ $(function () {
         // Initialize tooltips
         initTooltips();
 
-        if(window.location.href.indexOf('register') >= 0){
+        if (window.location.href.indexOf("register") >= 0) {
             // Forcing TOS checkbox for social auth
-            $('.social-login-links a').on('click', function (event) {
-                if($('#tosAgree').is(':checked') === false){
+            $(".social-login-links a").on("click", function (event) {
+                if ($("#tosAgree").is(":checked") === false) {
                     event.preventDefault();
-                    $('#tosAgree').addClass('is-invalid');
+                    $("#tosAgree").addClass("is-invalid");
                 }
             });
         }
@@ -132,39 +145,57 @@ $(function () {
             // Enable pusher logging - don't include this in production
             Pusher.logToConsole = pusher.logging;
             let params = {
-                cluster: pusher.cluster
+                cluster: pusher.cluster,
             };
-            if(socketsDriver === 'soketi'){
+            if (socketsDriver === "soketi") {
                 params = {
                     wsHost: soketi.host,
                     wsPort: soketi.port,
                     forceTLS: soketi.useTSL ? true : false,
                 };
             }
-            var pusherClient = new Pusher(socketsDriver === 'soketi' ? soketi.key : pusher.key, params);
+            var pusherClient = new Pusher(
+                socketsDriver === "soketi" ? soketi.key : pusher.key,
+                params
+            );
             var channel = pusherClient.subscribe(user.username);
 
             // Binding the new notifications
-            channel.bind('new-notification', function (data) {
-                let toastTitle = trans('Notification');
-                if(data.type === 'new-message'){
-                    toastTitle = 'New message';
-                    incrementNotificationsCount('.menu-notification-badge.chat-menu-count');
+            channel.bind("new-notification", function (data) {
+                let toastTitle = trans("Notification");
+                if (data.type === "new-message") {
+                    toastTitle = "New message";
+                    incrementNotificationsCount(
+                        ".menu-notification-badge.chat-menu-count"
+                    );
                 }
-                incrementNotificationsCount('.menu-notification-badge.notifications-menu-count');
+                incrementNotificationsCount(
+                    ".menu-notification-badge.notifications-menu-count"
+                );
 
-                if (window.location.href !== null && window.location.href.indexOf('/my/notifications') >= 0) {
-                    notifications.updateUserNotificationsList(this.getNotificationsActiveFilter());
+                if (
+                    window.location.href !== null &&
+          window.location.href.indexOf("/my/notifications") >= 0
+                ) {
+                    notifications.updateUserNotificationsList(
+                        this.getNotificationsActiveFilter()
+                    );
                 }
-                if(location.indexOf('my/messenger') >= 0 && data.type === 'new-message') {
+                if (
+                    location.indexOf("my/messenger") >= 0 &&
+          data.type === "new-message"
+                ) {
                     return true;
                 }
-                launchToast('success', trans(toastTitle), filterXSS(data.message));
+                launchToast("success", trans(toastTitle), filterXSS(data.message));
             });
 
             // Binding global messenger events
-            channel.bind('messenger-actions', function (data) {
-                if(data.type === 'new-messenger-conversation' && window.location.href.indexOf('my/messenger') >= 0){
+            channel.bind("messenger-actions", function (data) {
+                if (
+                    data.type === "new-messenger-conversation" &&
+          window.location.href.indexOf("my/messenger") >= 0
+                ) {
                     messenger.fetchContacts();
                     messenger.fetchConversation(data.notification.fromUserID);
                     messenger.hideEmptyChatElements();
@@ -173,59 +204,65 @@ $(function () {
             });
 
             // Binding global video-processing events
-            if(location.indexOf('posts/create') >= 0 || location.indexOf('posts/edit')){
-                channel.bind('video-processing', function (data) {
+            if (
+                location.indexOf("posts/create") >= 0 ||
+        location.indexOf("posts/edit")
+            ) {
+                channel.bind("video-processing", function (data) {
                     // Updating our inner attachments state
-                    FileUpload.attachaments = FileUpload.attachaments.map((element, key) => {
-                        if (element.attachmentID === data.id) {
-                            const updatedElement = {
-                                "attachmentID": data.id,
-                                "path": data.path,
-                                "thumbnail": data.thumbnail,
-                                "type": 'video'
-                            };
-                            return updatedElement;
+                    FileUpload.attachaments = FileUpload.attachaments.map(
+                        (element, key) => {
+                            if (element.attachmentID === data.id) {
+                                const updatedElement = {
+                                    attachmentID: data.id,
+                                    path: data.path,
+                                    thumbnail: data.thumbnail,
+                                    type: "video",
+                                };
+                                return updatedElement;
+                            }
+                            return element;
                         }
-                        return element;
-                    });
+                    );
 
                     // Altering the dropzone uploaded files state and preview
                     // Todo: This will throw an error when webhook event is received on a different page
                     FileUpload.myDropzone.files.map((file) => {
-                        if(file.upload.attachmentID === data.id){
-                            if(data.success){
+                        if (file.upload.attachmentID === data.id) {
+                            if (data.success) {
                                 let filePreview = $(file.previewElement);
-                                filePreview.find('.video-preview-item').remove();
+                                filePreview.find(".video-preview-item").remove();
                                 filePreview.prepend(videoPreview());
-                                var videoPreviewEl = filePreview.find('video').get(0);
+                                var videoPreviewEl = filePreview.find("video").get(0);
                                 FileUpload.setPreviewSource(videoPreviewEl, file, data);
                                 FileUpload.isTranscodingVideo = false;
-                            }
-                            else{
+                            } else {
                                 FileUpload.myDropzone.removeFile(file); // Note: This also clears up FileUpload.attachaments
-                                launchToast('danger',trans('Error'), trans('A video encoding error has occurred. Please contact the administrator if this error persists.'));
+                                launchToast(
+                                    "danger",
+                                    trans("Error"),
+                                    trans(
+                                        "A video encoding error has occurred. Please contact the administrator if this error persists."
+                                    )
+                                );
                             }
                         }
                     });
-
                 });
             }
-
-
         } catch (e) {
             // eslint-disable-next-line no-console
-            console.warn(trans('Pusher initialization failed'));
+            console.warn(trans("Pusher initialization failed"));
             // eslint-disable-next-line no-console
             console.warn(e);
         }
     }
-
 });
 
 $(window).scroll(function () {
-    if(typeof skipDefaultScrollInits === 'undefined'){
-        if($('.side-menu').length){
-            initStickyComponent('.side-menu','sticky');
+    if (typeof skipDefaultScrollInits === "undefined") {
+        if ($(".side-menu").length) {
+            initStickyComponent(".side-menu", "sticky");
         }
     }
 });
@@ -234,23 +271,23 @@ $(window).scroll(function () {
  * Log function sugar syntax
  * @param v
  */
-function log(v,type = 'log') {
-    if(typeof app !== 'undefined' && app.debug){
+function log(v, type = "log") {
+    if (typeof app !== "undefined" && app.debug) {
         switch (type) {
-        case 'info':
-            // eslint-disable-next-line no-console
+        case "info":
+        // eslint-disable-next-line no-console
             console.info(v);
             break;
-        case 'log':
-            // eslint-disable-next-line no-console
+        case "log":
+        // eslint-disable-next-line no-console
             console.log(v);
             break;
-        case 'warn':
-            // eslint-disable-next-line no-console
+        case "warn":
+        // eslint-disable-next-line no-console
             console.warn(v);
             break;
-        case 'error':
-            // eslint-disable-next-line no-console
+        case "error":
+        // eslint-disable-next-line no-console
             console.error(v);
             break;
         }
@@ -261,9 +298,9 @@ function log(v,type = 'log') {
 /**
  * Instantiates tooltips
  */
-function initTooltips(){
+function initTooltips() {
     $('[data-toggle="tooltip"]').tooltip();
-    $('.to-tooltip').tooltip();
+    $(".to-tooltip").tooltip();
 }
 
 /**
@@ -279,7 +316,7 @@ function redirect(url) {
  */
 // eslint-disable-next-line no-unused-vars
 function submitSearch() {
-    $('.search-box-wrapper').submit();
+    $(".search-box-wrapper").submit();
 }
 
 /**
@@ -293,7 +330,7 @@ function reload() {
  * Copy to clipboard function
  * @param textToCopy
  */
-function copyToClipboard(textToCopy, container = 'body') {
+function copyToClipboard(textToCopy, container = "body") {
     let $temp = $("<textarea>");
     $(container).append($temp);
     $temp.val(textToCopy).select();
@@ -306,7 +343,7 @@ function copyToClipboard(textToCopy, container = 'body') {
  * @param component
  * @param stickyClass
  */
-function initStickyComponent(component,stickyClass) {
+function initStickyComponent(component, stickyClass) {
     let sticky = false;
     let top = $(window).scrollTop();
     if ($(".main-wrapper").offset().top < top) {
@@ -323,7 +360,7 @@ function initStickyComponent(component,stickyClass) {
  */
 // eslint-disable-next-line no-unused-vars
 function goToLogin() {
-    redirect(app.baseUrl + '/login');
+    redirect(app.baseUrl + "/login");
 }
 
 /**
@@ -331,8 +368,8 @@ function goToLogin() {
  */
 // eslint-disable-next-line no-unused-vars
 function acceptSiteEntry() {
-    setCookie('site_entry_approval',true,90);
-    $('#site-entry-approval-dialog').modal('hide');
+    setCookie("site_entry_approval", true, 90);
+    $("#site-entry-approval-dialog").modal("hide");
 }
 
 /**
@@ -343,8 +380,9 @@ function acceptSiteEntry() {
  */
 function setCookie(key, value, expiry) {
     var expires = new Date();
-    expires.setTime(expires.getTime() + (expiry * 24 * 60 * 60 * 1000));
-    document.cookie = key + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+    expires.setTime(expires.getTime() + expiry * 24 * 60 * 60 * 1000);
+    document.cookie =
+    key + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
 }
 
 /**
@@ -353,7 +391,7 @@ function setCookie(key, value, expiry) {
  * @returns {any}
  */
 function getCookie(key) {
-    var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+    var keyValue = document.cookie.match("(^|;) ?" + key + "=([^;]*)(;|$)");
     return keyValue ? keyValue[2] : null;
 }
 
@@ -364,7 +402,7 @@ function getCookie(key) {
 // eslint-disable-next-line no-unused-vars
 function eraseCookie(key) {
     var keyValue = getCookie(key);
-    setCookie(key, keyValue, '-1');
+    setCookie(key, keyValue, "-1");
 }
 
 /**
@@ -372,18 +410,18 @@ function eraseCookie(key) {
  */
 // eslint-disable-next-line no-unused-vars
 function reloadTheme() {
-    let appTheme = 'css/bootstrap/bootstrap';
-    let currentTheme = getCookie('app_theme');
-    let currentRTLSetting = getCookie('app_rtl');
-    if (currentRTLSetting === 'rtl') {
-        appTheme += '.rtl';
+    let appTheme = "css/bootstrap/bootstrap";
+    let currentTheme = getCookie("app_theme");
+    let currentRTLSetting = getCookie("app_rtl");
+    if (currentRTLSetting === "rtl") {
+        appTheme += ".rtl";
     }
 
-    if (currentTheme === 'dark') {
-        appTheme += '.dark';
+    if (currentTheme === "dark") {
+        appTheme += ".dark";
     }
     appTheme += ".css";
-    $('#app-theme').attr('href', appTheme);
+    $("#app-theme").attr("href", appTheme);
 }
 
 /**
@@ -393,15 +431,15 @@ function reloadTheme() {
  * @param message
  * @param subtitle
  */
-function launchToast(type, title, message, subtitle = '') {
+function launchToast(type, title, message, subtitle = "") {
     $.toast({
-        type: '',
+        type: "",
         title: title,
         subtitle: subtitle,
         content: message,
         dismissible: true,
         indicator: {
-            type: type
+            type: type,
         },
         delay: 5000,
     });
@@ -417,17 +455,23 @@ function shareOrCopyLink(url = false) {
         url = window.location.href;
     }
     if (navigator.share) {
-        navigator.share({
-            title: document.title,
-            url: url
-        })
-            // eslint-disable-next-line no-console
-            .then(() => console.log('Successful share'))
-            // eslint-disable-next-line no-console
-            .catch(error => console.log('Error sharing:', error));
+        navigator
+            .share({
+                title: document.title,
+                url: url,
+            })
+        // eslint-disable-next-line no-console
+            .then(() => console.log("Successful share"))
+        // eslint-disable-next-line no-console
+            .catch((error) => console.log("Error sharing:", error));
     } else {
         copyToClipboard(url);
-        launchToast('success', trans('Success'), trans('Link copied to clipboard')+'.', 'now');
+        launchToast(
+            "success",
+            trans("Success"),
+            trans("Link copied to clipboard") + ".",
+            "now"
+        );
     }
 }
 
@@ -437,7 +481,8 @@ function shareOrCopyLink(url = false) {
  */
 // eslint-disable-next-line no-unused-vars
 function textAreaAdjust(el) {
-    el.style.height = (el.scrollHeight > el.clientHeight) ? (el.scrollHeight) + "px" : "45px";
+    el.style.height =
+    el.scrollHeight > el.clientHeight ? el.scrollHeight + "px" : "45px";
 }
 
 /**
@@ -446,18 +491,18 @@ function textAreaAdjust(el) {
  */
 // eslint-disable-next-line no-unused-vars
 function getNotificationsActiveFilter() {
-    let activeType = '';
+    let activeType = "";
     // get active filter if exists
-    if (window.location.href.indexOf('/likes') >= 0) {
-        activeType = '/likes';
-    } else if (window.location.href.indexOf('/messages') >= 0) {
-        activeType = '/messages';
-    } else if (window.location.href.indexOf('/subscriptions') >= 0) {
-        activeType = '/subscriptions';
-    } else if (window.location.href.indexOf('/tips') >= 0) {
-        activeType = '/tips';
-    } else if (window.location.href.indexOf('/promos') >= 0) {
-        activeType = '/promos';
+    if (window.location.href.indexOf("/likes") >= 0) {
+        activeType = "/likes";
+    } else if (window.location.href.indexOf("/messages") >= 0) {
+        activeType = "/messages";
+    } else if (window.location.href.indexOf("/subscriptions") >= 0) {
+        activeType = "/subscriptions";
+    } else if (window.location.href.indexOf("/tips") >= 0) {
+        activeType = "/tips";
+    } else if (window.location.href.indexOf("/promos") >= 0) {
+        activeType = "/promos";
     }
 
     return activeType;
@@ -470,16 +515,16 @@ function getNotificationsActiveFilter() {
  * @returns {T|*}
  */
 // eslint-disable-next-line no-unused-vars
-function trans(key, replace = {})
-{
+function trans(key, replace = {}) {
     let translation = window.translations[key];
-    if(translation === null || typeof translation === 'undefined'){ // If no translation available, return the ( default - en ) key
+    if (translation === null || typeof translation === "undefined") {
+    // If no translation available, return the ( default - en ) key
         return key;
     }
     for (var placeholder in replace) {
         translation = translation.replace(`:${placeholder}`, replace[placeholder]);
     }
-    if(typeof translation === 'undefined'){
+    if (typeof translation === "undefined") {
         return key;
     }
     return translation;
@@ -493,15 +538,15 @@ function trans(key, replace = {})
  * @returns {T|*}
  */
 // eslint-disable-next-line no-unused-vars
-function trans_choice(key, count = 1, replace = {})
-{
+function trans_choice(key, count = 1, replace = {}) {
     let keyValue = window.translations[key];
-    if(typeof keyValue === 'undefined'){
+    if (typeof keyValue === "undefined") {
         return key;
     }
-    const translations = keyValue.split('|');
-    let translation = count > 1 || count === 0 ? translations[1] : translations[0];
-    translation = translation.replace('[2,*]','');
+    const translations = keyValue.split("|");
+    let translation =
+    count > 1 || count === 0 ? translations[1] : translations[0];
+    translation = translation.replace("[2,*]", "");
 
     for (var placeholder in replace) {
         translation = translation.replace(`:${placeholder}`, replace[placeholder]);
@@ -515,24 +560,32 @@ function trans_choice(key, count = 1, replace = {})
  * @param buttonElement
  */
 // eslint-disable-next-line no-unused-vars
-function updateButtonState(state, buttonElement, buttonContent = false, loadingColor = 'primary'){
-    if(state === 'loaded'){
-        if(buttonContent){
+function updateButtonState(
+    state,
+    buttonElement,
+    buttonContent = false,
+    loadingColor = "primary"
+) {
+    if (state === "loaded") {
+        if (buttonContent) {
             buttonElement.html(buttonContent);
+        } else {
+            buttonElement.html(
+                '<div class="d-flex justify-content-center align-items-center"><ion-icon name="paper-plane"></ion-icon></div>'
+            );
         }
-        else{
-            buttonElement.html('<div class="d-flex justify-content-center align-items-center"><ion-icon name="paper-plane"></ion-icon></div>');
-        }
-        buttonElement.removeClass('disabled');
-    }
-    else{
-        buttonElement.html( `<div class="d-flex justify-content-center align-items-center">
+        buttonElement.removeClass("disabled");
+    } else {
+        buttonElement.html(`<div class="d-flex justify-content-center align-items-center">
             <div class="spinner-border text-${loadingColor} spinner-border-sm" role="status">
-            <span class="sr-only">${trans('Loading...')}</span>
+            <span class="sr-only">${trans("Loading...")}</span>
             </div>
-            ${(buttonContent !== false ? '<div class="ml-2">'+buttonContent+'</div>' : '')}
+            ${buttonContent !== false
+        ? '<div class="ml-2">' + buttonContent + "</div>"
+        : ""
+}
             </div>`);
-        buttonElement.addClass('disabled');
+        buttonElement.addClass("disabled");
     }
 }
 
@@ -541,19 +594,24 @@ function updateButtonState(state, buttonElement, buttonContent = false, loadingC
  * @param callback
  */
 // eslint-disable-next-line no-unused-vars
-function sendEmailConfirmation(callback = function(){}){
-    $('.unverified-email-box').attr('onClick','');
+function sendEmailConfirmation(callback = function () { }) {
+    $(".unverified-email-box").attr("onClick", "");
     $.ajax({
-        url:app.baseUrl +'/resendVerification',
-        type:'POST',
-        success : function(){
-            $('.unverified-email-box').fadeOut();
-            launchToast('success', trans('Success'), trans('Confirmation email sent. Please check your inbox and spam folder.'), 'now');
+        url: app.baseUrl + "/resendVerification",
+        type: "POST",
+        success: function () {
+            $(".unverified-email-box").fadeOut();
+            launchToast(
+                "success",
+                trans("Success"),
+                trans(
+                    "Confirmation email sent. Please check your inbox and spam folder."
+                ),
+                "now"
+            );
             callback();
         },
-        error: function () {
-
-        }
+        error: function () { },
     });
 }
 
@@ -562,9 +620,9 @@ function sendEmailConfirmation(callback = function(){}){
  * @returns {FormData}
  */
 // eslint-disable-next-line no-unused-vars
-function prepBeaconDataSample(){
+function prepBeaconDataSample() {
     var fd = new FormData();
-    fd.append('prevPage', PostsPaginator.currentPage);
+    fd.append("prevPage", PostsPaginator.currentPage);
     return fd;
 }
 
@@ -578,13 +636,18 @@ function bootstrapDetectBreakpoint() {
     let breakpointNames = ["xl", "lg", "md", "sm", "xs"];
     let breakpointValues = [];
     for (const breakpointName of breakpointNames) {
-        breakpointValues[breakpointName] = window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-' + breakpointName);
+        breakpointValues[breakpointName] = window
+            .getComputedStyle(document.documentElement)
+            .getPropertyValue("--breakpoint-" + breakpointName);
     }
     let i = breakpointNames.length;
     for (const breakpointName of breakpointNames) {
         i--;
-        if (window.matchMedia("(min-width: " + breakpointValues[breakpointName] + ")").matches) {
-            return {name: breakpointName, index: i};
+        if (
+            window.matchMedia("(min-width: " + breakpointValues[breakpointName] + ")")
+                .matches
+        ) {
+            return { name: breakpointName, index: i };
         }
     }
     return null;
@@ -594,13 +657,12 @@ function bootstrapDetectBreakpoint() {
  * Increments the notifications badge by 1 or adds it if it doesnt exist
  */
 function incrementNotificationsCount(selector, value = 1) {
-    if(parseInt($(selector).html()) + (value) > 0){
-        $(selector).removeClass('d-none');
-        $(selector).html(parseInt($(selector).html()) + (value));
-    }
-    else{
-        $(selector).html('0');
-        $(selector).addClass('d-none');
+    if (parseInt($(selector).html()) + value > 0) {
+        $(selector).removeClass("d-none");
+        $(selector).html(parseInt($(selector).html()) + value);
+    } else {
+        $(selector).html("0");
+        $(selector).addClass("d-none");
     }
 }
 
@@ -609,13 +671,13 @@ function incrementNotificationsCount(selector, value = 1) {
  */
 function passesMinMaxPPPostLimits(price) {
     let hasError = false;
-    if(parseInt(price) < parseInt(app.min_ppv_post_price)){
+    if (parseInt(price) < parseInt(app.min_ppv_post_price)) {
         hasError = true;
     }
-    if(parseInt(price) > parseInt(app.max_ppv_post_price)){
+    if (parseInt(price) > parseInt(app.max_ppv_post_price)) {
         hasError = true;
     }
-    if(price.length <= 0){
+    if (price.length <= 0) {
         hasError = true;
     }
     return !hasError;
@@ -628,52 +690,106 @@ function passesMinMaxPPPostLimits(price) {
  */
 function passesMinMaxPPVMessageLimits(price) {
     let hasError = false;
-    if(parseInt(price) < parseInt(app.min_ppv_message_price)){
+    if (parseInt(price) < parseInt(app.min_ppv_message_price)) {
         hasError = true;
     }
-    if(parseInt(price) > parseInt(app.max_ppv_message_price)){
+    if (parseInt(price) > parseInt(app.max_ppv_message_price)) {
         hasError = true;
     }
-    if(price.length <= 0){
+    if (price.length <= 0) {
         hasError = true;
     }
     return !hasError;
 }
 
-
-function showDialog(dialogID){
-    $('#' + dialogID).modal('show');
+function showDialog(dialogID) {
+    $("#" + dialogID).modal("show");
 }
 
-function hideDialog(dialogID){
-    $('#' + dialogID).modal('hide');
+function hideDialog(dialogID) {
+    $("#" + dialogID).modal("hide");
 }
 
 // eslint-disable-next-line no-unused-vars
 function openLanguageSelectorDialog() {
-    $('#language-selector-dialog').modal('show');
+    $("#language-selector-dialog").modal("show");
 }
 
 // eslint-disable-next-line no-unused-vars
 function setUserLanguage() {
-    let languageLink = app.baseUrl + '/language/' + $('#language_code').val();
+    let languageLink = app.baseUrl + "/language/" + $("#language_code").val();
     window.location.href = languageLink;
 }
 
 // eslint-disable-next-line no-unused-vars
-function getWebsiteFormattedAmount(amount){
+function getWebsiteFormattedAmount(amount) {
     let currencyPosition = app.currencyPosition;
     let currency = app.currencySymbol;
 
-    return currencyPosition === 'left' ? currency + amount : amount + currency;
+    return currencyPosition === "left" ? currency + amount : amount + currency;
 }
 
 // eslint-disable-next-line no-unused-vars
-function getTaxDescription(taxName, taxPercentage, taxType){
-    if(taxType !== 'fixed') {
-        let type = taxType === 'inclusive' ? ' incl.' : '';
+function getTaxDescription(taxName, taxPercentage, taxType) {
+    if (taxType !== "fixed") {
+        let type = taxType === "inclusive" ? " incl." : "";
         return taxName + " (" + taxPercentage + "%" + type + ")";
     }
     return taxName;
 }
 
+// Função para mostrar a imagem selecionada no campo de CNH
+function previewImage(input, imgElement) {
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        imgElement.src = e.target.result;
+        imgElement.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Adiciona evento de clique no link de Registro na barra de navegação
+    document.getElementById('registerLink').addEventListener('click', function (e) {
+        e.preventDefault(); // Previne o comportamento padrão do link
+
+        // Exibe o modal de registro
+        $('#registerModal').modal('show');
+    });
+
+    // Adiciona evento de clique no botão de Confirmação no modal
+    document.getElementById('confirmRegisterBtn').addEventListener('click', function () {
+        var assinanteCheckbox = document.getElementById('assinanteCheckbox');
+        var influencerCheckbox = document.getElementById('influencerCheckbox');
+
+        // Verifica se pelo menos um checkbox está marcado
+        if (assinanteCheckbox.checked ){
+            window.location.href = "/register"; 
+            $('#registerModal').modal('hide'); 
+        } else if (influencerCheckbox.checked){
+            window.location.href = "/influencer/register"; 
+        } else {
+            alert('Por favor, selecione uma opção.'); // Mostra um alerta se nenhum checkbox estiver marcado
+        }
+    });
+
+    // Adiciona eventos para desmarcar um checkbox quando o outro é marcado
+    var assinanteCheckbox = document.getElementById('assinanteCheckbox');
+    var influencerCheckbox = document.getElementById('influencerCheckbox');
+
+    assinanteCheckbox.addEventListener('change', function () {
+        if (assinanteCheckbox.checked) {
+            influencerCheckbox.checked = false;
+        }
+    });
+
+    influencerCheckbox.addEventListener('change', function () {
+        if (influencerCheckbox.checked) {
+            assinanteCheckbox.checked = false;
+        }
+    });
+});
