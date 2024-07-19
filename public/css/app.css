@@ -673,3 +673,65 @@ footer .brand-logo {
     color: red;
     font-size: 0.9em;
 }
+
+/* settings-wallet-depositals */
+
+.text-opacity-field {
+    opacity: 70%;
+}
+
+.formInputCredit {
+    display: none;
+}
+
+.formInputCredit input::placeholder {
+    opacity: 50%;
+    font-weight:400;
+    font-size: 14px;
+}
+
+.formInputCredit input::placeholder {
+    opacity: 50%;
+    font-weight:400;
+    font-size: 14px;
+}
+
+.qrCodeArea {
+    display: flex;
+    height: 600px;
+    width: 400px;
+    position: relative;
+    left: 150px
+}
+
+.btnPix {
+    background-color:#673AB6;
+    color: white;
+    font-size: 13px;
+    width: 200px;
+    border: none;
+    border-radius:20px;
+    gap:10px
+}
+
+.btnQr {
+    background-color:#ffffff;
+    color: black;
+    font-size: 13px;
+    width: 200px;
+    border: 1px solid rgb(151, 151, 151);
+    border-radius:20px;
+    gap:10px
+}
+
+.btnPix ionicon {
+    font-size:10px;
+}
+
+.inputPix {
+    outline: none;
+    background-color: #FAFAFA;
+    border: none;
+    font-size: 28px;
+    width: 300px;
+}

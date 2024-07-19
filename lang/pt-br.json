@@ -1,6 +1,6 @@
 {
   "Account": "Conta",
-  "Add funds": "Adicionar fundos",
+  "Add funds": "Confirmar deposito",
   "Add to your lists": "Adicionar às suas listas",
   "Add your card?": "Adicionar seu cartão?",
   "All": "Todos",
@@ -180,7 +180,7 @@
   "Privacy": "Privacidade",
   "Privacy Policy": "Política de Privacidade",
   "Privacy policy": "Política de privacidade",
-  "Proceed with payment": "Prosseguir com o pagamento",
+  "Proceed with payment": "Prosseguir com o deposito",
   "Promos": "Promoções",
   "Ready to go, easy to develop and debug boilerplate for multi page, server side rendered apps.": "Pronto para usar, fácil de desenvolver e depurar boilerplate para aplicativos de várias páginas, renderizados no lado do servidor.",
   "Recent": "Recente",
