@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('register') }}" id="register-form">
+<form method="POST" action="{{ route('register-influencer') }}" id="register-influencer-form">
     @csrf
 
     @if(getSetting('social-login.facebook_client_id') || getSetting('social-login.twitter_client_id') || getSetting('social-login.google_client_id'))
@@ -62,34 +62,27 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label for="frontDoc" class=" col-form-label ">{{ __('RG ou CNH- Frente') }}</label>
-        <input id="frontDoc" type="file" class="@error('frontDoc') is-invalid @enderror" name="frontDoc" value="{{ old('frontDoc') }}" required autocomplete="file" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('frontPreview'))">
-        <div class="preview">
-            <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none; max-height: 200px;">
-        </div>
-        @error('frontDoc')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
-    </div>
 
-    <div class="form-group">
-        <label for="backDoc" class=" col-form-label ">{{ __('RG ou CNH- Verso') }}</label>
-        <input id="backDoc" type="file" lass="@error('backDoc') is-invalid @enderror" name="backDoc" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('backPreview'))">
-        <div class="preview">
-            <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none; max-height: 200px;">
-        </div>
-        @error('backDoc')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
-    </div>
+    <div class="form-group ">
+        <label for="frontDoc" class=" col-form-label ">{{ __('RG ou CNH') }}</label>
+        <div class="">
+            <input id="file" type="file" class="form-control @error('frontDoc') is-invalid @enderror" name="frontDoc" value="{{ old('frontDoc') }}" required autocomplete="file" accept=".jpg, .jpeg, .png .webp">
+            @error('frontDoc')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+            @enderror
 
-
-
+    <div class="form-group ">
+        <label for="backDoc" class=" col-form-label ">{{ __('') }}</label>
+        <div class="">
+            <input id="file" type="file" class="form-control @error('backDoc') is-invalid @enderror" name="backDoc" value="{{ old('backDoc') }}" required autocomplete="file" accept=".jpg, .jpeg, .png .webp">
+            </input>
+            @error('backDoc')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+            @enderror
     <div class="form-group ">
         <label for="nicho" class=" col-form-label ">{{ __('Nicho') }}</label>
         <div class="">
