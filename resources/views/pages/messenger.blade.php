@@ -83,25 +83,30 @@ Minify::javascript([
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="receiverID" id="receiverID" value="">
                                 <textarea name="message" class="form-control messageBoxInput dropzone" placeholder="{{ __('Write a message..') }}" onkeyup="messenger.textAreaAdjust(this)"></textarea>
+
                                 <div class="btn-group dropup">
                                     <button type="button" class="icon-drop-menu d-flex btn-dropdown-message bg-transparent border-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @include('elements.icon', ['icon' => "ellipsis-horizontal-outline", 'variant' => ''])
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <button class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Attach file') }}">
-                                            <div class="d-flex justify-content-between button-message-drop">
-                                                <h5 class="text-sm dropdown-message-text">Anexar arquivo</h5>
+                                    <div class="dropdown-menu" style="width: 300px; border-radius: 14px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);">
+                                        <button class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" style="background-color: transparent; border: none; font-size: 25px;" data-placement="top" title="{{ __('Attach file') }}">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="text-md dropdown-message-text" style="font-size: 20px; text-transform: capitalize;">Anexar Arquivo</h5>
                                                 <div class="d-flex justify-content-center align-items-center">
                                                     @include('elements.icon', ['icon' => 'document', 'variant' => ''])
                                                 </div>
                                             </div>
                                         </button>
+
                                         @if(GenericHelper::creatorCanEarnMoney(Auth::user()) && !( !GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ) && Auth::user()->paid_profile === 1)
-                                        <button class="dropdown-item  messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Message price') }}" onClick="messenger.showSetPriceDialog()">
-                                            <h5 class="text-sm dropdown-message-text">Preço mensagem</h5>
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <span class="message-price-lock">@include('elements.icon', ['icon' => 'lock-open', 'variant' => ''])</span>
-                                                <span class="message-price-close d-none">@include('elements.icon', ['icon' => 'lock-closed', 'variant' => ''])</span>
+                                        <button class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" style="background-color: transparent; border: none; font-size: 25px;" data-placement="top" title="{{ __('Message price') }}" onClick="messenger.showSetPriceDialog()">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="text-md dropdown-message-text" style="font-size: 20px; text-transform: capitalize; margin-right: 10px;">Preço mensagem</h5>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="message-price-lock mr-4" style=" margin-left: 110px !important;">@include('elements.icon', ['icon' => 'lock-open', 'variant' => ''])</span>
+                                                    <span class="message-price-close d-none">@include('elements.icon', ['icon' => 'key', 'variant' => ''])</span>
+
+                                                </div>
                                             </div>
                                         </button>
                                         @else
@@ -123,27 +128,22 @@ Minify::javascript([
                                             @include('elements.icon', ['icon' => 'cash-outline'])
                                         </span>
                                         @endif
-                                        <div class="d-flex">
-                                            <h5 class="text-sm dropdown-message-text">Emoji</h5>
-                                            <span class="h-pill h-pill-primary rounded mr-3 trigger" data-toggle="tooltip" data-placement="top" title="{{ __('Like') }}">😊</span>
-                                            <div>
-                                            </div>
+
+                                        <div class="d-flex align-items-center ml-auto" style="margin-left: 17px !important;">
+                                            <h5 class="text-md dropdown-message-text" style="font-size: 20px; text-transform: capitalize; margin-right: 10px;">Emoji</h5>
+                                            <span class="h-pill h-pill-primary rounded trigger" data-toggle="tooltip" data-placement="top" title="{{ __('Like') }}" style="font-size: 24px; margin-left: 100px !important;">😊</span>
                                         </div>
+
                                     </div>
+
                                 </div>
                         </form>
                         <div class="messenger-buttons-wrapper d-flex ml-2"></div>
                     </div>
-                    <button class="btn sendBtn btn-outline-primary btn-rounded-icon messenger-button send-message mr-2 to-tooltip" onClick="messenger.sendMessage()" data-placement="top" title="{{ __('Send message') }}">
-                        <div class="d-flex justify-content-center align-items-center">
-                            @include('elements.icon', ['icon' => 'paper-plane', 'variant' => ''])
-                        </div>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 </div>
 
