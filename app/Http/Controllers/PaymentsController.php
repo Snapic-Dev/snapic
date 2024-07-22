@@ -344,7 +344,7 @@ class PaymentsController extends Controller
                 $stripe = new StripeClient(getSetting('payments.stripe_secret_key'));
                 $stripeInvoice = $stripe->invoices->retrieve($event->data->object->id);
                 if ($stripeInvoice != null && $stripeInvoice->subscription) {
-                    $stripeSub = $stripe->subscriptions->retrieve($stripeInvoice->subscription);
+                    $stripeSub = $stripe->->retrieve($stripeInvoice->subscription);
                     if ($stripeSub != null && $stripeSub->id != null) {
                         $subscription = Subscription::query()->where('stripe_subscription_id', $stripeSub->id)->first();
                         if ($subscription != null && isset($subscription->expires_at) && $subscription->expires_at < new \DateTime()) {
@@ -492,7 +492,7 @@ class PaymentsController extends Controller
 
             switch ($eventType) {
                 case 'PAYMENT.SALE.COMPLETED':
-                    // handle recurring payments (one month subscriptions)
+                    // handle recurring payments (one month )
                     if (array_key_exists('billing_agreement_id', $resourceContent) && ! empty($resourceContent['billing_agreement_id'])) {
                         $agreementId = $resourceContent['billing_agreement_id'];
                         $this->paymentHandler->verifyPayPalAgreement($agreementId, null, $resourceContent['id']);
