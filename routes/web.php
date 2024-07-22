@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\RegisterInfluencerController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use TCG\Voyager\Facades\Voyager;
 
 /*
 |--------------------------------------------------------------------------
