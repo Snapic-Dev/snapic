@@ -93,6 +93,19 @@
 
             </a>
         </li>
+        <li class="nav-item">
+            <a type="button" class="nav-link d-flex justify-content-center align-items-center h-pill h-pill-primary d-flex justify-content-between" data-toggle="modal" data-target="#campanhaModal">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
+                        @include('elements.icon', [
+                        'icon' => 'mail-unread-outline',
+                        'variant' => 'large',
+                        ])
+                    </div>
+                    <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">Campanha</span>
+                </div>
+            </a>
+        </li>
         @endif
         <li class="nav-item">
             <a href="{{ route('my.bookmarks') }}" class="nav-link {{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -114,6 +127,52 @@
                 </div>
             </a>
         </li> -->
+        <div class="modal fade" id="campanhaModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title p-2 text-bold" id="staticBackdropLabel">Campanha</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group p-3">
+                                <label for="formGroupExampleInput">Valor do conteúdo</label>
+                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Definir valor do anuncio">
+                            </div>
+                            <div class="form-group p-3">
+                                <label for="formGroupExampleInput2">Mensagem</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha"></textarea>
+                            </div>
+                            <div class="custom-file ml-3 mt-3 mb-3">
+                                <input type="file" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Anexar arquivo</label>
+                            </div>
+                            <div class="p-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                    <label class="form-check-label" for="defaultCheck1">
+                                        Assinantes
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                    <label class="form-check-label" for="defaultCheck2">
+                                        Seguidores
+                                    </label>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border">
+                            Promover
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <li class="nav-item">
             <a href="{{ route('my.settings', ['type' => 'subscriptions']) }}" class="nav-link {{ Route::currentRouteName() == 'my.settings' && is_int(strpos(Request::path(), 'subscriptions')) ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
                 <div class="d-flex justify-content-center align-items-center">
@@ -126,6 +185,8 @@
                 </div>
             </a>
         </li>
+
+
 
         <!-- <li class="nav-item">
             <a href="{{ route('my.settings', ['type' => 'subscriptions']) }}" class="nav-link {{ Route::currentRouteName() == 'my.settings' && is_int(strpos(Request::path(), 'subscriptions')) ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">

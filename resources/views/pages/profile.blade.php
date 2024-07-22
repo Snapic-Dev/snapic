@@ -141,6 +141,11 @@ Minify::stylesheet([
                     </div>
                     @endif
                     <div>
+                        <a class="p-pill ml-2 pointer-cursor" data-toggle="tooltip" data-placement="top" title="Meus pagamentos" href="http://127.0.0.1:8000/my/settings/payments">
+                            @include('elements.icon', ['icon' => 'wallet-outline'])
+                        </a>
+                    </div>
+                    <div>
                         <span class="p-pill ml-2 pointer-cursor" id="copyLinkBoard" data-toggle="tooltip" data-placement="top" title="{{__('Copy profile link')}}" onclick="shareOrCopyLink()">
                             @include('elements.icon', ['icon' => 'share-social-outline'])
                         </span>

@@ -680,35 +680,42 @@ footer .brand-logo {
     opacity: 70%;
 }
 
-.formInputCredit {
+
+.formInputArea {
     display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formInputCredit {
+    border-radius: 15px;
+    background-color: #FF3CAC;
+    background-image: linear-gradient(225deg, #784BA0 0%, #784BA0 50%, #2B86C5 100%);
+    border: 1px solid rgba(184, 184, 184, 0.534);
+    height: 300px;
+    width: 23vw;
+    min-width: 300px;
+    box-shadow: rgba(0, 0, 0, 0.308) 0px 18px 50px -10px;
 }
 
 .formInputCredit input::placeholder {
-    opacity: 50%;
     font-weight:400;
     font-size: 14px;
 }
 
-.formInputCredit input::placeholder {
-    opacity: 50%;
-    font-weight:400;
-    font-size: 14px;
-}
 
 .qrCodeArea {
     display: flex;
-    height: 600px;
-    width: 400px;
-    position: relative;
-    left: 150px
+    justify-content: center;
+    padding: 50px;
 }
+
 
 .btnPix {
     background-color:#673AB6;
     color: white;
-    font-size: 13px;
-    width: 200px;
+    font-size: 12px;
+    width: 230px;
     border: none;
     border-radius:20px;
     gap:10px
@@ -717,10 +724,8 @@ footer .brand-logo {
 .btnQr {
     background-color:#ffffff;
     color: black;
-    font-size: 13px;
+    font-size: 12px;
     width: 200px;
-    border: 1px solid rgb(151, 151, 151);
-    border-radius:20px;
     gap:10px
 }
 
@@ -729,9 +734,94 @@ footer .brand-logo {
 }
 
 .inputPix {
-    outline: none;
-    background-color: #FAFAFA;
     border: none;
-    font-size: 28px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.801);
+    outline: none;
+    font-size: 38px;
+    width: 10vw;
+    min-width: 300px;
+}
+
+.dateInput{
+    height: 35px;
+    width: 60px;
+}
+
+.deposit-continue-btn {
+    width: 400px;
+}
+
+.creditModalTitle {
+    padding: 10px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.modalCreditCard .modal-body {
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.instructionPix {
+    display: flex;
+}
+
+.inputPixArea {
+    display: none;
+}
+
+.inputPixCode {
+    width: 300px;
+    padding: 20px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline:none;
+    color: rgba(0, 0, 0, 0.603);
+}
+.textInputArea {
+    color: rgba(0, 0, 0, 0.541);
+    font-size: 11px;
+    font-weight: bold;
+}
+.codeInput {
+    height: 35px;
+    width: 80px;
+}
+
+.nameInput {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.inputText {
+    font-size: 14px;
+}
+
+/* settings-wallet-withdrawal*/
+
+.inputText::placeholder {
+    font-size:15px;
+    color: rgba(0, 0, 0, 0.603);
+}
+
+.alertWitdrawalMsg {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.671);
+}
+
+/*Dispatch email */
+
+.btnDispatch {
+    border: none;
+    background-color: transparent;
+}
+
+.custom-file {
     width: 300px;
 }
+
