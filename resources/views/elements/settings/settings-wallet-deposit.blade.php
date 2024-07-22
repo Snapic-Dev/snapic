@@ -1,9 +1,9 @@
-<h5 class="mt-3 p-2 text-bold text-md">{{__('Proceed with payment')}}</h5>
+<h5 class="mt-4 p-2 text-bold text-md">{{__('Proceed with payment')}}</h5>
 <div class="input-group mb-3 mt-3 p-2">
     <div class="input-group-prepend">
         <span class="input-group-text" id="amount-label">@include('elements.icon',['icon'=>'cash-outline','variant'=>'medium'])</span>
     </div>
-    <input class="form-control" placeholder="{{\App\Providers\PaymentsServiceProvider::getDepositLimitAmounts()}}" aria-label="{{__('Username')}}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{\App\Providers\PaymentsServiceProvider::getDepositMinimumAmount()}}" step="1" max="{{\App\Providers\PaymentsServiceProvider::getDepositMaximumAmount()}}">
+    <input class="form-control inputText depositInput" placeholder="{{\App\Providers\PaymentsServiceProvider::getDepositLimitAmounts()}}" aria-label="{{__('Username')}}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{\App\Providers\PaymentsServiceProvider::getDepositMinimumAmount()}}" step="1" max="{{\App\Providers\PaymentsServiceProvider::getDepositMaximumAmount()}}">
     <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
 </div>
 
@@ -22,63 +22,112 @@
             <label class="creditRadioTxt custom-control-label stepTooltip" for="creditRadio" title="">Cartão</label>
         </div>
 
-        <form class="flex-column form-group p-4 formInputCredit border mt-4" method="Post">
-            <label class="text-sm mt-2" for="nome">
-                <p class="text-medium">Número do cartão</p>
-            </label>
-            <input class="p-2 bg-transparent border" placeholder="Número do Cartão" type="text"></input>
-            <label class="text-sm mt-4" for="nome" type="text">
-                <p>Nome impresso no cartão</p>
-            </label>
-            <input class="p-2 bg-transparent border" placeholder="Nome impresso no cartão"></input>
-            <div class="d-flex justify-between">
-                <div class="mr-4">
-                    <label class="text-sm mt-4" for="nome">
-                        <p>Validade</p>
-                    </label>
-                    <input class="p-2 bg-transparent border" placeholder="Selecione uma data" type="date"></input>
-                </div>
-                <div class="ml-4">
-                    <label class="text-sm mt-4" for="nome">
-                        <p>Código de verificação</p>
-                    </label>
-                    <input class="p-2 bg-transparent border" placeholder="Código de verificação" type="text"></input>
-                </div>
-            </div>
-            <div class="pb-2 pt-1">
-                <div class="payment-error error text-danger d-none mt-3">{{__('Please select your payment method')}}</div>
-                <button class="btn btn-round btn-primary btn-block mr-0 mt-4 p-3 deposit-continue-btn" type="submit">{{__('Add funds')}}</button>
-            </div>
-        </form>
-
-        <div class="qrCodeArea border p-4 justify-content-center flex-column align-content-center">
-            <div class="d-flex flex-column align-items-center">
-                <label class="text-bold text-sm">Valor pix deposito</label>
-                <input class="p-4 inputPix text-bold text-center" value="R$200,00"></input>
-            </div>
-            <div class="d-flex flex-column mt-2 pt-4 pl-5 pr-5 pb-3">
-                <p class="text-bold text-sm">Instruções</p>
-                <p class="text-sm">1. Copie o código PIX</p>
-                <p class="text-sm">2. Abra o aplicativo do seu banco</p>
-                <p class="text-sm">3. Entre na área <span class="text-bold">Pix Copia e Cola</span></p>
-                <p class="text-sm">4. Cole o código e finalize a transação</p>
-            </div>
-            <div class="d-flex flex-column align-items-center">
-                <button class="btnPix btn-round mb-3 p-3 d-flex">
-                    <div class="ml-2">
-                        @include('elements.icon',['icon'=>'cash-outline','variant'=>'small'])
+        <!-- Button trigger modal -->
+        <div class="mt-4">
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <h5 class="modal-title" id="staticBackdropLabel">Pix</h5> -->
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="pixBox p-5 justify-content-center flex-column align-content-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <label class="text-bold text-sm">Valor pix deposito</label>
+                                    <input class="p-4 inputPix text-bold text-center" disabled></input>
+                                </div>
+                                <div class="inputPixArea mt-5 mb-5 p-2">
+                                    <label class="textInputArea">Copie o código abaixo</label>
+                                    <input class="inputPixCode" value="dsjbasdbubdsibsdifasjiiasfj@dkndfsnon"></input>
+                                </div>
+                                <div class="instructionPix flex-column mt-2 pt-4 pb-3 text-center">
+                                    <p class="text-bold text-sm">Instruções</p>
+                                    <p class="text-sm">Copie o código PIX</p>
+                                    <p class="text-sm">Abra o aplicativo do seu banco</p>
+                                    <p class="text-sm">Entre na área <span class="text-bold">Pix copia e cola</span></p>
+                                    <p class="text-sm">Cole o código e finalize a transação</p>
+                                </div>
+                                <div class="d-flex flex-column align-items-center mt-3">
+                                    <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="showCodePix()">
+                                        <div class="ml-4">
+                                            @include('elements.icon',['icon'=>'cash-outline','variant'=>'small'])
+                                        </div>
+                                        Copiar código PIX
+                                    </button>
+                                    <button class="btnQr btn btn-round btn-secundary border p-3 d-flex">
+                                        <div class="ml-4">
+                                            @include('elements.icon',['icon'=>'qr-code-outline','variant'=>'small'])
+                                        </div>
+                                        Gerar QR Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div> -->
                     </div>
-                    Copiar código PIX
-                </button>
-                <button class="btnQr p-3 d-flex">
-                    <div class="ml-2">
-                        @include('elements.icon',['icon'=>'qr-code-outline','variant'=>'small'])
-                    </div>
-                    Gerar QR Code
-                </button>
+                </div>
             </div>
         </div>
 
+        <div class="mt-4">
+            <button type="button" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
+                Depositar
+            </button>
+
+            <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title creditModalTitle" id="staticBackdropLabel">Adicione cartão de crédito ou débito</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-row p-4">
+                                    <div class="col-7 mt-2">
+                                        <label class="text-sm text-bold">Nome Cartão</label>
+                                        <input type="text" class="form-control" placeholder="Nome Cartão">
+                                    </div>
+                                    <div class="col mt-2">
+                                        <label class="text-sm text-bold">Validade</label>
+                                        <input type="text" class="form-control" placeholder="MM/YY">
+                                    </div>
+                                    <div class="col mt-2">
+                                        <label class="text-sm text-bold">CVV</label>
+                                        <input type="text" class="form-control" placeholder="CVV">
+                                    </div>
+                                </div>
+                                <div class="form-row p-4">
+                                    <div class="col mt-2">
+                                        <label class="text-sm text-bold">Número Cartão</label>
+                                        <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="p-2 text-sm text-muted ml-3">
+                                Seus dados de cartão estão seguros conosco. Preencha os campos com confiança para concluir sua transação com segurança.
+                            </p>
+                            <button class="p-3 pl-2 pr-2 mt-2 btn btn-round btn-primary border btn-block">
+                                Confirmar
+                            </button>
+                        </div>
+                        <!-- <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- @if(config('paypal.client_id') && config('paypal.secret'))
         <div class="custom-control custom-radio mb-1">
@@ -174,28 +223,34 @@
     @include('elements.uploaded-file-preview-template')
 
     <script>
-        let creditRadio = document.getElementById("creditRadio");
-        let pixRadio = document.getElementById("pixRadio");
-        let formInputCredit = document.querySelector(".formInputCredit");
         let pixRadioTxt = document.querySelector(".pixRadioTxt");
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
-
-        let qrCodeArea = document.querySelector(".qrCodeArea");
+        let modalCreditCard = document.querySelector(".modalCreditCard")
+        let depositInput = document.querySelector(".depositInput");
+        let inputPix = document.querySelector(".inputPix");
 
         function showCreditInput() {
-            if (creditRadio.checked) {
-                formInputCredit.style.display = "flex";
-                pixRadioTxt.style.fontWeight = "normal";
-                creditRadioTxt.style.fontWeight = "bold";
-                qrCodeArea.style.display = "none";
-            } else {
-                formInputCredit.style.display = "none";
-                creditRadioTxt.style.fontWeight = "normal";
+            if (pixRadio.checked) {
+                modalCreditCard.setAttribute("data-target", "#staticBackdrop")
                 pixRadioTxt.style.fontWeight = "bold";
-                qrCodeArea.style.display = "flex";
+                creditRadioTxt.style.fontWeight = "normal";
+            } else {
+                modalCreditCard.setAttribute("data-target", "#staticBackdrop2")
+                creditRadioTxt.style.fontWeight = "bold";
+                pixRadioTxt.style.fontWeight = "normal";
             }
         }
 
         creditRadio.addEventListener("change", showCreditInput);
         pixRadio.addEventListener("change", showCreditInput);
+
+        function showDepositValue() {
+            let valueDeposit = depositInput.value;
+            let formattedDeposit = valueDeposit.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+            console.log(formattedDeposit)
+            inputPix.value = "R$" + formattedDeposit
+        }
     </script>
