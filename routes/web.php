@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\RegisterInfluencerController;
-
+use App\Http\Controllers\MessengerController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,6 +54,17 @@ Route::post('/influencer/register', [
     'uses' => 'App\Http\Controllers\RegisterInfluencerController@register',
     'as' => 'register-influencer'
 ]);
+
+Route::get('/testee', [
+    'uses' => 'App\Http\Controllers\MessengerController@teste',
+    'as' => 'teste'
+]);
+
+Route::get('/teste', [
+    'uses' => 'App\Http\Controllers\MessengerController@showTeste',
+    'as' => 'teste'
+]);
+
 
 Auth::routes(['verify' => true]);
 

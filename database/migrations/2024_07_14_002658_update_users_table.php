@@ -27,6 +27,9 @@ class UpdateUsersTable extends Migration
                 $table->string('phone')->nullable();
             }
 
+            if (!Schema::hasColumn('users', 'username')) {
+                $table->string('username')->nullable()->unique();
+            }
 
             if (Schema::hasColumn('users', 'name')) {
                 $table->string('name')->unique()->change();
