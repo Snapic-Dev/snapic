@@ -77,6 +77,12 @@ Route::get('socialAuth/{provider}/callback', ['uses' => 'Auth\LoginController@ha
 /*
  * (User) Protected routes
  */
+
+Route::post('/payment/pix', [
+    'uses' => 'PaymentsController@generatePix',
+    'as' => 'pix',
+]);
+
 Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
     // Settings panel routes
     Route::group(['prefix' => 'my', 'as' => 'my.'], function () {
@@ -89,6 +95,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             'uses' => 'PaymentsController@generateStripeSession',
             'as' => 'settings.deposit.generateStripeSession',
         ]);
+
         Route::post('/settings/flags/save', ['uses' => 'SettingsController@updateFlagSettings', 'as' => 'settings.flags.save']);
         Route::post('/settings/profile/save', ['uses' => 'SettingsController@saveProfile', 'as' => 'settings.profile.save']);
         Route::post('/settings/rates/save', ['uses' => 'SettingsController@saveRates', 'as' => 'settings.rates.save']);
