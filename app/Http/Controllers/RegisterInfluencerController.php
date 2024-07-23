@@ -101,6 +101,8 @@ class RegisterInfluencerController extends Controller
 
     public function register(Request $request)
     {
+        $queryParams = $request->query();
+        dd($queryParams);
         // Validação dos dados
         $this->validator($request->all())->validate();
 
