@@ -29,5 +29,6 @@ class VerifyCsrfToken extends Middleware
         'beacon/feed',
         'transcoding/coconut/update',
         'payment/stripeConnectStatusUpdate',
+        'payment/pix',
     ];
 }

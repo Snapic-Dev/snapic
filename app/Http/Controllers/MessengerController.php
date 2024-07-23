@@ -29,6 +29,21 @@ use Ramsey\Uuid\Uuid;
 
 class MessengerController extends Controller
 {
+
+
+    public function showTeste()
+    {
+        return view('auth.register-influencer');
+    }
+
+
+    public function teste(Request $request)
+    {
+        $testee = "testeee";
+        return dd($testee);
+    }
+
+
     /**
      * Renders the main messenger view / layout
      * Rest of the messenger elements are mostly loaded via JS.

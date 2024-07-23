@@ -43,7 +43,7 @@ return [
     'debug' => (bool) env('APP_DEBUG', false),
 
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://161.35.118.192'),
 
     'asset_url' => env('ASSET_URL', null),
 

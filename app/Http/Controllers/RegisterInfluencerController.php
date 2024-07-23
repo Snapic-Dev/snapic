@@ -9,15 +9,6 @@ use App\Rules\IsEmailDelivrable;
 
 class RegisterInfluencerController extends Controller
 {
-
-    public function teste(Request $request)
-    {
-        return response()->json([
-            'message' => 'Dados recebidos com sucesso!',
-            'data' => $request->all()
-        ]);
-    }
-
     /**
      * Where to redirect users after registration.
      *
@@ -110,6 +101,8 @@ class RegisterInfluencerController extends Controller
 
     public function register(Request $request)
     {
+        $queryParams = $request->query();
+        dd($queryParams);
         // Validação dos dados
         $this->validator($request->all())->validate();
 

@@ -14,7 +14,7 @@
                 <div class="h-50 d-flex flex-column justify-content-center pt-1">
                     <div class="pr-2">
                         <div class="m-0 h6 text-truncate d-flex  align-items-center">
-                            <a href="{{route('showProfile', ['username' => $profile->username])}}" class="text-bold text-{{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'white' : 'dark') : (Cookie::get('app_theme') == 'dark' ? 'white' : 'dark'))}} mr-2 d-flex align-items-center">
+                            <a href="{{route('profile', ['username' => $profile->username])}}" class="text-bold text-{{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'white' : 'dark') : (Cookie::get('app_theme') == 'dark' ? 'white' : 'dark'))}} mr-2 d-flex align-items-center">
                                 {{$profile->name}}
                             </a>
                         </div>

@@ -204,7 +204,7 @@ $nichos = [
 !getSetting('social-login.twitter_client_id') &&
 !getSetting('social-login.google_client_id'))
 <hr>
-<div class="text-center p-2">
+<div class=" text-center">
     <p class="mb-4">
         {{ __('Already got an account?') }}
         @if (isset($mode) && $mode == 'ajax')
@@ -215,3 +215,11 @@ $nichos = [
     </p>
 </div>
 @endif
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('register-influencer-form');
+        const url = new URL(window.location.href);
+        const queryParams = url.search;
+        form.action = form.action + queryParams;
+    });
+</script>
