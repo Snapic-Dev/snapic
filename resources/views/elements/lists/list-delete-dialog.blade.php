@@ -11,7 +11,7 @@
                 <p>{{__('Are you sure you want to delete this list?')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="Lists.removeList();">{{__('Delete')}}</button>
+                <button type="button" class="btn btn-round btn-warning" onclick="Lists.removeList();">{{__('Delete')}}</button>
             </div>
         </div>
     </div>

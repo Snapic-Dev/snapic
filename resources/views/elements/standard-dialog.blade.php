@@ -11,7 +11,7 @@
                 <p>{{$content}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="{{$actionFunction}}">{{$actionLabel}}</button>
+                <button type="button" class="btn btn-round btn-warning" onclick="{{$actionFunction}}">{{$actionLabel}}</button>
             </div>
         </div>
     </div>

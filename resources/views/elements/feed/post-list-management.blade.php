@@ -16,7 +16,7 @@
                 <p class="unfollow-user-label">{{__('You can follow back any time later from the lists module.')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning post-list-management-btn">{{__('Confirm')}}</button>
+                <button type="button" class="btn btn-round btn-warning post-list-management-btn">{{__('Confirm')}}</button>
             </div>
         </div>
     </div>

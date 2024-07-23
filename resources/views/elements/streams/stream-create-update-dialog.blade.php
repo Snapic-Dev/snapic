@@ -12,8 +12,8 @@
                     <label for="username">{{__('Stream name')}}</label>
                     <input class="form-control" id="stream-name" name="stream-name" aria-describedby="name" value="{{$activeStream ? $activeStream->name : ''}}">
                     <span class="invalid-feedback" role="alert">
-                            <strong></strong>
-                        </span>
+                        <strong></strong>
+                    </span>
                 </div>
 
                 <div class="form-group">
@@ -22,9 +22,9 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="amount-label">@include('elements.icon',['icon'=>'cash-outline','variant'=>'medium'])</span>
                         </div>
-                        <input class="form-control" id="stream-access_price" name="access_price" aria-describedby="access_price" value="{{$activeStream ? $activeStream->price : ''}}"  type="number">
+                        <input class="form-control" id="stream-access_price" name="access_price" aria-describedby="access_price" value="{{$activeStream ? $activeStream->price : ''}}" type="number">
                         <span class="invalid-feedback" role="alert">
-                                <strong>{{$errors->first('access_price')}}</strong>
+                            <strong>{{$errors->first('access_price')}}</strong>
                         </span>
                     </div>
 
@@ -37,7 +37,7 @@
                             <div class="actions-holder d-none">
                                 <div class="d-flex">
                                     <span class="h-pill h-pill-accent pointer-cursor mr-1 upload-button" data-toggle="tooltip" data-placement="top" title="{{__('Upload stream poster')}}">
-                                         @include('elements.icon',['icon'=>'image','variant'=>'medium'])
+                                        @include('elements.icon',['icon'=>'image','variant'=>'medium'])
                                     </span>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary stream-save-btn" onclick="Streams.updateStream();">{{__('Save')}}</button>
+                <button type="button" class="btn btn-round btn-primary stream-save-btn" onclick="Streams.updateStream();">{{__('Save')}}</button>
             </div>
         </div>
     </div>

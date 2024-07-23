@@ -12,7 +12,7 @@
                     <label for="reasonExamples">{{__('Reason')}}</label>
                     <select id="reasonExamples" class="form-control">
                         @foreach($reportStatuses as $status)
-                            <option value="{{$status}}">{{__($status)}}</option>
+                        <option value="{{$status}}">{{__($status)}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -24,7 +24,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning submit-report-button">{{__('Report')}}</button>
+                <button type="button" class="btn btn-round btn-warning submit-report-button">{{__('Report')}}</button>
             </div>
         </div>
     </div>

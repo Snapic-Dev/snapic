@@ -17,9 +17,7 @@
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
                             <a href="{{action('HomeController@index')}}">
-                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                                    class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
-                                    alt="{{__("Site logo")}}">
+                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}" class="d-inline-block align-top mr-1 ml-3 brand-logo-form p-2" alt="{{__("Site logo")}}">
                             </a>
                             @include('auth.login-form')
                             @include('auth.social-login-box')

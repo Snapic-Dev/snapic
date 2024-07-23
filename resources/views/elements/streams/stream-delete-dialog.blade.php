@@ -11,7 +11,7 @@
                 <p>{{__('Are you sure you want to delete this stream?')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="Streams.deleteStream();">{{__('Delete stream')}}</button>
+                <button type="button" class="btn btn-round btn-warning" onclick="Streams.deleteStream();">{{__('Delete stream')}}</button>
             </div>
         </div>
     </div>

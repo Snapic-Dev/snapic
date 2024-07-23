@@ -113,7 +113,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title p-2 text-bold" id="staticBackdropLabel">Campanha</h5>
+                        <h5 class="modal-title p-3 text-bold" id="staticBackdropLabel">Campanha</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

@@ -11,7 +11,7 @@
                 <p>{{__('Are you sure you want to end this stream?')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning end-stream-label" onclick="Streams.endStream();">{{__('Stop stream')}}</button>
+                <button type="button" class="btn btn-round btn-warning end-stream-label" onclick="Streams.endStream();">{{__('Stop stream')}}</button>
             </div>
         </div>
     </div>
