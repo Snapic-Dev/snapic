@@ -25,7 +25,7 @@
         <!-- Button trigger modal -->
         <div class="mt-4">
             <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade show" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -80,7 +80,7 @@
             <button type="button" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
                 Depositar
             </button>
-
+            <button type="button" onclick="generatePix()">Make Payment</button>
             <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -228,6 +228,7 @@
         let modalCreditCard = document.querySelector(".modalCreditCard")
         let depositInput = document.querySelector(".depositInput");
         let inputPix = document.querySelector(".inputPix");
+        let modalPix = document.querySelector("#staticBackdrop");
 
         function showCreditInput() {
             if (pixRadio.checked) {
@@ -252,5 +253,25 @@
             })
             console.log(formattedDeposit)
             inputPix.value = "R$" + formattedDeposit
+        }
+        const url = 'http://localhost:8000/payment/pix';
+
+        const generatePix = async () => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Adicione outros cabeçalhos se necessário
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+
+            const responseData = await response.json();
+            console.log(responseData.data.qr_codes[0]);
+            modalPix.style.display = "block";
+            inputPix.value = "R$" + responseData.data.qr_codes[0].amount.value;
         }
     </script>
