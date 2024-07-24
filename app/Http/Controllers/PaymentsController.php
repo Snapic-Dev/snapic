@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Redirect;
 use Stripe\StripeClient;
 use Yabacon\Paystack;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class PaymentsController extends Controller
 {
@@ -69,7 +70,7 @@ class PaymentsController extends Controller
                     'amount' => [
                         'value' => 500,
                     ],
-                    'expiration_date' => '2024-08-29T20:15:59-03:00',
+                    'expiration_date' => Carbon::now()->addMinuts(30)->toIso8601String(),
                 ],
             ],
             'shipping' => [
@@ -94,6 +95,7 @@ class PaymentsController extends Controller
             return response()->json(['error' => 'Não foi possível criar o pedido.'], 500);
         }
     }
+
     public function paymentInitiateValidator(CreateTransactionRequest $request)
     {
         return response()->json([
