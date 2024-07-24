@@ -1,5 +1,5 @@
 @if(count($payments))
-<div class="table-wrapper">
+<div class="table-responsive">
     <div class="">
         <div class="d-flex align-items-center py-3 border-bottom text-bold">
             <div class="col-lg-3 text-truncate">
@@ -24,10 +24,10 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-2 text-truncate">{{__('Amount')}}</div>
+            <div class="col-lg-2 text-truncate d-none d-md-block">{{__('Amount')}}</div>
             <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
             <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
-            <div class="col-lg-3 text-truncate ml-1">
+            <div class="col-lg-3 text-truncate d-none d-md-block">
                 Data
             </div>
         </div>
@@ -111,10 +111,9 @@
                     {{$payment->receiver->name}}
                 </a>
             </div>
-            <div class="col-lg-3 text-truncate d-none d-md-block p-2 ml-4">
+            <div class="col-lg-3 text-truncate d-none d-md-block">
                 <a href="{{route('profile',['username'=>$payment->receiver->username])}}" class="text-dark-r">
                     {{ $payment->created_at->format('d/m/Y H:i:s') }}
-
                 </a>
             </div>
             <div class="col-lg-1 d-flex justify-content-center">
