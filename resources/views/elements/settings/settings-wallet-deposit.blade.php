@@ -29,7 +29,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <!-- <h5 class="modal-title" id="staticBackdropLabel">Pix</h5> -->
+                            <h5 class="modal-title p-2 text-bold" id="staticBackdropLabel">Pix</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -37,32 +37,44 @@
                         <div class="modal-body">
                             <div class="pixBox p-5 justify-content-center flex-column align-content-center">
                                 <div class="d-flex flex-column align-items-center">
-                                    <label class="text-bold text-sm">Valor pix deposito</label>
-                                    <input class="p-4 inputPix text-bold text-center" disabled></input>
+                                    <!-- <input class="p-4 inputPix text-bold text-center" disabled></input> -->
+                                    <div class="amountText d-flex justify-content-between p-2">
+                                        <h4>Pagamento Total</h4>
+                                        <h5 class="amountPix">
+                                            <div class="spinner-border" role="status">
+
+                                            </div>
+                                        </h5>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div class="timePayment d-flex justify-content-between p-2">
+                                        <h4>Pagar em até</h4>
+                                        <h5>24 hras 30 min 20s</h5>
+                                    </div>
+                                    <div class="p-4 mt-3 mb-2">
+                                        <div class="spinner-border qrcodeLoading" role="status">
+
+                                        </div>
+                                        <img class="qrCodeImage" src=""></img>
+                                    </div>
                                 </div>
                                 <div class="inputPixArea mt-5 mb-5 p-2">
                                     <label class="textInputArea">Copie o código abaixo</label>
                                     <input class="inputPixCode" value="dsjbasdbubdsibsdifasjiiasfj@dkndfsnon"></input>
                                 </div>
                                 <div class="instructionPix flex-column mt-2 pt-4 pb-3 text-center">
-                                    <p class="text-bold text-sm">Instruções</p>
-                                    <p class="text-sm">Copie o código PIX</p>
-                                    <p class="text-sm">Abra o aplicativo do seu banco</p>
-                                    <p class="text-sm">Entre na área <span class="text-bold">Pix copia e cola</span></p>
-                                    <p class="text-sm">Cole o código e finalize a transação</p>
+                                    <h5 class="p-2 text-bold">Código PIX gerado com sucesso</h5>
+                                    <p class="p-2 text-sm text-muted">Use o aplicativo de seu banco para ler o QRCode ao lado,
+                                        ou toque no botão PIX Copia e Cola para copiar o código
+                                        e realizar a transação no aplicativo do seu banco
+                                    </p>
                                 </div>
                                 <div class="d-flex flex-column align-items-center mt-3">
-                                    <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="showCodePix()">
+                                    <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="copyCodePix()">
                                         <div class="ml-4">
                                             @include('elements.icon',['icon'=>'cash-outline','variant'=>'small'])
                                         </div>
                                         Copiar código PIX
-                                    </button>
-                                    <button class="btnQr btn btn-round btn-secundary border p-3 d-flex">
-                                        <div class="ml-4">
-                                            @include('elements.icon',['icon'=>'qr-code-outline','variant'=>'small'])
-                                        </div>
-                                        Gerar QR Code
                                     </button>
                                 </div>
                             </div>
@@ -77,10 +89,9 @@
         </div>
 
         <div class="mt-4">
-            <button type="button" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
+            <button type="button" onclick="generatePix()" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
                 Depositar
             </button>
-            <button type="button" onclick="generatePix()">Make Payment</button>
             <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -229,6 +240,10 @@
         let depositInput = document.querySelector(".depositInput");
         let inputPix = document.querySelector(".inputPix");
         let modalPix = document.querySelector("#staticBackdrop");
+        let qrCodeImage = document.querySelector(".qrCodeImage");
+        let amountPix = document.querySelector(".amountPix");
+        let btnPix = document.querySelector(".btnPix");
+        let qrcodeLoading = document.querySelector(".qrcodeLoading");
 
         function showCreditInput() {
             if (pixRadio.checked) {
@@ -244,6 +259,8 @@
 
         creditRadio.addEventListener("change", showCreditInput);
         pixRadio.addEventListener("change", showCreditInput);
+
+        let pixCode;
 
         function showDepositValue() {
             let valueDeposit = depositInput.value;
@@ -271,7 +288,41 @@
 
             const responseData = await response.json();
             console.log(responseData.data.qr_codes[0]);
+            if (responseData) {
+                qrCodeImage.style.display = 'flex';
+                qrcodeLoading.style.display = 'none';
+            }
             modalPix.style.display = "block";
-            inputPix.value = "R$" + responseData.data.qr_codes[0].amount.value;
+            console.log(responseData.data.qr_codes[0].links[0].href)
+            qrCodeImage.setAttribute('src', responseData.data.qr_codes[0].links[0].href);
+            amountPix.innerText = "R$" + (responseData.data.qr_codes[0].amount.value).toFixed(2);
+            pixCode = responseData.data.qr_codes[0].text
+            console.log(pixCode)
+        }
+        console.log(pixCode)
+
+        function copyCodePix() {
+            console.log(pixCode)
+            navigator.clipboard.writeText(pixCode)
+                .then(() => {
+                    console.log('Valor copiado para a área de transferência: ' + pixCode);
+                    // Aqui você pode armazenar o valor em uma variável, se desejar
+                    // Exemplo:
+                    sessionStorage.setItem('valorCopiado', pixCode);
+                    btnPix.innerHTML = `<div class="ml-4">
+                                            @include('elements.icon',['icon'=>'cash-outline','variant'=>'small'])
+                                        </div>
+                                        Código copiado`
+                    setTimeout(() => {
+                        btnPix.innerHTML = `<div class="ml-4">
+                                            @include('elements.icon',['icon'=>'cash-outline','variant'=>'small'])
+                                        </div>
+                                         Copiar código PIX`
+                    }, 1500)
+
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                });
         }
     </script>

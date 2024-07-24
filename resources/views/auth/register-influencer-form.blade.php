@@ -31,7 +31,7 @@ $nichos = [
     </div>
     @endif
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label>
         <div class="">
             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
@@ -43,7 +43,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="email" class="col-form-label required-label">{{ __('E-Mail Address') }}</label>
         <div class="">
             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
@@ -55,7 +55,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="cpf" class="col-form-label required-label">{{ __('CPF') }}</label>
         <div class="">
             <input id="cpf" type="text" class="form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}" required autocomplete="cpf">
@@ -67,7 +67,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="age" class="col-form-label required-label">{{ __('Data Nascimento') }}</label>
         <div class="">
             <input id="age" type="date" class="form-control @error('age') is-invalid @enderror" name="age" value="{{ old('age') }}" required autocomplete="date">
@@ -79,7 +79,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label>
         <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror" name="frontDoc" value="{{ old('frontDoc') }}" required autocomplete="file" accept=".jpg, .jpeg, .png, .webp" onchange="previewImage(this, document.getElementById('frontPreview'))">
         <div class="preview">
@@ -92,7 +92,7 @@ $nichos = [
         @enderror
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label>
         <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid @enderror" name="backDoc" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('backPreview'))">
         <div class="preview">
@@ -105,7 +105,7 @@ $nichos = [
         @enderror
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="telefone" class="col-form-label required-label">{{ __('telephone') }}</label>
         <div class="">
             <input id="telefone" type="tel" class="form-control @error('telefone') is-invalid @enderror" name="telefone" value="{{ old('telefone') }}" required autocomplete="text">
@@ -117,7 +117,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="nicho" class="col-form-label required-label">{{ __('Nicho') }}</label>
         <div class="">
             <select id="nicho" class="form-control @error('nicho') is-invalid @enderror" name="nicho" required>
@@ -136,7 +136,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
         <div class="">
             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -148,7 +148,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label>
         <div class="">
             <input id="password-confirm" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
@@ -160,7 +160,7 @@ $nichos = [
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-1">
         <div class="custom-control custom-checkbox">
             <div class="">
                 <input class="custom-control-input @error('terms') is-invalid @enderror" id="tosAgree" type="checkbox" name="terms" value="1" placeholder="{{ __('Terms and Conditions') }}">
@@ -190,7 +190,7 @@ $nichos = [
     </div>
     @endif
 
-    <div class="form-group row mb-0">
+    <div class="form-group row mb-0 p-2">
         <div class="col">
             <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                 {{ __('Register') }}

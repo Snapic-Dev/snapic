@@ -722,6 +722,12 @@ footer .brand-logo {
     gap:10px
 }
 
+.btnPix:hover {
+  background-color:#ffffff;
+  color: rgba(0, 0, 0, 0.733);
+  border: 1px solid rgba(0, 0, 0, 0.13);
+}
+
 .btnQr {
     background-color:#ffffff;
     color: black;
@@ -826,3 +832,58 @@ footer .brand-logo {
     width: 300px;
 }
 
+/*payments */
+
+.qrCodeImage {
+  width: 200px;
+  height: 200px;
+}
+.amountText {
+    width: 100%;
+}
+
+.timePayment {
+  width: 100%;
+}
+
+.amountText h4{
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.line {
+  height: 0.5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 380px;
+  background-color: rgba(0, 0, 0, 0.089);
+}
+
+.timePayment h4 {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.amountText h5{
+  font-size: 17px;
+  color:#673AB6;
+  font-weight: 500;
+}
+
+.timePayment h5 {
+  font-size: 17px;
+  color:#673AB6;
+  font-weight: 500;
+}
+
+.qrCodeImage {
+  display: none;
+}
+
+.qrcodeLoading {
+  color:#673AB6;
+}
+
+.dateFilter {
+  border: 1px solid rgba(0, 0, 0, 0.151);
+}

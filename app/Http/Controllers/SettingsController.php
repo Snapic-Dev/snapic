@@ -85,6 +85,9 @@ class SettingsController extends Controller
      */
     public function index(Request $request)
     {
+        $status = $request->input('status');
+        $type = $request->input('type');
+
         $this->checkReferralAccess();
         $this->checkIfValidRoute($request->route('type'));
         $user = Auth::user();
@@ -158,7 +161,22 @@ class SettingsController extends Controller
                 ]);
                 break;
             case 'payments':
-                $payments = Transaction::with(['receiver', 'sender'])->where('sender_user_id', $userID)->orWhere('recipient_user_id', $userID)->orderBy('id', 'desc')->paginate(6);
+                $payments = Transaction::with(['receiver', 'sender'])
+                    ->where(function ($query) use ($userID) {
+                        $query->where('sender_user_id', $userID)
+                            ->orWhere('recipient_user_id', $userID);
+                    })
+
+                    ->when($status, function ($query, $status) {
+                        return $query->where('status', $status);
+                    })
+
+                    ->when($type, function ($query, $type) {
+                        return $query->where('type', $type);
+                    })
+
+                    ->orderBy('id', 'desc')
+                    ->paginate(6);
                 $data['payments'] = $payments;
                 break;
             case null:

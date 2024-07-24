@@ -11,7 +11,7 @@
                 <p>{{__('Are you sure you want to clear all members out of current list?')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="Lists.clearList();">{{__('Clear')}}</button>
+                <button type="button" class="btn btn-round btn-warning" onclick="Lists.clearList();">{{__('Clear')}}</button>
             </div>
         </div>
     </div>

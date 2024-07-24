@@ -1,17 +1,17 @@
 <div class="pb-2">
-    <div class="pb-2 text-center">{{__('Copy your referral link and invite other people to get a fee from their earnings.')}}</div>
+    <div class="pb-2 text-left p-4 ml-4 mr-1">{{__('Copy your referral link and invite other people to get a fee from their earnings.')}}</div>
     <div class="pl-5 pr-5">
-        <div class="input-group">
+        <div class="input-group p-2">
             <input type="text" class="form-control text-center" @switch(getSetting('referrals.referrals_default_link_page')) @case('profile') value="{{route('profile',['ref'=> Auth::user()->referral_code, 'username'=> Auth::user()->username])}}" @break @case('home') value="{{route('home',['ref'=> Auth::user()->referral_code])}}" @break @case('register') value="{{route('register',['ref'=> Auth::user()->referral_code])}}" @break @endswitch placeholder="{{route('profile',['ref'=> Auth::user()->referral_code, 'username'=> Auth::user()->username])}}" id="copy-input">
             <div class="input-group-append">
                 <button class="btn btn-primary btn-block rounded mr-0 text-truncate" type="button" id="copy-button" data-toggle="tooltip" data-placement="bottom" title={{__('Copy to Clipboard')}}>
-                    {{__('Copy')}}
+                    {{__('Copiar')}}
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div class="table-wrapper ">
+<div class="table-wrapper p-2">
     <div class="">
         <div class="col py-3 text-bold border-bottom">
             <div class="col-lg-12 text-truncate d-md-block text-center">{{__('Your referral list')}}</div>

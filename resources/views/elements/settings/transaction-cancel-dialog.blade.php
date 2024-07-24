@@ -11,7 +11,7 @@
                 <p>{{__('Are you sure you want to cancel this subscription?')}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="SubscriptionsSettings.cancelSubscription();">{{__('Confirm')}}</button>
+                <button type="button" class="btn btn-round btn-warning" onclick="SubscriptionsSettings.cancelSubscription();">{{__('Confirm')}}</button>
             </div>
         </div>
     </div>
