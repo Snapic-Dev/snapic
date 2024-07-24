@@ -30,6 +30,8 @@ class Transaction extends Model
     const PAYPAL_PROVIDER = 'paypal';
     const STRIPE_PROVIDER = 'stripe';
     const MANUAL_PROVIDER = 'manual';
+    const PIX_PROVIDER = 'pix';
+    const CARD_PROVIDER = 'card';
     const CREDIT_PROVIDER = 'credit';
     const COINBASE_PROVIDER = 'coinbase';
     const CCBILL_PROVIDER = 'ccbill';
@@ -78,18 +80,14 @@ class Transaction extends Model
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-
-    ];
+    protected $casts = [];
 
 
     public function getDecodedTaxesAttribute()

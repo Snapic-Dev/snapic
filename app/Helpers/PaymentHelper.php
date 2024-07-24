@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Lab #2
@@ -27,6 +28,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use MercadoPago\Preference;
@@ -178,7 +180,7 @@ class PaymentHelper
     public function createPayPalSubscriptionAgreement(Transaction $transaction, Plan $plan)
     {
         try {
-            $agreementDate = new DateTime('+'.PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type).' month', new \DateTimeZone('UTC'));
+            $agreementDate = new DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' month', new \DateTimeZone('UTC'));
             $agreement = new Agreement();
 
             $agreement->setName($this->getPaymentDescriptionByTransaction($transaction))
@@ -263,18 +265,22 @@ class PaymentHelper
             $agreementLastPaymentDate = new DateTime($agreement->getAgreementDetails()->getLastPaymentDate());
             $agreementNextPaymentDate = new DateTime($agreement->getAgreementDetails()->getNextBillingDate());
             $subscription = Subscription::query()->where(['paypal_agreement_id' => $agreementId])->first();
-            if ($nowUtc > $agreementLastPaymentDate
+            if (
+                $nowUtc > $agreementLastPaymentDate
                 && $nowUtc < $agreementNextPaymentDate
                 && strtolower($agreement->getState()) === 'active'
                 && $subscription != null
-                && $subscription->expires_at < $now) {
+                && $subscription->expires_at < $now
+            ) {
                 // if it's already active it means we only need to renew this subscription
-                if ($subscription->status == Subscription::ACTIVE_STATUS
+                if (
+                    $subscription->status == Subscription::ACTIVE_STATUS
                     || $subscription->status == Subscription::SUSPENDED_STATUS
-                    || $subscription->status == Subscription::EXPIRED_STATUS) {
+                    || $subscription->status == Subscription::EXPIRED_STATUS
+                ) {
                     $this->createSubscriptionRenewalTransaction($subscription, $paymentSucceeded = true, $paypalPaymentId);
 
-                // else this webhook comes for first payment of this subscription
+                    // else this webhook comes for first payment of this subscription
                 } else {
                     // find last initiated transaction by subscription and update it's status
                     $existingTransaction = Transaction::query()->where([
@@ -316,6 +322,68 @@ class PaymentHelper
         }
     }
 
+    public function generationPixPayment(Transaction $transaction)
+    {
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . 'c7a4a51c-3236-49fb-85cf-ae7b0b16bf097d8ff36c4cbab93873c8edc680ce3eac8c7f-5cee-41a2-b00b-d33fa1757bcc',
+        ])->post('https://sandbox.api.pagseguro.com/orders', [
+            'reference_id' => 'ex-00001',
+            'customer' => [
+                'name' => 'Jose da Silva',
+                'email' => 'fernaando.esdras@gmail.com',
+                'tax_id' => '42895230803',
+                'phones' => [
+                    [
+                        'country' => '55',
+                        'area' => '11',
+                        'number' => '999999999',
+                        'type' => 'MOBILE',
+                    ],
+                ],
+            ],
+            'items' => [
+                [
+                    'name' => 'nome do item',
+                    'quantity' => 1,
+                    'unit_amount' => 10,
+                ],
+            ],
+            'qr_codes' => [
+                [
+                    'amount' => [
+                        'value' => 500,
+                    ],
+                    'expiration_date' => '2024-08-29T20:15:59-03:00',
+                ],
+            ],
+            'shipping' => [
+                'address' => [
+                    'street' => 'Avenida Brigadeiro Faria Lima',
+                    'number' => '1384',
+                    'complement' => 'apto 12',
+                    'locality' => 'Pinheiros',
+                    'city' => 'São Paulo',
+                    'region_code' => 'SP',
+                    'country' => 'BRA',
+                    'postal_code' => '01452002',
+                ],
+            ],
+            'notification_urls' => ['https://meusite.com/notificacoes'],
+        ]);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        // Opcional: Tratar casos de erro
+        return [
+            'error' => true,
+            'message' => 'Não foi possível gerar o pagamento PIX.'
+        ];
+    }
     public function initiateOneTimePaypalTransaction(Transaction $transaction)
     {
         // Item info
@@ -323,8 +391,8 @@ class PaymentHelper
         $payer->setPaymentMethod('paypal');
         $item_1 = new Item();
 
-        $item_1->setName($this->getPaymentDescriptionByTransaction($transaction))// item name
-        ->setCurrency(config('app.site.currency_code'))
+        $item_1->setName($this->getPaymentDescriptionByTransaction($transaction)) // item name
+            ->setCurrency(config('app.site.currency_code'))
             ->setQuantity(1)
             ->setPrice($transaction['amount']); // unit price
 
@@ -392,7 +460,7 @@ class PaymentHelper
             ->setAddressOverride(0);
 
         $webProfile = new \PayPal\Api\WebProfile();
-        $webProfile->setName(getSetting('site.name').uniqid())
+        $webProfile->setName(getSetting('site.name') . uniqid())
             ->setFlowConfig($flowConfig)
             ->setPresentation($presentation)
             ->setInputFields($inputFields)
@@ -404,7 +472,7 @@ class PaymentHelper
 
             return $createProfileResponse->id;
         } catch (\Exception $ex) {
-            Log::channel('payments')->error('Payments webprofile failure: '.$ex->getMessage());
+            Log::channel('payments')->error('Payments webprofile failure: ' . $ex->getMessage());
         }
     }
 
@@ -500,7 +568,7 @@ class PaymentHelper
                 $this->creditReceiverForTransaction($transaction);
             }
         } catch (\Exception $ex) {
-            Log::channel('payments')->error('Failed executing one time paypal payment: '.$ex->getMessage());
+            Log::channel('payments')->error('Failed executing one time paypal payment: ' . $ex->getMessage());
         }
     }
 
@@ -540,15 +608,15 @@ class PaymentHelper
                                     if ($stripeSession->subscription != null) {
                                         $subscription->stripe_subscription_id = $stripeSession->subscription;
                                         $stripeSubscription = $stripeClient->subscriptions->retrieve($stripeSession->subscription);
-                                        if($stripeSubscription != null){
+                                        if ($stripeSubscription != null) {
                                             $latestInvoiceForSubscription = $stripeClient->invoices->retrieve($stripeSubscription->latest_invoice);
-                                            if($latestInvoiceForSubscription != null){
+                                            if ($latestInvoiceForSubscription != null) {
                                                 $transaction->stripe_transaction_id = $latestInvoiceForSubscription->payment_intent;
                                             }
                                         }
                                     }
 
-                                    $expiresDate = new \DateTime('+'.PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type).' month', new \DateTimeZone('UTC'));
+                                    $expiresDate = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' month', new \DateTimeZone('UTC'));
                                     if ($subscription->status != Subscription::ACTIVE_STATUS) {
                                         $subscription->status = Subscription::ACTIVE_STATUS;
                                         $subscription->expires_at = $expiresDate;
@@ -656,7 +724,7 @@ class PaymentHelper
                 $transaction->save();
             }
         } catch (\Exception $exception) {
-            Log::channel('payments')->error("Failed generating invoice for transaction: ".$transaction->id." error: ".$exception->getMessage());
+            Log::channel('payments')->error("Failed generating invoice for transaction: " . $transaction->id . " error: " . $exception->getMessage());
         }
 
         return $transaction;
@@ -753,14 +821,14 @@ class PaymentHelper
             $subscription = $this->createSubscriptionFromTransaction($transaction);
         }
         $subscription['amount'] = $transaction['amount'];
-        $subscription['expires_at'] = new \DateTime('+'.PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type).' '. 'month', new \DateTimeZone('UTC'));
+        $subscription['expires_at'] = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' ' . 'month', new \DateTimeZone('UTC'));
         $subscription['status'] = Subscription::ACTIVE_STATUS;
         $transaction['status'] = Transaction::APPROVED_STATUS;
 
         $subscription->save();
 
         // only send the notification for new subs
-        if($existingSubscription === null){
+        if ($existingSubscription === null) {
             NotificationServiceProvider::createNewSubscriptionNotification($subscription);
         }
         $transaction['subscription_id'] = $subscription['id'];
@@ -770,10 +838,12 @@ class PaymentHelper
 
     public function createNewTipNotificationForCreditTransaction($transaction)
     {
-        if ($transaction != null
+        if (
+            $transaction != null
             && $transaction->payment_provider === Transaction::CREDIT_PROVIDER
             && $transaction->status === Transaction::APPROVED_STATUS
-            && ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE)) {
+            && ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE)
+        ) {
             NotificationServiceProvider::createNewTipNotification($transaction);
         }
     }
@@ -835,47 +905,47 @@ class PaymentHelper
                     'user_id' => Auth::user()->id,
                 ],
                 'mode' => $transactionType == $this->isSubscriptionPayment($transaction->type) ? 'subscription' : 'payment',
-                'success_url' => route('payment.checkStripePaymentStatus').'?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('payment.checkStripePaymentStatus').'?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => route('payment.checkStripePaymentStatus') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('payment.checkStripePaymentStatus') . '?session_id={CHECKOUT_SESSION_ID}',
             ];
 
-            if($transaction->payment_provider === Transaction::OXXO_PROVIDER) {
+            if ($transaction->payment_provider === Transaction::OXXO_PROVIDER) {
                 $data['payment_method_types'] = ['oxxo'];
             }
 
             // Enable some one time payment providers through Stripe checkout
-            if(!$isSubscriptionPayment) {
+            if (!$isSubscriptionPayment) {
                 $currencyCode = strtolower(getSetting('payments.currency_code'));
                 // only enable some payment providers if currency is eur
-                if($currencyCode === 'eur') {
+                if ($currencyCode === 'eur') {
                     // iDEAL
-                    if(getSetting('payments.stripe_ideal_provider_enabled')) {
+                    if (getSetting('payments.stripe_ideal_provider_enabled')) {
                         $data['payment_method_types'][] = 'ideal';
                     }
 
                     // Bancontact
-                    if(getSetting('payments.stripe_bancontact_provider_enabled')) {
+                    if (getSetting('payments.stripe_bancontact_provider_enabled')) {
                         $data['payment_method_types'][] = 'bancontact';
                     }
 
                     // EPS
-                    if(getSetting('payments.stripe_eps_provider_enabled')) {
+                    if (getSetting('payments.stripe_eps_provider_enabled')) {
                         $data['payment_method_types'][] = 'eps';
                     }
 
                     // Giropay
-                    if(getSetting('payments.stripe_giropay_provider_enabled')) {
+                    if (getSetting('payments.stripe_giropay_provider_enabled')) {
                         $data['payment_method_types'][] = 'giropay';
                     }
                 }
 
                 // only enable Blik if currency is pln
-                if(getSetting('payments.stripe_blik_provider_enabled') && $currencyCode === 'pln') {
+                if (getSetting('payments.stripe_blik_provider_enabled') && $currencyCode === 'pln') {
                     $data['payment_method_types'][] = 'blik';
                 }
 
                 // only enable Przelewy24 if currency is eur / pln
-                if(getSetting('payments.stripe_przelewy_provider_enabled') && in_array($currencyCode, ['eur', 'pln'])) {
+                if (getSetting('payments.stripe_przelewy_provider_enabled') && in_array($currencyCode, ['eur', 'pln'])) {
                     $data['payment_method_types'][] = 'p24';
                 }
             }
@@ -885,7 +955,7 @@ class PaymentHelper
             $transaction['stripe_session_id'] = $session->id;
             $redirectLink = $session->url;
         } catch (\Exception $e) {
-            Log::channel('payments')->error('Failed generating stripe session for transaction: '.$transaction->id.' error: '.$e->getMessage());
+            Log::channel('payments')->error('Failed generating stripe session for transaction: ' . $transaction->id . ' error: ' . $e->getMessage());
         }
 
         return $redirectLink;
@@ -929,26 +999,26 @@ class PaymentHelper
                     $recipientUsername = 'creator';
                 }
 
-                $description = $recipientUsername.' for '.SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
+                $description = $recipientUsername . ' for ' . SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
             } else {
                 if ($transaction->type === Transaction::DEPOSIT_TYPE) {
-                    $description = SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount).' '. __('wallet popup');
+                    $description = SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount) . ' ' . __('wallet popup');
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
-                    $tipPaymentDescription = SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount).' tip';
+                    $tipPaymentDescription = SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount) . ' tip';
                     if ($transaction->recipient_user_id != null) {
                         $recipientUser = User::query()->where(['id' => $transaction->recipient_user_id])->first();
                         if ($recipientUser != null) {
-                            $tipPaymentDescription = $tipPaymentDescription.' for '.$recipientUser->name;
+                            $tipPaymentDescription = $tipPaymentDescription . ' for ' . $recipientUser->name;
                         }
                     }
 
                     $description = $tipPaymentDescription;
                 } elseif ($transaction->type === Transaction::POST_UNLOCK) {
-                    $description = __('Unlock post for').' '.SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
+                    $description = __('Unlock post for') . ' ' . SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
                 } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
-                    $description = __('Join streaming for').' '.SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
+                    $description = __('Join streaming for') . ' ' . SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
                 } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
-                    $description = __('Unlock message for').' '.SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
+                    $description = __('Unlock message for') . ' ' . SettingsServiceProvider::getWebsiteFormattedAmount($transaction->amount);
                 }
             }
         }
@@ -1022,26 +1092,26 @@ class PaymentHelper
     {
         $labelType = $success ? 'success' : 'error';
         if ($this->isSubscriptionPayment($transaction->type)) {
-            if($transaction->payment_provider === Transaction::CCBILL_PROVIDER && $transaction->status === Transaction::INITIATED_STATUS) {
+            if ($transaction->payment_provider === Transaction::CCBILL_PROVIDER && $transaction->status === Transaction::INITIATED_STATUS) {
                 $labelType = 'warning';
                 $message = __('Your payment have been successfully initiated but needs to await for approval');
             }
 
-            if($transaction->stream_id){
+            if ($transaction->stream_id) {
                 return Redirect::route('public.stream.get', ['streamID' => $transaction->stream_id, 'slug' => $transaction->stream->slug])
                     ->with($labelType, $message);
             }
             return Redirect::route('profile', ['username' => $recipient->username])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::DEPOSIT_TYPE) {
-            if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)){
-                if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
+            if (in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
+                if ($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS) {
                     $labelType = 'warning';
                     $message = __('Your payment have been successfully initiated but needs to await for approval');
-                } else if($transaction->status === Transaction::CANCELED_STATUS){
+                } else if ($transaction->status === Transaction::CANCELED_STATUS) {
                     $message = __('Payment canceled');
                 }
-            } else if($transaction->payment_provider === Transaction::MANUAL_PROVIDER) {
+            } else if ($transaction->payment_provider === Transaction::MANUAL_PROVIDER) {
                 $labelType = 'warning';
                 $message = __('Your payment have been successfully initiated but needs to await for processing');
             }
@@ -1049,11 +1119,11 @@ class PaymentHelper
             return Redirect::route('my.settings', ['type' => 'wallet'])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::TIP_TYPE  || $transaction->type === Transaction::CHAT_TIP_TYPE) {
-            if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)){
-                if($transaction->status === Transaction::INITIATED_STATUS){
+            if (in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
+                if ($transaction->status === Transaction::INITIATED_STATUS) {
                     $labelType = 'warning';
                     $message = __('Your payment have been successfully initiated but needs to await for approval');
-                } else if($transaction->status === Transaction::CANCELED_STATUS){
+                } else if ($transaction->status === Transaction::CANCELED_STATUS) {
                     $message = __('Payment canceled');
                 }
             }
@@ -1062,43 +1132,43 @@ class PaymentHelper
                 return Redirect::route('posts.get', ['post_id' => $transaction->post_id, 'username' => $recipient->username])
                     ->with($labelType, $message);
             }
-            if($transaction->stream_id){
+            if ($transaction->stream_id) {
                 return Redirect::route('public.stream.get', ['streamID' => $transaction->stream_id, 'slug' => $transaction->stream->slug])
                     ->with($labelType, $message);
             }
-            if($transaction->type === Transaction::CHAT_TIP_TYPE) {
-                return Redirect::route('my.messenger.get', ['tip'=>1])->with($labelType, $message);
+            if ($transaction->type === Transaction::CHAT_TIP_TYPE) {
+                return Redirect::route('my.messenger.get', ['tip' => 1])->with($labelType, $message);
             }
             return Redirect::route('profile', ['username' => $recipient->username])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::POST_UNLOCK) {
-            if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
-                if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
+            if (in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
+                if ($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS) {
                     $labelType = 'warning';
                     $message = __('Your payment have been successfully initiated but needs to await for approval');
-                } else if($transaction->status === Transaction::CANCELED_STATUS){
+                } else if ($transaction->status === Transaction::CANCELED_STATUS) {
                     $message = __('Payment canceled');
                 }
             }
             return Redirect::route('posts.get', ['post_id' => $transaction->post_id, 'username' => $recipient->username])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
-            if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
-                if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
+            if (in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
+                if ($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS) {
                     $labelType = 'warning';
                     $message = __('Your payment have been successfully initiated but needs to await for approval');
-                } else if($transaction->status === Transaction::CANCELED_STATUS){
+                } else if ($transaction->status === Transaction::CANCELED_STATUS) {
                     $message = __('Payment canceled');
                 }
             }
             return Redirect::route('public.stream.get', ['streamID' => $transaction->stream_id, 'slug' => $transaction->stream->slug])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
-            if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
-                if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
+            if (in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
+                if ($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS) {
                     $labelType = 'warning';
                     $message = __('Your payment have been successfully initiated but needs to await for approval');
-                } else if($transaction->status === Transaction::CANCELED_STATUS){
+                } else if ($transaction->status === Transaction::CANCELED_STATUS) {
                     $message = __('Payment canceled');
                 }
             }
@@ -1117,7 +1187,10 @@ class PaymentHelper
         $redirectUrl = null;
         $httpClient = new Client();
         self::generateCoinbaseTransactionToken($transaction);
-        $coinBaseCheckoutRequest = $httpClient->request('POST', Transaction::COINBASE_API_BASE_PATH . '/charges', [
+        $coinBaseCheckoutRequest = $httpClient->request(
+            'POST',
+            Transaction::COINBASE_API_BASE_PATH . '/charges',
+            [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'X-CC-Api-Key' => getSetting('payments.coinbase_api_key'),
@@ -1132,8 +1205,8 @@ class PaymentHelper
                     ],
                     'pricing_type' => 'fixed_price',
                     'metadata' => [],
-                    'redirect_url' => route('payment.checkCoinBasePaymentStatus').'?token='.$transaction->coinbase_transaction_token,
-                    'cancel_url' => route('payment.checkCoinBasePaymentStatus').'?token='.$transaction->coinbase_transaction_token,
+                    'redirect_url' => route('payment.checkCoinBasePaymentStatus') . '?token=' . $transaction->coinbase_transaction_token,
+                    'cancel_url' => route('payment.checkCoinBasePaymentStatus') . '?token=' . $transaction->coinbase_transaction_token,
                 ]))
             ]
         );
@@ -1173,10 +1246,12 @@ class PaymentHelper
      */
     public function checkAndUpdateCoinbaseTransaction($transaction)
     {
-        if ($transaction != null && $transaction->status != Transaction::APPROVED_STATUS
-            && $transaction->payment_provider === Transaction::COINBASE_PROVIDER && $transaction->coinbase_charge_id != null) {
+        if (
+            $transaction != null && $transaction->status != Transaction::APPROVED_STATUS
+            && $transaction->payment_provider === Transaction::COINBASE_PROVIDER && $transaction->coinbase_charge_id != null
+        ) {
             $coinbaseChargeStatus = self::getCoinbaseChargeStatus($transaction);
-            if($coinbaseChargeStatus === 'CANCELED'){
+            if ($coinbaseChargeStatus === 'CANCELED') {
                 $transaction->status = Transaction::CANCELED_STATUS;
             } elseif ($coinbaseChargeStatus === 'COMPLETED') {
                 $transaction->status = Transaction::APPROVED_STATUS;
@@ -1194,7 +1269,10 @@ class PaymentHelper
     private function getCoinbaseChargeStatus($transaction)
     {
         $httpClient = new Client();
-        $coinBaseCheckoutRequest = $httpClient->request('GET', Transaction::COINBASE_API_BASE_PATH . '/charges/' . $transaction->coinbase_charge_id, [
+        $coinBaseCheckoutRequest = $httpClient->request(
+            'GET',
+            Transaction::COINBASE_API_BASE_PATH . '/charges/' . $transaction->coinbase_charge_id,
+            [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'X-CC-Api-Key' => getSetting('payments.coinbase_api_key'),
@@ -1222,7 +1300,10 @@ class PaymentHelper
         $redirectUrl = null;
         $httpClient = new Client();
         $orderId = self::generateNowPaymentsOrderId($transaction);
-        $coinBaseCheckoutRequest = $httpClient->request('POST', Transaction::NOWPAYMENTS_API_BASE_PATH . 'invoice', [
+        $coinBaseCheckoutRequest = $httpClient->request(
+            'POST',
+            Transaction::NOWPAYMENTS_API_BASE_PATH . 'invoice',
+            [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'x-api-key' => getSetting('payments.nowpayments_api_key'),
@@ -1233,8 +1314,8 @@ class PaymentHelper
                     'ipn_callback_url' => route('nowPayments.payment.update'),
                     'order_description' => self::getPaymentDescriptionByTransaction($transaction),
                     'order_id' => $orderId,
-                    'success_url' => route('payment.checkNowPaymentStatus').'?orderId='.$orderId,
-                    'cancel_url' => route('payment.checkNowPaymentStatus').'?orderId='.$orderId,
+                    'success_url' => route('payment.checkNowPaymentStatus') . '?orderId=' . $orderId,
+                    'cancel_url' => route('payment.checkNowPaymentStatus') . '?orderId=' . $orderId,
                 ]))
             ]
         );
@@ -1243,10 +1324,10 @@ class PaymentHelper
         if (isset($response['payment_id'])) {
             $transaction->nowpayments_payment_id = $response['payment_id'];
         }
-        if(isset($response['order_id'])) {
+        if (isset($response['order_id'])) {
             $transaction->nowpayments_order_id = $response['order_id'];
         }
-        if(isset($response['invoice_url'])) {
+        if (isset($response['invoice_url'])) {
             $redirectUrl = $response['invoice_url'];
         }
 
@@ -1263,7 +1344,10 @@ class PaymentHelper
     {
         $transactionData = [];
         $httpClient = new Client();
-        $coinBaseCheckoutRequest = $httpClient->request('GET', Transaction::NOWPAYMENTS_API_BASE_PATH . 'payment/' . $transaction->nowpayments_payment_id, [
+        $coinBaseCheckoutRequest = $httpClient->request(
+            'GET',
+            Transaction::NOWPAYMENTS_API_BASE_PATH . 'payment/' . $transaction->nowpayments_payment_id,
+            [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'x-api-key' => getSetting('payments.nowpayments_api_key'),
@@ -1271,10 +1355,10 @@ class PaymentHelper
             ]
         );
         $response = json_decode($coinBaseCheckoutRequest->getBody(), true);
-        if(isset($response['payment_status'])) {
+        if (isset($response['payment_status'])) {
             $transactionData['status'] = $response['payment_status'];
         }
-        if(isset($response['payment_id'])) {
+        if (isset($response['payment_id'])) {
             $transactionData['id'] = $response['payment_id'];
         }
 
@@ -1287,12 +1371,14 @@ class PaymentHelper
      */
     public function checkAndUpdateNowPaymentsTransaction($transaction)
     {
-        if ($transaction != null && $transaction->status === Transaction::INITIATED_STATUS
-            && $transaction->payment_provider === Transaction::NOWPAYMENTS_PROVIDER) {
+        if (
+            $transaction != null && $transaction->status === Transaction::INITIATED_STATUS
+            && $transaction->payment_provider === Transaction::NOWPAYMENTS_PROVIDER
+        ) {
             $nowpaymentsPaymentData = self::getNowPaymentsTransactionData($transaction);
             $nowpaymentsPaymentStatus = isset($nowpaymentsPaymentData['status']) ? $nowpaymentsPaymentData['status'] : null;
             $nowpaymentsPaymentId = isset($nowpaymentsPaymentData['id']) ? $nowpaymentsPaymentData['id'] : null;
-            if($nowpaymentsPaymentStatus === 'finished'){
+            if ($nowpaymentsPaymentStatus === 'finished') {
                 $transaction->status = Transaction::APPROVED_STATUS;
                 self::creditReceiverForTransaction($transaction);
                 NotificationServiceProvider::createTipNotificationByTransaction($transaction);
@@ -1348,9 +1434,10 @@ class PaymentHelper
      * @return int|null
      * @throws \Exception
      */
-    public function generateCCBillOneTimePaymentTransaction($transaction){
+    public function generateCCBillOneTimePaymentTransaction($transaction)
+    {
         $redirectUrl = null;
-        if(PaymentsServiceProvider::ccbillCredentialsProvided()) {
+        if (PaymentsServiceProvider::ccbillCredentialsProvided()) {
             // generate a unique token for transaction and prepare dynamic pricing for the flex form
             $this->generateCCBillUniqueTransactionToken($transaction);
 
@@ -1365,12 +1452,13 @@ class PaymentHelper
      * @param $transaction
      * @return int|string
      */
-    private function generateCCBillRedirectUrlByTransaction($transaction){
+    private function generateCCBillRedirectUrlByTransaction($transaction)
+    {
         $user = Auth::user();
         $country = Country::query()->where('name', $user->country)->first();
         $amount = $transaction->amount;
-        $ccBillInitialPeriod=$this->getCCBillRecurringPeriodInDaysByTransaction($transaction);
-        $ccBillNumRebills=99;
+        $ccBillInitialPeriod = $this->getCCBillRecurringPeriodInDaysByTransaction($transaction);
+        $ccBillNumRebills = 99;
         $isSubscriptionPayment = $this->isSubscriptionPayment($transaction->type);
         $ccBillClientAcc = getSetting('payments.ccbill_account_number');
         $ccBillClientSubAccRecurring = getSetting('payments.ccbill_subaccount_number_recurring');
@@ -1388,23 +1476,23 @@ class PaymentHelper
         $billingPostcode = $user->postcode;
         $billingCountry = $country != null ? $country->country_code : $user->country;
         $ccBillFormDigest = $isSubscriptionPayment
-            ? md5(number_format(floatval($amount), 2).$ccBillInitialPeriod.$amount.$ccBillRecurringPeriod.$ccBillNumRebills.$ccBillCurrencyCode.$ccBillSalt)
-            : md5(number_format(floatval($amount), 2).$ccBillInitialPeriod.$ccBillCurrencyCode.$ccBillSalt);
+            ? md5(number_format(floatval($amount), 2) . $ccBillInitialPeriod . $amount . $ccBillRecurringPeriod . $ccBillNumRebills . $ccBillCurrencyCode . $ccBillSalt)
+            : md5(number_format(floatval($amount), 2) . $ccBillInitialPeriod . $ccBillCurrencyCode . $ccBillSalt);
 
         // common form metadata for both one time & recurring payments
-        $redirectUrl = Transaction::CCBILL_FLEX_FORM_BASE_PATH.$ccBillFlexFormId.
-            '?clientAccnum='.$ccBillClientAcc.'&initialPrice='.$amount.
-            '&initialPeriod='.$ccBillInitialPeriod.'&currencyCode='.$ccBillCurrencyCode.'&formDigest='.$ccBillFormDigest.
-            '&customer_fname='.$billingFirstName.'&customer_lname='.$billingLastName.'&address1='.$billingAddress.
-            '&email='.$billingEmail.'&city='.$billingCity.'&state='.$billingState.'&zipcode='.$billingPostcode.
-            '&country='.$billingCountry.'&token='.$transaction->ccbill_payment_token;
+        $redirectUrl = Transaction::CCBILL_FLEX_FORM_BASE_PATH . $ccBillFlexFormId .
+            '?clientAccnum=' . $ccBillClientAcc . '&initialPrice=' . $amount .
+            '&initialPeriod=' . $ccBillInitialPeriod . '&currencyCode=' . $ccBillCurrencyCode . '&formDigest=' . $ccBillFormDigest .
+            '&customer_fname=' . $billingFirstName . '&customer_lname=' . $billingLastName . '&address1=' . $billingAddress .
+            '&email=' . $billingEmail . '&city=' . $billingCity . '&state=' . $billingState . '&zipcode=' . $billingPostcode .
+            '&country=' . $billingCountry . '&token=' . $transaction->ccbill_payment_token;
 
         // set client sub account for recurring payments & add extra params
-        if($isSubscriptionPayment){
-            $redirectUrl .= '&clientSubacc='.$ccBillClientSubAccRecurring.'&recurringPrice='.$amount.'&recurringPeriod='.$ccBillRecurringPeriod.'&numRebills='.$ccBillNumRebills;
-        // set client sub account for one time payments & add extra params
+        if ($isSubscriptionPayment) {
+            $redirectUrl .= '&clientSubacc=' . $ccBillClientSubAccRecurring . '&recurringPrice=' . $amount . '&recurringPeriod=' . $ccBillRecurringPeriod . '&numRebills=' . $ccBillNumRebills;
+            // set client sub account for one time payments & add extra params
         } else {
-            $redirectUrl .= '&clientSubacc='.$ccBillClientSubAccOneTime;
+            $redirectUrl .= '&clientSubacc=' . $ccBillClientSubAccOneTime;
         }
 
         return $redirectUrl;
@@ -1415,7 +1503,8 @@ class PaymentHelper
      * @param $transaction
      * @return float|int
      */
-    public function getCCBillRecurringPeriodInDaysByTransaction($transaction) {
+    public function getCCBillRecurringPeriodInDaysByTransaction($transaction)
+    {
         return PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) * 30;
     }
 
@@ -1423,7 +1512,8 @@ class PaymentHelper
      * @param $currency
      * @return mixed
      */
-    public function getCCBillCurrencyCodeByCurrency($currency) {
+    public function getCCBillCurrencyCodeByCurrency($currency)
+    {
         $availableCurrencies = [
             'EUR' => '978',
             'AUD' => '036',
@@ -1441,9 +1531,10 @@ class PaymentHelper
      * @return int|string|null
      * @throws \Exception
      */
-    public function generateCCBillSubscriptionPayment($transaction){
+    public function generateCCBillSubscriptionPayment($transaction)
+    {
         $redirectUrl = null;
-        if(PaymentsServiceProvider::ccbillCredentialsProvided()) {
+        if (PaymentsServiceProvider::ccbillCredentialsProvided()) {
             // generate a unique token for transaction and prepare dynamic pricing for the flex form
             $this->generateCCBillUniqueTransactionToken($transaction);
             $this->generateCCBillSubscriptionByTransaction($transaction);
@@ -1497,17 +1588,17 @@ class PaymentHelper
             'subscriptionId' => $stripeSubscriptionId,
             'action' => 'cancelSubscription',
         ];
-        if(getSetting('payments.ccbill_skip_subaccount_from_cancellations')){
+        if (getSetting('payments.ccbill_skip_subaccount_from_cancellations')) {
             unset($cancellationData['clientSubacc']);
         }
         $res = $client->request('GET', 'https://datalink.ccbill.com/utils/subscriptionManagement.cgi', [
             'query' => $cancellationData,
         ]);
         $response = $res->getBody()->getContents();
-        if($response) {
+        if ($response) {
             $responseAsArray = str_getcsv($response, "\n");
-            if($responseAsArray && isset($responseAsArray[0]) && isset($responseAsArray[1])) {
-                if($responseAsArray[0] === 'results' && $responseAsArray[1] === '1') {
+            if ($responseAsArray && isset($responseAsArray[0]) && isset($responseAsArray[1])) {
+                if ($responseAsArray[0] === 'results' && $responseAsArray[1] === '1') {
                     return true;
                 }
             }
@@ -1537,13 +1628,14 @@ class PaymentHelper
      * @return mixed
      * @throws \Exception
      */
-    public function generatePaystackTransaction($transaction, $email) {
+    public function generatePaystackTransaction($transaction, $email)
+    {
         $paystack = new Paystack(getSetting('payments.paystack_secret_key'));
         $reference = self::generatePaystackUniqueTransactionToken($transaction);
         $paystackTransaction = $paystack->transaction->initialize([
-            'amount'=>$transaction->amount * 100,
-            'email'=>$email,
-            'reference'=>$reference
+            'amount' => $transaction->amount * 100,
+            'email' => $email,
+            'reference' => $reference
         ]);
 
         return $paystackTransaction->data->authorization_url;
@@ -1554,16 +1646,16 @@ class PaymentHelper
      * @param $reference
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function verifyPaystackTransaction($reference){
+    public function verifyPaystackTransaction($reference)
+    {
         $transaction = null;
-        if($reference){
+        if ($reference) {
             $transaction = Transaction::query()->where('paystack_payment_token', $reference)->first();
-            if($transaction && $transaction->status !== Transaction::APPROVED_STATUS) {
+            if ($transaction && $transaction->status !== Transaction::APPROVED_STATUS) {
                 $paystack = new Paystack(getSetting('payments.paystack_secret_key'));
-                try
-                {
+                try {
                     $paystackTransaction = $paystack->transaction->verify([
-                        'reference'=>$reference
+                        'reference' => $reference
                     ]);
 
                     if ('success' === $paystackTransaction->data->status) {
@@ -1574,8 +1666,8 @@ class PaymentHelper
                         NotificationServiceProvider::createTipNotificationByTransaction($transaction);
                         NotificationServiceProvider::createPPVNotificationByTransaction($transaction);
                     }
-                } catch(ApiException $e){
-                    Log::channel('payments')->error("Failed verifying paystack transaction: ".$e->getMessage());
+                } catch (ApiException $e) {
+                    Log::channel('payments')->error("Failed verifying paystack transaction: " . $e->getMessage());
                 }
             }
         }
@@ -1583,71 +1675,66 @@ class PaymentHelper
         return $transaction;
     }
 
-    public function validateTransaction($transaction, $recipientUser) {
-        $valid = false;
-        if($transaction) {
-            $exclusiveTaxesAmount = 0;
-            $fixedTaxesAmount = 0;
-            $taxes = PaymentsServiceProvider::calculateTaxesForTransaction($transaction);
-            if(isset($taxes['exclusiveTaxesAmount'])) {
-                $exclusiveTaxesAmount = $taxes['exclusiveTaxesAmount'];
-            }
-            if(isset($taxes['fixedTaxesAmount'])) {
-                $fixedTaxesAmount = $taxes['fixedTaxesAmount'];
-            }
-            $transactionAmountWithoutTaxes = (string)($transaction['amount'] - $exclusiveTaxesAmount - $fixedTaxesAmount);
+    public function validateTransaction($transaction, $recipientUser)
+    {
+        $result = null;
+        if ($transaction) {
+            $fixedTaxRate = 0.05;
+            $fixedTaxesAmount = $transaction['amount'] * $fixedTaxRate;
 
-            // Note*: Doing (string) comparison due to PHP float inaccuracy
-            // Note* Doing (string)($number + 0) comparison because some mysql drivers doesn't truncate .00 decimals for floats
+            $transactionAmountWithoutTaxes = (string)($transaction['amount'] - $fixedTaxesAmount);
 
             switch ($transaction->type) {
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
-                    if($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price + 0)) {
-                        $valid = true;
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price + 0)) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
-                    if($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_3_months * 3 + 0)) {
-                        $valid = true;
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_3_months * 3 + 0)) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::SIX_MONTHS_SUBSCRIPTION:
-                    if($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_6_months * 6 + 0)) {
-                        $valid = true;
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_6_months * 6 + 0)) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::YEARLY_SUBSCRIPTION:
-                    if($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_12_months * 12 + 0)) {
-                        $valid = true;
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_12_months * 12 + 0)) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::POST_UNLOCK:
                     $post = Post::query()->where('id', $transaction->post_id)->first();
-                    if((string)($post->price + 0) === $transactionAmountWithoutTaxes) {
-                        $valid = true;
+                    if ($post && (string)($post->price + 0) === $transactionAmountWithoutTaxes) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::STREAM_ACCESS:
                     $stream = Stream::query()->where('id', $transaction->stream_id)->first();
-                    if($stream && (string)($stream->price + 0) === $transactionAmountWithoutTaxes) {
-                        $valid = true;
+                    if ($stream && (string)($stream->price + 0) === $transactionAmountWithoutTaxes) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::MESSAGE_UNLOCK:
                     $message = UserMessage::query()->where('id', $transaction->user_message_id)->first();
-                    if((string)($message->price + 0) === $transactionAmountWithoutTaxes) {
-                        $valid = true;
+                    if ($message && (string)($message->price + 0) === $transactionAmountWithoutTaxes) {
+                        $result = $transaction['amount'] + $fixedTaxesAmount;
                     }
                     break;
                 case Transaction::TIP_TYPE:
                 case Transaction::CHAT_TIP_TYPE:
                 case Transaction::DEPOSIT_TYPE:
-                    $valid = true;
+                    $result = $transaction['amount'] + $fixedTaxesAmount;
                     break;
             }
         }
-        return $valid;
+        return $result;
     }
+
+
+
 
     /**
      * Cancels a subscription
@@ -1655,7 +1742,8 @@ class PaymentHelper
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function cancelSubscription($subscription) {
+    public function cancelSubscription($subscription)
+    {
         $cancelSubscription = false;
 
         if ($subscription->provider != null) {
@@ -1666,15 +1754,15 @@ class PaymentHelper
                 $this->cancelStripeSubscription($subscription->stripe_subscription_id);
                 $cancelSubscription = true;
             } elseif ($subscription->provider === Transaction::CCBILL_PROVIDER && $subscription->ccbill_subscription_id != null) {
-                if($this->cancelCCBillSubscription($subscription->ccbill_subscription_id)){
+                if ($this->cancelCCBillSubscription($subscription->ccbill_subscription_id)) {
                     $cancelSubscription = true;
                 }
-            } elseif($subscription->provider === Transaction::CREDIT_PROVIDER) {
+            } elseif ($subscription->provider === Transaction::CREDIT_PROVIDER) {
                 $cancelSubscription = true;
             }
 
             // handle cancel subscription
-            if($cancelSubscription) {
+            if ($cancelSubscription) {
                 $subscription->status = Subscription::CANCELED_STATUS;
                 $subscription->canceled_at = new \DateTime();
 
@@ -1690,7 +1778,8 @@ class PaymentHelper
      * @param $transaction
      * @return string|void
      */
-    public function generateMercadoTransaction($transaction) {
+    public function generateMercadoTransaction($transaction)
+    {
         try {
             $this->initiateMercadoPagoSdk();
             $reference = self::generateMercadoUniqueTransactionToken($transaction);
@@ -1724,16 +1813,17 @@ class PaymentHelper
      * @param $reference
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function verifyMercadoTransaction($paymentId) {
+    public function verifyMercadoTransaction($paymentId)
+    {
         $transaction = null;
         try {
             $this->initiateMercadoPagoSdk();
             $mercadoPayment = \MercadoPago\Payment::get($paymentId);
-            if($mercadoPayment) {
+            if ($mercadoPayment) {
                 $transaction = Transaction::query()->where('mercado_payment_token', $mercadoPayment->external_reference)->first();
-                if($transaction && $transaction->status !== Transaction::APPROVED_STATUS) {
+                if ($transaction && $transaction->status !== Transaction::APPROVED_STATUS) {
                     $success = $mercadoPayment->status === 'approved';
-                    if($success) {
+                    if ($success) {
                         $transaction->status = Transaction::APPROVED_STATUS;
                         $transaction->mercado_payment_id = $paymentId;
                         $transaction->save();
@@ -1771,7 +1861,8 @@ class PaymentHelper
      * Initiates MercadoPago SDK
      * @return void
      */
-    private function initiateMercadoPagoSdk() {
+    private function initiateMercadoPagoSdk()
+    {
         SDK::setAccessToken(getSetting('payments.mercado_access_token'));
     }
 }

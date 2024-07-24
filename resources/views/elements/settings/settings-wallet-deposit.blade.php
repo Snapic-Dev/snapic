@@ -3,40 +3,29 @@
     <div class="input-group-prepend">
         <span class="input-group-text" id="amount-label">@include('elements.icon', ['icon' => 'cash-outline', 'variant' => 'medium'])</span>
     </div>
-    <input class="form-control inputText depositInput"
-        placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}"
-        aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number"
-        min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1"
-        max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
+    <input class="form-control inputText depositInput" placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}" aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
     <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
 </div>
 
 <div>
     <div class="payment-method p-2">
         <div class="custom-control custom-radio mb-1">
-            <input type="radio" id="pixRadio" name="payment-radio-option" class="custom-control-input"
-                value="payment-oxxo" checked>
-            <label class="pixRadioTxt custom-control-label stepTooltip text-bold" for="pixRadio"
-                title="">Pix</label>
+            <input type="radio" id="pixRadio" name="payment-radio-option" class="custom-control-input" value="payment-oxxo" checked>
+            <label class="pixRadioTxt custom-control-label stepTooltip text-bold" for="pixRadio" title="">Pix</label>
         </div>
         <div class="custom-control custom-radio mb-1">
-            <input type="radio" id="boletoRadio" name="payment-radio-option" class="custom-control-input"
-                value="payment-oxxo">
-            <label class="custom-control-label stepTooltip text-opacity-field" for=""
-                title="">Boleto</label>
+            <input type="radio" id="boletoRadio" name="payment-radio-option" class="custom-control-input" value="payment-oxxo">
+            <label class="custom-control-label stepTooltip text-opacity-field" for="" title="">Boleto</label>
         </div>
         <div class="custom-control custom-radio mb-1">
-            <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input"
-                value="payment-oxxo">
-            <label class="creditRadioTxt custom-control-label stepTooltip" for="creditRadio"
-                title="">Cartão</label>
+            <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input" value="payment-oxxo">
+            <label class="creditRadioTxt custom-control-label stepTooltip" for="creditRadio" title="">Cartão</label>
         </div>
 
         <!-- Button trigger modal -->
         <div class="mt-4">
             <!-- Modal -->
-            <div class="modal fade show" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade show" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -85,8 +74,8 @@
                                     <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="copyCodePix()">
                                         <div class="ml-4">
                                             @include('elements.icon', [
-                                                'icon' => 'cash-outline',
-                                                'variant' => 'small',
+                                            'icon' => 'cash-outline',
+                                            'variant' => 'small',
                                             ])
                                         </div>
                                         Copiar código PIX
@@ -104,13 +93,10 @@
         </div>
 
         <div class="mt-4">
-            <button type="button" onclick="generatePix()"
-                class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal"
-                data-target="#staticBackdrop" onclick="showDepositValue()">
+            <button type="button" onclick="generatePix()" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
                 Depositar
             </button>
-            <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false"
-                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -250,6 +236,7 @@
                 qrCodeImage.style.display = 'flex';
                 qrcodeLoading.style.display = 'none';
             }
+
             modalPix.style.display = "block";
             qrCodeImage.setAttribute('src', responseData.data.qr_codes[0].links[0].href);
             amountPix.innerText = "R$" + (responseData.data.qr_codes[0].amount.value).toFixed(2);
