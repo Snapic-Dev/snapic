@@ -147,8 +147,8 @@
                                 </div>
                             </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border">
+                    <div class="ml-3 mr-3 mb-2">
+                        <button type="button" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
                             Promover
                         </button>
                     </div>

@@ -70,7 +70,7 @@ class PaymentsController extends Controller
                     'amount' => [
                         'value' => 500,
                     ],
-                    'expiration_date' => Carbon::now()->addMinuts(30)->toIso8601String(),
+                    'expiration_date' => Carbon::now()->addMinutes(30)->toIso8601String(),
                 ],
             ],
             'shipping' => [
