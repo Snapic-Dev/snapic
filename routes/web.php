@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use TCG\Voyager\Facades\Voyager;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,11 +47,17 @@ Route::get('language/{locale}', ['uses' => 'GenericController@setLanguage', 'as'
 
 /* Auth Routes + Verify password */
 
-Auth::routes(['verify' => true]);
+Route::get('/influencer/register', [
+    'uses' => 'App\Http\Controllers\RegisterInfluencerController@showRegistrationForm',
+    'as' => 'register-influencer'
+]);
 
-Route::get('/influencer/register', function () {
-    return view('auth.register-influencer');
-})->name('register-influencer');
+Route::post('/influencer/register', [
+    'uses' => 'App\Http\Controllers\RegisterInfluencerController@register',
+    'as' => 'register-influencer'
+]);
+
+Auth::routes(['verify' => true]);
 
 Route::get('email/verify', ['uses' => 'GenericController@userVerifyEmail', 'as' => 'verification.notice']);
 Route::post('resendVerification', ['uses' => 'GenericController@resendConfirmationEmail', 'as' => 'verfication.resend']);

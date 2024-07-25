@@ -75,7 +75,7 @@ class UpdateUsersTable extends Migration
             }
 
             if (Schema::hasColumn('users', 'name')) {
-                $table->string('name')->change();
+                $table->string('name')->unique()->change();
             }
         });
     }
