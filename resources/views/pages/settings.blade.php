@@ -24,10 +24,12 @@
 @stop
 
 @section('content')
-    <div class="">
+    <div class="container-fluid">
         <div class="row">
+            <!-- Menu de Configurações -->
             <div class="col-12 col-md-4 col-lg-3 mb-3 pr-0 settings-menu">
                 <div class="settings-menu-wrapper">
+                    <!-- Header do menu de configurações -->
                     <div class="d-none d-md-block">
                         @include('elements.settings.settings-header', ['type' => 'generic'])
                     </div>
@@ -35,6 +37,7 @@
                         @include('elements.settings.settings-header', ['type' => 'settingTab'])
                     </div>
                     <hr class="mb-0">
+                    <!-- Menu de configurações -->
                     <div class="d-none d-md-block">
                         @include('elements.settings.settings-menu', [
                             'availableSettings' => $availableSettings,
@@ -47,23 +50,24 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="col-md-8 col-lg-9 mb-5 mb-lg-0 min-vh-100 border-left border-right settings-content mt-1 mt-md-0 pl-md-0 pr-md-0">
-                <div class="ml-3 d-none d-md-flex justify-content-between">
+
+            <!-- Conteúdo de Configurações -->
+          <div class="col-12 col-md-8 col-lg-9 mb-5 mb-lg-0 min-vh-100 border-left border-right settings-content mt-1 mt-md-0 px-3 px-md-0">
+                <div class="d-none d-md-flex justify-content-between align-items-center">
                     <div>
-                        <h5
-                            class="text-bold mt-0 mt-md-3 mb-0 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
-                            {{ ucfirst(__($activeSettingsTab)) }}</h5>
+                        <h5 class="text-bold mt-0 mt-md-3 mb-0 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
+                            {{ ucfirst(__($activeSettingsTab)) }}
+                        </h5>
                         <h6 class="mt-2 text-muted">{{ __($currentSettingTab['heading']) }}</h6>
                     </div>
                 </div>
-                <hr
-                    class="{{ in_array($activeSettingsTab, ['subscriptions', 'payments']) ? 'mb-0' : '' }} d-none d-md-block mt-2">
-                <div
-                    class="{{ in_array($activeSettingsTab, ['subscriptions', 'payments', 'referrals']) ? '' : 'px-4 px-md-3' }}">
+                <hr class="{{ in_array($activeSettingsTab, ['subscriptions', 'payments']) ? 'mb-0' : '' }} d-none d-md-block mt-2">
+                <div class="{{ in_array($activeSettingsTab, ['subscriptions', 'payments', 'referrals']) ? '' : 'px-4 px-md-3' }}">
                     @include('elements.settings.settings-' . $activeSettingsTab)
                 </div>
             </div>
         </div>
     </div>
 @stop
+
+
