@@ -1,0 +1,14 @@
+[0;1;32m●[0m mysql.service - MySQL Community Server
+     Loaded: loaded (]8;;file://snapic/usr/lib/systemd/system/mysql.service/usr/lib/systemd/system/mysql.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Thu 2024-07-25 14:53:07 UTC; 21s ago
+    Process: 92008 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+   Main PID: 92017 (mysqld)
+     Status: "[0;1;36mServer is operational[0m"
+      Tasks: 38 (limit: 1113)
+     Memory: 350.5M (peak: 382.0M)
+        CPU: 1.398s
+     CGroup: /system.slice/mysql.service
+             └─[0;38;5;245m92017 /usr/sbin/mysqld[0m
+
+Jul 25 14:53:06 snapic systemd[1]: Starting mysql.service - MySQL Community Server...
+Jul 25 14:53:07 snapic systemd[1]: Started mysql.service - MySQL Community Server.
