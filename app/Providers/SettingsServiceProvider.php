@@ -24,7 +24,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!InstallerServiceProvider::checkIfInstalled()) {
+        if (! InstallerServiceProvider::checkIfInstalled()) {
             return false;
         }
 
@@ -34,7 +34,7 @@ class SettingsServiceProvider extends ServiceProvider
 
         // Websockets settings handling
         config(['broadcasting.default' => 'pusher']);
-        if (self::hasPusherSettings()) {
+        if(self::hasPusherSettings()){
             if (getSetting('websockets.pusher_app_key')) {
                 config(['broadcasting.connections.pusher.key' => getSetting('websockets.pusher_app_key')]);
             }
@@ -48,7 +48,7 @@ class SettingsServiceProvider extends ServiceProvider
                 config(['broadcasting.connections.pusher.options.cluster' => getSetting('websockets.pusher_app_cluster')]);
             }
         }
-        if (self::hasSoketiSettings()) {
+        if(self::hasSoketiSettings()){
             if (getSetting('websockets.soketi_app_key')) {
                 config(['broadcasting.connections.soketi.key' => getSetting('websockets.soketi_app_key')]);
             }
@@ -69,7 +69,7 @@ class SettingsServiceProvider extends ServiceProvider
                 config(['broadcasting.connections.soketi.options.useTLS' => true]);
             }
         }
-        if (getSetting('websockets.driver') == 'soketi') {
+        if(getSetting('websockets.driver') == 'soketi'){
             config(['broadcasting.connections.pusher' => config('broadcasting.connections.soketi')]);
         }
 
@@ -114,25 +114,25 @@ class SettingsServiceProvider extends ServiceProvider
         config(['filesystems.disks.wasabi.secret' => getSetting('storage.was_secret_key')]);
         config(['filesystems.disks.wasabi.region' => getSetting('storage.was_region')]);
         config(['filesystems.disks.wasabi.bucket' => getSetting('storage.was_bucket_name')]);
-        config(['filesystems.disks.wasabi.endpoint' => 'https://s3.' . getSetting('storage.was_region') . '.wasabisys.com/']);
+        config(['filesystems.disks.wasabi.endpoint' => 'https://s3.'.getSetting('storage.was_region').'.wasabisys.com/']);
 
         config(['filesystems.disks.do_spaces.key' => getSetting('storage.do_access_key')]);
         config(['filesystems.disks.do_spaces.secret' => getSetting('storage.do_secret_key')]);
         config(['filesystems.disks.do_spaces.region' => getSetting('storage.do_region')]);
         config(['filesystems.disks.do_spaces.bucket' => getSetting('storage.do_bucket_name')]);
-        config(['filesystems.disks.do_spaces.endpoint' => 'https://' . getSetting('storage.do_region') . '.digitaloceanspaces.com']);
+        config(['filesystems.disks.do_spaces.endpoint' => 'https://'.getSetting('storage.do_region').'.digitaloceanspaces.com']);
 
         config(['filesystems.disks.minio.key' => getSetting('storage.minio_access_key')]);
         config(['filesystems.disks.minio.secret' => getSetting('storage.minio_secret_key')]);
         config(['filesystems.disks.minio.region' => getSetting('storage.minio_region')]);
         config(['filesystems.disks.minio.bucket' => getSetting('storage.minio_bucket_name')]);
-        config(['filesystems.disks.minio.endpoint' => rtrim(getSetting('storage.minio_endpoint'), '/')]);
-        config(['filesystems.disks.minio.url' => rtrim(getSetting('storage.minio_endpoint'), '/') . '/' . getSetting('storage.minio_bucket_name') . '/']);
+        config(['filesystems.disks.minio.endpoint' => rtrim(getSetting('storage.minio_endpoint'),'/')]);
+        config(['filesystems.disks.minio.url' => rtrim(getSetting('storage.minio_endpoint'), '/').'/'.getSetting('storage.minio_bucket_name').'/']);
 
         config(['filesystems.disks.pushr.key' => getSetting('storage.pushr_access_key')]);
         config(['filesystems.disks.pushr.secret' => getSetting('storage.pushr_secret_key')]);
         config(['filesystems.disks.pushr.bucket' => getSetting('storage.pushr_bucket_name')]);
-        config(['filesystems.disks.pushr.endpoint' => rtrim(getSetting('storage.pushr_endpoint'), '/')]);
+        config(['filesystems.disks.pushr.endpoint' => rtrim(getSetting('storage.pushr_endpoint'),'/')]);
         config(['filesystems.disks.pushr.url' => getSetting('storage.pushr_cdn_hostname')]);
 
         self::setDefaultStorageDriver();
@@ -145,16 +145,16 @@ class SettingsServiceProvider extends ServiceProvider
         config(['queue.connections.sqs.secret' => getSetting('storage.aws_secret_key')]);
         config(['queue.connections.sqs.region' => $awsRegion]);
 
-        if (getSetting('payments.currency_code') != null && !empty(getSetting('payments.currency_code'))) {
+        if (getSetting('payments.currency_code') != null && ! empty(getSetting('payments.currency_code'))) {
             config(['app.site.currency_code' => getSetting('payments.currency_code')]);
         }
 
-        if (getSetting('payments.currency_symbol') !== null && !empty(getSetting('payments.currency_symbol'))) {
+        if (getSetting('payments.currency_symbol') !== null && ! empty(getSetting('payments.currency_symbol'))) {
             config(['app.site.currency_symbol' => getSetting('payments.currency_symbol')]);
         }
 
         config(['app.url' => getSetting('site.app_url')]);
-        config(['filesystems.disks.public.url' => getSetting('site.app_url') . '/storage']);
+        config(['filesystems.disks.public.url' =>  getSetting('site.app_url') . '/storage']);
 
         config(['laravelpwa.manifest.name' => getSetting('site.name')]);
         config(['laravelpwa.manifest.short_name' => getSetting('site.name')]);
@@ -162,8 +162,8 @@ class SettingsServiceProvider extends ServiceProvider
         // PWA overrides
         config(['laravelpwa.manifest.icons.192x192.path' => asset(config('laravelpwa.manifest.icons.192x192.path'))]);
         config(['laravelpwa.manifest.icons.512x512.path' => asset(config('laravelpwa.manifest.icons.512x512.path'))]);
-        config(['laravelpwa.manifest.theme_color' => "#" . getSetting('colors.theme_color_code')]);
-        foreach (config('laravelpwa.manifest.splash') as $key => $entry) {
+        config(['laravelpwa.manifest.theme_color' => "#".getSetting('colors.theme_color_code')]);
+        foreach(config('laravelpwa.manifest.splash') as $key => $entry){
             config(["laravelpwa.manifest.splash.$key" => asset(config("laravelpwa.manifest.splash.$key"))]);
         }
 
@@ -171,34 +171,32 @@ class SettingsServiceProvider extends ServiceProvider
         if (getSetting('social-login.facebook_client_id')) {
             config(['services.facebook.client_id' => getSetting('social-login.facebook_client_id')]);
             config(['services.facebook.client_secret' => getSetting('social-login.facebook_secret')]);
-            config(['services.facebook.redirect' => rtrim(getSetting('site.app_url'), '/') . '/socialAuth/facebook/callback']);
+            config(['services.facebook.redirect' => rtrim(getSetting('site.app_url'),'/').'/socialAuth/facebook/callback']);
         }
         if (getSetting('social-login.twitter_client_id')) {
             config(['services.twitter.client_id' => getSetting('social-login.twitter_client_id')]);
             config(['services.twitter.client_secret' => getSetting('social-login.twitter_secret')]);
-            config(['services.twitter.redirect' => rtrim(getSetting('site.app_url'), '/') . '/socialAuth/twitter/callback']);
+            config(['services.twitter.redirect' => rtrim(getSetting('site.app_url'),'/').'/socialAuth/twitter/callback']);
         }
         if (getSetting('social-login.google_client_id')) {
             config(['services.google.client_id' => getSetting('social-login.google_client_id')]);
             config(['services.google.client_secret' => getSetting('social-login.google_secret')]);
-            config(['services.google.redirect' => rtrim(getSetting('site.app_url'), '/') . '/socialAuth/google/callback']);
+            config(['services.google.redirect' => rtrim(getSetting('site.app_url'),'/').'/socialAuth/google/callback']);
         }
 
         // Allow proxied requests, fixing 403 email verify issues on nginx and load balancers
         // TODO: Check if this still works with L9
         config(['trustedproxy.proxies' => '*']);
 
-        if (getSetting('security.recaptcha_enabled')) {
+        if(getSetting('security.recaptcha_enabled')){
             config(['captcha.sitekey' => getSetting('security.recaptcha_site_key')]);
             config(['captcha.secret' => getSetting('security.recaptcha_site_secret_key')]);
         }
 
-        if (getSetting('profiles.allow_profile_bio_markdown_links')) {
-            config([
-                'purifier.settings.default' => array_merge(config('purifier.settings.default'), [
-                    'HTML.Allowed' => 'b,strong,blockquote,code,pre,i,em,u,ul,ol,li,p,br,span,a[href|title]',
-                ])
-            ]);
+        if(getSetting('profiles.allow_profile_bio_markdown_links')){
+            config(['purifier.settings.default' => array_merge(config('purifier.settings.default'),[
+                'HTML.Allowed' => 'b,strong,blockquote,code,pre,i,em,u,ul,ol,li,p,br,span,a[href|title]',
+            ])]);
         }
     }
 
@@ -209,9 +207,9 @@ class SettingsServiceProvider extends ServiceProvider
     public static function getWebsiteCurrencySymbol()
     {
         $symbol = '$';
-        if (getSetting('payments.currency_symbol') != null && !empty(getSetting('payments.currency_symbol'))) {
+        if (getSetting('payments.currency_symbol') != null && ! empty(getSetting('payments.currency_symbol'))) {
             $symbol = getSetting('payments.currency_symbol');
-        } elseif (getSetting('payments.currency_code') != null && !empty(getSetting('payments.currency_code'))) {
+        } elseif (getSetting('payments.currency_code') != null && ! empty(getSetting('payments.currency_code'))) {
             $symbol = getSetting('payments.currency_code');
         }
 
@@ -224,7 +222,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public static function getAppCurrencySymbol()
     {
-        if (getSetting('payments.currency_symbol') != null && !empty(getSetting('payments.currency_symbol'))) {
+        if (getSetting('payments.currency_symbol') != null && ! empty(getSetting('payments.currency_symbol'))) {
             return getSetting('payments.currency_symbol');
         }
 
@@ -249,8 +247,7 @@ class SettingsServiceProvider extends ServiceProvider
      * Check if website has pusher settings set
      * @return bool
      */
-    private static function hasPusherSettings()
-    {
+    private static function hasPusherSettings(){
         return getSetting('websockets.pusher_app_cluster')
             && getSetting('websockets.pusher_app_key')
             && getSetting('websockets.pusher_app_secret')
@@ -261,8 +258,7 @@ class SettingsServiceProvider extends ServiceProvider
      * Check if website has soketi settings set
      * @return bool
      */
-    private static function hasSoketiSettings()
-    {
+    private static function hasSoketiSettings(){
         return getSetting('websockets.soketi_host_address')
             && getSetting('websockets.soketi_host_port')
             && getSetting('websockets.soketi_app_id')
@@ -274,14 +270,12 @@ class SettingsServiceProvider extends ServiceProvider
      * Check if admin provided CCBill DataLink credentials
      * @return bool
      */
-    public static function providedCCBillSubscriptionCancellingCredentials()
-    {
+    public static function providedCCBillSubscriptionCancellingCredentials() {
         return getSetting('payments.ccbill_datalink_username')
             && getSetting('payments.payments.ccbill_datalink_password');
     }
 
-    public static function allowWithdrawals($user)
-    {
+    public static function allowWithdrawals($user) {
         return !getSetting('payments.withdrawal_allow_only_for_verified')
             || (getSetting('payments.withdrawal_allow_only_for_verified')
                 && $user->email_verified_at
@@ -289,9 +283,8 @@ class SettingsServiceProvider extends ServiceProvider
                 && ($user->verification && $user->verification->status == 'verified'));
     }
 
-    public static function setDefaultStorageDriver($storageDriver = false)
-    {
-        if ($storageDriver === false) {
+    public static function setDefaultStorageDriver($storageDriver = false){
+        if($storageDriver === false){
             $storageDriver = getSetting('storage.driver') != null ? getSetting('storage.driver') : 'public';
         }
         config(['filesystems.default' => $storageDriver]);
@@ -299,12 +292,11 @@ class SettingsServiceProvider extends ServiceProvider
         config(['voyager.storage.disk' => $storageDriver]);
     }
 
-    public static function getWebsiteCurrencyPosition()
-    {
+    public static function getWebsiteCurrencyPosition() {
         $currencyPosition = 'left';
         $adminCurrencyPosition = getSetting('payments.currency_position');
 
-        if (!empty($adminCurrencyPosition)) {
+        if(!empty($adminCurrencyPosition)) {
             $currencyPosition = $adminCurrencyPosition;
         }
 
@@ -314,8 +306,7 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * @return bool
      */
-    public static function leftAlignedCurrencyPosition()
-    {
+    public static function leftAlignedCurrencyPosition() {
         return self::getWebsiteCurrencyPosition() === 'left';
     }
 
@@ -326,10 +317,9 @@ class SettingsServiceProvider extends ServiceProvider
      * @param $amount
      * @return string
      */
-    public static function getWebsiteFormattedAmount($amount)
-    {
+    public static function getWebsiteFormattedAmount($amount) {
         $currencySymbol = self::getWebsiteCurrencySymbol();
 
-        return self::leftAlignedCurrencyPosition() ? $currencySymbol . $amount : $amount . $currencySymbol;
+        return self::leftAlignedCurrencyPosition() ? $currencySymbol.$amount : $amount.$currencySymbol;
     }
 }

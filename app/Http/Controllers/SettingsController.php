@@ -55,9 +55,10 @@ class SettingsController extends Controller
 
     public function __construct()
     {
-        if (getSetting('site.hide_identity_checks')) {
+        if(getSetting('site.hide_identity_checks')){
             unset($this->availableSettings['verify']);
         }
+
     }
 
     /**
@@ -69,7 +70,7 @@ class SettingsController extends Controller
     public function checkIfValidRoute($route)
     {
         if ($route) {
-            if (!isset($this->availableSettings[$route])) {
+            if (! isset($this->availableSettings[$route])) {
                 abort(404);
             }
         }
@@ -108,14 +109,15 @@ class SettingsController extends Controller
 
                 // Default tab - active subs
                 $activeSubsTab = 'subscriptions';
-                if ($request->get('active')) {
+                if($request->get('active')){
                     $activeSubsTab = $request->get('active');
                 }
 
                 // Get either active (own) subs or subs paid for
-                if ($activeSubsTab == 'subscriptions') {
+                if($activeSubsTab == 'subscriptions'){
                     $subscriptions = Subscription::with(['creator'])->where('sender_user_id', $userID)->orderBy('id', 'desc')->paginate(6);
-                } else {
+                }
+                else{
                     $subscriptions = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->paginate(6);
                 }
                 $subscribersCount = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->count();
@@ -130,25 +132,25 @@ class SettingsController extends Controller
                 $data['subscribers'] = $subscribers;
                 break;
             case 'privacy':
-                $devices = UserDevice::where('user_id', $userID)->orderBy('created_at', 'DESC')->get()->map(function ($item) {
+                $devices = UserDevice::where('user_id', $userID)->orderBy('created_at','DESC')->get()->map(function ($item){
                     $agent = new Agent();
                     $agent->setUserAgent($item->agent);
                     $deviceType = 'Desktop';
-                    if ($agent->isPhone()) {
+                    if($agent->isPhone()){
                         $deviceType = 'Mobile';
                     }
-                    if ($agent->isTablet()) {
+                    if($agent->isTablet()){
                         $deviceType = 'Tablet';
                     }
-                    $item->setAttribute('device_type', $deviceType);
-                    $item->setAttribute('browser', $agent->browser());
-                    $item->setAttribute('device', $agent->device());
-                    $item->setAttribute('platform', $agent->platform());
+                    $item->setAttribute('device_type',$deviceType);
+                    $item->setAttribute('browser',$agent->browser());
+                    $item->setAttribute('device',$agent->device());
+                    $item->setAttribute('platform',$agent->platform());
                     return $item;
                 });
                 $data['devices'] = $devices;
-                $data['verifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at', '<>', NULL)->count();
-                $data['unverifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at', NULL)->count();
+                $data['verifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at','<>',NULL)->count();
+                $data['unverifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at',NULL)->count();
                 $data['countries'] = Country::all();
                 JavaScript::put([
                     'userGeoBlocking' => [
@@ -174,13 +176,16 @@ class SettingsController extends Controller
                 $data['countries'] = Country::query()->where('name', '!=', 'All')->get();
                 break;
             case 'referrals':
-                if (getSetting('referrals.enabled')) {
-                    if (empty($user->referral_code)) {
+                if(getSetting('referrals.enabled')) {
+                    if(empty($user->referral_code)){
                         $user->referral_code = AuthServiceProvider::generateReferralCode(8);
                         $user->save();
                     }
                     $data['referrals'] = ReferralCodeUsage::with(['usedBy'])->where('referral_code', $user->referral_code)->orderBy('id', 'desc')->paginate(6);
                 }
+                break;
+            case 'rates':
+                    $data['offer'] = $user->offer;
                 break;
         }
 
@@ -201,37 +206,9 @@ class SettingsController extends Controller
         Javascript::put(
             [
                 'mediaSettings' => [
-                    'allowed_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('imagesOnly')),
+                    'allowed_file_extensions' => '.'.str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('imagesOnly')),
                     'max_file_upload_size' => (int) getSetting('media.max_file_upload_size'),
-                    'manual_payments_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
-                    'manual_payments_excel_icon' => asset('/img/excel-preview.svg'),
-                    'manual_payments_pdf_icon' => asset('/img/pdf-preview.svg'),
-                ],
-            ]
-        );
-
-        return view('pages.settings', array_merge(
-            $data,
-            [
-                'availableSettings' => $this->availableSettings,
-                'currentSettingTab' => $currentSettingTab,
-                'activeSettingsTab' => $currentTab,
-                'additionalAssets'   => $this->getAdditionalRouteAssets($route),
-            ]
-        ));
-    }
-
-
-    public function renderSettingReferrals($route, $data = [])
-    {
-        $currentTab = $route ? $route : 'referrals';
-        $currentSettingTab = $this->availableSettings[$currentTab];
-        Javascript::put(
-            [
-                'mediaSettings' => [
-                    'allowed_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('imagesOnly')),
-                    'max_file_upload_size' => (int) getSetting('media.max_file_upload_size'),
-                    'manual_payments_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
+                    'manual_payments_file_extensions' => '.'.str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
                     'manual_payments_excel_icon' => asset('/img/excel-preview.svg'),
                     'manual_payments_pdf_icon' => asset('/img/pdf-preview.svg'),
                 ],
@@ -258,7 +235,7 @@ class SettingsController extends Controller
     public function saveProfile(UpdateUserProfileSettingsRequest $request)
     {
         $validator = $this->validateUsername($request->get('username'));
-        if ($validator->fails()) {
+        if($validator->fails()){
             return back()->withErrors($validator);
         }
         $user = Auth::user();
@@ -277,13 +254,13 @@ class SettingsController extends Controller
         return back()->with('success', __('Settings saved.'));
     }
 
-    private function validateUsername($username)
-    {
+    private function validateUsername($username){
         $routes = [];
 
         // You need to iterate over the RouteCollection you receive here
         // to be able to get the paths and add them to the routes list
-        foreach (Route::getRoutes() as $route) {
+        foreach (Route::getRoutes() as $route)
+        {
             $routes[] = $route->uri;
         }
 
@@ -310,16 +287,36 @@ class SettingsController extends Controller
             $currentOffer = CreatorOffer::where('user_id', Auth::user()->id)->first();
             $data = [
                 'expires_at' => $offerExpireDate,
-                'old_profile_access_price' => $user->profile_access_price,
-                'old_profile_access_price_6_months' => $user->profile_access_price_6_months,
-                'old_profile_access_price_12_months' => $user->profile_access_price_12_months,
-                'old_profile_access_price_3_months' => $user->profile_access_price_3_months,
             ];
 
+
             if ($currentOffer) {
+                if ($user->profile_access_price != $request->get('profile_access_price')) {
+                    $data['old_profile_access_price'] = $user->profile_access_price;
+                }
+
+                if ($user->profile_access_price_6_months != $request->get('profile_access_price_6_months')) {
+                    $data['old_profile_access_price_6_months'] = $user->profile_access_price_6_months;
+                }
+
+                if ($user->profile_access_price_12_months != $request->get('profile_access_price_12_months')) {
+                    $data['old_profile_access_price_12_months'] = $user->profile_access_price_12_months;
+                }
+
+                if ($user->profile_access_price_3_months != $request->get('profile_access_price_3_months')) {
+                    $data['old_profile_access_price_3_months'] = $user->profile_access_price_3_months;
+                }
                 $currentOffer->update($data);
             } else {
+                $data = [
+                    'expires_at' => $offerExpireDate,
+                    'old_profile_access_price' => $user->profile_access_price,
+                    'old_profile_access_price_6_months' => $user->profile_access_price_6_months,
+                    'old_profile_access_price_12_months' => $user->profile_access_price_12_months,
+                    'old_profile_access_price_3_months' => $user->profile_access_price_3_months,
+                ];
                 $data['user_id'] = $user->id;
+
                 CreatorOffer::create($data);
             }
         } else {
@@ -331,8 +328,8 @@ class SettingsController extends Controller
 
         $rules = UpdateUserRatesSettingsRequest::getRules();
         $trimmedRules = [];
-        foreach ($rules as $key => $rule) {
-            if (($request->get($key) != null) || $key == 'profile_access_price') {
+        foreach($rules as $key => $rule){
+            if(($request->get($key) != null) || $key == 'profile_access_price'){
                 $trimmedRules[$key] = $rule;
             }
         }
@@ -363,17 +360,17 @@ class SettingsController extends Controller
         $user = Auth::user();
         $key = $request->get('key');
         $value = filter_var($request->get('value'), FILTER_VALIDATE_BOOLEAN);
-        if (!in_array($key, ['public_profile', 'paid-profile', 'enable_2fa', 'enable_geoblocking', 'open_profile'])) {
+        if (! in_array($key, ['public_profile', 'paid-profile','enable_2fa', 'enable_geoblocking', 'open_profile'])) {
             return response()->json(['success' => false, 'message' => __('Settings not saved')]);
         }
-        if ($key === 'paid-profile') {
+        if($key === 'paid-profile'){
             $key = 'paid_profile';
         }
 
-        if ($key == 'enable_2fa') {
-            if ($value) {
+        if($key == 'enable_2fa'){
+            if($value){
                 $userDevices = UserDevice::where('user_id', $user->id)->get();
-                if (count($userDevices) == 0) {
+                if(count($userDevices) == 0){
                     AuthServiceProvider::addNewUserDevice($user->id, true);
                 }
             }
@@ -394,7 +391,7 @@ class SettingsController extends Controller
      */
     public function saveAccount(UpdateUserSettingsRequest $request)
     {
-        Auth::user()->update(['password' => Hash::make($request->input('confirm_password'))]);
+        Auth::user()->update(['password'=>Hash::make($request->input('confirm_password'))]);
 
         return back()->with('success', __('Settings saved.'));
     }
@@ -468,21 +465,21 @@ class SettingsController extends Controller
         $type = $request->route('uploadType');
 
         try {
-            $directory = 'users/' . $type;
+            $directory = 'users/'.$type;
             $s3 = Storage::disk(config('filesystems.defaultFilesystemDriver'));
             $fileId = Uuid::uuid4()->getHex();
-            $filePath = $directory . '/' . $fileId . '.' . $file->guessClientExtension();
+            $filePath = $directory.'/'.$fileId.'.'.$file->guessClientExtension();
 
             $img = Image::make($file);
             if ($type == 'cover') {
                 $coverWidth = 599;
                 $coverHeight = 180;
-                if (getSetting('media.users_covers_size')) {
-                    $coverSizes = explode('x', getSetting('media.users_covers_size'));
-                    if (isset($coverSizes[0])) {
+                if(getSetting('media.users_covers_size')){
+                    $coverSizes = explode('x',getSetting('media.users_covers_size'));
+                    if(isset($coverSizes[0])){
                         $coverWidth = (int)$coverSizes[0];
                     }
-                    if (isset($coverSizes[1])) {
+                    if(isset($coverSizes[1])){
                         $coverHeight = (int)$coverSizes[1];
                     }
                 }
@@ -491,12 +488,12 @@ class SettingsController extends Controller
             } else {
                 $avatarWidth = 96;
                 $avatarHeight = 96;
-                if (getSetting('media.users_avatars_size')) {
-                    $sizes = explode('x', getSetting('media.users_avatars_size'));
-                    if (isset($sizes[0])) {
+                if(getSetting('media.users_avatars_size')){
+                    $sizes = explode('x',getSetting('media.users_avatars_size'));
+                    if(isset($sizes[0])){
                         $avatarWidth = (int)$sizes[0];
                     }
-                    if (isset($sizes[1])) {
+                    if(isset($sizes[1])){
                         $avatarHeight = (int)$sizes[1];
                     }
                 }
@@ -510,11 +507,11 @@ class SettingsController extends Controller
             // Saving to disk
             $s3->put($filePath, $img, 'public');
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => ['file' => $exception->getMessage()]]);
+            return response()->json(['success' => false, 'errors' => ['file'=>$exception->getMessage()]]);
         }
 
         $assetPath = GenericHelperServiceProvider::getStorageAvatarPath($filePath);
-        if ($type == 'cover') {
+        if($type == 'cover'){
             $assetPath = GenericHelperServiceProvider::getStorageCoverPath($filePath);
         }
         return response()->json(['success' => true, 'assetSrc' => $assetPath]);
@@ -535,7 +532,7 @@ class SettingsController extends Controller
         }
         Auth::user()->update($data);
 
-        return response()->json(['success' => true, 'message' => ucfirst($type) . ' ' . __("removed successfully") . '.', 'data' => [
+        return response()->json(['success' => true, 'message' => ucfirst($type).' '.__("removed successfully").'.', 'data' => [
             'avatar' => Auth::user()->avatar,
             'cover' => Auth::user()->cover,
         ]]);
@@ -550,7 +547,7 @@ class SettingsController extends Controller
     public function updateUserSettings(Request $request)
     {
         try {
-            if (!in_array($request->key, [
+            if (! in_array($request->key, [
                 'notification_email_new_post_created',
                 'notification_email_new_sub',
                 'notification_email_new_message',
@@ -565,11 +562,10 @@ class SettingsController extends Controller
                 return response()->json(['success' => false, 'message' => __('Invalid setting key')]);
             }
 
-            User::where('id', Auth::user()->id)->update([
-                'settings' => array_merge(
-                    Auth::user()->settings->toArray(),
-                    [$request->get('key') => $request->get('value')]
-                ),
+            User::where('id', Auth::user()->id)->update(['settings'=> array_merge(
+                Auth::user()->settings->toArray(),
+                [$request->get('key') => $request->get('value')]
+            ),
             ]);
 
             return response()->json(['success' => true, 'message' => __('Settings saved')]);
@@ -620,14 +616,14 @@ class SettingsController extends Controller
         try {
             $attachmentId = $request->get('assetSrc');
             $data = json_decode($request->session()->get('verifyAssets'));
-            $file = Attachment::where('user_id', Auth::user()->id)->where('id', $attachmentId)->first();
+            $file = Attachment::where('user_id',Auth::user()->id)->where('id', $attachmentId)->first();
             $newData = array_diff($data, [$attachmentId]);
             session(['verifyAssets' => json_encode($newData)]);
             $storage = Storage::disk(config('filesystems.defaultFilesystemDriver'));
             $storage->delete($file->filename);
             return response()->json(['success' => true]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => ['file' => $exception->getMessage()]]);
+            return response()->json(['success' => false, 'errors' => ['file'=>$exception->getMessage()]]);
         }
     }
 
@@ -640,7 +636,7 @@ class SettingsController extends Controller
     public function saveVerifyRequest(Request $request)
     {
         if ($request->session()->get('verifyAssets')) {
-            if (!Auth::user()->verification) {
+            if (! Auth::user()->verification) {
                 UserVerify::create([
                     'user_id' => Auth::user()->id,
                     'files' => $request->session()->get('verifyAssets'),
@@ -680,8 +676,7 @@ class SettingsController extends Controller
         }
     }
 
-    public static function getCountries()
-    {
+    public static function getCountries(){
         try {
             $countries = Country::all();
             return response()->json(['success' => true, 'data' => $countries]);
@@ -690,16 +685,16 @@ class SettingsController extends Controller
         }
     }
 
-    protected function checkReferralAccess()
-    {
-        if (!getSetting('referrals.enabled')) {
+    protected function checkReferralAccess(){
+        if(!getSetting('referrals.enabled')){
             unset($this->availableSettings['referrals']);
         }
-        if (getSetting('referrals.disable_for_non_verified')) {
+        if(getSetting('referrals.disable_for_non_verified')){
             $user = Auth::user();
-            if (!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))) {
+            if(!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified') )){
                 unset($this->availableSettings['referrals']);
             }
         }
     }
+
 }

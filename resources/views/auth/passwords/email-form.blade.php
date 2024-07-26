@@ -3,7 +3,7 @@
     <div class="form-group ">
         <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label>
         <div class="">
-            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror " name="email"
+            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
                 value="{{ old('email') }}" autocomplete="email" autofocus>
             @error('email')
                 <span class="invalid-feedback" role="alert">

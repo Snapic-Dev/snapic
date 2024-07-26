@@ -30,9 +30,16 @@
     @endif
 >
     <span>{{__('Subscribe')}}</span>
-    <span>
+    <span class="d-flex">
+
+
         {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($user->profile_access_price_3_months * 3)}}
         {{__('for')}}
         {{trans_choice('months', 3,['number'=>3])}}
+        <span class="d-none d-md-flex ml-1">
+            @if(isset($offer['discountAmount']['90']) && $offer['discountAmount']['90'] > 0)
+                ({{round($offer['discountAmount']['90'])}}% {{__('off')}})
+            @endif
+        </span>
     </span>
 </button>

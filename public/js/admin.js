@@ -512,6 +512,7 @@ var Admin = {
                             'media.users_covers_size',
                             'media.users_avatars_size',
                             'media.max_avatar_cover_file_size',
+                            'media.disable_media_right_click',
                         ].includes(settingName)){
                             $(element).hide();
                         }
@@ -603,6 +604,7 @@ var Admin = {
                         'media.users_covers_size',
                         'media.users_avatars_size',
                         'media.max_avatar_cover_file_size',
+                        'media.disable_media_right_click',
                     ].includes(settingName)){
                         $(element).show();
                     }

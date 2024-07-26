@@ -64,14 +64,12 @@ class GenericHelperServiceProvider extends ServiceProvider
      * @param $userID - User sending the message
      * @return bool
      */
-    public static function hasUserBlocked($contactUserID, $userID)
-    {
-        $contactUser = User::where('id', $contactUserID)->first();
+    public static function hasUserBlocked($contactUserID, $userID){
+        $contactUser = User::where('id',$contactUserID)->first();
         $blockedUsers = ListsHelperServiceProvider::getListMembers($contactUser->lists->firstWhere('type', 'blocked')->id);
-        if (in_array($userID, $blockedUsers)) {
+        if(in_array($userID, $blockedUsers)){
             return true;
-        }
-        ;
+        };
         return false;
     }
 
@@ -90,7 +88,7 @@ class GenericHelperServiceProvider extends ServiceProvider
                 } while (Wallet::query()->where('id', $id)->first() != null);
 
                 $balance = 0.0;
-                if (getSetting('profiles.default_wallet_balance_on_register') && getSetting('profiles.default_wallet_balance_on_register') != 0) {
+                if(getSetting('profiles.default_wallet_balance_on_register') && getSetting('profiles.default_wallet_balance_on_register') != 0){
                     $balance = getSetting('profiles.default_wallet_balance_on_register');
                 }
                 Wallet::create([
@@ -100,7 +98,7 @@ class GenericHelperServiceProvider extends ServiceProvider
                 ]);
             }
         } catch (\Exception $exception) {
-            Log::error('User wallet creation error: ' . $exception->getMessage());
+            Log::error('User wallet creation error: '.$exception->getMessage());
         }
     }
 
@@ -110,31 +108,34 @@ class GenericHelperServiceProvider extends ServiceProvider
      * @param $value
      * @return string
      */
-    public static function getStorageAvatarPath($value)
-    {
-        if ($value && $value !== config('voyager.user.default_avatar', '/img/default-avatar.png')) {
+    public static function getStorageAvatarPath($value){
+        if($value && $value !== config('voyager.user.default_avatar', '/img/default-avatar.png')){
             if (getSetting('storage.driver') == 's3') {
                 if (getSetting('storage.aws_cdn_enabled') && getSetting('storage.aws_cdn_presigned_urls_enabled')) {
                     $fileUrl = AttachmentServiceProvider::signAPrivateDistributionPolicy(
-                        'https://' . getSetting('storage.cdn_domain_name') . '/' . $value
+                        'https://'.getSetting('storage.cdn_domain_name').'/'.$value
                     );
                 } elseif (getSetting('storage.aws_cdn_enabled')) {
-                    $fileUrl = 'https://' . getSetting('storage.cdn_domain_name') . '/' . $value;
+                    $fileUrl = 'https://'.getSetting('storage.cdn_domain_name').'/'.$value;
                 } else {
-                    $fileUrl = 'https://' . getSetting('storage.aws_bucket_name') . '.s3.' . getSetting('storage.aws_region') . '.amazonaws.com/' . $value;
+                    $fileUrl = 'https://'.getSetting('storage.aws_bucket_name').'.s3.'.getSetting('storage.aws_region').'.amazonaws.com/'.$value;
                 }
                 return $fileUrl;
-            } elseif (getSetting('storage.driver') == 'wasabi' || getSetting('storage.driver') == 'do_spaces') {
+            }
+            elseif(getSetting('storage.driver') == 'wasabi' || getSetting('storage.driver') == 'do_spaces'){
                 return Storage::url($value);
-            } elseif (getSetting('storage.driver') == 'minio') {
-                return rtrim(getSetting('storage.minio_endpoint'), '/') . '/' . getSetting('storage.minio_bucket_name') . '/' . $value;
-            } elseif (getSetting('storage.driver') == 'pushr') {
-                return rtrim(getSetting('storage.pushr_cdn_hostname'), '/') . '/' . $value;
-            } else {
+            }
+            elseif(getSetting('storage.driver') == 'minio'){
+                return rtrim(getSetting('storage.minio_endpoint'), '/').'/'.getSetting('storage.minio_bucket_name').'/'.$value;
+            }
+            elseif(getSetting('storage.driver') == 'pushr'){
+                return rtrim(getSetting('storage.pushr_cdn_hostname'), '/').'/'.$value;
+            }
+            else{
                 return Storage::disk('public')->url($value);
             }
-        } else {
-            return str_replace('storage/', '', asset(config('voyager.user.default_avatar', '/img/default-avatar.png')));
+        }else{
+            return str_replace('storage/','',asset(config('voyager.user.default_avatar', '/img/default-avatar.png')));
         }
     }
 
@@ -144,30 +145,33 @@ class GenericHelperServiceProvider extends ServiceProvider
      * @param $value
      * @return string
      */
-    public static function getStorageCoverPath($value)
-    {
-        if ($value) {
+    public static function getStorageCoverPath($value){
+        if($value){
             if (getSetting('storage.driver') == 's3') {
                 if (getSetting('storage.aws_cdn_enabled') && getSetting('storage.aws_cdn_presigned_urls_enabled')) {
                     $fileUrl = AttachmentServiceProvider::signAPrivateDistributionPolicy(
-                        'https://' . getSetting('storage.cdn_domain_name') . '/' . $value
+                        'https://'.getSetting('storage.cdn_domain_name').'/'.$value
                     );
                 } elseif (getSetting('storage.aws_cdn_enabled')) {
-                    $fileUrl = 'https://' . getSetting('storage.cdn_domain_name') . '/' . $value;
+                    $fileUrl = 'https://'.getSetting('storage.cdn_domain_name').'/'.$value;
                 } else {
-                    $fileUrl = 'https://' . getSetting('storage.aws_bucket_name') . '.s3.' . getSetting('storage.aws_region') . '.amazonaws.com/' . $value;
+                    $fileUrl = 'https://'.getSetting('storage.aws_bucket_name').'.s3.'.getSetting('storage.aws_region').'.amazonaws.com/'.$value;
                 }
                 return $fileUrl;
-            } elseif (getSetting('storage.driver') == 'wasabi' || getSetting('storage.driver') == 'do_spaces') {
+            }
+            elseif(getSetting('storage.driver') == 'wasabi' || getSetting('storage.driver') == 'do_spaces'){
                 return Storage::url($value);
-            } elseif (getSetting('storage.driver') == 'minio') {
-                return rtrim(getSetting('storage.minio_endpoint'), '/') . '/' . getSetting('storage.minio_bucket_name') . '/' . $value;
-            } elseif (getSetting('storage.driver') == 'pushr') {
-                return rtrim(getSetting('storage.pushr_cdn_hostname'), '/') . '/' . $value;
-            } else {
+            }
+            elseif(getSetting('storage.driver') == 'minio'){
+                return rtrim(getSetting('storage.minio_endpoint'), '/').'/'.getSetting('storage.minio_bucket_name').'/'.$value;
+            }
+            elseif(getSetting('storage.driver') == 'pushr'){
+                return rtrim(getSetting('storage.pushr_cdn_hostname'), '/').'/'.$value;
+            }
+            else{
                 return Storage::disk('public')->url($value);
             }
-        } else {
+        }else{
             return asset(config('voyager.user.default_cover', '/img/default-cover.png'));
         }
     }
@@ -176,8 +180,7 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Helper to detect mobile usage
      * @return bool
      */
-    public static function isMobileDevice()
-    {
+    public static function isMobileDevice(){
         $agent = new Agent();
         return $agent->isMobile();
     }
@@ -186,31 +189,27 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Returns true if email enforce is not enabled or if is set to true and user is verified
      * @return bool
      */
-    public static function isEmailEnforcedAndValidated()
-    {
+    public static function isEmailEnforcedAndValidated(){
         return ((Auth::check() && Auth::user()->email_verified_at) || (Auth::check() && !getSetting('site.enforce_email_validation')));
     }
 
-    public static function parseProfileMarkdownBio($bio)
-    {
-        if (getSetting('profiles.allow_profile_bio_markdown')) {
+    public static function parseProfileMarkdownBio($bio){
+        if(getSetting('profiles.allow_profile_bio_markdown')){
             $parsedOutput = Purifier::clean(Markdown::convert($bio)->getContent());
             return $parsedOutput;
         }
         return $bio;
     }
 
-    public static function parseSafeHTML($text)
-    {
-        return Purifier::clean((str_replace("\n", "<br>", strip_tags($text))));
+    public static function parseSafeHTML($text){
+        return  Purifier::clean((str_replace("\n", "<br>",strip_tags($text))));
     }
 
     /**
      * Fetches list of all public pages to be show in footer
      * @return mixed
      */
-    public static function getFooterPublicPages()
-    {
+    public static function getFooterPublicPages(){
         $pages = [];
         if (InstallerServiceProvider::checkIfInstalled()) {
             $pages = PublicPage::where('shown_in_footer', 1)->orderBy('page_order')->get();
@@ -222,11 +221,11 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Get Privacy page
      * @return mixed
      */
-    public static function getPrivacyPage()
-    {
-        try {
+    public static function getPrivacyPage(){
+        try{
             return PublicPage::where('is_privacy', 1)->first();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e){
             return PublicPage::first();
         }
 
@@ -236,11 +235,11 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Get TOS page
      * @return mixed
      */
-    public static function getTOSPage()
-    {
-        try {
+    public static function getTOSPage(){
+        try{
             return PublicPage::where('is_tos', 1)->first();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e){
             return PublicPage::first();
         }
     }
@@ -250,12 +249,11 @@ class GenericHelperServiceProvider extends ServiceProvider
      * @param $user
      * @return bool
      */
-    public static function creatorCanEarnMoney($user)
-    {
-        if (intval(getSetting("compliance.minimum_posts_until_creator")) > 0 && count($user->posts) < intval(getSetting('compliance.minimum_posts_until_creator'))) {
+    public static function creatorCanEarnMoney($user) {
+        if(intval(getSetting("compliance.minimum_posts_until_creator")) > 0 && count($user->posts) < intval(getSetting('compliance.minimum_posts_until_creator'))){
             return false;
         }
-        if (getSetting('compliance.monthly_posts_before_inactive') && !$user->is_active_creator) {
+        if(getSetting('compliance.monthly_posts_before_inactive') && !$user->is_active_creator){
             return false;
         }
         return true;
@@ -266,10 +264,9 @@ class GenericHelperServiceProvider extends ServiceProvider
      * TODO: This is only used in the payments module | Maybe delete it and use LocaleProvider based alternative
      * @return \Illuminate\Config\Repository|mixed|null
      */
-    public static function getPreferredLanguage()
-    {
+    public static function getPreferredLanguage(){
         // Defaults
-        if (!Session::has('locale')) {
+        if (! Session::has('locale')) {
             if (InstallerServiceProvider::checkIfInstalled()) {
                 return getSetting('site.default_site_language');
             } else {
@@ -287,9 +284,8 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Fetches the default OGMeta image to be used (except for profile)
      * @return \Illuminate\Config\Repository|mixed|string|null
      */
-    public static function getOGMetaImage()
-    {
-        if (getSetting('site.default_og_image')) {
+    public static function getOGMetaImage(){
+        if(getSetting('site.default_og_image')){
             return getSetting('site.default_og_image');
         }
         return asset('img/logo-black.png');
@@ -299,18 +295,16 @@ class GenericHelperServiceProvider extends ServiceProvider
      * Gets site direction. If rtl cookie not set, defaults to site setting
      * @return \Illuminate\Config\Repository|mixed|null
      */
-    public static function getSiteDirection()
-    {
-        if (is_null(Cookie::get('app_rtl'))) {
+    public static function getSiteDirection(){
+        if(is_null(Cookie::get('app_rtl'))){
             return getSetting('site.default_site_direction');
         }
         return Cookie::get('app_rtl');
     }
 
-    public static function getSiteTheme()
-    {
+    public static function getSiteTheme(){
         $mode = Cookie::get('app_theme');
-        if (!$mode) {
+        if(!$mode){
             $mode = getSetting('site.default_user_theme');
         }
         return $mode;
