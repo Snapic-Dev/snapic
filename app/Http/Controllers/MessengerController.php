@@ -29,18 +29,27 @@ use Ramsey\Uuid\Uuid;
 
 class MessengerController extends Controller
 {
-
-
-    public function showTeste()
+    
+    public function sendMassMessage(Request $request)
     {
-        return view('auth.register-influencer');
-    }
 
-
-    public function teste(Request $request)
-    {
-        $testee = "testeee";
-        return dd($testee);
+        $users = User::all();
+    
+        // Mensagem que será enviada
+        $message = "Esta é uma mensagem de teste.";
+    
+        // Envia a mensagem para cada usuário
+        foreach ($users as $user) {
+            // Aqui você pode definir a lógica para enviar a mensagem
+            // Por exemplo, se você estiver usando e-mail, pode fazer algo assim:
+            // Mail::to($user->email)->send(new TestMessageMail($message));
+    
+            // Para fins de demonstração, vamos apenas registrar a mensagem
+            Log::info("Enviando mensagem para {$user->email}: {$message}");
+        }
+    
+        // Retorna uma resposta indicando que as mensagens foram enviadas
+        return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
     }
 
 
