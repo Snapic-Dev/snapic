@@ -36,18 +36,24 @@ class MessengerController extends Controller
         $currentUserId = auth()->id();
 
         // Busca usuários que estão te seguindo e aqueles que você está inscrito
-        $users = DB::table('user_list_members')
+        $userListQuery = DB::table('user_list_members')
             ->select('user_list_members.user_id as id')
-            ->where('user_list_members.list_id', $currentUserId)
-            ->union(
-                DB::table('subscriptions')
-                    ->select('subscriptions.subscriber_id as id')
-                    ->where('subscriptions.user_id', $currentUserId)
-            )
+            ->where('user_list_members.list_id', $currentUserId);
+
+        $subscriptionsQuery = DB::table('subscriptions')
+            ->select('subscriptions.subscriber_id as id')
+            ->where('subscriptions.user_id', $currentUserId);
+
+        // Depurando as consultas
+        Log::info($userListQuery->toSql());
+        Log::info($subscriptionsQuery->toSql());
+
+        $users = $userListQuery
+            ->union($subscriptionsQuery)
             ->distinct()
             ->get();
 
-        // Mensagem que será enviada
+
         $message = "Esta é uma mensagem de teste.";
 
         // Envia a mensagem para cada usuário
@@ -65,6 +71,7 @@ class MessengerController extends Controller
         // Retorna uma resposta indicando que as mensagens foram enviadas
         return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
     }
+
 
 
     /**

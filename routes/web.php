@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\RegisterInfluencerController;
 use App\Http\Controllers\MessengerController;
+use Illuminate\Routing\Route;
+use TCG\Voyager\Facades\Voyager;
 
 /*
 |--------------------------------------------------------------------------
