@@ -19,7 +19,7 @@
     <div class="form-group p-1">
         <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label>
         <div class="">
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
+            <input id="name" type="text" placeholder="Apelido" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -31,7 +31,7 @@
     <div class="form-group p-1">
         <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label>
         <div class="">
-            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+            <input id="email" type="email" placeholder="Email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
             @error('email')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -43,7 +43,7 @@
     <div class="form-group p-1">
         <label for="password" class=" col-form-label required-label">{{ __('Password') }}</label>
         <div class="">
-            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" required name="password" autocomplete="new-password">
+            <input id="password" type="password" placeholder="Senha" class="form-control @error('password') is-invalid @enderror" required name="password" autocomplete="new-password">
 
             @error('password')
             <span class="invalid-feedback" role="alert">
@@ -57,7 +57,7 @@
         <label for="password-confirm" class=" col-form-label required-label">{{ __('Confirm Password') }}</label>
 
         <div class="">
-            <input id="password-confirm" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" required name="password_confirmation" autocomplete="new-password">
+            <input id="password-confirm" type="password" placeholder="Confirmar senha" class="form-control @error('password_confirmation') is-invalid @enderror" required name="password_confirmation" autocomplete="new-password">
             @error('password_confirmation')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="form-group p-2">
-        <div class="custom-control custom-checkbox ">
+        <div class="custom-control custom-checkbox mt-3 mb-3">
             <div class="">
                 <input class="custom-control-input @error('terms') is-invalid @enderror" id="tosAgree" type="checkbox" name="terms" value="1" placeholder="{{ __('Terms and Conditions') }}">
                 <label class="custom-control-label" for="tosAgree">

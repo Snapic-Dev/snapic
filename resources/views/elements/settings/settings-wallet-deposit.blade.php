@@ -6,6 +6,7 @@
     <input class="form-control inputText depositInput" placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}" aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
     <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
 </div>
+<div class="feedbackForUser text-sm mb-3 ml-2 text-bold"></div>
 
 <div>
     <div class="payment-method p-2">
@@ -40,11 +41,7 @@
                                     <!-- <input class="p-4 inputPix text-bold text-center" disabled></input> -->
                                     <div class="amountText d-flex justify-content-between p-2">
                                         <h4>Pagamento Total</h4>
-                                        <h5 class="amountPix">
-                                            <div class="spinner-border" role="status">
-
-                                            </div>
-                                        </h5>
+                                        <h5 class="amountPix"></h5>
                                     </div>
                                     <div class="line"></div>
                                     <div class="timePayment d-flex justify-content-between p-2">
@@ -52,9 +49,6 @@
                                         <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
                                     </div>
                                     <div class="p-4 mt-3 mb-2">
-                                        <div class="spinner-border qrcodeLoading" role="status">
-
-                                        </div>
                                         <img class="qrCodeImage" src=""></img>
                                     </div>
                                 </div>
@@ -93,8 +87,11 @@
         </div>
 
         <div class="mt-4">
-            <button type="button" onclick="generatePix()" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-toggle="modal" data-target="#staticBackdrop" onclick="showDepositValue()">
-                Depositar
+            <button type="button" onclick="generatePix()" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-target="#staticBackdrop" onclick="showDepositValue()" <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                <div class="d-flex justify-content-center">
+                    <span class="spinner spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                    <span class="textLoadingBtn">Depositar</span>
+                </div>
             </button>
             <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -133,7 +130,7 @@
                                 Seus dados de cartão estão seguros conosco. Preencha os campos com confiança para
                                 concluir sua transação com segurança.
                             </p>
-                            <button class="p-3 pl-2 pr-2 mt-2 btn btn-round btn-primary border btn-block">
+                            <button class="p-3 pl-2 pr-2 mt-3 mb-3 btn btn-round btn-primary border btn-block">
                                 Confirmar
                             </button>
                         </div>
@@ -154,12 +151,14 @@
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
         let modalCreditCard = document.querySelector(".modalCreditCard");
         let depositInput = document.querySelector(".depositInput");
-        let inputPix = document.querySelector(".inputPix");
         let modalPix = document.querySelector("#staticBackdrop");
         let qrCodeImage = document.querySelector(".qrCodeImage");
         let amountPix = document.querySelector(".amountPix");
         let btnPix = document.querySelector(".btnPix");
         let qrcodeLoading = document.querySelector(".qrcodeLoading");
+        let textLoadingBtn = document.querySelector(".textLoadingBtn");
+        let spinner = document.querySelector('.spinner')
+        let feedbackForUser = document.querySelector('.feedbackForUser');
 
         function showCreditInput() {
             if (pixRadio.checked) {
@@ -214,33 +213,75 @@
             }
         };
 
+        function showSpinner() {
+            spinner.style.display = 'flex';
+            console.log('spinner')
+        }
+
+        function hideSpinner() {
+            spinner.style.display = 'none';
+        }
+
 
         const generatePix = async () => {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+            feedbackForUser.innerText = ""
+            if (depositInput.value !== "" && depositInput.value > 50) {
+                if (modalCreditCard.getAttribute("data-target") === "#staticBackdrop") {
+                    amountPix.innerText = ""
+                    showSpinner();
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                username: "example",
+                                transaction_type: "deposit",
+                                provider: "pix",
+                                amount: depositInput.value
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            launchToast("danger", trans("Error"), `Network response was not ok ${response.statusText}`);
+                            return;
+                        }
+
+                        const responseData = await response.json();
+                        console.log(responseData.id);
+                        const qrCode = await responseData.qr_codes[0];
+                        console.log(qrCode);
+
+
+                        const expiration_date = qrCode.expiration_date;
+
+
+                        calculateTimeDifference(expiration_date);
+
+
+                        if (responseData) {
+                            qrCodeImage.setAttribute('src', qrCode.links[0].href);
+                            amountPix.innerText = "R$" + depositInput.value;
+                            $('#staticBackdrop').modal('show')
+                            launchToast("success",
+                                trans("Success"), "Pix gerado com sucesso");
+                        }
+
+                        pixCode = qrCode.text;
+                    } catch (error) {
+                        console.log(error);
+                        launchToast("danger", trans("Error"), "Erro inesperado");
+                    } finally {
+                        hideSpinner();
+                    }
+                } else {
+                    showSpinner();
+                    $('#staticBackdrop2').modal('show')
                 }
-            });
-
-            if (!response.ok) {
-                showToast(`Network response was not ok ${response.statusText}`, true);
-                return;
+            } else {
+                feedbackForUser.innerText = "Preencha o campo para prosseguir"
             }
-
-            const responseData = await response.json();
-            const qrCorde = responseData.data.qr_codes[0];
-            const expiration_date = qrCorde.expiration_date;
-            calculateTimeDifference(expiration_date);
-            if (responseData) {
-                qrCodeImage.style.display = 'flex';
-                qrcodeLoading.style.display = 'none';
-            }
-
-            modalPix.style.display = "block";
-            qrCodeImage.setAttribute('src', responseData.data.qr_codes[0].links[0].href);
-            amountPix.innerText = "R$" + (responseData.data.qr_codes[0].amount.value).toFixed(2);
-            pixCode = responseData.data.qr_codes[0].text;
         }
 
         function copyCodePix() {
@@ -267,21 +308,6 @@
                 .catch(err => {
                     console.error('Erro ao copiar: ', err);
                 });
-        }
-
-        function formatBrazilianDate(isoDate) {
-            const date = new Date(isoDate);
-
-            const formatNumber = (value) => (value < 10 ? `0${value}` : value);
-
-            const day = formatNumber(date.getDate());
-            const month = formatNumber(date.getMonth() + 1);
-            const year = date.getFullYear();
-            const hours = formatNumber(date.getHours());
-            const minutes = formatNumber(date.getMinutes());
-            const seconds = formatNumber(date.getSeconds());
-
-            return `${day}/${month}/${year} | ${hours}:${minutes}:${seconds}`;
         }
 
         function calculateTimeDifference(dataExpiration) {

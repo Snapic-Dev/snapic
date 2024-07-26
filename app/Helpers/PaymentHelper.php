@@ -22,6 +22,7 @@ use App\Providers\NotificationServiceProvider;
 use App\Providers\PaymentsServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\User;
+use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use GuzzleHttp\Client;
@@ -356,7 +357,7 @@ class PaymentHelper
                     'amount' => [
                         'value' => 500,
                     ],
-                    'expiration_date' => '2024-08-29T20:15:59-03:00',
+                    'expiration_date' => Carbon::now()->addMinutes(30)->toIso8601String(),
                 ],
             ],
             'shipping' => [

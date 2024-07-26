@@ -8,9 +8,7 @@
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
                             <a href="{{action('HomeController@index')}}">
-                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                                    class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
-                                    alt="{{__("Site logo")}}">
+                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}" class="d-inline-block align-top mr-1 ml-3 brand-logo-form" alt="{{__("Site logo")}}">
                             </a>
                             <form method="POST" action="{{ route('password.update') }}">
                                 @csrf
@@ -18,14 +16,11 @@
                                 <div class="form-group">
                                     <label for="email" class=" col-form-label">{{ __('E-Mail Address') }}</label>
                                     <div class="">
-                                        <input id="email" type="email"
-                                            class="form-control @error('email') is-invalid @enderror" name="email"
-                                            value="{{ $email ?? old('email') }}" required autocomplete="email"
-                                            autofocus>
+                                        <input id="email" type="email" placeholder="Email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
                                         @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                         @enderror
                                     </div>
                                 </div>
@@ -34,29 +29,24 @@
                                     <label for="password" class="col-form-label">{{ __('Password') }}</label>
 
                                     <div class="">
-                                        <input id="password" type="password"
-                                            class="form-control @error('password') is-invalid @enderror" name="password"
-                                            required autocomplete="new-password">
+                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
                                         @error('password')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                         @enderror
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="password-confirm"
-                                        class="col-form-label">{{ __('Confirm Password') }}</label>
+                                    <label for="password-confirm" class="col-form-label">{{ __('Confirm Password') }}</label>
                                     <div class="">
-                                        <input id="password-confirm" type="password" class="form-control"
-                                            name="password_confirmation" required autocomplete="new-password">
+                                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                                     </div>
                                 </div>
                                 <div class="form-group  mb-0">
                                     <div class="">
-                                        <button type="submit"
-                                            class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                                        <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                                             {{ __('Reset Password') }}
                                         </button>
                                     </div>

@@ -818,7 +818,7 @@ footer .brand-logo {
 
 .alertWitdrawalMsg {
     text-align: center;
-    color: rgba(0, 0, 0, 0.671);
+    color: var();
 }
 
 /*Dispatch email */
@@ -876,9 +876,6 @@ footer .brand-logo {
   font-weight: 500;
 }
 
-.qrCodeImage {
-  display: none;
-}
 
 .qrcodeLoading {
   color:#673AB6;
@@ -886,4 +883,37 @@ footer .brand-logo {
 
 .dateFilter {
   border: 1px solid rgba(0, 0, 0, 0.151);
+}
+
+.spinner {
+  display: none;
+}
+
+.btn200:hover,.btn50:hover,.btn100:hover,.btn400:hover,.btn10:hover,.btn1000:hover {
+  color: white;
+  background-color: #673AB6;
+}
+
+
+
+.table-responsive::-webkit-scrollbar {
+  width: 10px;
+  height: 5px; /* A altura só é vista quando a rolagem é horizontal */
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgb(219, 219, 219);
+  padding: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color:#673AB6;
+  border-radius: 15px;
+  height: 5px;
+  width: 10px;
+  height: 5px;
+}
+
+.tableLong {
+  width: 900px
 }

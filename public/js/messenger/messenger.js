@@ -290,7 +290,7 @@ var messenger = {
         messenger.isSendingMessage = false;
       },
       error: function (result) {
-        launchToast("danger", trans("Error"), result.responseJSON.message);
+        launchToast("danger", trans("Error"), "Falha no broadcast da mensagem");
         updateButtonState("loaded", $(".send-message"));
         messenger.isSendingMessage = false;
       },
@@ -325,7 +325,11 @@ var messenger = {
         updateButtonState("loaded", submitButton, trans("Save"));
       },
       error: function (result) {
-        launchToast("danger", trans("Error"), result.responseJSON.message);
+        launchToast(
+          "danger",
+          trans("Error"),
+          "Erro inesperado. Tente novamente mais tarde"
+        );
         updateButtonState("loaded", submitButton, trans("Save"));
       },
     });
@@ -837,7 +841,11 @@ var messenger = {
         );
         element.remove();
         hideDialog("message-delete-dialog");
-        launchToast("success", trans("Success"), trans("Message removed"));
+        launchToast(
+          "success",
+          trans("Success"),
+          "Mensagem apagada com sucesso"
+        );
         if (result.isLastMessage === true) {
           messenger.fetchContacts(function () {
             if (messenger.state.contacts.length >= 1) {
@@ -859,7 +867,11 @@ var messenger = {
       },
       error: function (result) {
         hideDialog("message-delete-dialog");
-        launchToast("danger", trans("Error"), result.responseJSON.message);
+        launchToast(
+          "danger",
+          trans("Error"),
+          "Erro inesperado ao apagar mensagem"
+        );
       },
     });
   },

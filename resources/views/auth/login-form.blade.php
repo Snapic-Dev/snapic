@@ -17,7 +17,7 @@
     <div class="form-group p-1">
         <label for="name" class="col-form-label required-label">{{ __('Name') }}</label>
         <div class="">
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
+            <input id="name" type="text" placeholder="Apelido" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -29,7 +29,7 @@
     <div class="form-group p-1">
         <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
         <div class="">
-            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="current-password">
+            <input id="password" placeholder="Senha" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="current-password">
             @error('password')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
