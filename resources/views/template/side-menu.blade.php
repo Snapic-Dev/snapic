@@ -47,21 +47,20 @@
             </a>
         </li>
         @if (GenericHelper::isEmailEnforcedAndValidated())
-        {{-- <li class="nav-item">
-                    <a href="{{route('my.notifications')}}"
-        class="nav-link h-pill h-pill-primary {{Route::currentRouteName() == 'my.notifications' ? 'active' : ''}} d-flex justify-content-between">
-        <div class="d-flex justify-content-center align-items-center">
-            <div class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
-                @include('elements.icon',['icon'=>'notifications-outline','variant'=>'large'])
-                <div class="menu-notification-badge notifications-menu-count {{(isset($notificationsCountOverride) && $notificationsCountOverride->total > 0 ) || (NotificationsHelper::getUnreadNotifications()->total > 0) ? '' : 'd-none'}}">
-                    {{!isset($notificationsCountOverride) ? NotificationsHelper::getUnreadNotifications()->total
+        <li class="nav-item">
+            <a href="{{route('my.notifications')}}" class="nav-link h-pill h-pill-primary {{Route::currentRouteName() == 'my.notifications' ? 'active' : ''}} d-flex justify-content-between">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
+                        @include('elements.icon',['icon'=>'notifications-outline','variant'=>'large'])
+                        <div class="menu-notification-badge notifications-menu-count {{(isset($notificationsCountOverride) && $notificationsCountOverride->total > 0 ) || (NotificationsHelper::getUnreadNotifications()->total > 0) ? '' : 'd-none'}}">
+                            {{!isset($notificationsCountOverride) ? NotificationsHelper::getUnreadNotifications()->total
                                     : $notificationsCountOverride->total}}
+                        </div>
+                    </div>
+                    <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{__('Notifications')}}</span>
                 </div>
-            </div>
-            <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{__('Notifications')}}</span>
-        </div>
-        </a>
-        </li> --}}
+            </a>
+        </li>
         <li class="nav-item">
             <a href="{{ route('my.messenger.get') }}" class="nav-link {{ Route::currentRouteName() == 'my.messenger.get' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
                 <div class="d-flex justify-content-center align-items-center">

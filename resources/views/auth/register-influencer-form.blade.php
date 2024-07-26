@@ -34,7 +34,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label>
         <div class="">
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
+            <input id="name" placeholder="Apelido" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -46,7 +46,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="email" class="col-form-label required-label">{{ __('E-Mail Address') }}</label>
         <div class="">
-            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+            <input id="email" placeholder="Email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
             @error('email')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -58,7 +58,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="cpf" class="col-form-label required-label">{{ __('CPF') }}</label>
         <div class="">
-            <input id="cpf" type="text" class="form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}" required autocomplete="cpf">
+            <input id="cpf" placeholder="CPF" type="text" class="form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}" required autocomplete="cpf">
             @error('cpf')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -68,7 +68,7 @@ $nichos = [
     </div>
 
     <div class="form-group p-1">
-        <label for="age" class="col-form-label required-label">{{ __('Data Nascimento') }}</label>
+        <label for="age" placeholder="Idade" class="col-form-label required-label">{{ __('Data Nascimento') }}</label>
         <div class="">
             <input id="age" type="date" class="form-control @error('age') is-invalid @enderror" name="age" value="{{ old('age') }}" required autocomplete="date">
             @error('age')
@@ -108,7 +108,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="telefone" class="col-form-label required-label">{{ __('telephone') }}</label>
         <div class="">
-            <input id="telefone" type="tel" class="form-control @error('telefone') is-invalid @enderror" name="telefone" value="{{ old('telefone') }}" required autocomplete="text">
+            <input id="telefone" placeholder="Telefone" type="tel" class="form-control @error('telefone') is-invalid @enderror" name="telefone" value="{{ old('telefone') }}" required autocomplete="text">
             @error('telefone')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -139,7 +139,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
         <div class="">
-            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+            <input id="password" placeholder="Senha" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
             @error('password')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -151,7 +151,7 @@ $nichos = [
     <div class="form-group p-1">
         <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label>
         <div class="">
-            <input id="password-confirm" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
+            <input id="password-confirm" placeholder="Confirmar senha" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
             @error('password_confirmation')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -161,7 +161,7 @@ $nichos = [
     </div>
 
     <div class="form-group p-1">
-        <div class="custom-control custom-checkbox">
+        <div class="custom-control custom-checkbox  mt-4 mb-4">
             <div class="">
                 <input class="custom-control-input @error('terms') is-invalid @enderror" id="tosAgree" type="checkbox" name="terms" value="1" placeholder="{{ __('Terms and Conditions') }}">
                 <label class="custom-control-label" for="tosAgree">
@@ -195,6 +195,16 @@ $nichos = [
             <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                 {{ __('Register') }}
             </button>
+        </div>
+    </div>
+    <div class="form-group row mb-0">
+        <div class="col">
+
+
+            <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block">
+                {{ __('Quero ser Assinante') }}
+            </a>
+
         </div>
     </div>
 

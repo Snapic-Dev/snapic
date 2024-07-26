@@ -1,10 +1,10 @@
 @if(count($payments))
-<div class="table-responsive">
-    <div class="">
-        <div class="d-flex align-items-center py-3 border-bottom text-bold">
+<div class="table-responsive p-3 mb-5 ">
+    <div class="p-3">
+        <div class="d-flex align-items-center py-3 text-bold">
             <div class="col-lg-3 text-truncate">
                 <div class="form-group">
-                    <select class="custom-select mr-sm-2 p-2 statusType" id="inlineFormCustomSelect">
+                    <select class="custom-select mr-sm-2 p-2 px-4 statusType" id="inlineFormCustomSelect">
                         <option value="">Tipo</option>
                         <option value="stream-access">Stream</option>
                         <option value="post-unlock">Post</option>
@@ -12,9 +12,9 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-3 text-truncate">
+            <div class=" col-lg-3 text-truncate">
                 <div class="form-group">
-                    <select class="custom-select mr-sm-2 p-2 statusPayment" id="inlineFormCustomSelect">
+                    <select class="custom-select mr-sm-2 p-2 statusPayment px-4" id="inlineFormCustomSelect">
                         <option value="">Status</option>
                         <option value="approved">Aprovado</option>
                         <option value="canceled">Cancelado</option>
@@ -32,7 +32,7 @@
             </div>
         </div>
         @foreach($payments as $payment)
-        <div class="col d-flex align-items-center py-3 border-bottom">
+        <div class="col d-flex align-items-center py-3 table">
             <div class="col-lg-3 text-truncate">
                 @if($payment->type == 'stream-access')
                 @if($payment->stream->status == 'in-progress')
@@ -112,7 +112,7 @@
                 </a>
             </div>
             <div class="col-lg-3 text-truncate d-none d-md-block">
-                <a href="{{route('profile',['username'=>$payment->receiver->username])}}" class="text-dark-r">
+                <a href="{{route('profile',['username'=>$payment->receiver->username])}}" class="text-dark-r text-sm">
                     {{ $payment->created_at->format('d/m/Y H:i:s') }}
                 </a>
             </div>
@@ -135,12 +135,44 @@
         @endforeach
     </div>
 </div>
-<div class="d-flex flex-row-reverse mt-3 mr-4">
+<div class="d-flex justify-content-center flex-row-reverse mt-3 mr-4">
     {{ $payments->onEachSide(1)->links() }}
 </div>
 @else
-<div class="p-3">
-    <p>{{__('There are no payments on this account.')}}</p>
+<div class="table-responsive p-4 mb-5">
+    <div class="d-flex align-items-center py-3 text-bold">
+        <div class="col-lg-3 text-truncate">
+            <div class="form-group">
+                <select class="custom-select mr-sm-2 p-2 statusType" id="inlineFormCustomSelect">
+                    <option value="">Tipo</option>
+                    <option value="stream-access">Stream</option>
+                    <option value="post-unlock">Post</option>
+                    <option value="tip">Gorjeta</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 text-truncate">
+            <div class="form-group">
+                <select class="custom-select mr-sm-2 p-2 statusPayment" id="inlineFormCustomSelect">
+                    <option value="">Status</option>
+                    <option value="approved">Aprovado</option>
+                    <option value="canceled">Cancelado</option>
+                    <option value="pending">Pendente</option>
+                    <option value="refunded">Reembolsado</option>
+                    <option value="partially-paid">Parcial Pago</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 text-truncate d-none d-md-block">{{__('Amount')}}</div>
+        <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
+        <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
+        <div class="col-lg-3 text-truncate d-none d-md-block">
+            Data
+        </div>
+    </div>
+    <div class="p-3">
+        <p>{{__('There are no payments on this account.')}}</p>
+    </div>
 </div>
 @endif
 
