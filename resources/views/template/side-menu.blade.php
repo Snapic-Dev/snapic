@@ -115,31 +115,32 @@
                         <h5 class="modal-title p-3 text-bold" id="staticBackdropLabel">Campanha</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                            s </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form method="POST" action="{{ route('messenger-trigger') }}">
+                            @csrf
                             <div class="form-group p-3">
                                 <label for="formGroupExampleInput">Valor do conteúdo</label>
-                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Definir valor do anuncio">
+                                <input type="text" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor do anuncio">
                             </div>
                             <div class="form-group p-3">
                                 <label for="formGroupExampleInput2">Mensagem</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha"></textarea>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message"></textarea>
                             </div>
                             <div class="custom-file ml-3 mt-3 mb-3">
-                                <input type="file" class="custom-file-input" id="customFile">
+                                <input type="file" class="custom-file-input" id="customFile" name="file">
                                 <label class="custom-file-label" for="customFile">Anexar arquivo</label>
                             </div>
                             <div class="p-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="subscribers">
                                     <label class="form-check-label" for="defaultCheck1">
                                         Assinantes
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" name="followers">
                                     <label class="form-check-label" for="defaultCheck2">
                                         Seguidores
                                     </label>
@@ -147,7 +148,7 @@
                             </div>
                     </div>
                     <div class="ml-3 mr-3 mb-2">
-                        <button type="button" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
+                        <button type="submit" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
                             Promover
                         </button>
                     </div>

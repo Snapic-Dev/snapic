@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\RegisterInfluencerController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessengerController;
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 use TCG\Voyager\Facades\Voyager;
 
 /*
@@ -15,6 +15,8 @@ use TCG\Voyager\Facades\Voyager;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
 
 // Admin routes ( Needs to be placed above )
 Route::group(['prefix' => 'admin', 'middleware' => 'jsVars'], function () {
@@ -57,17 +59,6 @@ Route::post('/influencer/register', [
     'uses' => 'App\Http\Controllers\RegisterInfluencerController@register',
     'as' => 'register-influencer'
 ]);
-
-Route::get('/testee', [
-    'uses' => 'App\Http\Controllers\MessengerController@teste',
-    'as' => 'teste'
-]);
-
-Route::get('/teste', [
-    'uses' => 'App\Http\Controllers\MessengerController@showTeste',
-    'as' => 'teste'
-]);
-
 
 Auth::routes(['verify' => true]);
 
@@ -130,8 +121,19 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::post('/sendMessage', 'MessengerController@sendMessage', ['as' => 'send']);
             Route::delete('/delete/{commentID}', 'MessengerController@deleteMessage', ['as' => 'delete']);
             Route::post('/authorizeUser', 'MessengerController@authorizeUser', ['as' => 'authorize']);
-            Route::post('/markSeen', 'MessengerController@markSeen', ['as' => 'mark']);
+            Route::post(
+                '/markSeen',
+                'MessengerController@markSeen',
+                ['as' => 'mark']
+            );
+            Route::post('/trigger', [
+                'uses' => 'app\Http\Controllers\MessengerController@trigger',
+                'as' => 'trigger'
+            ]);
         });
+
+
+
         /*
          * (My) Bookmarks
          */
@@ -323,6 +325,3 @@ Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams',
 Route::fallback(function () {
     return view('errors.404'); // template should exists
 });
-
-
-Route::post('/send-mass-message', [MessengerController::class, 'sendMassMessage'])->name('send.mass.message');
