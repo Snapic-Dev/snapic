@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MessengerController;
 use Illuminate\Support\Facades\Auth;
 use TCG\Voyager\Facades\Voyager;
 
@@ -115,22 +114,16 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
          * (My) Messenger
          */
         Route::group(['prefix' => 'messenger', 'as' => 'messenger.'], function () {
-            Route::get('/', ['uses' => 'MessengerController@index', 'as' => 'get']);
-            Route::get('/fetchContacts', ['uses' => 'MessengerController@fetchContacts', 'as' => 'fetch']);
-            Route::get('/fetchMessages/{userID}', 'MessengerController@fetchMessages', ['as' => 'fetch.user']);
-            Route::post('/sendMessage', 'MessengerController@sendMessage', ['as' => 'send']);
-            Route::delete('/delete/{commentID}', 'MessengerController@deleteMessage', ['as' => 'delete']);
-            Route::post('/authorizeUser', 'MessengerController@authorizeUser', ['as' => 'authorize']);
-            Route::post(
-                '/markSeen',
-                'MessengerController@markSeen',
-                ['as' => 'mark']
-            );
-            Route::post('/trigger', [
-                'uses' => 'app\Http\Controllers\MessengerController@trigger',
-                'as' => 'trigger'
-            ]);
+            Route::get('/', [App\Http\Controllers\MessengerController::class, 'index'])->name('get');
+            Route::get('/fetchContacts', [App\Http\Controllers\MessengerController::class, 'fetchContacts'])->name('fetch');
+            Route::get('/fetchMessages/{userID}', [App\Http\Controllers\MessengerController::class, 'fetchMessages'])->name('fetch.user');
+            Route::post('/sendMessage', [App\Http\Controllers\MessengerController::class, 'sendMessage'])->name('send');
+            Route::delete('/delete/{commentID}', [App\Http\Controllers\MessengerController::class, 'deleteMessage'])->name('delete');
+            Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
+            Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
+            Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('messenger-trigger');
         });
+
 
 
 
