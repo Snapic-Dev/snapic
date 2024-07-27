@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Model\Subscription;
 use App\Model\UserList;
 use App\Model\UserListMember;
 use App\Model\UserReport;
@@ -122,6 +123,17 @@ class ListsHelperServiceProvider extends ServiceProvider
         return $followersList;
     }
 
+    /**
+     * Creates a "virtual" list, holding all of the user followers
+     * @return UserList
+     */
+    public static function getUserSubsList()
+    {
+        $seila = Subscription::where('recipient_user_id', Auth::user()->id)->get();
+        return $seila[0]->getOriginal();
+    }
+
+
     public static function getUsersForListMembers($members)
     {
         $filteredUsers = [];
@@ -131,6 +143,7 @@ class ListsHelperServiceProvider extends ServiceProvider
         $members = collect($filteredUsers);
         return $members;
     }
+
 
     /**
      * Creates default followers and blocked lists for an user.
@@ -310,5 +323,4 @@ class ListsHelperServiceProvider extends ServiceProvider
             ->toArray();
         return $followers;
     }
-
 }

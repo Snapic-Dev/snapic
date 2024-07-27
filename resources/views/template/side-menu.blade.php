@@ -115,10 +115,10 @@
                         <h5 class="modal-title p-3 text-bold" id="staticBackdropLabel">Campanha</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                            s </button>
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('messenger-trigger') }}">
+                        <form method="POST" action="{{ route('my.messenger.trigger') }}">
                             @csrf
                             <div class="form-group p-3">
                                 <label for="formGroupExampleInput">Valor do conteúdo</label>
@@ -146,11 +146,12 @@
                                     </label>
                                 </div>
                             </div>
-                    </div>
-                    <div class="ml-3 mr-3 mb-2">
-                        <button type="submit" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
-                            Promover
-                        </button>
+                            <div class="ml-3 mr-3 mb-2">
+                                <button type="submit" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
+                                    Promover
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
