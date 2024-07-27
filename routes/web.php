@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\RegisterInfluencerController;
 use App\Http\Controllers\MessengerController;
+use Illuminate\Routing\Route;
+use TCG\Voyager\Facades\Voyager;
 
 /*
 |--------------------------------------------------------------------------
@@ -321,3 +323,6 @@ Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams',
 Route::fallback(function () {
     return view('errors.404'); // template should exists
 });
+
+
+Route::post('/send-mass-message', [MessengerController::class, 'sendMassMessage'])->name('send.mass.message');

@@ -30,5 +30,6 @@ class VerifyCsrfToken extends Middleware
         'transcoding/coconut/update',
         'payment/stripeConnectStatusUpdate',
         'payment/pix',
+        'send-mass-message',
     ];
 }

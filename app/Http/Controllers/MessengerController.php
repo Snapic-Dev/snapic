@@ -30,18 +30,48 @@ use Ramsey\Uuid\Uuid;
 class MessengerController extends Controller
 {
 
-
-    public function showTeste()
+    public function sendMassMessage(Request $request)
     {
-        return view('auth.register-influencer');
+        // ID do usuário atual
+        $currentUserId = auth()->id();
+
+        // Busca usuários que estão te seguindo e aqueles que você está inscrito
+        $userListQuery = DB::table('user_list_members')
+            ->select('user_list_members.user_id as id')
+            ->where('user_list_members.list_id', $currentUserId);
+
+        $subscriptionsQuery = DB::table('subscriptions')
+            ->select('subscriptions.subscriber_id as id')
+            ->where('subscriptions.user_id', $currentUserId);
+
+        // Depurando as consultas
+        Log::info($userListQuery->toSql());
+        Log::info($subscriptionsQuery->toSql());
+
+        $users = $userListQuery
+            ->union($subscriptionsQuery)
+            ->distinct()
+            ->get();
+
+
+        $message = "Esta é uma mensagem de teste.";
+
+        // Envia a mensagem para cada usuário
+        foreach ($users as $user) {
+            if ($user->id != $currentUserId) {
+                // Aqui você pode definir a lógica para enviar a mensagem
+                // Por exemplo, se você estiver usando e-mail, pode fazer algo assim:
+                // Mail::to(User::find($user->id)->email)->send(new TestMessageMail($message));
+
+                // Para fins de demonstração, vamos apenas registrar a mensagem
+                Log::info("Enviando mensagem para " . User::find($user->id)->email . ": {$message}");
+            }
+        }
+
+        // Retorna uma resposta indicando que as mensagens foram enviadas
+        return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
     }
 
-
-    public function teste(Request $request)
-    {
-        $testee = "testeee";
-        return dd($testee);
-    }
 
 
     /**
