@@ -20,6 +20,7 @@ use App\Providers\SettingsServiceProvider;
 use App\User;
 use Carbon\Carbon;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Storage;
 use Javascript;
 use Pusher\Pusher;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\VarDumper\VarDumper;
 
 class MessengerController extends Controller
 {
@@ -432,12 +434,38 @@ class MessengerController extends Controller
     public function sendMessage(SaveNewMessageRequest $request)
     {
         $receiverIDs = $request->get('receiverIDs');
+        $senderID = (int) Auth::user()->id;
         $return = [];
         $errors = [];
+
+        if ($receiverIDs === null) {
+            $receiverIDs = [];
+
+            if ($request->followers) {
+                $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
+
+                foreach ($followers as $follower) {
+                    if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                        $receiverIDs[]  = $follower['user_id'];
+                    }
+                }
+            }
+
+            if ($request->subscribers) {
+                $subscribers = Subscription::where('recipient_user_id', $senderID)
+                    ->where('expires_at', '>', Carbon::now('UTC'))
+                    ->get();
+
+                foreach ($subscribers as $subscriber) {
+                    if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
+                        $receiverIDs[]  = $subscriber->user_id;
+                    }
+                }
+            }
+        }
+        dd($receiverIDs[]);
         foreach ($receiverIDs as $receiverID) {
-            $senderID = (int) Auth::user()->id;
             $receiverID = (int) $receiverID;
-            // Checking access
             if (!self::checkMessengerAccess($senderID, $receiverID)) {
                 $errors[] = __('Not authorized');
                 if (count($receiverIDs) == 1) {
@@ -788,54 +816,64 @@ class MessengerController extends Controller
     }
 
     /**
-     * Renders the main messenger view / layout
-     * Rest of the messenger elements are mostly loaded via JS.
+     * Trigger para enviar mensagens aos seguidores e assinantes.
      *
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-
     public function trigger(Request $request)
     {
-        // ID do usuário atual
-        $currentUserId = auth()->id();
-        $followers = ListsHelperServiceProvider::getUserFollowers($currentUserId);
-        $subscriptions = ListsHelperServiceProvider::getUserSubsList();
-        dd($followers, $subscriptions);
+        try {
 
-        // Busca usuários que estão te seguindo e aqueles que você está inscrito
-        $userListQuery = DB::table('user_list_members')
-            ->select('user_list_members.user_id as id')
-            ->where('user_list_members.list_id', $currentUserId);
+            $list = [];
+            $currentUserId = auth()->id();
 
-        $subscriptionsQuery = DB::table('subscriptions')
-            ->select('subscriptions.subscriber_id as id')
-            ->where('subscriptions.user_id', $currentUserId);
+            if ($request->followers) {
+                $followers = ListsHelperServiceProvider::getUserFollowers($currentUserId);
 
-        // Depurando as consultas
-        Log::info($userListQuery->toSql());
-        Log::info($subscriptionsQuery->toSql());
-
-        $users = $userListQuery
-            ->union($subscriptionsQuery)
-            ->distinct()
-            ->get();
-
-
-        $message = "Esta é uma mensagem de teste.";
-
-        // Envia a mensagem para cada usuário
-        foreach ($users as $user) {
-            if ($user->id != $currentUserId) {
-                // Aqui você pode definir a lógica para enviar a mensagem
-                // Por exemplo, se você estiver usando e-mail, pode fazer algo assim:
-                // Mail::to(User::find($user->id)->email)->send(new TestMessageMail($message));
-
-                // Para fins de demonstração, vamos apenas registrar a mensagem
-                Log::info("Enviando mensagem para " . User::find($user->id)->email . ": {$message}");
+                foreach ($followers as $follower) {
+                    if (!in_array($follower['user_id'], $list) && !is_null($follower['user_id'])) {
+                        $list[] = $follower['user_id'];
+                    }
+                }
             }
-        }
 
-        // Retorna uma resposta indicando que as mensagens foram enviadas
-        return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
+            if ($request->subscribers) {
+                $subscribers = Subscription::where('recipient_user_id', $currentUserId)
+                    ->where('expires_at', '>', Carbon::now('UTC'))
+                    ->get();
+
+                foreach ($subscribers as $subscriber) {
+                    if (!in_array($subscriber->user_id, $list) && !is_null($subscriber->user_id)) {
+                        $list[] = $subscriber->user_id;
+                    }
+                }
+            }
+
+            foreach ($list as $receiverId) {
+                if (!is_null($receiverId)) {
+                    $this->sendUserMessage([
+                        'senderID' => $currentUserId,
+                        'receiverID' => $receiverId,
+                        'messageValue' => $request->get('message'),
+                        'messagePrice' => $request->get('price'),
+                        'isFirstMessage' => $request->get('new'),
+                        'attachments' => $request->get('attachments')
+                    ]);
+                } else {
+                    dd('Receiver ID is null');
+                }
+            }
+
+            if ($request->get('attachments')) {
+                foreach ($request->get('attachments') as $attachment) {
+                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
+                }
+            }
+
+            return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
+        } catch (\Exception $e) {
+            dd('Failed to send message: ' . $e->getMessage());
+        }
     }
 }

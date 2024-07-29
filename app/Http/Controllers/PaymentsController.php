@@ -222,13 +222,6 @@ class PaymentsController extends Controller
             $transaction['stream_id'] = $request->get('stream');
             $errorMessage = __('Something went wrong with this transaction. Please try again');
 
-
-
-
-
-
-
-
             $recipientUser = User::query()->where('id', $transaction['recipient_user_id'])->first();
             if ($transaction['amount'] <= 0 || (!$recipientUser && $transactionType !== Transaction::DEPOSIT_TYPE)) {
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
@@ -236,6 +229,20 @@ class PaymentsController extends Controller
 
             if (!$this->paymentHandler->validateTransaction($transaction, $recipientUser)) {
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+            }
+
+            if ($transaction['payment_provider'] == Transaction::PAYPAL_PROVIDER) {
+                $this->paymentHandler->initiatePaypalContext();
+            }
+
+            if (in_array($transaction['payment_provider'], [Transaction::STRIPE_PROVIDER, Transaction::OXXO_PROVIDER])) {
+                $redirectLink = $this->paymentHandler->generateStripeSessionByTransaction($transaction);
+                // if we cannot fetch a redirect link it means stripe session generation process failed
+                if ($redirectLink == null) {
+                    $transaction['status'] = Transaction::DECLINED_STATUS;
+                    $transaction->save();
+                    return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage = __('Failed generating stripe session'));
+                }
             }
 
             if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
@@ -247,17 +254,6 @@ class PaymentsController extends Controller
                     return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
 
             switch ($transactionType) {
                 case Transaction::TIP_TYPE:
@@ -293,16 +289,37 @@ class PaymentsController extends Controller
                         );
                     }
 
-                    if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+                    if ($transaction['payment_provider'] == Transaction::PAYPAL_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->initiateOneTimePaypalTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
                         $this->paymentHandler->generateOneTimeCreditTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::COINBASE_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateCoinBaseTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::NOWPAYMENTS_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateNowPaymentsTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::CCBILL_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateCCBillOneTimePaymentTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::PAYSTACK_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generatePaystackTransaction($transaction, Auth::user()->email);
+                    } elseif ($transaction['payment_provider'] == Transaction::MERCADO_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateMercadoTransaction($transaction);
                     }
                     break;
                 case Transaction::DEPOSIT_TYPE:
                     $transaction['recipient_user_id'] = Auth::user()->id;
                     if ($transaction['payment_provider'] == Transaction::PAYPAL_PROVIDER) {
                         $redirectLink = $this->paymentHandler->initiateOneTimePaypalTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::COINBASE_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateCoinBaseTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::NOWPAYMENTS_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateNowPaymentsTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::CCBILL_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateCCBillOneTimePaymentTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::PAYSTACK_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generatePaystackTransaction($transaction, Auth::user()->email);
+                    } elseif ($transaction['payment_provider'] == Transaction::MERCADO_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateMercadoTransaction($transaction);
                     }
-
                     break;
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
@@ -321,8 +338,14 @@ class PaymentsController extends Controller
                         return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
                     }
 
-                    if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+                    if ($transaction['payment_provider'] == Transaction::PAYPAL_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generatePaypalSubscriptionByTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::STRIPE_PROVIDER) {
+                        $this->paymentHandler->generateStripeSubscriptionByTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
                         $this->paymentHandler->generateCreditSubscriptionByTransaction($transaction);
+                    } elseif ($transaction['payment_provider'] == Transaction::CCBILL_PROVIDER) {
+                        $redirectLink = $this->paymentHandler->generateCCBillSubscriptionPayment($transaction);
                     }
                     break;
                 default:
@@ -373,6 +396,7 @@ class PaymentsController extends Controller
         }
         return $this->paymentHandler->redirectByTransaction($transaction);
     }
+
 
     /**
      * Handles the deposit request response.

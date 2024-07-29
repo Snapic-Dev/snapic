@@ -88,7 +88,7 @@ Minify::javascript([
                                         @include('elements.icon', ['icon' => "ellipsis-horizontal-outline", 'variant' => ''])
                                     </button>
                                     <div class="dropdown-menu">
-                                        <button class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Attach file') }}">
+                                        <button type="button" class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Attach file') }}">
                                             <div class="d-flex justify-content-between button-message-drop">
                                                 <h5 class="text-sm dropdown-message-text">Anexar arquivo</h5>
                                                 <div class="d-flex justify-content-center align-items-center">

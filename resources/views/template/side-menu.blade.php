@@ -1,3 +1,41 @@
+@section('styles')
+{!!
+Minify::stylesheet([
+'/libs/@selectize/selectize/dist/css/selectize.css',
+'/libs/@selectize/selectize/dist/css/selectize.bootstrap4.css',
+'/libs/dropzone/dist/dropzone.css',
+'/libs/photoswipe/dist/photoswipe.css',
+'/libs/photoswipe/dist/default-skin/default-skin.css',
+'/css/pages/messenger.css',
+'/css/pages/checkout.css'
+])->withFullUrl()
+!!}
+@stop
+
+@section('scripts')
+{!!
+Minify::javascript([
+'/js/messenger/messenger.js',
+'/js/messenger/elements.js',
+'/libs/@selectize/selectize/dist/js/standalone/selectize.min.js',
+'/libs/dropzone/dist/dropzone.js',
+'/js/FileUpload.js',
+'/js/plugins/media/photoswipe.js',
+'/libs/photoswipe/dist/photoswipe-ui-default.min.js',
+'/js/plugins/media/mediaswipe.js',
+'/js/plugins/media/mediaswipe-loader.js',
+'/libs/@joeattardi/emoji-button/dist/index.js',
+'/js/pages/lists.js',
+'/js/pages/checkout.js',
+'/libs/pusher-js-auth/lib/pusher-auth.js'
+])->withFullUrl()
+!!}
+@stop
+
+@section('content')
+
+@include('elements.uploaded-file-preview-template')
+
 <div class="side-menu px-1 px-md-2 px-lg-3">
     <div class="user-details mb-4 d-flex pointer-cursor flex-row-no-rtl">
         <div class="ml-0 ml-md-2 mt-1">
@@ -118,7 +156,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('my.messenger.trigger') }}">
+                        <form id="tp2" method="POST" action="{{ route('my.messenger.trigger') }}">
                             @csrf
                             <div class="form-group p-3">
                                 <label for="formGroupExampleInput">Valor do conteúdo</label>
@@ -128,10 +166,40 @@
                                 <label for="formGroupExampleInput2">Mensagem</label>
                                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message"></textarea>
                             </div>
-                            <div class="custom-file ml-3 mt-3 mb-3">
-                                <input type="file" class="custom-file-input" id="customFile" name="file">
-                                <label class="custom-file-label" for="customFile">Anexar arquivo</label>
+                            <div id="tp2" style="display: none;">
+                                <div class="dz-preview dz-file-preview">
+                                    <div class="dz-details">
+                                        <div class="dz-filename"><span data-dz-name></span></div>
+                                        <div class="dz-size" data-dz-size></div>
+                                        <img data-dz-thumbnail alt="Preview" />
+                                    </div>
+                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                                    <div class="dz-success-mark"><span>✔</span></div>
+                                    <div class="dz-error-mark"><span>✘</span></div>
+                                </div>
                             </div>
+                            <div id="tp2" style="display: none;">
+                                <div class="dz-preview dz-file-preview">
+                                    <div class="dz-details">
+                                        <div class="dz-filename"><span data-dz-name></span></div>
+                                        <div class="dz-size" data-dz-size></div>
+                                        <img data-dz-thumbnail alt="Preview" />
+                                    </div>
+                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                                    <div class="dz-success-mark"><span>✔</span></div>
+                                    <div class="dz-error-mark"><span>✘</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Dropzone form container -->
+                            <div id="dropzone-container"></div>
+                            <!-- Container for previews -->
+                            <div id="custom-previews-container"></div>
+                            <button type="button" id="file-upload-button2">Upload Files</button>
+
+
                             <div class="p-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="subscribers">
@@ -302,3 +370,91 @@
 
     </ul>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.10.2/dropzone.min.js"></script>
+<script>
+    "use strict";
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var FileUpload = {
+            attachments: [],
+            isLoading: false,
+            isTranscodingVideo: false,
+
+            initDropZone: function(selector, url, buttonId, previewId, isChunkUpload = false) {
+                let chunkSize = 1024;
+                if (isChunkUpload) {
+                    chunkSize = mediaSettings.upload_chunk_size * 1000000;
+                    url = url.replace("/upload/", "/uploadChunked/");
+                }
+
+                new Dropzone(selector, {
+                    paramName: "file",
+                    previewTemplate: document.querySelector("#tp2").innerHTML,
+                    url: url,
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    },
+                    clickable: buttonId,
+                    previewsContainer: previewId, // Use the container ID for previewsContainer
+                    maxFilesize: mediaSettings.max_file_upload_size, // MB
+                    addRemoveLinks: true,
+                    dictRemoveFile: "x",
+                    acceptedFiles: mediaSettings.allowed_file_extensions,
+                    chunking: isChunkUpload,
+                    forceChunking: isChunkUpload,
+                    chunkSize: chunkSize,
+                    parallelChunkUploads: false,
+                    retryChunks: false,
+                    retryChunksLimit: 2,
+                    init: function() {
+                        var _this = this;
+                        document.querySelector(buttonId).addEventListener("click", function() {
+                            _this.hiddenFileInput.click();
+                        });
+                    },
+                }).on("addedfile", (file) => {
+                    FileUpload.updatePreviewElement(file, true);
+                    FileUpload.isLoading = true;
+                }).on("success", (file, response) => {
+                    if (response.coconut_id !== null) {
+                        FileUpload.isTranscodingVideo = true;
+                    }
+                    if (response.success) {
+                        file.upload.attachmentID = response.attachmentID;
+                        FileUpload.attachments.push({
+                            attachmentID: response.attachmentID,
+                            path: response.path,
+                            type: response.type,
+                            thumbnail: response.thumbnail,
+                        });
+                    }
+                    FileUpload.isLoading = false;
+                }).on("removedfile", function(file) {
+                    FileUpload.attachments = FileUpload.attachments.filter((attachment) => {
+                        if (attachment.attachmentID !== file.upload.attachmentID) {
+                            return attachment;
+                        } else {
+                            FileUpload.removeAttachment(attachment);
+                        }
+                    });
+                }).on("error", (file, errorMessage) => {
+                    if (typeof errorMessage.errors !== "undefined") {
+                        launchToast("danger", trans("Error"), errorMessage.message);
+                    } else {
+                        if (typeof errorMessage.message !== "undefined") {
+                            launchToast("danger", trans("Error"), errorMessage.message);
+                        } else {
+                            launchToast("danger", trans("Error"), errorMessage);
+                        }
+                    }
+                    FileUpload.removeFile(file);
+                    FileUpload.isLoading = false;
+                });
+            },
+        }
+
+        // Initialize Dropzone
+        FileUpload.initDropZone("#dropzone-container", "/your-upload-url", "#file-upload-button2", "#custom-previews-container");
+    });
+</script>

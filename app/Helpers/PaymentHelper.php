@@ -1678,64 +1678,70 @@ class PaymentHelper
 
     public function validateTransaction($transaction, $recipientUser)
     {
-        $result = null;
+        $valid = false;
         if ($transaction) {
-            $fixedTaxRate = 0.05;
-            $fixedTaxesAmount = $transaction['amount'] * $fixedTaxRate;
+            $exclusiveTaxesAmount = 0;
+            $fixedTaxesAmount = 0;
+            $taxes = PaymentsServiceProvider::calculateTaxesForTransaction($transaction);
+            if (isset($taxes['exclusiveTaxesAmount'])) {
+                $exclusiveTaxesAmount = $taxes['exclusiveTaxesAmount'];
+            }
+            if (isset($taxes['fixedTaxesAmount'])) {
+                $fixedTaxesAmount = $taxes['fixedTaxesAmount'];
+            }
+            $transactionAmountWithoutTaxes = (string)($transaction['amount'] - $exclusiveTaxesAmount - $fixedTaxesAmount);
 
-            $transactionAmountWithoutTaxes = (string)($transaction['amount'] - $fixedTaxesAmount);
+            // Note*: Doing (string) comparison due to PHP float inaccuracy
+            // Note* Doing (string)($number + 0) comparison because some mysql drivers doesn't truncate .00 decimals for floats
 
             switch ($transaction->type) {
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
                     if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price + 0)) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                        $valid = true;
                     }
                     break;
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
                     if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_3_months * 3 + 0)) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                        $valid = true;
                     }
                     break;
                 case Transaction::SIX_MONTHS_SUBSCRIPTION:
                     if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_6_months * 6 + 0)) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                        $valid = true;
                     }
                     break;
                 case Transaction::YEARLY_SUBSCRIPTION:
                     if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_12_months * 12 + 0)) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                        $valid = true;
                     }
                     break;
                 case Transaction::POST_UNLOCK:
                     $post = Post::query()->where('id', $transaction->post_id)->first();
-                    if ($post && (string)($post->price + 0) === $transactionAmountWithoutTaxes) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                    if ((string)($post->price + 0) === $transactionAmountWithoutTaxes) {
+                        $valid = true;
                     }
                     break;
                 case Transaction::STREAM_ACCESS:
                     $stream = Stream::query()->where('id', $transaction->stream_id)->first();
                     if ($stream && (string)($stream->price + 0) === $transactionAmountWithoutTaxes) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                        $valid = true;
                     }
                     break;
                 case Transaction::MESSAGE_UNLOCK:
                     $message = UserMessage::query()->where('id', $transaction->user_message_id)->first();
-                    if ($message && (string)($message->price + 0) === $transactionAmountWithoutTaxes) {
-                        $result = $transaction['amount'] + $fixedTaxesAmount;
+                    if ((string)($message->price + 0) === $transactionAmountWithoutTaxes) {
+                        $valid = true;
                     }
                     break;
                 case Transaction::TIP_TYPE:
                 case Transaction::CHAT_TIP_TYPE:
                 case Transaction::DEPOSIT_TYPE:
-                    $result = $transaction['amount'] + $fixedTaxesAmount;
+                    $valid = true;
                     break;
             }
         }
-        return $result;
+        return $valid;
     }
-
-
-
 
     /**
      * Cancels a subscription

@@ -323,4 +323,16 @@ class ListsHelperServiceProvider extends ServiceProvider
             ->toArray();
         return $followers;
     }
+
+    public static function getUserSubscribers($userID)
+    {
+        $subscribers = UserListMember::select('user_lists.user_id', 'users.email', 'users.settings', 'users.name')
+            ->join('user_lists', 'user_list_members.list_id', '=', 'user_lists.id')
+            ->join('users', 'users.id', '=', 'user_lists.user_id')
+            ->where('user_list_members.user_id', $userID)
+            ->where('user_lists.type', 'following')
+            ->get()
+            ->toArray();
+        return $subscribers;
+    }
 }
