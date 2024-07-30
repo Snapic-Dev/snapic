@@ -7,7 +7,7 @@
                         <div class="text-muted font-weight-bolder">{{ $title }}</div>
                     </div>
                     <div class="col-md-2 col-xs-12">
-                        <input type="hidden" name="function" value="{{ $form['function'] }}">
+                        <input type="hidden" name="function" value="sum">
                         <input type="hidden" name="unit" value="{{ $form['unit'] }}">
                         <select name="range" class="form-control form-control-sm card-value">
                             @foreach($form['ranges'] as $range)
@@ -16,7 +16,6 @@
                         </select>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-12">

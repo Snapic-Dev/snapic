@@ -24,7 +24,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'jsVars'], function () {
     Route::get('/metrics/subscriptions/value', 'MetricsController@subscriptionsValue')->name('admin.metrics.subscriptions.value');
     Route::get('/metrics/subscriptions/trend', 'MetricsController@subscriptionsTrend')->name('admin.metrics.subscriptions.trend');
     Route::get('/metrics/subscriptions/partition', 'MetricsController@subscriptionsPartition')->name('admin.metrics.subscriptions.partition');
-
+    Route::get('/metrics/amount', 'MetricsController@getTransactionAmount')->name('admin.metrics.get.transaction.amount');
     Route::post('/theme/generate', 'GenericController@generateCustomTheme')->name('admin.theme.generate');
     Route::post('/license/save', 'GenericController@saveLicense')->name('admin.license.save');
 

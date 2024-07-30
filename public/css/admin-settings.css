@@ -202,3 +202,9 @@ top:0px !important;
 .voyager .settings .nav-tabs > li > a:hover{
 background-color:#fff !important;
 }
+
+/*dashboardCSS*/
+
+.textPost {
+    font-size: 40px;
+ }

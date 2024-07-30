@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Admin\Dashboard\Metrics\Trend;
 use App\Admin\Dashboard\Metrics\Value;
 use App\Model\Subscription;
+use App\Model\Transaction;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -18,8 +19,15 @@ class MetricsController extends Controller
 
     public function newUsersTrend(Request $request)
     {
-        $users = (new Trend())->get(User::class, $request->input('function'), $request->input('unit'), $request->input('range'), 'id', 'created_at');
+
+        $query = Transaction::query()
+            ->where('status', Transaction::APPROVED_STATUS)
+            ->where('type', 'deposit');
+
+        $users = (new Trend())->get($query, $request->input('function'), $request->input('unit'), $request->input('range'), 'amount', 'created_at');
+
         return response()->json($users);
+        
     }
 
     public function newUsersPartition(Request $request)
@@ -27,7 +35,7 @@ class MetricsController extends Controller
         $c = User::count();
         $cc = User::whereRaw('email_verified_at IS NOT NULL')->count();
         $nc = $c - $cc;
-        return response()->json(['values'=>['Confirmed' => $cc,'Not Confirmed' => $nc]]);
+        return response()->json(['values' => ['Confirmed' => $cc, 'Not Confirmed' => $nc]]);
     }
 
     public function subscriptionsValue(Request $request)
@@ -47,6 +55,15 @@ class MetricsController extends Controller
         $totalSubscriptionsCount = Subscription::count();
         $activeSubscriptionsCount = Subscription::where('expires_at', '>', new \DateTime('now', new \DateTimeZone('UTC')))->count();
         $expiredSubscriptionsCount = $totalSubscriptionsCount - $activeSubscriptionsCount;
-        return response()->json(['values'=>['Active' => $activeSubscriptionsCount,'Expired' => $expiredSubscriptionsCount]]);
+        return response()->json(['values' => ['Active' => $activeSubscriptionsCount, 'Expired' => $expiredSubscriptionsCount]]);
+    }
+
+    public static function getTransactionAmount()
+    {
+        $transactionCount = Transaction::query()
+            ->where('status', '=', Transaction::APPROVED_STATUS)
+            ->whereNotIn('type', [Transaction::WITHDRAWAL_TYPE, Transaction::DEPOSIT_TYPE])
+            ->sum('amount'); // Melhorando a consulta para obter apenas a contagem
+        return response()->json($transactionCount);
     }
 }
