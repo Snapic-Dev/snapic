@@ -36,6 +36,9 @@ COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 COPY --chown=www-data:www-data . /var/www/html/
 
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 WORKDIR /var/www/html
 RUN composer install
 RUN npm install
