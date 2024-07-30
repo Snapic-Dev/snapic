@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  php-apache-backend:
+    build:
+      context: .
+    container_name: snapic_container
+    hostname: snapic
+#    volumes:
+#      - ./:/var/www/html
+    ports:
+      - '8080:80'

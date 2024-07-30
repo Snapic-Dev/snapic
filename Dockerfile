@@ -23,7 +23,7 @@ RUN apt-get update \
 COPY --from=composer:2.2.0 /usr/bin/composer /usr/local/bin/composer
 
 # Instalar extensões PHP
-RUN docker-php-ext-install gettext intl pdo_mysql gd zip \
+RUN docker-php-ext-install gettext intl pdo_mysql gd zip exif bcmath \
     && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
@@ -37,22 +37,15 @@ RUN a2enmod headers \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs=20.15.0-1nodesource1
 
-# Copiar arquivos do projeto para o diretório do servidor
-COPY . /var/www/html/
+COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Ajustar permissões
-RUN chown -R www-data:www-data /var/www/html \
-    && chown -R $USER:www-data /var/www/html/storage/* \
-    && chmod -R 775 /var/www/html/bootstrap/cache/ \
-    && chmod -R 0777 /var/www/html/storage
+# Copiar arquivos do projeto para o diretório do servidor
+COPY --chown=www-data:www-data . /var/www/html/
 
 # Instalar dependências PHP e Node.js
-RUN cd /var/www/html \
-    && composer install \
-    && php artisan npm:install
+WORKDIR /var/www/html
+RUN composer install
+RUN php artisan npm:install
 
 # Expor a porta em que o Laravel irá rodar
 EXPOSE 80
-
-# Comando para rodar a aplicação usando `php artisan serve`
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
