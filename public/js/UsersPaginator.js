@@ -1,4 +1,8 @@
+/**
+ * Paginator component - used for posts (feed+profile) pagination
+ */
 "use strict";
+/* global app, Post, paginatorConfig */
 
 var UsersPaginator = {
 

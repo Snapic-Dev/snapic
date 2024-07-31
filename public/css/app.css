@@ -1,9 +1,7 @@
 body {
-  font-family: "Poppins", sans-serif;
-  font-optical-sizing: auto;
+  font-family: "Open Sans", sans-serif;
   min-height: 100% !important;
 }
-
 /* Top Navbar Menu */
 .navbar {
   padding: 1rem;
@@ -12,15 +10,6 @@ body {
 .navbar-brand img {
   max-width: 180px;
   max-height: 60px;
-}
-
-.required-label::after {
-  content: " *";
-  color: rgb(123, 101, 175);
-}
-
-.btn-color {
-  color: rgba(126, 126, 126, 0.185);
 }
 
 .error-container {
@@ -56,18 +45,6 @@ body {
 
 .brand-logo {
   width: 200px;
-}
-
-.footer-brand-logo {
-  width: 200px;
-  scale: 1.2;
-  object-fit: contain;
-}
-
-.brand-logo-form {
-  position: relative;
-  right: 35px;
-  margin-bottom: 50px;
 }
 
 .rounded-lg {
@@ -154,7 +131,6 @@ body {
 .side-menu .icon-wrapper {
   width: 2.6rem;
 }
-
 .side-menu .nav {
   flex-wrap: nowrap;
 }
@@ -272,7 +248,6 @@ body {
 .pswp_video {
   position: relative !important;
 }
-
 .pswp_audio {
   position: relative !important;
   width: 75% !important;
@@ -424,7 +399,6 @@ footer .copyRightInfo .nav-link:nth-child(1) {
 footer .text-lg {
   font-size: 1.1rem !important;
 }
-
 footer .ion-icon-wrapper {
   font-size: 1.25rem !important;
 }
@@ -445,10 +419,8 @@ footer .brand-logo {
 }
 
 .grayscale {
-  filter: gray;
-  /* IE6-9 */
-  -webkit-filter: grayscale(95%);
-  /* Chrome 19+ & Safari 6+ */
+  filter: gray; /* IE6-9 */
+  -webkit-filter: grayscale(95%); /* Chrome 19+ & Safari 6+ */
 }
 
 .grayscale:hover {
@@ -611,7 +583,6 @@ footer .brand-logo {
   li.page-item {
     display: none;
   }
-
   .page-item:first-child,
   .page-item:nth-child(2),
   .page-item:nth-last-child(2),
@@ -678,142 +649,144 @@ footer .brand-logo {
 /* settings-wallet-depositals */
 
 .text-opacity-field {
-    opacity: 70%;
+  opacity: 70%;
 }
 
-
 .formInputArea {
-    display: none;
-    flex-direction: column;
-    align-items: center;
+  display: none;
+  flex-direction: column;
+  align-items: center;
 }
 
 .formInputCredit {
-    border-radius: 15px;
-    background-color: #FF3CAC;
-    background-image: linear-gradient(225deg, #784BA0 0%, #784BA0 50%, #2B86C5 100%);
-    border: 1px solid rgba(184, 184, 184, 0.534);
-    height: 300px;
-    width: 23vw;
-    min-width: 300px;
-    box-shadow: rgba(0, 0, 0, 0.308) 0px 18px 50px -10px;
+  border-radius: 15px;
+  background-color: #ff3cac;
+  background-image: linear-gradient(
+    225deg,
+    #784ba0 0%,
+    #784ba0 50%,
+    #2b86c5 100%
+  );
+  border: 1px solid rgba(184, 184, 184, 0.534);
+  height: 300px;
+  width: 23vw;
+  min-width: 300px;
+  box-shadow: rgba(0, 0, 0, 0.308) 0px 18px 50px -10px;
 }
 
 .formInputCredit input::placeholder {
-    font-weight:400;
-    font-size: 14px;
+  font-weight: 400;
+  font-size: 14px;
 }
-
 
 .qrCodeArea {
-    display: flex;
-    justify-content: center;
-    padding: 50px;
+  display: flex;
+  justify-content: center;
+  padding: 50px;
 }
 
-
 .btnPix {
-    background-color:#673AB6;
-    color: white;
-    font-size: 12px;
-    width: 230px;
-    border: none;
-    border-radius:20px;
-    gap:10px
+  background-color: #673ab6;
+  color: white;
+  font-size: 12px;
+  width: 230px;
+  border: none;
+  border-radius: 20px;
+  gap: 10px;
 }
 
 .btnPix:hover {
-  background-color:#ffffff;
+  background-color: #ffffff;
   color: rgba(0, 0, 0, 0.733);
   border: 1px solid rgba(0, 0, 0, 0.13);
 }
 
 .btnQr {
-    background-color:#ffffff;
-    color: black;
-    font-size: 12px;
-    width: 200px;
-    gap:10px
+  background-color: #ffffff;
+  color: black;
+  font-size: 12px;
+  width: 200px;
+  gap: 10px;
 }
 
 .btnPix ionicon {
-    font-size:10px;
+  font-size: 10px;
 }
 
 .inputPix {
-    border: none;
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.801);
-    outline: none;
-    font-size: 38px;
-    width: 10vw;
-    min-width: 300px;
+  border: none;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.801);
+  outline: none;
+  font-size: 38px;
+  width: 10vw;
+  min-width: 300px;
 }
 
-.dateInput{
-    height: 35px;
-    width: 60px;
+.dateInput {
+  height: 35px;
+  width: 60px;
 }
 
 .deposit-continue-btn {
-    width: 400px;
+  width: 400px;
 }
 
 .creditModalTitle {
-    padding: 10px;
-    font-size: 17px;
-    font-weight: 600;
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .modalCreditCard .modal-body {
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .instructionPix {
-    display: flex;
+  display: flex;
 }
 
 .inputPixArea {
-    display: none;
+  display: none;
 }
 
 .inputPixCode {
-    width: 300px;
-    padding: 20px;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    outline:none;
-    color: rgba(0, 0, 0, 0.603);
+  width: 300px;
+  padding: 20px;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: rgba(0, 0, 0, 0.603);
 }
 .textInputArea {
-    color: rgba(0, 0, 0, 0.541);
-    font-size: 11px;
-    font-weight: bold;
+  color: rgba(0, 0, 0, 0.541);
+  font-size: 11px;
+  font-weight: bold;
 }
 .codeInput {
-    height: 35px;
-    width: 80px;
+  height: 35px;
+  width: 80px;
 }
 
 .nameInput {
-    font-size: 18px;
-    font-weight: 300;
+  font-size: 18px;
+  font-weight: 300;
 }
 
 .inputText {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 /* settings-wallet-withdrawal*/
 
 .inputText::placeholder {
-    font-size:15px;
-    color: rgba(0, 0, 0, 0.603);
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.603);
 }
 
 .alertWitdrawalMsg {
@@ -824,12 +797,12 @@ footer .brand-logo {
 /*Dispatch email */
 
 .btnDispatch {
-    border: none;
-    background-color: transparent;
+  border: none;
+  background-color: transparent;
 }
 
 .custom-file {
-    width: 300px;
+  width: 300px;
 }
 
 /*payments */
@@ -839,14 +812,14 @@ footer .brand-logo {
   height: 200px;
 }
 .amountText {
-    width: 100%;
+  width: 100%;
 }
 
 .timePayment {
   width: 100%;
 }
 
-.amountText h4{
+.amountText h4 {
   font-size: 17px;
   font-weight: 500;
 }
@@ -864,21 +837,21 @@ footer .brand-logo {
   font-weight: 500;
 }
 
-.amountText h5{
+.amountText h5 {
   font-size: 17px;
-  color:#673AB6;
+  color: #673ab6;
   font-weight: 500;
 }
 
 .timePayment h5 {
   font-size: 17px;
-  color:#673AB6;
+  color: #673ab6;
   font-weight: 500;
 }
 
 
 .qrcodeLoading {
-  color:#673AB6;
+  color: #673ab6;
 }
 
 .dateFilter {

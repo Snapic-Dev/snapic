@@ -244,7 +244,7 @@ class LocalesServiceProvider extends ServiceProvider
 
     public static function getLanguageName($localeCode){
         if(extension_loaded('intl')){
-            return \Locale::getDisplayLanguage($localeCode, Session::get('locale') ? Session::get('locale') : 'pt-br');
+            return \Locale::getDisplayLanguage($localeCode, Session::get('locale') ? Session::get('locale') : 'en');
         }
         else{
             if(isset(self::$languageCodes[$localeCode])){

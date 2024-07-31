@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use TCG\Voyager\Facades\Voyager;
 
+use App\Http\Controllers\RegisterInfluencerController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,12 +42,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'jsVars'], function () {
 });
 
 // Home & contact page
-Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home']);
-Route::get('/contact', ['uses' => 'GenericController@contact', 'as' => 'contact']);
-Route::post('/contact/send', ['uses' => 'GenericController@sendContactMessage', 'as' => 'contact.send']);
+Route::get('/', ['uses' => 'HomeController@index', 'as'   => 'home']);
+Route::get('/contact', ['uses' => 'GenericController@contact', 'as'   => 'contact']);
+Route::post('/contact/send', ['uses' => 'GenericController@sendContactMessage', 'as'   => 'contact.send']);
+
+
 
 // Language switcher route
-Route::get('language/{locale}', ['uses' => 'GenericController@setLanguage', 'as' => 'language']);
+Route::get('language/{locale}', ['uses' => 'GenericController@setLanguage', 'as'   => 'language']);
 
 /* Auth Routes + Verify password */
 
@@ -62,7 +66,7 @@ Route::post('/influencer/register', [
 Auth::routes(['verify' => true]);
 
 Route::get('email/verify', ['uses' => 'GenericController@userVerifyEmail', 'as' => 'verification.notice']);
-Route::post('resendVerification', ['uses' => 'GenericController@resendConfirmationEmail', 'as' => 'verfication.resend']);
+Route::post('resendVerification', ['uses' => 'GenericController@resendConfirmationEmail', 'as'   => 'verfication.resend']);
 // Social Auth login / register
 Route::get('socialAuth/{provider}', ['uses' => 'Auth\LoginController@redirectToProvider', 'as' => 'social.login.start']);
 Route::get('socialAuth/{provider}/callback', ['uses' => 'Auth\LoginController@handleProviderCallback', 'as' => 'social.login.callback']);
@@ -121,7 +125,8 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::delete('/delete/{commentID}', [App\Http\Controllers\MessengerController::class, 'deleteMessage'])->name('delete');
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
-            Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('trigger');
+            Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('campanha.store');
+            Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campaha.create');
         });
 
 
@@ -164,29 +169,29 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
     Route::get('stream/archive/{streamID}/{slug}', ['uses' => 'StreamsController@getVod', 'as' => 'public.vod.get']);
     Route::get('stream/{streamID}/{slug}', ['uses' => 'StreamsController@getStream', 'as' => 'public.stream.get']);
 
-    Route::post('/report/content', ['uses' => 'ListsController@postReport', 'as' => 'report.content']);
+    Route::post('/report/content', ['uses' => 'ListsController@postReport', 'as'   => 'report.content']);
 
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
-        Route::post('/initiate', ['uses' => 'PaymentsController@initiatePayment', 'as' => 'initiatePayment']);
-        Route::post('/initiate/validate', ['uses' => 'PaymentsController@paymentInitiateValidator', 'as' => 'initiatePaymentValidator']);
-        Route::get('/paypal/status', ['uses' => 'PaymentsController@executePaypalPayment', 'as' => 'executePaypalPayment']);
-        Route::get('/stripe/status', ['uses' => 'PaymentsController@getStripePaymentStatus', 'as' => 'checkStripePaymentStatus']);
-        Route::get('/coinbase/status', ['uses' => 'PaymentsController@checkAndUpdateCoinbaseTransaction', 'as' => 'checkCoinBasePaymentStatus']);
-        Route::get('/nowpayments/status', ['uses' => 'PaymentsController@checkAndUpdateNowPaymentsTransaction', 'as' => 'checkNowPaymentStatus']);
-        Route::get('/ccbill/status', ['uses' => 'PaymentsController@processCCBillTransaction', 'as' => 'checkCCBillPaymentStatus']);
-        Route::get('/paystack/status', ['uses' => 'PaymentsController@verifyPaystackTransaction', 'as' => 'checkPaystackPaymentStatus']);
-        Route::get('/mercado/status', ['uses' => 'PaymentsController@verifyMercadoTransaction', 'as' => 'checkMercadoPaymentStatus']);
+        Route::post('/initiate', ['uses' => 'PaymentsController@initiatePayment', 'as'   => 'initiatePayment']);
+        Route::post('/initiate/validate', ['uses' => 'PaymentsController@paymentInitiateValidator', 'as'   => 'initiatePaymentValidator']);
+        Route::get('/paypal/status', ['uses' => 'PaymentsController@executePaypalPayment', 'as'   => 'executePaypalPayment']);
+        Route::get('/stripe/status', ['uses' => 'PaymentsController@getStripePaymentStatus', 'as'   => 'checkStripePaymentStatus']);
+        Route::get('/coinbase/status', ['uses' => 'PaymentsController@checkAndUpdateCoinbaseTransaction', 'as'   => 'checkCoinBasePaymentStatus']);
+        Route::get('/nowpayments/status', ['uses' => 'PaymentsController@checkAndUpdateNowPaymentsTransaction', 'as'   => 'checkNowPaymentStatus']);
+        Route::get('/ccbill/status', ['uses' => 'PaymentsController@processCCBillTransaction', 'as'   => 'checkCCBillPaymentStatus']);
+        Route::get('/paystack/status', ['uses' => 'PaymentsController@verifyPaystackTransaction', 'as'   => 'checkPaystackPaymentStatus']);
+        Route::get('/mercado/status', ['uses' => 'PaymentsController@verifyMercadoTransaction', 'as'   => 'checkMercadoPaymentStatus']);
     });
 
     // Feed routes
-    Route::get('/feed', ['uses' => 'FeedController@index', 'as' => 'feed']);
-    Route::get('/feed/posts', ['uses' => 'FeedController@getFeedPosts', 'as' => 'feed.posts']);
+    Route::get('/feed', ['uses' => 'FeedController@index', 'as'   => 'feed']);
+    Route::get('/feed/posts', ['uses' => 'FeedController@getFeedPosts', 'as'   => 'feed.posts']);
 
     // File uploader routes
     Route::group(['prefix' => 'attachment', 'as' => 'attachment.'], function () {
-        Route::post('/upload/{type}', ['uses' => 'AttachmentController@upload', 'as' => 'upload']);
-        Route::post('/uploadChunked/{type}', ['uses' => 'AttachmentController@uploadChunk', 'as' => 'upload.chunked']);
-        Route::post('/remove', ['uses' => 'AttachmentController@removeAttachment', 'as' => 'remove']);
+        Route::post('/upload/{type}', ['uses' => 'AttachmentController@upload', 'as'   => 'upload']);
+        Route::post('/uploadChunked/{type}', ['uses' => 'AttachmentController@uploadChunk', 'as'   => 'upload.chunked']);
+        Route::post('/remove', ['uses' => 'AttachmentController@removeAttachment', 'as'   => 'remove']);
     });
 
     // Posts routes
@@ -292,12 +297,12 @@ Route::post('transcoding/coconut/update', [
 ]);
 
 // Install & upgrade routes
-Route::get('/install', ['uses' => 'InstallerController@install', 'as' => 'installer.install']);
-Route::post('/install/savedbinfo', ['uses' => 'InstallerController@testAndSaveDBInfo', 'as' => 'installer.savedb']);
-Route::post('/install/beginInstall', ['uses' => 'InstallerController@beginInstall', 'as' => 'installer.beginInstall']);
-Route::get('/install/finishInstall', ['uses' => 'InstallerController@finishInstall', 'as' => 'installer.finishInstall']);
-Route::get('/update', ['uses' => 'InstallerController@upgrade', 'as' => 'installer.update']);
-Route::post('/update/doUpdate', ['uses' => 'InstallerController@doUpgrade', 'as' => 'installer.doUpdate']);
+Route::get('/install', ['uses' => 'InstallerController@install', 'as'   => 'installer.install']);
+Route::post('/install/savedbinfo', ['uses' => 'InstallerController@testAndSaveDBInfo', 'as'   => 'installer.savedb']);
+Route::post('/install/beginInstall', ['uses' => 'InstallerController@beginInstall', 'as'   => 'installer.beginInstall']);
+Route::get('/install/finishInstall', ['uses' => 'InstallerController@finishInstall', 'as'   => 'installer.finishInstall']);
+Route::get('/update', ['uses' => 'InstallerController@upgrade', 'as'   => 'installer.update']);
+Route::post('/update/doUpdate', ['uses' => 'InstallerController@doUpgrade', 'as'   => 'installer.doUpdate']);
 
 // (Feed/Search) Suggestions filter
 Route::post('/suggestions/members', ['uses' => 'FeedController@filterSuggestedMembers', 'as' => 'suggestions.filter']);

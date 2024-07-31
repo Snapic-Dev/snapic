@@ -37,15 +37,15 @@ class GenericController extends Controller
             ->where('countries.name', '=', 'All')->get();
 
         $countries = Country::query()->where('name', '!=', 'All')->with(['taxes'])->get();
-        if (count($allCountriesAppliedTaxes)) {
-            foreach ($countries as $country) {
-                foreach ($allCountriesAppliedTaxes as $appliedTax) {
+        if(count($allCountriesAppliedTaxes)){
+            foreach ($countries as $country){
+                foreach ($allCountriesAppliedTaxes as $appliedTax){
                     $country->taxes->add($appliedTax);
                 }
             }
         }
         return response()->json([
-            'countries' => $countries,
+            'countries'=> $countries,
         ]);
     }
 
@@ -55,54 +55,42 @@ class GenericController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    // public function setLanguage(Request $request)
-    // {
-
-    //     $locale = getSetting('site.default_site_language');
-
-    //     if(Auth::check()){
-    //         $user = Auth::user();
-    //         $user->settings = collect(array_merge($user->settings->toArray(), ['locale'=>$request->route('locale')]));
-    //         $user->save();
-    //         $locale = $user->settings['locale'];
-    //     }
-    //     else{
-    //         $locale = $request->route('locale');
-    //         Cookie::queue('app_locale', $locale, 356, null, null, null, false, false, null);
-    //     }
-
-    //     // Resetting cached translation files ( for frontend )
-    //     App::setLocale($locale);
-    //     $langPath = app()->langPath().'/'.$locale;
-
-    //     if (env('APP_ENV') == 'production') {
-    //         Cache::forget('translations');
-    //         Cache::rememberForever('translations', function () use ($langPath) {
-    //             return file_get_contents($langPath.'.json');
-    //         });
-    //     } else {
-    //         Cache::forget('translations');
-    //         Cache::remember('translations', 5, function () use ($langPath) {
-    //             return file_get_contents($langPath.'.json');
-    //         });
-    //     }
-    //     return redirect()->back();
-    // }
-
     public function setLanguage(Request $request)
     {
-        $locale = 'pt-br'; // Idioma padrão
 
-        if (Auth::check()) {
+        $locale = getSetting('site.default_site_language');
+
+        if(Auth::check()){
             $user = Auth::user();
-            $user->settings = collect(array_merge($user->settings->toArray(), ['locale' => $locale]));
+            $user->settings = collect(array_merge($user->settings->toArray(), ['locale'=>$request->route('locale')]));
             $user->save();
-        } else {
+            try {
+                $locale = $user->settings['locale'];
+            }
+            catch (\Exception $e){
+                $locale = 'en';
+            }
+        }
+        else{
+            $locale = $request->route('locale');
             Cookie::queue('app_locale', $locale, 356, null, null, null, false, false, null);
         }
 
+        // Resetting cached translation files ( for frontend )
         App::setLocale($locale);
+        $langPath = app()->langPath().'/'.$locale;
 
+        if (env('APP_ENV') == 'production') {
+            Cache::forget('translations');
+            Cache::rememberForever('translations', function () use ($langPath) {
+                return file_get_contents($langPath.'.json');
+            });
+        } else {
+            Cache::forget('translations');
+            Cache::remember('translations', 5, function () use ($langPath) {
+                return file_get_contents($langPath.'.json');
+            });
+        }
         return redirect()->back();
     }
 
@@ -112,8 +100,7 @@ class GenericController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function contact(Request $request)
-    {
+    public function contact(Request $request){
         return view('pages.contact', []);
     }
 
@@ -122,14 +109,13 @@ class GenericController extends Controller
      * @param SaveNewContactMessageRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function sendContactMessage(SaveNewContactMessageRequest $request)
-    {
+    public function sendContactMessage(SaveNewContactMessageRequest $request){
         ContactMessage::create([
             'email' => $request->get('email'),
             'subject' => $request->get('subject'),
             'message' => $request->get('message'),
         ]);
-        if (getSetting('admin.send_notifications_on_contact')) {
+        if(getSetting('admin.send_notifications_on_contact')){
             // Send admin notifications
             $adminEmails = User::where('role_id', 1)->select(['email', 'name'])->get();
             foreach ($adminEmails as $user) {
@@ -143,7 +129,7 @@ class GenericController extends Controller
                         'replyTo' => $request->get('email'),
                         'button' => [
                             'text' => __('Go to admin'),
-                            'url' => route('voyager.dashboard') . '/contact-messages',
+                            'url' => route('voyager.dashboard').'/contact-messages',
                         ],
                     ]
                 );
@@ -156,8 +142,7 @@ class GenericController extends Controller
      * Manually resending verification emails method
      * @return \Illuminate\Http\JsonResponse
      */
-    public function resendConfirmationEmail()
-    {
+    public function resendConfirmationEmail(){
         $user = Auth::user();
         $user->sendEmailVerificationNotification();
         return response()->json(['success' => true, 'message' => __('Verification email sent successfully.')]);
@@ -167,9 +152,8 @@ class GenericController extends Controller
      * Display the user verify page
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function userVerifyEmail()
-    {
-        if (!Auth::check() || (Auth::check() && Auth::user()->hasVerifiedEmail())) {
+    public function userVerifyEmail(){
+        if(!Auth::check() || (Auth::check() && Auth::user()->hasVerifiedEmail())){
             return redirect(route('home'));
         }
         return view('vendor.auth.verify', []);
@@ -180,31 +164,32 @@ class GenericController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|object
      */
-    public function generateCustomTheme(Request $request)
-    {
+    public function generateCustomTheme(Request $request){
         $themingServer = 'https://themes-v2.qdev.tech';
-        try {
-            $response = InstallerServiceProvider::curlGetContent($themingServer . '?' . http_build_query($request->all()));
+        try{
+            $response = InstallerServiceProvider::curlGetContent($themingServer.'?'.http_build_query($request->all()));
             $response = json_decode($response);
-            if ($response->success) {
-                Setting::where('key', 'colors.theme_color_code')->update(['value' => $request->get('color_code')]);
-                Setting::where('key', 'colors.theme_gradient_from')->update(['value' => $request->get('gradient_from')]);
-                Setting::where('key', 'colors.theme_gradient_to')->update(['value' => $request->get('gradient_to')]);
-                if (extension_loaded('zip')) {
-                    $contents = InstallerServiceProvider::curlGetContent($themingServer . '/' . $response->path);
+            if($response->success){
+                Setting::where('key','colors.theme_color_code')->update(['value'=>$request->get('color_code')]);
+                Setting::where('key','colors.theme_gradient_from')->update(['value'=>$request->get('gradient_from')]);
+                Setting::where('key','colors.theme_gradient_to')->update(['value'=>$request->get('gradient_to')]);
+                if (extension_loaded('zip')){
+                    $contents = InstallerServiceProvider::curlGetContent($themingServer.'/'.$response->path);
                     Storage::disk('tmp')->put('theme.zip', $contents);
                     $zip = Zip::open(storage_path('app/tmp/theme.zip'));
                     $zip->extract(public_path('css/theme/'));
                     Storage::disk('tmp')->delete('theme.zip');
-                    return response()->json(['success' => true, 'data' => ['path' => $response->path, 'doBrowserRedirect' => false], 'message' => __("Theme generated & updated the frontend.")], 200);
+                    return response()->json(['success' => true, 'data'=>['path'=>$response->path, 'doBrowserRedirect' => false], 'message' => __("Theme generated & updated the frontend.")], 200);
                 }
-                return response()->json(['success' => true, 'data' => ['path' => $response->path, 'doBrowserRedirect' => true], 'message' => $response->message], 200);
-            } else {
-                return response()->json(['success' => false, 'error' => $response->error], 500);
+                return response()->json(['success' => true, 'data'=>['path'=>$response->path, 'doBrowserRedirect' => true], 'message' => $response->message], 200);
+            }
+            else{
+                return response()->json(['success' => false, 'error'=>$response->error], 500);
             }
         } catch (\Exception $exception) {
-            return (object)['success' => false, 'error' => 'Error: "' . $exception->getMessage() . '"'];
+            return (object)['success' => false, 'error' => 'Error: "'.$exception->getMessage().'"'];
         }
+
     }
 
     /**
@@ -214,26 +199,25 @@ class GenericController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveLicense(Request $request)
-    {
-        try {
+    public function saveLicense(Request $request){
+        try{
             $licenseCode = $request->get('product_license_key');
             $license = InstallerServiceProvider::gld($licenseCode);
 
             if (isset($license->error)) {
-                return response()->json(['success' => false, 'error' => $license->error], 500);
+                return response()->json(['success' => false, 'error' => $license->error],500);
             }
-            Storage::disk('local')->put('installed', json_encode(array_merge((array)$license, ['code' => $licenseCode])));
-            Setting::where('key', 'license.product_license_key')->update(['value' => $licenseCode]);
+            Storage::disk('local')->put('installed', json_encode(array_merge((array)$license,['code'=>$licenseCode])));
+            Setting::where('key','license.product_license_key')->update(['value'=>$licenseCode]);
             return response()->json(['success' => true, 'message' => __("License key updated")], 200);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'error' => 'Error: "' . $exception->getMessage() . '"'], 500);
+            return response()->json(['success' => false, 'error' => 'Error: "'.$exception->getMessage().'"'],500);
         }
     }
 
-    public function clearAppCache(Request $request)
-    {
+    public function clearAppCache(Request $request){
         Artisan::call('cache:clear');
         return response()->json(['success' => true, 'message' => __("Application cache cleared successfully")], 200);
     }
+
 }

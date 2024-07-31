@@ -11,9 +11,7 @@
         width: 130px;
         height: 130px;
     }
-    
 }
-
 .description-content p{
     margin-bottom: .5rem;
 }
@@ -26,58 +24,3 @@
 }
 
 
-/* Adicionados por mim no perfil*/
-.description-content {
-    height: auto;
-    min-height: 50px;
-}
-.bioMoreContentArea {
-    margin-top: 10px;
-}
-
-.perfilPostSeparetor {
-    height: 20px;
-}
-
-.holder {
-    margin-bottom: 10px;
-    position: relative;
-    bottom: 40px;
-}
-
-
-.btn-follow-user {
-    align-items: center;
-    border-radius: 20px;
-    width: 80px;
-    justify-content: center;
-}
-
-.btnFollow {
-    background-color: #57319A;
-    color: white;
-    transition: 0.1s linear;
-}
-
-.btnFollow:hover {
-    background-color: #57319a18;
-    color: #57319A;
-}
-.btnUnfollow {
-    color: #57319A;
-    width: 95px;
-    transition: 0.1s linear;
-}
-
-.btnUnfollow:hover {
-    background-color: #57319A;
-    color: white;
-}
-
-.followAndFollowingArea {
-    height: 70px;
-}
- .messageArea {
-    position: relative;
-    bottom: 100px;
- }

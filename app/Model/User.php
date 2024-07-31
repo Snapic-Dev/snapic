@@ -89,6 +89,7 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
      */
     public function getFollowingCountAttribute($userId)
     {
+        // $userId = Auth::user()->id;
         $userFollowingMembers = UserList::query()
             ->where(['user_id' => $userId, 'type' => 'following'])
             ->withCount('members')->first();

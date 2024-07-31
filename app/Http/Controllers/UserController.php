@@ -14,18 +14,17 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|string
      */
-    public function impersonate(Request $request)
-    {
+    public function impersonate(Request $request){
         $userId = $request->route('id');
-        try {
+        try{
             $currentUserId = Auth::user()->id;
             Auth::loginUsingId($userId);
 
             Session::push('previousUserId', $currentUserId);
-            if (!Session::get('impersonated')) {
+            if(!Session::get('impersonated')) {
                 Session::push('impersonated', true);
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception $exception){
             return Redirect::route('voyager.users.index');
         }
         return Redirect::route('feed');
@@ -36,10 +35,9 @@ class UserController extends Controller
      * @param Request $request
      * @return string
      */
-    public function leaveImpersonation(Request $request)
-    {
+    public function leaveImpersonation(Request $request) {
         $previousUserId = Session::get('previousUserId');
-        try {
+        try{
             Auth::loginUsingId($previousUserId);
             Session::remove('previousUserId');
             Session::remove('impersonated');

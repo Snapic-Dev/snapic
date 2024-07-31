@@ -126,7 +126,12 @@ class NotificationServiceProvider extends ServiceProvider
                 $notificationData['from_user_id'] = $subscription->sender_user_id;
                 // Setting the locale of the message receiver
                 $user = User::where('id', $subscription->recipient_user_id)->select(['email', 'name', 'settings'])->first();
-                App::setLocale($user->settings['locale']);
+                try{
+                    App::setLocale($user->settings['locale']);
+                }
+                catch (\Exception $e){
+                    App::setLocale('en');
+                }
                 // Building up the notification message to be broadcasted & db saved
                 $subscriber = User::query()->where('id', $subscription->sender_user_id)->first();
                 if ($subscriber != null) {
@@ -162,7 +167,12 @@ class NotificationServiceProvider extends ServiceProvider
                 $notificationData['to_user_id'] = $transaction->recipient_user_id;
                 // Setting the locale of the message receiver
                 $user = User::where('id', $transaction->recipient_user_id)->select(['email', 'username', 'name', 'settings'])->first();
-                App::setLocale($user->settings['locale']);
+                try{
+                    App::setLocale($user->settings['locale']);
+                }
+                catch (\Exception $e){
+                    App::setLocale('en');
+                }
                 // Building up the notification message to be broadcasted & db saved
                 $sender = User::query()->where('id', $transaction->sender_user_id)->first();
                 if ($sender != null) {
@@ -209,7 +219,12 @@ class NotificationServiceProvider extends ServiceProvider
 
                 // Setting the locale of the message receiver
                 $user = User::where('id', $transaction->recipient_user_id)->select(['email', 'username', 'name', 'settings'])->first();
-                App::setLocale($user->settings['locale']);
+                try{
+                    App::setLocale($user->settings['locale']);
+                }
+                catch (\Exception $e){
+                    App::setLocale('en');
+                }
                 if (isset($user->settings['notification_email_new_ppv_unlock']) && $user->settings['notification_email_new_ppv_unlock'] == 'true') {
                     EmailsServiceProvider::sendGenericEmail(
                         [
@@ -237,7 +252,12 @@ class NotificationServiceProvider extends ServiceProvider
                         if ($post != null) {
                             // Setting the locale of the message receiver
                             $toUser = User::where('id', $post->user_id)->select(['email', 'username', 'name', 'settings'])->first();
-                            App::setLocale($user->settings['locale']);
+                            try{
+                                App::setLocale($user->settings['locale']);
+                            }
+                            catch (\Exception $e){
+                                App::setLocale('en');
+                            }
                             // Building up the notification message to be broadcasted & db saved
                             $notificationData['message'] = __(':name liked your post', ['name'=>$user->name]);
                             $notificationData['post_id'] = $post->id;
@@ -250,7 +270,12 @@ class NotificationServiceProvider extends ServiceProvider
                         if ($postComment != null) {
                             // Setting the locale of the message receiver
                             $toUser = User::where('id', $postComment->user_id)->select(['email', 'username', 'name', 'settings'])->first();
-                            App::setLocale($user->settings['locale']);
+                            try{
+                                App::setLocale($user->settings['locale']);
+                            }
+                            catch (\Exception $e){
+                                App::setLocale('en');
+                            }
                             // Building up the notification message to be broadcasted & db saved
                             $notificationData['message'] = __(':name liked your comment', ['name'=>$user->name]);
                             $notificationData['post_comment_id'] = $postComment->id;

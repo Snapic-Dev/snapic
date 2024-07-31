@@ -1,6 +1,11 @@
 /node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
 .phpunit.result.cache
-vendor
 Homestead.json
 Homestead.yaml
 npm-debug.log
@@ -9,7 +14,9 @@ yarn-error.log
 public/node_modules
 public/libs
 public/dist
+public/css/theme
 app/cloudfront/*
 .php-cs-fixer.cache
 public/sitemap.xml
-.env
+public_key.pem
+private_key.pem

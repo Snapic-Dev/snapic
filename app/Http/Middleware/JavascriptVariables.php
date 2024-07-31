@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App;
 use App\PlatformSettings;
 use App\Providers\InstallerServiceProvider;
+use App\Providers\ListsHelperServiceProvider;
 use App\UserBadge;
 use App\UserStatus;
 use Auth;
@@ -28,7 +29,7 @@ class JavascriptVariables
         if (InstallerServiceProvider::checkIfInstalled()) {
             $jsData['ppMode'] = getSetting('payments.paypal_live_mode') != null && getSetting('payments.paypal_live_mode') ? 'live' : 'sandbox';
             $jsData['showCookiesBox'] = getSetting('compliance.enable_cookies_box');
-            $jsData['feedDisableRightClickOnMedia'] = getSetting('feed.disable_right_click');
+            $jsData['feedDisableRightClickOnMedia'] = getSetting('media.disable_media_right_click');
             $jsData['currency'] = App\Providers\SettingsServiceProvider::getAppCurrencyCode();
             $jsData['currencySymbol'] = App\Providers\SettingsServiceProvider::getWebsiteCurrencySymbol();
             $jsData['currencyPosition'] = App\Providers\SettingsServiceProvider::getWebsiteCurrencyPosition();
@@ -60,7 +61,8 @@ class JavascriptVariables
                     'username' => Auth::user()->username,
                     'user_id' => Auth::user()->id,
                     'stripe_connect_verified' => Auth::user()->stripe_onboarding_verified,
-                    'user_country_id' => Auth::user()->country_id
+                    'user_country_id' => Auth::user()->country_id,
+                    'lists' => ListsHelperServiceProvider::getUserListTrimmed()
                 ],
                 'socketsDriver' => getSetting('websockets.driver'),
                 'pusher' => [

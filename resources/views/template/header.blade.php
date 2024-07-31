@@ -1,30 +1,22 @@
-<nav
-    class="navbar navbar-expand-md {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') }} shadow-sm ">
+<nav class="navbar navbar-expand-md {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white'))}} shadow-sm ">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                class="d-inline-block align-top mr-1 ml-3 brand-logo" alt="{{ __('Site logo') }}">
+            <img src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}" class="d-inline-block align-top mr-1 ml-3" alt="{{__("Site logo")}}">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}" >
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse pl-3 pl-md-0" id="navbarSupportedContent">
-            <div class="d-flex justify-content-end w-100 mr-2">
-                @include('elements.footer.dark-mode-switcher')
-                {{-- @include('elements.footer.direction-switcher') --}}
-                <!-- @include('elements.footer.language-switcher') -->
-            </div>
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-                @if (Auth::check())
-                    <!-- <li class="nav-item">
+                @if(Auth::check())
+                    <li class="nav-item">
                         <a class="nav-link ml-0 ml-md-2" href="{{ route('posts.create') }}">{{ __('Create') }}</a>
-                    </li> -->
-                    <!--<li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ml-0 ml-md-2" href="{{ route('feed') }}">{{ __('Feed') }}</a>
-                    </li> -->
+                    </li>
                 @endif
             </ul>
 
@@ -32,46 +24,40 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
                 @guest
-                    @if (Route::currentRouteName() !== 'profile')
+                    @if(Route::currentRouteName() !== 'profile')
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                         @if (Route::has('register'))
-                            <!-- <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                            </li> -->
                             <li class="nav-item">
-                                <a class="nav-link" href="#" id="registerLink">{{ __('Register') }}</a>
+                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                             </li>
                         @endif
                     @endif
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown"
-                            class="nav-link dropdown-toggle text-right text-truncate d-flex align-items-center"
-                            href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="text-truncate max-width-150">{{ Auth::user()->name }}</div> <img
-                                src="{{ Auth::user()->avatar }}" class="rounded-circle home-user-avatar">
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle text-right text-truncate d-flex align-items-center" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="text-truncate max-width-150">{{ Auth::user()->name }}</div> <img src="{{Auth::user()->avatar}}" class="rounded-circle home-user-avatar">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('feed') }}">
-                                {{ __('Feed') }}
+                            <a class="dropdown-item" href="{{route('feed')}}">
+                                {{__('Feed')}}
                             </a>
-                            <a class="dropdown-item" href="{{ route('my.settings') }}">
-                                {{ __('Settings') }}
+                            <a class="dropdown-item" href="{{route('my.settings')}}">
+                                {{__('Settings')}}
                             </a>
-                            <a class="dropdown-item" href="{{ route('profile', ['username' => Auth::user()->username]) }}">
-                                {{ __('Profile') }}
+                            <a class="dropdown-item" href="{{route('profile',['username'=>Auth::user()->username])}}">
+                                {{__('Profile')}}
                             </a>
-                            <a class="dropdown-item" href="{{ route('my.settings', ['type' => 'subscriptions']) }}">
-                                {{ __('Subscriptions') }}
+                            <a class="dropdown-item" href="{{route('my.settings',['type'=>'subscriptions'])}}">
+                                {{__('Subscriptions')}}
                             </a>
-                            <a class="dropdown-item" href="{{ route('my.settings', ['type' => 'payments']) }}">
-                                {{ __('Payments') }}
+                            <a class="dropdown-item" href="{{route('my.settings',['type'=>'payments'])}}">
+                                {{__('Payments')}}
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
+                               onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -84,37 +70,3 @@
         </div>
     </div>
 </nav>
-
-
-<!-- Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registerModalLabel">Quero me registrar como</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="assinanteCheckbox">
-                    <label class="form-check-label" for="assinanteCheckbox">
-                        Assinante
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="influencerCheckbox">
-                    <label class="form-check-label" for="influencerCheckbox">
-                        Influencer
-                    </label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="confirmRegisterBtn">Confirmar</button>
-            </div>
-        </div>
-    </div>
-</div>
