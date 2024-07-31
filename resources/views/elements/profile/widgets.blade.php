@@ -3,7 +3,7 @@
     <div class="card recent-media rounded-lg">
         <div class="card-body m-0 pb-0">
         </div>
-        <h5 class="card-title pl-3 mb-0">{{__('Recent')}}</h5>
+        <h5 class="card-title pl-3 mb-0 ml-2 font-weight-bold">{{__('Recent')}}</h5>
 
         <div class="card-body {{$recentMedia ? 'text-center' : ''}}">
             @if($recentMedia && count($recentMedia) && Auth::check())
