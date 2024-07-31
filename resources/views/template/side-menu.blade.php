@@ -118,9 +118,10 @@
                                     class="menu-notification-badge chat-menu-count {{ NotificationsHelper::getUnreadMessages() > 0 ? '' : 'd-none' }}">
                                     {{ NotificationsHelper::getUnreadMessages() }}
                                 </div>
-                                <span
-                                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Messages') }}</span>
                             </div>
+                            <span
+                                class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Messages') }}</span>
+                        </div>
                     </a>
                 </li>
                 @if (getSetting('streams.allow_streams'))
@@ -315,6 +316,7 @@
 
         </ul>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.10.2/dropzone.min.js"></script>
     <script>
         "use strict";

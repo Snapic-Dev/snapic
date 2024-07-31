@@ -126,7 +126,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
             Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('campanha.store');
-            Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campaha.create');
+            Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campanha.create');
         });
 
 

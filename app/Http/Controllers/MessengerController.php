@@ -817,8 +817,10 @@ class MessengerController extends Controller
 
     public function create()
     {
-        return view('messenger.campanha');
+        return view('pages.campanha');
     }
+
+
     public function trigger(Request $request)
     {
         try {

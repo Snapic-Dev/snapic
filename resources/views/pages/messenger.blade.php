@@ -55,7 +55,7 @@
                                 {{ __('Contacts') }}</h5>
                             <span data-toggle="tooltip" title="" class="pointer-cursor"
                                 @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}" @else data-original-title="{{ trans_choice('Trigger messages', ['user' => 0]) }}" @endif>
-                                <a href="{{ route('my.messenger.campaha.create') }}"
+                                <a href="{{ route('my.messenger.campanha.create') }}"
                                     class="pointer-cursor new-conversation-toggle nav-link d-flex justify-content-center align-items-center h-pill h-pill-primary d-flex justify-content-between">
                                     <div
                                         class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
