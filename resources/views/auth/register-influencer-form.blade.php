@@ -1,5 +1,5 @@
 @php
-    $nichos = [
+    $niches = [
         'Tecnologia',
         'Saúde',
         'Finanças',
@@ -76,12 +76,86 @@
     </div>
 
     <div class="form-group p-1">
-        <label for="age" placeholder="Idade"
+        <label for="birthdate" placeholder="Idade"
             class="col-form-label required-label">{{ __('Data Nascimento') }}</label>
         <div class="">
-            <input id="age" type="date" class="form-control @error('age') is-invalid @enderror" name="age"
-                value="{{ old('age') }}" required autocomplete="date">
-            @error('age')
+            <input id="birthdate" type="date" class="form-control @error('birthdate') is-invalid @enderror"
+                name="birthdate" value="{{ old('birthdate') }}" required autocomplete="date">
+            @error('birthdate')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="phone" class="col-form-label required-label">{{ __('telefone') }}</label>
+        <div class="">
+            <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror"
+                name="phone" value="{{ old('phone') }}" required autocomplete="text">
+            @error('phone')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+
+    <div class="form-group ">
+        <label for="niche" class=" col-form-label  required-label">{{ __('niche') }}</label>
+        <div class="">
+            <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche" required>
+                <option value="">{{ __('Selecione um niche') }}</option>
+                @foreach ($niches as $niche)
+                    <option value="{{ $niche }}" {{ old('niche') == $niche ? 'selected' : '' }}>
+                        {{ $niche }}
+                    </option>
+                @endforeach
+            </select>
+            @error('niche')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="instagram" class="col-form-label">instagram</label>
+        <div class="">
+            <input id="instagram" type="tel" class="form-control @error('instagram') is-invalid @enderror"
+                name="instagram" value="{{ old('instagram') }}" autocomplete="text">
+            @error('instagram')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
+        <div class="">
+            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                name="password" required autocomplete="new-password">
+            @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label>
+        <div class="">
+            <input id="password-confirm" type="password"
+                class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation"
+                required autocomplete="new-password">
+            @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -107,11 +181,12 @@
 
     <div class="form-group p-1">
         <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label>
-        <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid @enderror" name="backDoc"
-            accept=".jpg, .jpeg, .png, .webp" required
+        <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid @enderror"
+            name="backDoc" accept=".jpg, .jpeg, .png, .webp" required
             onchange="previewImage(this, document.getElementById('backPreview'))">
         <div class="preview">
-            <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none; max-height: 200px;">
+            <img id="backPreview" src="#" alt="Preview da CNH - Verso"
+                style="display: none; max-height: 200px;">
         </div>
         @error('backDoc')
             <span class="invalid-feedback" role="alert">
@@ -120,69 +195,8 @@
         @enderror
     </div>
 
-    <div class="form-group p-1">
-        <label for="telefone" class="col-form-label required-label">{{ __('telephone') }}</label>
-        <div class="">
-            <input id="telefone" placeholder="Telefone" type="tel"
-                class="form-control @error('telefone') is-invalid @enderror" name="telefone"
-                value="{{ old('telefone') }}" required autocomplete="text">
-            @error('telefone')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-
-    <div class="form-group p-1">
-        <label for="nicho" class="col-form-label required-label">{{ __('Nicho') }}</label>
-        <div class="">
-            <select id="nicho" class="form-control @error('nicho') is-invalid @enderror" name="nicho" required>
-                <option value="">{{ __('Selecione um nicho') }}</option>
-                @foreach ($nichos as $nicho)
-                    <option value="{{ $nicho }}" {{ old('nicho') == $nicho ? 'selected' : '' }}>
-                        {{ $nicho }}
-                    </option>
-                @endforeach
-            </select>
-            @error('nicho')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-
-    <div class="form-group p-1">
-        <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
-        <div class="">
-            <input id="password" placeholder="Senha" type="password"
-                class="form-control @error('password') is-invalid @enderror" name="password" required
-                autocomplete="new-password">
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-
-    <div class="form-group p-1">
-        <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label>
-        <div class="">
-            <input id="password-confirm" placeholder="Confirmar senha" type="password"
-                class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation"
-                required autocomplete="new-password">
-            @error('password_confirmation')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-
-    <div class="form-group p-1">
-        <div class="custom-control custom-checkbox  mt-4 mb-4">
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
             <div class="">
                 <input class="custom-control-input @error('terms') is-invalid @enderror" id="tosAgree"
                     type="checkbox" name="terms" value="1" placeholder="{{ __('Terms and Conditions') }}">

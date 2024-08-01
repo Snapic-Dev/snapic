@@ -790,8 +790,8 @@ footer .brand-logo {
 }
 
 .alertWitdrawalMsg {
-    text-align: center;
-    color: var();
+  text-align: center;
+  color: var();
 }
 
 /*Dispatch email */
@@ -849,7 +849,6 @@ footer .brand-logo {
   font-weight: 500;
 }
 
-
 .qrcodeLoading {
   color: #673ab6;
 }
@@ -862,12 +861,15 @@ footer .brand-logo {
   display: none;
 }
 
-.btn200:hover,.btn50:hover,.btn100:hover,.btn400:hover,.btn10:hover,.btn1000:hover {
+.btn200:hover,
+.btn50:hover,
+.btn100:hover,
+.btn400:hover,
+.btn10:hover,
+.btn1000:hover {
   color: white;
-  background-color: #673AB6;
+  background-color: #673ab6;
 }
-
-
 
 .table-responsive::-webkit-scrollbar {
   width: 10px;
@@ -880,7 +882,7 @@ footer .brand-logo {
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-  background-color:#673AB6;
+  background-color: #673ab6;
   border-radius: 15px;
   height: 5px;
   width: 10px;
@@ -888,5 +890,10 @@ footer .brand-logo {
 }
 
 .tableLong {
-  width: 900px
+  width: 900px;
+}
+
+.required-label::after {
+  content: " *";
+  color: rgb(123, 101, 175);
 }

@@ -81,11 +81,11 @@
                 <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('register')"
                     class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
             @else
-                <!-- <a href="{{ route('register') }}"
+                <a href="{{ route('register') }}"
                     class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
-                 -->
-                <a id="registerLink" class="text-primary text-gradient font-weight-bold"
-                    style="cursor: pointer;">{{ __('Sign up') }}</a>
+
+                {{--  <a id="registerLink" class="text-primary text-gradient font-weight-bold"
+                    style="cursor: pointer;">{{ __('Sign up') }}</a>  --}}
 
                 <!-- <a class="nav-link" href="#" id="registerLink">{{ __('Register') }}</a> -->
             @endif
