@@ -26,12 +26,14 @@ use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use MercadoPago\Preference;
 use MercadoPago\SDK;
 use PayPal\Api\Agreement;
@@ -63,11 +65,132 @@ use Yabacon\Paystack\Exception\ApiException;
 
 class PaymentHelper
 {
-    /**
-     * Holds up the credentials for paypal API.
-     *
-     * @var
-     */
+    private $certificado;
+    private $credentials;
+    private $gateway_url;
+    private $data_credentials;
+    private $client;
+
+    public function __construct()
+    {
+        $this->initializeCertificado();
+        $this->initializeCredentials();
+        $this->initializeClient();
+    }
+
+    private function initializeCertificado()
+    {
+        $this->certificado = Storage::disk('local')->get('certs/cert-homolog.p12');
+
+        if ($this->certificado === false) {
+            throw new \Exception('Erro ao carregar o certificado.');
+        }
+    }
+
+    private function initializeCredentials()
+    {
+        $this->credentials = [
+            'client_id' => 'Client_Id_fc988c1008cbc2ecebf4416155d487831d0704d8',
+            'client_secret' => 'Client_Secret_41320d15fd9175ea4c418f1cfa50e4f663cb8fee',
+        ];
+
+        $this->gateway_url = 'https://pix-h.api.efipay.com.br';
+        $this->data_credentials = $this->credentials['client_id'] . ':' . $this->credentials['client_secret'];
+    }
+
+    private function initializeClient()
+    {
+        $agent = new \GuzzleHttp\Client([
+            'base_uri' => $this->gateway_url,
+            'http_errors' => false,
+            'verify' => false,
+            'cert' => [
+                'certs/cert-homolog.p12',
+                ''
+            ],
+            'ssl_key' => [
+                'certs/cert-homolog.p12',
+                ''
+            ]
+        ]);
+
+        $this->client = $agent;
+    }
+
+    private function getGuzzleConfig($auth, $data, $path, $put = false)
+    {
+        return [
+            'method' => $put ? 'PUT' : 'POST',
+            'url' => $this->gateway_url . $path,
+            'headers' => [
+                'Authorization' => $auth,
+                'Content-Type' => 'application/json',
+            ],
+            'body' => json_encode($data),
+        ];
+    }
+
+    private function getAccessToken()
+    {
+        $data = ['grant_type' => 'client_credentials'];
+        $auth = base64_encode($this->data_credentials);
+
+        try {
+            $config = $this->getGuzzleConfig("Basic $auth", $data, '/oauth/token');
+
+            $response = $this->client->request($config['method'], $config['url'], [
+                'headers' => $config['headers'],
+                'body' => $config['body']
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+
+            return $body['access_token'];
+        } catch (RequestException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function generationPixPayment($dto)
+    {
+        try {
+            $data = $this->preparePaymentData($dto);
+            $accessToken = $this->getAccessToken();
+
+            $config = $this->getGuzzleConfig("Bearer $accessToken", $data, '/v2/cob');
+
+            $response = $this->client->request($config['method'], $config['url'], [
+                'headers' => $config['headers'],
+                'body' => $config['body']
+            ]);
+            $responseBody = $response->getBody()->getContents();
+            $responseData = json_decode($responseBody, true);
+            dd($responseData);
+            return $responseData;
+        } catch (RequestException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function preparePaymentData($dto)
+    {
+        return [
+            "calendario" => [
+                "expiracao" => 3600
+            ],
+            "devedor" => [
+                "cpf" => "12345678909",
+                "nome" => "John Doe"
+            ],
+            "valor" => [
+                "original" => "123.45"
+            ],
+            "chave" => "john.doe@gmail.com",
+            "solicitacaoPagador" => "Cobrança dos serviços prestados."
+        ];
+    }
+
+
     private $paypalApiContext;
 
     private $experienceId;
@@ -323,68 +446,6 @@ class PaymentHelper
         }
     }
 
-    public function generationPixPayment(Transaction $transaction)
-    {
-        $response = Http::withOptions([
-            'verify' => false,
-        ])->withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . 'c7a4a51c-3236-49fb-85cf-ae7b0b16bf097d8ff36c4cbab93873c8edc680ce3eac8c7f-5cee-41a2-b00b-d33fa1757bcc',
-        ])->post('https://sandbox.api.pagseguro.com/orders', [
-            'reference_id' => 'ex-00001',
-            'customer' => [
-                'name' => 'Jose da Silva',
-                'email' => 'fernaando.esdras@gmail.com',
-                'tax_id' => '42895230803',
-                'phones' => [
-                    [
-                        'country' => '55',
-                        'area' => '11',
-                        'number' => '999999999',
-                        'type' => 'MOBILE',
-                    ],
-                ],
-            ],
-            'items' => [
-                [
-                    'name' => 'nome do item',
-                    'quantity' => 1,
-                    'unit_amount' => 10,
-                ],
-            ],
-            'qr_codes' => [
-                [
-                    'amount' => [
-                        'value' => 500,
-                    ],
-                    'expiration_date' => Carbon::now()->addMinutes(30)->toIso8601String(),
-                ],
-            ],
-            'shipping' => [
-                'address' => [
-                    'street' => 'Avenida Brigadeiro Faria Lima',
-                    'number' => '1384',
-                    'complement' => 'apto 12',
-                    'locality' => 'Pinheiros',
-                    'city' => 'São Paulo',
-                    'region_code' => 'SP',
-                    'country' => 'BRA',
-                    'postal_code' => '01452002',
-                ],
-            ],
-            'notification_urls' => ['https://meusite.com/notificacoes'],
-        ]);
-
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        // Opcional: Tratar casos de erro
-        return [
-            'error' => true,
-            'message' => 'Não foi possível gerar o pagamento PIX.'
-        ];
-    }
     public function initiateOneTimePaypalTransaction(Transaction $transaction)
     {
         // Item info
