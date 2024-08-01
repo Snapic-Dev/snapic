@@ -689,12 +689,15 @@ input[type="date"] {
 }
  
 .card-value {
-    background-color: #8412A4;
-    color: white;
-    font-weight: 500;
+    background-color: #8B3BA4;
+    color: rgb(255, 255, 255);
+    font-weight:500;
     height: 40px;
     border-radius: 20px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
+    cursor: pointer;
 }
+
 
 .blur-effect {
     filter: blur(5px);

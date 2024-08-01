@@ -41,9 +41,10 @@ class DashboardServiceProvider extends ServiceProvider
      * Get admin dashboard total posts count
      * @return int
      */
-    public static function getPostsCount()
+    public static function getPostsCount() /*dash*/
     {
-        return Post::all()->count();
+        return Post::all()->
+        count();
     }
 
     /**
@@ -78,9 +79,10 @@ class DashboardServiceProvider extends ServiceProvider
      * @return int
      * @throws \Exception
      */
-    public static function getActiveSubscriptionsCount()
+    public static function getActiveSubscriptionsCount() /*dash*/
     {
-        return Subscription::query()->where('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')))->count();
+        return Subscription::query()->where('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')))
+        ->count();
     }
 
     /**
@@ -97,9 +99,10 @@ class DashboardServiceProvider extends ServiceProvider
      * @return int
      * @throws \Exception
      */
-    public static function getLast24HoursRegisteredUsersCount()
+    public static function getLast24HoursRegisteredUsersCount() /*dash*/
     {
-        return User::query()->where('created_at', '>=', new \DateTime('-1 day', new \DateTimeZone('UTC')))->count();
+        return User::query()->where('created_at', '>=', new \DateTime('-1 day', new \DateTimeZone('UTC')))
+        ->count();
     }
 
     /**
@@ -152,17 +155,19 @@ class DashboardServiceProvider extends ServiceProvider
      * Get admin dashboard total earned
      * @return mixed
      */
-    public static function getTotalEarned()
-    {
+    public static function getTotalEarned() /*dash*/
+    {  
         return Transaction::query()
             ->where('status', '=', Transaction::APPROVED_STATUS)
             ->where('type', '=', Transaction::DEPOSIT_TYPE)
             ->sum('amount');
     }
 
-    public static function influencerAmount()
+    public static function influencerAmount() /*dash*/
     {
-        return User::query()->where('paid_profile', 1)->count();
+        return User::query()->where('paid_profile', 1)
+        ->count();
+        
     }
 
     public static function topInfluencerList()
@@ -187,14 +192,14 @@ class DashboardServiceProvider extends ServiceProvider
         return $subscribers;
     }
 
-    public static function comissionPaid()
-    {
+    public static function comissionPaid(){
         $totalAmount = Withdrawal::whereIn('user_id', function ($query) {
             $query->select('id')
                 ->from('users')
                 ->where('paid_profile', true)
                 ->where('status', 'approved');
-        })->sum('amount');
+        })
+        ->sum('amount');
 
         return $totalAmount;
     }

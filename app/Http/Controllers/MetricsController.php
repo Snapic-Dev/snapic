@@ -24,6 +24,7 @@ class MetricsController extends Controller
             ->where('status', Transaction::APPROVED_STATUS)
             ->where('type', 'deposit');
 
+        
         $users = (new Trend())->get($query, $request->input('function'), $request->input('unit'), $request->input('range'), 'amount', 'created_at');
 
         return response()->json($users);

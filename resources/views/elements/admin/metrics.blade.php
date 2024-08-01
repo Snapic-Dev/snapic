@@ -1,35 +1,32 @@
 <div class="col">
     <div class="metrics-container">
-        <div class="mt-3 mb-3">
-            <input class="mr-1" type="date" placeholder="Selecione uma data" />
-            <input class="ml-2" type="date" placeholder="Selecione uma data" />
-        </div>
         <div class="chartGraphic row mt-3">
             @include('elements.admin.trend_card', [
             'name' => 'newUsersTrend',
             'chart' => [
             'size' => 100,
-            'color_start' => '#8412A4',
-            'color_stop' => '#8412A4',
-            'border_color' => '#8412A4',
+            'color_start' => '#8B3BA460',
+            'color_stop' => '#8B3BA460',
+            'border_color' => '#8B3BA4',
             'point_radius' => 10,
-            'total' => true
+            'total' => false
             ],
             'route' => 'admin.metrics.new.users.trend', // Alteração aqui
             'size' => 'col-12 col-lg-12 mb-4',
             'title' => "",
             'form' => [
             'trans' => [
-            ucfirst(trim(str_replace('1 ','',trans_choice('months', 1,['number'=>1])))),
-            ucfirst(trim(str_replace('2 ','',trans_choice('months', 2,['number'=>2]))))
+            ucfirst(trim(str_replace('1 ','',trans_choice('day', 1,['number'=>1])))),
+            ucfirst(trim(str_replace('2 ','',trans_choice('days', 2,['number'=>2]))))
             ],
             'function' => 'count',
-            'unit' => 'month',
-            'ranges' => [3, 6, 12],
-            'range' => 12,
+            'unit' => 'day',
+            'ranges' => [7,14,30,90,180],
+            'range' => 7,
             ]
             ])
         </div>
+        <input class="dataFilter mt-4 mb-4" type="date"/>
         <div class="parent">
             <div class="div1">
                 <div id="metric1" class="cardMetric no-blur-effect">
@@ -191,8 +188,19 @@
         let metric5 = document.getElementById("metric5");
         let metric6 = document.getElementById("metric6");
 
+        let dataFilter = document.querySelector(".dataFilter")
+
         function showMetrics(divElement) {
             divElement.classList.toggle('blur-effect');
             divElement.classList.toggle('no-blur-effect');
         }
+
+        async function sendParameter() {
+            let dataFiltered=dataFilter.value;
+            console.log(dataFiltered);
+        }
+
+        dataFilter.addEventListener("change",sendParameter);
+        
     </script>
+
