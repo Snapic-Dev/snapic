@@ -116,7 +116,7 @@
         <div class="col">
 
 
-            <a href="{{ route('register-influencer') }}" class="border btn btn-grow btn-lg btn-color btn-block">
+            <a href="{{ route('register-influencer-form') }}" class="border btn btn-grow btn-lg btn-color btn-block">
                 {{ __('Quero ser Influencer') }}
             </a>
 

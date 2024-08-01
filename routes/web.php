@@ -55,12 +55,12 @@ Route::get('language/{locale}', ['uses' => 'GenericController@setLanguage', 'as'
 
 Route::get('/influencer/register', [
     'uses' => 'App\Http\Controllers\RegisterInfluencerController@showRegistrationForm',
-    'as' => 'register-influencer'
+    'as' => 'register-influencer-form'
 ]);
 
 Route::post('/influencer/register', [
     'uses' => 'App\Http\Controllers\RegisterInfluencerController@register',
-    'as' => 'register-influencer'
+    'as' => 'register-influencer-submit'
 ]);
 
 Auth::routes(['verify' => true]);
