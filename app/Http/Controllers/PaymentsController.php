@@ -453,9 +453,7 @@ class PaymentsController extends Controller
                 if ($postcode != null && $postcode != $loggedUser->postcode) {
                     $updateData['postcode'] = $postcode;
                 }
-                if (!empty($updateData)) {
-                    $loggedUser->update($updateData);
-                }
+               
             }
         }
     }

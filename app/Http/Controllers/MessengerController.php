@@ -119,52 +119,45 @@ class MessengerController extends Controller
     {
         $userID = Auth::user()->id;
         $query = '
-    SELECT *
-    FROM (
-        SELECT
-            t1.sender_id AS lastMessageSenderID,
-            t1.message AS lastMessage,
-            t1.isSeen,
-            NULL AS created_at, -- hack around laravel orm behaviour
-            t1.created_at AS messageDate,
-            senderDetails.id AS senderID,
-            senderDetails.name AS senderName,
-            senderDetails.avatar AS senderAvatar,
-            senderDetails.role_id AS senderRole,
-            receiverDetails.id AS receiverID,
-            receiverDetails.name AS receiverName,
-            receiverDetails.avatar AS receiverAvatar,
-            receiverDetails.role_id AS receiverRole,
-            IF(receiverDetails.id = ?, senderDetails.id, receiverDetails.id) AS contactID
-        FROM 
-            user_messages AS t1
-        INNER JOIN (
+        SELECT *
+         FROM (
             SELECT
-                LEAST(receiver_id, sender_id) AS receiverID,
-                GREATEST(receiver_id, sender_id) AS senderID,
-                MAX(id) AS max_id
-            FROM 
-                user_messages
-            GROUP BY
-                LEAST(receiver_id, sender_id),
-                GREATEST(receiver_id, sender_id)
-        ) AS t2
-        ON 
-            LEAST(t1.receiver_id, t1.sender_id) = t2.receiverID AND
-            GREATEST(t1.receiver_id, t1.sender_id) = t2.senderID AND
-            t1.id = t2.max_id
-        INNER JOIN 
-            users AS senderDetails ON t1.sender_id = senderDetails.id
-        INNER JOIN 
-            users AS receiverDetails ON t1.receiver_id = receiverDetails.id
-        WHERE  
-            (t1.receiver_id = ? OR t1.sender_id = ?)
-    ) AS contactsData
-    ORDER BY 
-        contactsData.messageDate DESC;
-';
-
-        $contacts = DB::select($query, [$userID, $userID, $userID]);
+             t1.sender_id as lastMessageSenderID,
+             t1.message as lastMessage,
+             t1.isSeen,
+             null as created_at, #hack around laravel orm behaviour
+             t1.created_at as messageDate,
+             senderDetails.id as senderID,
+             senderDetails.name as senderName,
+             senderDetails.avatar as senderAvatar,
+             senderDetails.role_id as senderRole,
+             receiverDetails.id as receiverID,
+             receiverDetails.name as receiverName,
+             receiverDetails.avatar as receiverAvatar,
+             receiverDetails.role_id as receiverRole,
+             IF(receiverDetails.id = ' . $userID . ', senderDetails.id, receiverDetails.id) as contactID
+            FROM user_messages AS t1
+            INNER JOIN
+            (
+                SELECT
+                    LEAST(receiver_id, sender_id) AS receiverID,
+                    GREATEST(receiver_id, sender_id) AS senderID,
+                    MAX(id) AS max_id
+                FROM user_messages
+                GROUP BY
+                    LEAST(receiver_id, sender_id),
+                    GREATEST(receiver_id, sender_id)
+            ) AS t2
+                ON LEAST(t1.receiver_id, t1.sender_id) = t2.receiverID AND
+                   GREATEST(t1.receiver_id, t1.sender_id) = t2.senderID AND
+                   t1.id = t2.max_id
+            INNER JOIN users senderDetails ON t1.sender_id = senderDetails.id #AND senderDetails.level <> 3
+            INNER JOIN users receiverDetails ON t1.receiver_id = receiverDetails.id #AND receiverDetails.level <> 3
+            WHERE  (t1.receiver_id = ? OR t1.sender_id = ?)
+                ) as contactsData
+                ORDER BY contactsData.messageDate DESC
+            ';
+        $contacts = DB::select($query, [$userID, $userID]);
 
         foreach ($contacts as $contact) {
             if ($contact->messageDate) {
@@ -433,6 +426,12 @@ class MessengerController extends Controller
      */
     public function sendMessage(SaveNewMessageRequest $request)
     {
+  
+   
+
+        try{
+            dd($request-> getAll());
+             
         $receiverIDs = $request->get('receiverIDs');
         $senderID = (int) Auth::user()->id;
         $return = [];
@@ -463,7 +462,8 @@ class MessengerController extends Controller
                 }
             }
         }
-        dd($receiverIDs[]);
+    
+
         foreach ($receiverIDs as $receiverID) {
             $receiverID = (int) $receiverID;
             if (!self::checkMessengerAccess($senderID, $receiverID)) {
@@ -488,6 +488,7 @@ class MessengerController extends Controller
             ]);
         }
         // Delete initially created attachments, after attaching them to the messages
+        
         if ($request->get('attachments')) {
             foreach ($request->get('attachments') as $attachment) {
                 Attachment::where('id', $attachment['attachmentID'])->first()->delete();
@@ -500,7 +501,15 @@ class MessengerController extends Controller
             'data' => $return,
             'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
         ]);
-    }
+        }catch (\Exception $exception) {
+    // Exibe a mensagem da exceção
+    echo "Exceção capturada: " . $exception->getMessage();
+    // Exibe o traço da pilha (opcional)
+    echo "<br>Rastreamento da pilha: " . nl2br($exception->getTraceAsString());
+}
+        }
+
+
 
     /**
      * Marks message as being seen.
@@ -821,6 +830,13 @@ class MessengerController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
+
+    public function create()
+    {
+        return view('pages.campanha');
+    }
+
+
     public function trigger(Request $request)
     {
         try {
