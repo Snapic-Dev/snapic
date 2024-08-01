@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  php-apache-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snapic_container
+    hostname: snapic
+    ports:
+      - "80:80"
