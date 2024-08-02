@@ -6,6 +6,8 @@ use App\Admin\Dashboard\Metrics\Trend;
 use App\Admin\Dashboard\Metrics\Value;
 use App\Model\Subscription;
 use App\Model\Transaction;
+use App\Providers\DashboardServiceProvider;
+use App\Providers\SettingsServiceProvider;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -23,8 +25,7 @@ class MetricsController extends Controller
         $query = Transaction::query()
             ->where('status', Transaction::APPROVED_STATUS)
             ->where('type', 'deposit');
-
-        
+            
         $users = (new Trend())->get($query, $request->input('function'), $request->input('unit'), $request->input('range'), 'amount', 'created_at');
 
         return response()->json($users);
@@ -66,5 +67,21 @@ class MetricsController extends Controller
             ->whereNotIn('type', [Transaction::WITHDRAWAL_TYPE, Transaction::DEPOSIT_TYPE])
             ->sum('amount'); // Melhorando a consulta para obter apenas a contagem
         return response()->json($transactionCount);
+    }
+
+    public function getMetrics(Request $request)
+    {
+        $date = $request->input('date');
+
+        $metrics = [
+            'registeredUsersCount' => DashboardServiceProvider::getLast24HoursRegisteredUsersCount($date),
+            'activeSubscriptionsCount' => DashboardServiceProvider::getActiveSubscriptionsCount($date),
+            'totalEarned' => SettingsServiceProvider::getWebsiteFormattedAmount(DashboardServiceProvider::getTotalEarned($date)),
+            'influencerAmount' => DashboardServiceProvider::influencerAmount($date),
+            'comissionPaid' => DashboardServiceProvider::comissionPaid($date),
+            'postsCount' => DashboardServiceProvider::getPostsCount($date),
+        ];
+
+        return response()->json($metrics);
     }
 }

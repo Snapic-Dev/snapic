@@ -670,13 +670,14 @@ ion-icon {
 input[type="date"] {
     box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
     border: none;
-    background-color: rgb(255, 255, 255);
+    background-color:#8b3ba4d0;
     width: 230px;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 5px;
+    padding-left:10px;
     border:2px solid rgba(0, 0, 0, 0.041);
-    color: rgba(0, 0, 0, 0.5);
-    font-weight: 600;
+    color: rgba(255, 255, 255, 0.966);
+    font-weight: 500;
 }
 
 

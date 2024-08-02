@@ -303,12 +303,5 @@ Route::fallback(function () {
 });
 
 
-Route::get('/api/get-metrics/{param}', function ($param) {
-    return response()->json([
-        'users_count' => \App\Providers\DashboardServiceProvider::getLast24HoursRegisteredUsersCount($param),
-        'subscriptions_count' => \App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount($param),
-        'influencer_amount' => \App\Providers\DashboardServiceProvider::influencerAmount($param),
-        'total_earned' => \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\DashboardServiceProvider::getTotalEarned($param)),
-        'commission_paid' => \App\Providers\DashboardServiceProvider::comissionPaid($param),
-    ]);
-});
+
+

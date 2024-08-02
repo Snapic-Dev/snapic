@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Providers;
+use Illuminate\Support\Facades\Log;
+
 
 use App\Model\Attachment;
 use App\Model\Post;
@@ -9,6 +11,7 @@ use App\Model\Reaction;
 use App\Model\Subscription;
 use App\Model\Transaction;
 use App\Model\Wallet;
+use Illuminate\Http\Request;
 use App\Model\Withdrawal;
 use App\User;
 use Carbon\Carbon;
@@ -43,8 +46,15 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getPostsCount() /*dash*/
     {
-        return Post::all()->
-        count();
+
+        $date = request()->query('date');
+
+        if($date == "") {
+            $date = date('Y-m-d');
+        }
+
+        $query=Post::whereDate('created_at', $date);
+        return $query->count();
     }
 
     /**
@@ -81,8 +91,18 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getActiveSubscriptionsCount() /*dash*/
     {
-        return Subscription::query()->where('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')))
-        ->count();
+        $date = request()->query('date');
+
+        if ($date == "") {
+            $date = date('Y-m-d');
+        }
+
+        $query=Subscription::query()
+            ->whereDate('created_at', $date)
+            ->where('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')));
+
+
+            return $query->count();
     }
 
     /**
@@ -101,8 +121,16 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getLast24HoursRegisteredUsersCount() /*dash*/
     {
-        return User::query()->where('created_at', '>=', new \DateTime('-1 day', new \DateTimeZone('UTC')))
-        ->count();
+
+        $date = request()->query('date');
+
+        if ($date == "") {
+            $date = date('Y-m-d');
+        }
+
+        $query = User::whereDate('created_at', $date);
+
+        return $query->count();
     }
 
     /**
@@ -157,16 +185,36 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getTotalEarned() /*dash*/
     {  
-        return Transaction::query()
+
+        $date = request()->query('date');
+
+        if($date == "") {
+            $date = date('Y-m-d');
+        }
+
+        $query=Transaction::query()
             ->where('status', '=', Transaction::APPROVED_STATUS)
             ->where('type', '=', Transaction::DEPOSIT_TYPE)
-            ->sum('amount');
+            ->whereDate('created_at',$date);
+
+
+            return $query->sum('amount');
     }
 
     public static function influencerAmount() /*dash*/
     {
-        return User::query()->where('paid_profile', 1)
+
+        $date = request()->query('date');
+
+        if($date == "") {
+            $date = date('Y-m-d');
+        }
+
+        return User::query()
+        ->where('paid_profile', 1)
+        ->whereDate('created_at',$date)
         ->count();
+        
         
     }
 
@@ -193,14 +241,33 @@ class DashboardServiceProvider extends ServiceProvider
     }
 
     public static function comissionPaid(){
-        $totalAmount = Withdrawal::whereIn('user_id', function ($query) {
+        $date = request()->query('date');
+
+        if ($date=="") {
+            $date = date('Y-m-d');
+        }
+    
+        // Cria a consulta para calcular o total dos valores retirados
+        $totalAmount = Withdrawal::whereIn('user_id', function ($query) use ($date) {
             $query->select('id')
                 ->from('users')
                 ->where('paid_profile', true)
-                ->where('status', 'approved');
+                ->where('status', 'approved')
+                ->whereDate('created_at', $date);
         })
         ->sum('amount');
-
+    
         return $totalAmount;
+    }
+
+    public function getMetrics(Request $request)
+    {
+        $date = $request->input('date');
+        
+        $metrics = [
+            'totalEarned' => SettingsServiceProvider::getWebsiteFormattedAmount(DashboardServiceProvider::getTotalEarned($date)),
+        ];
+
+        return response()->json($metrics);
     }
 }

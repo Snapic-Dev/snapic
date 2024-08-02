@@ -44,7 +44,6 @@
                         <span class="pull-right"><a href="admin/users" class="primary-link">{{__("Go to users")}} ››</a></span> -->
                 </div>
             </div>
-
             <div class="div2">
                 <div id="metric2" class="cardMetric no-blur-effect">
                     <div class="headerCardMetric d-flex">
@@ -82,7 +81,7 @@
                         <p class="font-weight-bolder dashCardTitle"">Produtores de conteúdo</p>
                         <button class=" metricsBtn" onclick=" showMetrics(metric3)">
                             <i class=" voyager-eye"></i>
-                            </button>
+                        </button>
                     </div>
                     <!-- <p>{{__("Active subscriptions")}}: {{\App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount()}}</p>
                         <p>{{__("Subscriptions revenue")}}: {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\DashboardServiceProvider::getTotalSubscriptionsRevenue())}}</p>
@@ -98,7 +97,7 @@
                         <p class="font-weight-bolder dashCardTitle"">Faturamento</p>
                         <button class=" metricsBtn" onclick=" showMetrics(metric4)">
                             <i class=" voyager-eye"></i>
-                            </button>
+                        </button>
                     </div>
                     <!-- <p>{{__("Active subscriptions")}}: {{\App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount()}}</p>
                         <p>{{__("Subscriptions revenue")}}: {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\DashboardServiceProvider::getTotalSubscriptionsRevenue())}}</p>
@@ -195,12 +194,47 @@
             divElement.classList.toggle('no-blur-effect');
         }
 
+
         async function sendParameter() {
             let dataFiltered=dataFilter.value;
             console.log(dataFiltered);
+
+
+            let url = `http://127.0.0.1:8000/admin?date=${encodeURIComponent(dataFiltered)}`;
+            console.log(url);
+
+
+            window.location.href = url;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const date = urlParams.get('date');
+            console.log(date);
+        }   
+
+        dataFilter.addEventListener('change',sendParameter)
+
+        function getTodayDate() {
+                const today = new Date();
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses são baseados em zero
+                const year = today.getFullYear();
+                return `${year}-${month}-${day}`;
         }
 
-        dataFilter.addEventListener("change",sendParameter);
+        document.addEventListener('DOMContentLoaded', (event) => {
+        console.log(new Date())
+            const urlParams = new URLSearchParams(window.location.search);
+            let date = urlParams.get('date');
+            if (!date) {
+                date = getTodayDate();
+                urlParams.set('date', date);
+                window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+            }
+            dataFilter.value = date;
+            
+            console.log(date);
+        });
+
         
     </script>
 
