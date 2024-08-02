@@ -1,21 +1,56 @@
-import { initializeApp } from "firebase/app";
-
-import { getStorage } from "firebase/storage";
-const firebaseConfig = {
-
-    apiKey: "AIzaSyDzndhn4XnMdpgg6LMrGo0DLRpVC0J6vUk",
-    authDomain: "belinho-2f5e3.firebaseapp.com",
-    projectId: "belinho-2f5e3",
-    storageBucket: "belinho-2f5e3.appspot.com",
-    messagingSenderId: "788324525556",
-    appId: "1:788324525556:web:65f732cb8c64420fc605a1"
-
-};
+import { storageRef } from './FirebaseConection';
 
 
 
-// Initialize Firebase
+const uploadButton = document.getElementById('uploadButton');
 
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-export {app, storage}
+uploadButton.addEventListener('click', () => {
+//   const file = imageUpload.files[0];
+//   if (file) {
+//     uploadImage(file);
+//   } else {
+//     alert('Selecione uma imagem para fazer upload.');
+//   }
+});
+
+//upload
+function uploadImage(file) {
+  const fileRef = storageRef.child('images/' + file.name); 
+
+  fileRef.put(file)
+    .then((snapshot) => {
+      snapshot.ref.getDownloadURL()
+        .then((url) => {
+          console.log('URL de download:', url);
+        });
+
+
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer upload:', error);
+    });
+}
+
+
+const imageUpload = document.getElementById('imageUpload');
+imageUpload.addEventListener('change', () => {
+  const file = imageUpload.files[0];
+  if (file) {
+    previewImage(file); 
+  }
+});
+
+// Função para pré-visualizar a imagem
+function previewImage(file) {
+    const reader = new FileReader();
+    const imagePreview = document.getElementById('imagePreview');
+  
+    reader.onload = (e) => {
+      imagePreview.src = e.target.result; 
+      imagePreview.style.display = 'block'; 
+    };
+  
+    reader.readAsDataURL(file); 
+  }
+
+

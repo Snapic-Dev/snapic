@@ -94,7 +94,7 @@
                             </div>  --}}
 
                             <div class="form-group">
-                                <button onclick="onSubmit()" type="button"  class="btn btn-primary btn-block btn-round post-create-button mb-0">{{ __('Promover') }}</button>
+                                <button  type="button"  class="btn btn-primary btn-block btn-round post-create-button mb-0">{{ __('Promover') }}</button>
                             </div>
                         </div>
                     </form>
@@ -103,4 +103,5 @@
         </div>
     </div>
 @stop
+
 
