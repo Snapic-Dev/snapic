@@ -163,92 +163,6 @@
                             </div>
                         </a>
                     </li>
-                    <div class="modal fade" id="campanhaModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title p-3 text-bold" id="staticBackdropLabel">Campanha</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="tp2" method="POST" action="{{ route('my.messenger.trigger') }}">
-                                        @csrf
-                                        <div class="form-group p-3">
-                                            <label for="formGroupExampleInput">Valor do conteúdo</label>
-                                            <input type="text" class="form-control" name="valor"
-                                                id="formGroupExampleInput" placeholder="Definir valor do anuncio">
-                                        </div>
-                                        <div class="form-group p-3">
-                                            <label for="formGroupExampleInput2">Mensagem</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha"
-                                                name="message"></textarea>
-                                        </div>
-                                        <div id="tp2" style="display: none;">
-                                            <div class="dz-preview dz-file-preview">
-                                                <div class="dz-details">
-                                                    <div class="dz-filename"><span data-dz-name></span></div>
-                                                    <div class="dz-size" data-dz-size></div>
-                                                    <img data-dz-thumbnail alt="Preview" />
-                                                </div>
-                                                <div class="dz-progress"><span class="dz-upload"
-                                                        data-dz-uploadprogress></span></div>
-                                                <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                                                <div class="dz-success-mark"><span>✔</span></div>
-                                                <div class="dz-error-mark"><span>✘</span></div>
-                                            </div>
-                                        </div>
-                                        <div id="tp2" style="display: none;">
-                                            <div class="dz-preview dz-file-preview">
-                                                <div class="dz-details">
-                                                    <div class="dz-filename"><span data-dz-name></span></div>
-                                                    <div class="dz-size" data-dz-size></div>
-                                                    <img data-dz-thumbnail alt="Preview" />
-                                                </div>
-                                                <div class="dz-progress"><span class="dz-upload"
-                                                        data-dz-uploadprogress></span></div>
-                                                <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                                                <div class="dz-success-mark"><span>✔</span></div>
-                                                <div class="dz-error-mark"><span>✘</span></div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Dropzone form container -->
-                                        <div id="dropzone-container"></div>
-                                        <!-- Container for previews -->
-                                        <div id="custom-previews-container"></div>
-                                        <button type="button" id="file-upload-button2">Upload Files</button>
-
-
-                                        <div class="p-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="defaultCheck1" name="subscribers">
-                                                <label class="form-check-label" for="defaultCheck1">
-                                                    Assinantes
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="defaultCheck2" name="followers">
-                                                <label class="form-check-label" for="defaultCheck2">
-                                                    Seguidores
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="ml-3 mr-3 mb-2">
-                                            <button type="submit"
-                                                class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
-                                                Promover
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endif
                 <li class="nav-item">
                     <a href="{{ route('my.bookmarks') }}"
@@ -266,15 +180,15 @@
                     </a>
                 </li>
                 <!-- <li class="nav-item">
-                <a href="{{ route('my.lists.all') }}" class="nav-link {{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <div class="icon-wrapper d-flex justify-content-center align-items-center">
-                            @include('elements.icon', ['icon' => 'list-outline', 'variant' => 'large'])
+                    <a href="{{ route('my.lists.all') }}" class="nav-link {{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="icon-wrapper d-flex justify-content-center align-items-center">
+                                @include('elements.icon', ['icon' => 'list-outline', 'variant' => 'large'])
+                            </div>
+                            <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Lists') }}</span>
                         </div>
-                        <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Lists') }}</span>
-                    </div>
-                </a>
-            </li> -->
+                    </a>
+                </li> -->
                 <li class="nav-item">
                     <a href="{{ route('my.settings', ['type' => 'subscriptions']) }}"
                         class="nav-link {{ Route::currentRouteName() == 'my.settings' && is_int(strpos(Request::path(), 'subscriptions')) ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -292,18 +206,18 @@
                 </li>
 
                 <!-- <li class="nav-item">
-                        <a href="{{ route('my.settings', ['type' => 'subscriptions']) }}" class="nav-link {{ Route::currentRouteName() == 'my.settings' && is_int(strpos(Request::path(), 'subscriptions')) ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
-                            <div class="d-flex justify-content-center align-items-center">
-                                <div class="icon-wrapper d-flex justify-content-center align-items-center">
-                                    @include('elements.icon', [
-                                        'icon' => 'people-circle-outline',
-                                        'variant' => 'large',
-                                    ])
+                            <a href="{{ route('my.settings', ['type' => 'subscriptions']) }}" class="nav-link {{ Route::currentRouteName() == 'my.settings' && is_int(strpos(Request::path(), 'subscriptions')) ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="icon-wrapper d-flex justify-content-center align-items-center">
+                                        @include('elements.icon', [
+                                            'icon' => 'people-circle-outline',
+                                            'variant' => 'large',
+                                        ])
+                                    </div>
+                                    <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Subscriptions') }}</span>
                                 </div>
-                                <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Subscriptions') }}</span>
-                            </div>
-                        </a>
-                    </li> -->
+                            </a>
+                        </li> -->
                 <li class="nav-item">
                     <a href="{{ route('profile', ['username' => Auth::user()->username]) }}"
                         class="nav-link {{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
