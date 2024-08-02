@@ -408,6 +408,52 @@ class PaymentsController extends Controller
      *
      * @param $request
      */
+    public function updateUserBillingDetails($request)
+    {
+        $firstName = $request->get('first_name');
+        $lastName = $request->get('last_name');
+        $billingAddress = $request->get('billing_address');
+        $country = $request->get('country');
+        $city = $request->get('city');
+        $state = $request->get('state');
+        $postcode = $request->get('postcode');
+
+        // update user billing details if they changed
+        if ($firstName != null || $lastName != null || $billingAddress != null) {
+            $loggedUser = Auth::user();
+
+            if ($loggedUser != null) {
+                $updateData = [];
+                if ($firstName != null && $firstName != $loggedUser->first_name) {
+                    $updateData['first_name'] = $firstName;
+                }
+
+                if ($lastName != null && $lastName != $loggedUser->last_name) {
+                    $updateData['last_name'] = $lastName;
+                }
+
+                if ($billingAddress != null && $billingAddress != $loggedUser->billing_address) {
+                    $updateData['billing_address'] = $billingAddress;
+                }
+
+                if ($country != null && $country != $loggedUser->country) {
+                    $updateData['country'] = $country;
+                }
+
+                if ($state != null && $state != $loggedUser->state) {
+                    $updateData['state'] = $state;
+                }
+
+                if ($city != null && $city != $loggedUser->city) {
+                    $updateData['city'] = $city;
+                }
+
+                if ($postcode != null && $postcode != $loggedUser->postcode) {
+                    $updateData['postcode'] = $postcode;
+                }
+            }
+        }
+    }
 
     /**
      * Handles NowPayments payment execution

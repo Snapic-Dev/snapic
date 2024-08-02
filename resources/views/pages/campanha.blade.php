@@ -1,16 +1,13 @@
 @extends('layouts.user-no-nav')
 
 @section('page_title', __('Campanha'))
+
 @section('styles')
     {!! Minify::stylesheet(['/css/posts/post.css', '/libs/dropzone/dist/dropzone.css'])->withFullUrl() !!}
 @stop
 
 @section('scripts')
-    {!! Minify::javascript([
-        '/js/suggestions.js',
-        '/libs/dropzone/dist/dropzone.js',
-        '/js/FileUpload.js',
-    ])->withFullUrl() !!}
+    <script type="module" src="{{ asset('js/FirebaseUpload.js') }}"></script>
 @stop
 
 @section('content')
@@ -20,8 +17,9 @@
             @include('elements.attachments-uploading-dialog')
             <div class="d-flex justify-content-between pt-4 pb-3 px-3 border-bottom">
                 <h5
-                    class="text-truncate text-bold  {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
-                    Campanha </h5>
+                    class="text-truncate text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
+                    Campanha
+                </h5>
             </div>
             @if (!PostsHelper::getDefaultPostStatus(Auth::user()->id))
                 <div class="pl-3 pr-3 pt-3">
@@ -39,21 +37,33 @@
                     </div>
                 @endif
                 <div class="d-flex flex-column-reverse">
-                    <div class="w-100">
-
+                    <form id="myForm" class="w-100">
                         <div class="form-group p-3">
                             <label for="formGroupExampleInput">Valor do conteúdo</label>
                             <input type="text" class="form-control" name="valor" id="formGroupExampleInput"
-                                placeholder="Definir valor do anuncio" required>
+                                placeholder="Definir valor do anúncio" required>
                         </div>
                         <div class="form-group p-3">
-                            <label for="formGroupExampleInput2">Mensagem</label>
+                            <label for="exampleFormControlTextarea1">Mensagem</label>
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha"
                                 name="message" required></textarea>
                         </div>
-
-
-
+                        <div class="form-group p-3">
+                            <label for="frontDoc" class="col-form-label">{{ __('Upload Documento Frente') }}</label>
+                            <input id="frontDoc" type="file"
+                                class="form-control @error('frontDoc') is-invalid @enderror" name="frontDoc"
+                                accept=".jpg, .jpeg, .png, .webp" required
+                                onchange="previewImage(this, document.getElementById('frontPreview'))">
+                            <div class="preview">
+                                <img id="frontPreview" src="#" alt="Preview da CNH - Frente"
+                                    style="display: none; max-height: 200px;">
+                            </div>
+                            @error('frontDoc')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="p-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="1" id="defaultCheck1"
@@ -70,70 +80,44 @@
                                 </label>
                             </div>
                         </div>
-
-
-
                         <div class="d-flex justify-content-between w-100 mb-3 mt-3">
-                            {{--  <div class="flex-md-grow-1">
-                                <div>
-                                    @include('elements.campanha-actions')
-                                </div>
-                            </div>  --}}
-
                             <div class="form-group">
-                                <label for="frontDoc" class=" col-form-label ">{{ __('') }}</label>
-                                <input id="frontDoc" type="file" class="@error('frontDoc') is-invalid @enderror"
-                                    name="frontDoc" value="{{ old('frontDoc') }}" required autocomplete="file"
-                                    accept=".jpg, .jpeg, .png, .webp" required
-                                    onchange="previewImage(this, document.getElementById('frontPreview'))">
-                                <div class="preview">
-                                    <img id="frontPreview" src="#" alt="Preview da CNH - Frente"
-                                        style="display: none; max-height: 200px;">
-                                </div>
-                                @error('frontDoc')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                <button type="button" onclick="onSubmit()" id="uploadButton"
+                                    class="btn btn-primary btn-block btn-round post-create-button mb-0">{{ __('Promover') }}</button>
                             </div>
-
-                            <div class="form-group">
-                                <label for="backDoc" class=" col-form-label ">{{ __('') }}</label>
-                                <input id="backDoc" type="file" lass="@error('backDoc') is-invalid @enderror"
-                                    name="backDoc" accept=".jpg, .jpeg, .png, .webp" required
-                                    onchange="previewImage(this, document.getElementById('backPreview'))">
-                                <div class="preview">
-                                    <img id="backPreview" src="#" alt="Preview da CNH - Verso"
-                                        style="display: none; max-height: 200px;">
-                                </div>
-
-                            </div>
-
-                            {{--  <div class="">
-                                <div class="d-flex align-items-center justify-content-center">
-                                    @if (Route::currentRouteName() == 'posts.create')
-                                        <div class="">
-                                            <a href="#"
-                                                class="draft-clear-button mr-3 mr-md-3">{{ __('Limpar') }}</a>
-                                        </div>
-                                    @endif
-                                    @if (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks'))
-                                        <button class="btn btn-outline-primary disabled mb-0">{{ __('Save') }}</button>
-                                    @else
-                                        <button
-                                            class="btn btn-primary btn-block btn-round  post-create-button mb-0">{{ __('Promover') }}</button>
-                                    @endif
-                                </div>
-                            </div>  --}}
-
                         </div>
-
-
-
-                    </div>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
 @stop
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script>
+    import {
+        UploadImage
+    } from "/js/FirebaseUpload.js"
+
+    async function onSubmit() {
+        // upload da imagem
+        const url = await UploadImage(document.querySelector(".file"))
+
+        //log de todos inputs + url
+        console.log(url);
+
+        //fetch para controller
+        const res = fetch("url", {
+            url: url,
+            price,
+            message,
+            followers,
+            subscribers
+        })
+
+
+        //dar resposta para o usuario
+        res.json
+
+    }
+</script>

@@ -426,6 +426,12 @@ class MessengerController extends Controller
      */
     public function sendMessage(SaveNewMessageRequest $request)
     {
+  
+   
+
+        try{
+            dd($request-> getAll());
+             
         $receiverIDs = $request->get('receiverIDs');
         $senderID = (int) Auth::user()->id;
         $return = [];
@@ -456,7 +462,8 @@ class MessengerController extends Controller
                 }
             }
         }
-        dd($receiverIDs[]);
+    
+
         foreach ($receiverIDs as $receiverID) {
             $receiverID = (int) $receiverID;
             if (!self::checkMessengerAccess($senderID, $receiverID)) {
@@ -481,6 +488,7 @@ class MessengerController extends Controller
             ]);
         }
         // Delete initially created attachments, after attaching them to the messages
+        
         if ($request->get('attachments')) {
             foreach ($request->get('attachments') as $attachment) {
                 Attachment::where('id', $attachment['attachmentID'])->first()->delete();
@@ -493,7 +501,15 @@ class MessengerController extends Controller
             'data' => $return,
             'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
         ]);
-    }
+        }catch (\Exception $exception) {
+    // Exibe a mensagem da exceção
+    echo "Exceção capturada: " . $exception->getMessage();
+    // Exibe o traço da pilha (opcional)
+    echo "<br>Rastreamento da pilha: " . nl2br($exception->getTraceAsString());
+}
+        }
+
+
 
     /**
      * Marks message as being seen.
