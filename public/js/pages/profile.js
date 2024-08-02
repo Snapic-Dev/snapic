@@ -40,10 +40,6 @@ $(function () {
         }
     }
 
-    if(multiLineOverflows('.description-content')){
-        $('.show-more-actions').removeClass('d-none');
-    }
-
 });
 
 $(window).scroll(function(){

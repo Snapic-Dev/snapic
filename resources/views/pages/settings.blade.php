@@ -24,12 +24,10 @@
 @stop
 
 @section('content')
-    <div class="container-fluid">
+    <div class="">
         <div class="row">
-            <!-- Menu de Configurações -->
             <div class="col-12 col-md-4 col-lg-3 mb-3 pr-0 settings-menu">
                 <div class="settings-menu-wrapper">
-                    <!-- Header do menu de configurações -->
                     <div class="d-none d-md-block">
                         @include('elements.settings.settings-header', ['type' => 'generic'])
                     </div>
@@ -37,7 +35,6 @@
                         @include('elements.settings.settings-header', ['type' => 'settingTab'])
                     </div>
                     <hr class="mb-0">
-                    <!-- Menu de configurações -->
                     <div class="d-none d-md-block">
                         @include('elements.settings.settings-menu', [
                             'availableSettings' => $availableSettings,

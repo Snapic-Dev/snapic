@@ -102,20 +102,6 @@ class ListsHelperServiceProvider extends ServiceProvider
     }
 
     /**
-     * Returns all the lists of an user.
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public static function getUserListTrimmed()
-    {
-        $lists = self::getUserLists();
-        $filteredLists = [];
-        foreach ($lists as $list) {
-            $filteredLists[$list->name] = $list->id;
-        }
-        return $filteredLists;
-    }
-
-    /**
      * Creates a "virtual" list, holding all of the user followers
      * @return UserList
      */

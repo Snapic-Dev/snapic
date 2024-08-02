@@ -247,14 +247,14 @@ var Lists = {
             dialogElement.find('.block-user-label').addClass('d-none');
             dialogElement.find('.unfollow-user-label').removeClass('d-none');
             $('.post-list-management-btn').on('click',function () {
-                Lists.manageList(user.lists['Following'], user_id, 'unfollow');
+                Lists.manageList(user.lists['following'], user_id, 'unfollow');
             });
         }
         else if(type === 'block'){
             dialogElement.find('.block-user-label').removeClass('d-none');
             dialogElement.find('.unfollow-user-label').addClass('d-none');
             $('.post-list-management-btn').on('click',function () {
-                Lists.manageList(user.lists['Blocked'], user_id, 'block');
+                Lists.manageList(user.lists['blocked'], user_id, 'block');
             });
         }
 

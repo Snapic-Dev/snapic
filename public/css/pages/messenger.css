@@ -1,5 +1,6 @@
 .conversations-wrapper{
     height:100vh;
+    padding: 20px;
     overflow-x: hidden;
     overflow-y: auto!important;
 }
@@ -94,7 +95,12 @@
 
 .sender .message-bubble a:hover{}
 
-.conversation-writeup textarea{}
+.conversation-writeup textarea{
+}
+
+.conversation-writeup {
+    height: 300px;
+}
 
 .messageBoxInput{
     min-height: 45px!important;
@@ -244,4 +250,55 @@
 .selectize-input {
     max-height: 100px;
     overflow-y: auto;
+}
+
+
+/* estilizando cambo input messageArea */
+
+.btn-dropdown-message {
+    background-color: transparent;
+    border:none;
+}
+
+.icon-drop-menu .ionicon{
+    font-size: 20px;
+    color: #8D6CC9;
+}
+
+.btn-group  {
+    position: absolute;
+    top: 8px;
+    right: 18px;
+    outline: none;
+}
+
+.icon-drop-menu {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-menu {
+    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    width: 200px;
+    box-shadow: 0 8px 26px -4px rgba(20,20,20,.15), 0 8px 9px -5px rgba(20, 20, 20, 0);
+}
+
+.dropdown-message-text {
+    font-size: 14px;
+    text-transform: lowercase;
+    min-width: 100px;
+}
+
+.button-message-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sendBtn {
+    border: 1px solid black;
 }

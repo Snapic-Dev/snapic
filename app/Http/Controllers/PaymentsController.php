@@ -206,6 +206,8 @@ class PaymentsController extends Controller
         $redirectLink = null;
         // generate one time transaction
         try {
+            $this->updateUserBillingDetails($request);
+
             $transaction = new Transaction();
             $transaction['sender_user_id'] = Auth::user()->id;
             $transaction['recipient_user_id'] = $request->get('recipient_user_id');
@@ -451,6 +453,7 @@ class PaymentsController extends Controller
                 if ($postcode != null && $postcode != $loggedUser->postcode) {
                     $updateData['postcode'] = $postcode;
                 }
+               
             }
         }
     }

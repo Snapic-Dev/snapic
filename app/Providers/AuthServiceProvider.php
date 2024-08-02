@@ -199,12 +199,7 @@ class AuthServiceProvider extends ServiceProvider
                 ['user_id' => $user->id],
                 ['code' => $code]
             );
-            try{
-                App::setLocale($user->settings['locale']);
-            }
-            catch (\Exception $e){
-                App::setLocale('en');
-            }
+            App::setLocale($user->settings['locale']);
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,

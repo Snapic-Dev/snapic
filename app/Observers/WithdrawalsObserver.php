@@ -89,12 +89,7 @@ class WithdrawalsObserver
     private function processWithdrawalNotifications($withdrawal, $emailSubject, $button, $skipNotficationEntry = false){
         // Sending out the user notification
         $user = User::find($withdrawal->user_id);
-        try{
-            App::setLocale($user->settings['locale']);
-        }
-        catch (\Exception $e){
-            App::setLocale('en');
-        }
+        App::setLocale($user->settings['locale']);
         EmailsServiceProvider::sendGenericEmail(
             [
                 'email' => $user->email,

@@ -38,12 +38,7 @@ class UserVerifyObserver
 
             // Sending out the user notification
             $user = User::find($userVerify->user_id);
-            try{
-                App::setLocale($user->settings['locale']);
-            }
-            catch (\Exception $e){
-                App::setLocale('en');
-            }
+            App::setLocale($user->settings['locale']);
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,

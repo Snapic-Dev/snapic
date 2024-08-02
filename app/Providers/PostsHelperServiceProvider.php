@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Cookie;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use View;
 
@@ -128,44 +129,33 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $userId
      * @return mixed
      */
-    // public static function getFreeFollowingProfiles($userId)
-    // {
-    //     // Buscar a lista de "following" do usuário com seus membros e os próprios usuários
-    //     $followingList = UserList::where('user_id', $userId)
-    //         ->where('type', 'following')
-    //         ->with(['members', 'members.user'])
-    //         ->first();
-
-    //     // Inicializar um array vazio para armazenar os IDs dos usuários seguidos
-    //     $followingUserIds = [];
-
-    //     // Verificar se a lista de "following" foi encontrada
-    //     if ($followingList) {
-    //         // Iterar sobre os membros da lista de "following"
-    //         foreach ($followingList->members as $member) {
-    //             // Verificar se o perfil do usuário não é pago ou se perfis abertos são permitidos e o perfil é aberto
-    //             if (!$member->user->paid_profile || (getSetting('profiles.allow_users_enabling_open_profiles') && $member->user->open_profile)) {
-    //                 // Adicionar o ID do usuário seguido ao array
-    //                 $followingUserIds[] =  $member->user->id;
-    //             }
-    //         }
-    //     } else {
-    //         // Registrar um aviso caso a lista de "following" não seja encontrada
-    //         Log::warning('Following list not found for user: ' . $userId);
-    //     }
-
-    //     // Retornar os IDs dos usuários seguidos
-    //     return $followingUserIds;
-    // }
     public static function getFreeFollowingProfiles($userId)
     {
-        $followingList = UserList::where('user_id', $userId)->where('type', 'following')->with(['members', 'members.user'])->first();
+        // Buscar a lista de "following" do usuário com seus membros e os próprios usuários
+        $followingList = UserList::where('user_id', $userId)
+            ->where('type', 'following')
+            ->with(['members', 'members.user'])
+            ->first();
+
+        // Inicializar um array vazio para armazenar os IDs dos usuários seguidos
         $followingUserIds = [];
-        foreach ($followingList->members as $member) {
-            if (!$member->user->paid_profile || (getSetting('profiles.allow_users_enabling_open_profiles') && $member->user->open_profile)) {
-                $followingUserIds[] =  $member->user->id;
+
+        // Verificar se a lista de "following" foi encontrada
+        if ($followingList) {
+            // Iterar sobre os membros da lista de "following"
+            foreach ($followingList->members as $member) {
+                // Verificar se o perfil do usuário não é pago ou se perfis abertos são permitidos e o perfil é aberto
+                if (!$member->user->paid_profile || (getSetting('profiles.allow_users_enabling_open_profiles') && $member->user->open_profile)) {
+                    // Adicionar o ID do usuário seguido ao array
+                    $followingUserIds[] =  $member->user->id;
+                }
             }
+        } else {
+            // Registrar um aviso caso a lista de "following" não seja encontrada
+            Log::warning('Following list not found for user: ' . $userId);
         }
+
+        // Retornar os IDs dos usuários seguidos
         return $followingUserIds;
     }
 
@@ -357,134 +347,49 @@ class PostsHelperServiceProvider extends ServiceProvider
      */
     public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
     {
+        $user = Auth::user();
+
         if ($filterType == 'following' || $filterType == 'all') {
-            // Followers only
-            $posts->join('user_list_members as following', function ($join) use ($userID) {
-                $join->on('following.user_id', '=', 'posts.user_id');
-                $join->on('following.list_id', '=', DB::raw(Auth::user()->lists->firstWhere('type', 'following')->id));
-            });
+            $followingList = $user ? $user->lists->firstWhere('type', 'following') : null;
+
+            if ($followingList) {
+                $posts->join('user_list_members as following', function ($join) use ($followingList) {
+                    $join->on('following.user_id', '=', 'posts.user_id');
+                    $join->on('following.list_id', '=', DB::raw($followingList->id));
+                });
+            } else {
+                // Handle the case where the following list is not found
+                Log::warning('Following list not found for user: ' . $userID);
+            }
         }
 
         if ($filterType == 'blocked' || $filterType == 'all') {
-            // Blocked users
-            $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
-            $posts->whereNotIn('posts.user_id', $blockedUsers);
+            $blockedList = $user ? $user->lists->firstWhere('type', 'blocked') : null;
+
+            if ($blockedList) {
+                $blockedUsers = ListsHelperServiceProvider::getListMembers($blockedList->id);
+                $posts->whereNotIn('posts.user_id', $blockedUsers);
+            } else {
+                // Handle the case where the blocked list is not found
+                Log::warning('Blocked list not found for user: ' . $userID);
+            }
         }
 
         if ($filterType == 'subs' || $filterType == 'all') {
             if ($filterType == 'all') {
-                $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
+                $userIds = array_merge(
+                    self::getUserActiveSubs($userID),
+                    self::getFreeFollowingProfiles($userID)
+                );
                 $posts->whereIn('posts.user_id', $userIds);
             } else {
-                // Subs only
-                $activeSubs = self::getUserActiveSubs($userID);
-                $posts->whereIn('posts.user_id', $activeSubs);
-            }
-        }
-
-        if ($filterType == 'bookmarks') {
-            $posts->join('user_bookmarks', function ($join) use ($userID) {
-                $join->on('user_bookmarks.post_id', '=', 'posts.id');
-                $join->on('user_bookmarks.user_id', '=', DB::raw($userID));
-            });
-        }
-
-        if ($filterType == 'media') {
-            // This guy is not really that optimal but neither bookmarks is heavy accessed
-            $mediaTypes = AttachmentServiceProvider::getTypeByExtension($mediaType);
-            $posts->whereHas('attachments', function ($query) use ($mediaTypes) {
-                $query->whereIn('type', $mediaTypes);
-            });
-        }
-
-        if ($filterType == 'search') {
-            $posts->where(
-                function ($query) use ($searchTerm) {
-                    $query->where('text', 'like', '%' . $searchTerm . '%')
-                        ->orWhereHas('user', function ($q) use ($searchTerm) {
-                            $q->where('username', 'like', '%' . $searchTerm . '%');
-                            $q->orWhere('name', 'like', '%' . $searchTerm . '%');
-                        });
-                }
-            );
-        }
-
-        if ($filterType == 'pinned') {
-            $posts->orderBy('is_pinned', 'DESC');
-        }
-
-        if ($filterType == 'order') {
-            if ($sortOrder) {
-                if ($sortOrder == 'top') {
-                    $relationsCount = ['reactions', 'comments'];
-                    $posts->withCount($relationsCount);
-                    $posts->orderBy('comments_count', 'DESC');
-                    $posts->orderBy('reactions_count', 'DESC');
-                } elseif ($sortOrder == 'latest') {
-                    $posts->orderBy('created_at', 'DESC');
-                }
-            } else {
-                $posts->orderBy('created_at', 'DESC');
-            }
-        }
-
-        if ($filterType == 'scheduled') {
-            $posts->notExpiredAndReleased();
-        }
-
-        if ($filterType == 'approvedPostsOnly') {
-            if (!(Auth::check() && (Auth::user()->role_id === 1))) { // Admin can preview all  types of posts
-                $posts->where('status', Post::APPROVED_STATUS);
+                $userIds = self::getUserActiveSubs($userID);
+                $posts->whereIn('posts.user_id', $userIds);
             }
         }
 
         return $posts;
     }
-    // public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
-    // {
-    //     $user = Auth::user();
-
-    //     if ($filterType == 'following' || $filterType == 'all') {
-    //         $followingList = $user ? $user->lists->firstWhere('type', 'following') : null;
-
-    //         if ($followingList) {
-    //             $posts->join('user_list_members as following', function ($join) use ($followingList) {
-    //                 $join->on('following.user_id', '=', 'posts.user_id');
-    //                 $join->on('following.list_id', '=', DB::raw($followingList->id));
-    //             });
-    //         } else {
-    //             // Handle the case where the following list is not found
-    //             Log::warning('Following list not found for user: ' . $userID);
-    //         }
-    //     }
-
-    //     if ($filterType == 'blocked' || $filterType == 'all') {
-    //         $blockedList = $user ? $user->lists->firstWhere('type', 'blocked') : null;
-
-    //         if ($blockedList) {
-    //             $blockedUsers = ListsHelperServiceProvider::getListMembers($blockedList->id);
-    //             $posts->whereNotIn('posts.user_id', $blockedUsers);
-    //         } else {
-    //             // Handle the case where the blocked list is not found
-    //             Log::warning('Blocked list not found for user: ' . $userID);
-    //         }
-    //     }
-
-    //     if ($filterType == 'subs' || $filterType == 'all') {
-    //         if ($filterType == 'all') {
-    //             $userIds = array_merge(
-    //                 self::getUserActiveSubs($userID),
-    //                 self::getFreeFollowingProfiles($userID)
-    //             );
-    //             $posts->whereIn('posts.user_id', $userIds);
-    //         } else {
-    //             $userIds = self::getUserActiveSubs($userID);
-    //             $posts->whereIn('posts.user_id', $userIds);
-    //         }
-    //     }
-
-    //     return $posts;
-    // }
 
     /**
      * Returns all comments for a post.
