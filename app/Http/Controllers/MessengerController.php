@@ -426,75 +426,90 @@ class MessengerController extends Controller
      */
     public function sendMessage(SaveNewMessageRequest $request)
     {
-        $receiverIDs = $request->get('receiverIDs');
-        $return = [];
-        $errors = [];
 
-        if ($receiverIDs === null) {
-            $receiverIDs = [];
 
-            if ($request->followers) {
-                $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
 
-                foreach ($followers as $follower) {
-                    if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
-                        $receiverIDs[]  = $follower['user_id'];
+        try {
+            dd($request->getAll());
+
+            $receiverIDs = $request->get('receiverIDs');
+            $senderID = (int) Auth::user()->id;
+            $return = [];
+            $errors = [];
+
+            if ($receiverIDs === null) {
+                $receiverIDs = [];
+
+                if ($request->followers) {
+                    $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
+
+                    foreach ($followers as $follower) {
+                        if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                            $receiverIDs[]  = $follower['user_id'];
+                        }
+                    }
+                }
+
+                if ($request->subscribers) {
+                    $subscribers = Subscription::where('recipient_user_id', $senderID)
+                        ->where('expires_at', '>', Carbon::now('UTC'))
+                        ->get();
+
+                    foreach ($subscribers as $subscriber) {
+                        if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
+                            $receiverIDs[]  = $subscriber->user_id;
+                        }
                     }
                 }
             }
 
-            if ($request->subscribers) {
-                $subscribers = Subscription::where('recipient_user_id', $senderID)
-                    ->where('expires_at', '>', Carbon::now('UTC'))
-                    ->get();
 
-                foreach ($subscribers as $subscriber) {
-                    if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
-                        $receiverIDs[]  = $subscriber->user_id;
+            foreach ($receiverIDs as $receiverID) {
+                $receiverID = (int) $receiverID;
+                if (!self::checkMessengerAccess($senderID, $receiverID)) {
+                    $errors[] = __('Not authorized');
+                    if (count($receiverIDs) == 1) {
+                        return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
                     }
                 }
+                if (GenericHelperServiceProvider::hasUserBlocked($receiverID, $senderID)) {
+                    $errors[] = __('This user has blocked you');
+                    if (count($receiverIDs) == 1) {
+                        return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
+                    }
+                }
+                $return[] = $this->sendUserMessage([
+                    'senderID' => $senderID,
+                    'receiverID' => $receiverID,
+                    'messageValue' => $request->get('message'),
+                    'messagePrice' => $request->get('price'),
+                    'isFirstMessage' => $request->get('new'),
+                    'attachments' => $request->get('attachments')
+                ]);
             }
-        }
+            // Delete initially created attachments, after attaching them to the messages
 
-
-        foreach ($receiverIDs as $receiverID) {
-            $receiverID = (int) $receiverID;
-            // Checking access
-            if (!self::checkMessengerAccess($senderID, $receiverID)) {
-                $errors[] = __('Not authorized');
-                if (count($receiverIDs) == 1) {
-                    return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
+            if ($request->get('attachments')) {
+                foreach ($request->get('attachments') as $attachment) {
+                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
                 }
             }
-            if (GenericHelperServiceProvider::hasUserBlocked($receiverID, $senderID)) {
-                $errors[] = __('This user has blocked you');
-                if (count($receiverIDs) == 1) {
-                    return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
-                }
-            }
-            $return[] = $this->sendUserMessage([
-                'senderID' => $senderID,
-                'receiverID' => $receiverID,
-                'messageValue' => $request->get('message'),
-                'messagePrice' => $request->get('price'),
-                'isFirstMessage' => $request->get('new'),
-                'attachments' => $request->get('attachments')
+            // If single message, return the single message entry | keep ui as it was
+            if (count($receiverIDs) === 1) $return = $return[0];
+            return response()->json([
+                'status' => 'success',
+                'data' => $return,
+                'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
             ]);
+        } catch (\Exception $exception) {
+            // Exibe a mensagem da exceção
+            echo "Exceção capturada: " . $exception->getMessage();
+            // Exibe o traço da pilha (opcional)
+            echo "<br>Rastreamento da pilha: " . nl2br($exception->getTraceAsString());
         }
-        // Delete initially created attachments, after attaching them to the messages
-        if ($request->get('attachments')) {
-            foreach ($request->get('attachments') as $attachment) {
-                Attachment::where('id', $attachment['attachmentID'])->first()->delete();
-            }
-        }
-        // If single message, return the single message entry | keep ui as it was
-        if (count($receiverIDs) === 1) $return = $return[0];
-        return response()->json([
-            'status' => 'success',
-            'data' => $return,
-            'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
-        ]);
     }
+
+
 
     /**
      * Marks message as being seen.

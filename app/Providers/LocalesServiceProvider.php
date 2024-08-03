@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Cookie;
+use Illuminate\Support\Facades\Cookie as FacadesCookie;
 
 class LocalesServiceProvider extends ServiceProvider
 {
@@ -228,29 +229,29 @@ class LocalesServiceProvider extends ServiceProvider
         //
     }
 
-    public static function getAvailableLanguages(){
-        $languageFiles = array_filter(scandir(app()->langPath()),function ($v){
-            if(is_int(strpos($v,'.json'))){
-                return str_replace('.json','',$v);
+    public static function getAvailableLanguages()
+    {
+        $languageFiles = array_filter(scandir(app()->langPath()), function ($v) {
+            if (is_int(strpos($v, '.json'))) {
+                return str_replace('.json', '', $v);
             }
         });
-        $languageFiles = array_map(function ($v){
-            if(is_int(strpos($v,'.json'))){
-                return str_replace('.json','',$v);
+        $languageFiles = array_map(function ($v) {
+            if (is_int(strpos($v, '.json'))) {
+                return str_replace('.json', '', $v);
             }
-        },$languageFiles);
+        }, $languageFiles);
         return $languageFiles;
     }
 
-    public static function getLanguageName($localeCode){
-        if(extension_loaded('intl')){
+    public static function getLanguageName($localeCode)
+    {
+        if (extension_loaded('intl')) {
             return \Locale::getDisplayLanguage($localeCode, Session::get('locale') ? Session::get('locale') : 'pt-br');
-        }
-        else{
-            if(isset(self::$languageCodes[$localeCode])){
+        } else {
+            if (isset(self::$languageCodes[$localeCode])) {
                 return self::$languageCodes[$localeCode];
-            }
-            else{
+            } else {
                 return false;
             }
         }
@@ -263,7 +264,7 @@ class LocalesServiceProvider extends ServiceProvider
             return Config::get('app.locale');
         }
 
-        if (! Session::has('locale')) {
+        if (!Session::has('locale')) {
             if (Cookie::get('app_locale')) {
                 return Cookie::get('app_locale');
             }
@@ -279,8 +280,8 @@ class LocalesServiceProvider extends ServiceProvider
         if (isset(Auth::user()->settings['locale'])) {
             return Auth::user()->settings['locale'];
         } else {
-            if (Cookie::get('app_locale')) {
-                return Cookie::get('app_locale');
+            if (FacadesCookie::get('app_locale')) {
+                return FacadesCookie::get('app_locale');
             } else {
                 if (getSetting('site.use_browser_language_if_available')) {
                     $preferredLang = explode('-', $request->server('HTTP_ACCEPT_LANGUAGE'))[0] ?? null;
@@ -299,9 +300,9 @@ class LocalesServiceProvider extends ServiceProvider
      * Locale setter helper
      * @param $code
      */
-    public static function setLocale($code){
+    public static function setLocale($code)
+    {
         App::setLocale($code);
         Session::put('locale', $code);
     }
-
 }
