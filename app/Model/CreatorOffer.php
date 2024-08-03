@@ -14,6 +14,7 @@ class CreatorOffer extends Model
     protected $fillable = [
         'user_id',
         'old_profile_access_price',
+        'old_profile_access_price_3_months',
         'old_profile_access_price_6_months',
         'old_profile_access_price_12_months',
         'expires_at',

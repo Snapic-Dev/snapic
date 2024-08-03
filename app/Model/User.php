@@ -67,16 +67,15 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
         return GenericHelperServiceProvider::getStorageCoverPath($value);
     }
 
-
     /**
      * Gets current count of active subscribers
      * @return int
      * @throws \Exception
      */
-    public function getFansCountAttribute($userId)
+    public function getFansCountAttribute()
     {
         $activeSubscriptionsCount = Subscription::query()
-            ->where('recipient_user_id', $userId)
+            ->where('recipient_user_id', Auth::user()->id)
             ->whereDate('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')))
             ->count('id');
 
@@ -87,8 +86,9 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
      * Gets the count of followers
      * @return int|mixed
      */
-    public function getFollowingCountAttribute($userId)
+    public function getFollowingCountAttribute()
     {
+        $userId = Auth::user()->id;
         $userFollowingMembers = UserList::query()
             ->where(['user_id' => $userId, 'type' => 'following'])
             ->withCount('members')->first();

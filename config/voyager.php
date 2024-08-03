@@ -1,5 +1,7 @@
 <?php
 
+$dateToday = date('Y-m-d');
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -15,7 +17,7 @@ return [
         'default_role' => 'user',
         'default_cover' => '/img/default-cover.png',
         'default_avatar' => '/img/default-avatar.jpg',
-        'redirect' => '/admin',
+        'redirect' => '/admin?date=' . $dateToday,
     ],
 
     /*

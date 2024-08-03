@@ -18,7 +18,14 @@
     <div class="paid-profile-rates {{isset(Auth::user()->paid_profile) ? (Auth::user()->paid_profile == '1' ? '' : 'd-none') : ''}}">
         <div class="form-group p-2">
             <label for="name">{{__('Your profile subscription price')}}</label>
-            <input class="form-control {{ $errors->has('profile_access_price') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price}}">
+            <div class="input-group mb-3">
+                <input class="form-control {{ $errors->has('profile_access_price') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price}}">
+                @if($offer)
+                <div class="input-group-append">
+                    <span class="input-group-text">{{__('Old')}}: {{$offer->old_profile_access_price}}</span>
+                </div>
+                @endif
+            </div>
             @if($errors->has('profile_access_price'))
             <span class="invalid-feedback" role="alert">
                 <strong>{{__($errors->first('profile_access_price'))}}</strong>
@@ -27,7 +34,14 @@
         </div>
         <div class="form-group p-2">
             <label for="name">{{__('3 months subscription price')}}</label>
-            <input class="form-control {{ $errors->has('profile_access_price_3_months') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price_3_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_3_months}}">
+            <div class="input-group mb-3">
+                <input class="form-control {{ $errors->has('profile_access_price_3_months') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price_3_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_3_months}}">
+                @if($offer)
+                <div class="input-group-append">
+                    <span class="input-group-text">{{__('Old')}}: {{$offer->old_profile_access_price_3_months}}</span>
+                </div>
+                @endif
+            </div>
             @if($errors->has('profile_access_price_3_months'))
             <span class="invalid-feedback" role="alert">
                 <strong>{{__($errors->first('profile_access_price_3_months'))}}</strong>
@@ -36,7 +50,14 @@
         </div>
         <div class="form-group p-2">
             <label for="name">{{__('6 months subscription price')}}</label>
-            <input class="form-control {{ $errors->has('profile_access_price_6_months') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price_6_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_6_months}}">
+            <div class="input-group mb-3">
+                <input class="form-control {{ $errors->has('profile_access_price_6_months') ? 'is-invalid' : '' }}" id="profile_access_price" name="profile_access_price_6_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_6_months}}">
+                @if($offer)
+                <div class="input-group-append">
+                    <span class="input-group-text">{{__('Old')}}: {{$offer->old_profile_access_price_6_months}}</span>
+                </div>
+                @endif
+            </div>
             @if($errors->has('profile_access_price_6_months'))
             <span class="invalid-feedback" role="alert">
                 <strong>{{__($errors->first('profile_access_price_6_months'))}}</strong>
@@ -45,7 +66,14 @@
         </div>
         <div class="form-group p-2">
             <label for="name">{{__('12 months subscription price')}}</label>
-            <input class="form-control {{ $errors->has('profile_access_price_12_months') ? 'is-invalid' : '' }}" id="profile_access_price_12_months" name="profile_access_price_12_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_12_months}}">
+            <div class="input-group mb-3">
+                <input class="form-control {{ $errors->has('profile_access_price_12_months') ? 'is-invalid' : '' }}" id="profile_access_price_12_months" name="profile_access_price_12_months" aria-describedby="emailHelp" value="{{Auth::user()->profile_access_price_12_months}}">
+                @if($offer)
+                <div class="input-group-append">
+                    <span class="input-group-text">{{__('Old')}}: {{$offer->old_profile_access_price_12_months}}</span>
+                </div>
+                @endif
+            </div>
             @if($errors->has('profile_access_price_12_months'))
             <span class="invalid-feedback" role="alert">
                 <strong>{{__($errors->first('profile_access_price_12_months'))}}</strong>

@@ -1,6 +1,6 @@
 @extends('layouts.no-nav')
 @section('meta')
-<meta name="robots" content="noindex">
+    <meta name="robots" content="noindex">
 @stop
 
 @section('content')
@@ -12,9 +12,7 @@
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
                             <a href="{{action('HomeController@index')}}">
-                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                                    class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
-                                    alt="{{__("Site logo")}}">
+                                <img class="brand-logo pb-4" src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}">
                             </a>
                             @if (session('status'))
                                 <div class="alert alert-success text-white" role="alert">

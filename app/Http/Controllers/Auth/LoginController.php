@@ -14,6 +14,17 @@ use Session;
 
 class LoginController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
     use AuthenticatesUsers;
 
     /**
@@ -34,72 +45,12 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * Get the login username to be used by the controller.
-     *
-     * @return string
-     */
-    public function username()
-    {
-        return 'name';
-    }
-
-    /**
-     * Handle a login request to the application.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    public function login(Request $request)
-    {
-        $this->validateLogin($request);
-
-        if (
-            method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)
-        ) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-
-        if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
-        }
-
-
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
-    }
-
-    /**
-     * Validate the user login request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     */
-    protected function validateLogin(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'password' => 'required|string',
-        ]);
-    }
-
-    /**
-     * The user has been authenticated.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param mixed $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
+    protected function authenticated(Request $request)
     {
         // Handling 2FA stuff
         $force2FA = false;
-        if (getSetting('security.enable_2fa')) {
-            if (Auth::user()->enable_2fa && !in_array(AuthServiceProvider::generate2FaDeviceSignature(), AuthServiceProvider::getUserDevices(Auth::user()->id))) {
+        if(getSetting('security.enable_2fa')){
+            if(Auth::user()->enable_2fa && !in_array(AuthServiceProvider::generate2FaDeviceSignature(), AuthServiceProvider::getUserDevices(Auth::user()->id))  ){
                 AuthServiceProvider::generate2FACode();
                 AuthServiceProvider::addNewUserDevice(Auth::user()->id);
                 $force2FA = true;
@@ -111,6 +62,7 @@ class LoginController extends Controller
             return response()->json(['success' => true, 'message' => 'Logged in successfully.']);
         }
     }
+
 
     /**
      * Redirect the user to the Facebook authentication page.
@@ -135,9 +87,10 @@ class LoginController extends Controller
 
         // Creating the user & Logging in the user
         $userCheck = User::where('auth_provider_id', $user->id)->first();
-        if ($userCheck) {
+        if($userCheck){
             $authUser = $userCheck;
-        } else {
+        }
+        else{
             try {
                 $authUser = AuthServiceProvider::createUser([
                     'name' => $user->getName(),
@@ -145,10 +98,12 @@ class LoginController extends Controller
                     'auth_provider' => $provider,
                     'auth_provider_id' => $user->id
                 ]);
-            } catch (\Exception $exception) {
+            }
+            catch (\Exception $exception) {
                 // Redirect to homepage with error
                 return redirect(route('home'))->with('error', $exception->getMessage());
             }
+
         }
 
         Auth::login($authUser, true);
@@ -157,5 +112,7 @@ class LoginController extends Controller
             $redirectTo = Session::get('lastProfileUrl');
         }
         return redirect($redirectTo);
+
     }
+
 }

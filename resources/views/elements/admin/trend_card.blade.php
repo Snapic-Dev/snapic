@@ -7,8 +7,8 @@
                         <div class="text-muted font-weight-bolder">{{ $title }}</div>
                     </div>
                     <div class="col-md-2 col-xs-12">
-                        <input type="hidden" name="function" value="{{ $form['function'] }}">
-                        <input type="hidden" name="unit" value="{{ $form['unit'] }}">
+                        <input type="hidden" name="function" value="sum">
+                        <input class="p-4 mb-3" type="hidden" name="unit" value="{{ $form['unit'] }}">
                         <select name="range" class="form-control form-control-sm card-value">
                             @foreach($form['ranges'] as $range)
                                 <option value="{{ $range }}" @if($form['range'] == $range) selected @endif>{{ $range }} {{ $range == 1 ? $form['trans'][0] : $form['trans'][1] }}</option>
@@ -16,7 +16,6 @@
                         </select>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-12">
@@ -66,13 +65,13 @@
                 tooltips: {
                     callbacks: {
                         label: function(tooltipItem) {
-                            return parseFloat(tooltipItem.value).format(0, 3, '{{ __('thousands_separator') }}').toString();
+                            return 'R$'+ parseFloat(tooltipItem.value).format(0, 3, '{{ __('thousands_separator') }}').toString();
                         }
                     }
                 },
                 scales: {
                     xAxes: [{
-                        display: false
+                        display: true
                     }],
                     yAxes: [{
                         display: false

@@ -102,6 +102,20 @@ class ListsHelperServiceProvider extends ServiceProvider
     }
 
     /**
+     * Returns all the lists of an user.
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function getUserListTrimmed()
+    {
+        $lists = self::getUserLists();
+        $filteredLists = [];
+        foreach ($lists as $list) {
+            $filteredLists[$list->name] = $list->id;
+        }
+        return $filteredLists;
+    }
+
+    /**
      * Creates a "virtual" list, holding all of the user followers
      * @return UserList
      */
@@ -122,17 +136,6 @@ class ListsHelperServiceProvider extends ServiceProvider
         $followersList->members = $followers;
         return $followersList;
     }
-
-    /**
-     * Creates a "virtual" list, holding all of the user followers
-     * @return UserList
-     */
-    public static function getUserSubsList()
-    {
-        $seila = Subscription::where('recipient_user_id', Auth::user()->id)->get();
-        return $seila[0]->getOriginal();
-    }
-
 
     public static function getUsersForListMembers($members)
     {

@@ -25,7 +25,12 @@ class PostApprovalObserver
         if($post->getOriginal('status') !== $post->status){
             // Sending out the user notification
             $user = User::find($post->user_id);
-            App::setLocale($user->settings['locale']);
+            try{
+                App::setLocale($user->settings['locale']);
+            }
+            catch (\Exception $e){
+                App::setLocale('en');
+            }
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,

@@ -34,6 +34,9 @@
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -54,10 +57,11 @@
     <div class="form-group row mb-0 mt-4 p-1">
         <div class="col">
             <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
-                {{ __('Login') }}
+                {{__('Login')}}
             </button>
         </div>
     </div>
+
 </form>
 
 @if (

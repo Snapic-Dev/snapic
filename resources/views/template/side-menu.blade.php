@@ -78,7 +78,7 @@ Minify::javascript([
             <a href="{{ Auth::check() ? route('feed') : route('home') }}" class="h-pill h-pill-primary nav-link {{ Route::currentRouteName() == 'feed' ? 'active' : '' }} d-flex justify-content-between">
                 <div class="d-flex justify-content-center align-items-center">
                     <div class="icon-wrapper d-flex justify-content-center align-items-center">
-                        @include('elements.icon', ['icon' => 'home-outline', 'variant' => 'large'])
+                        @include('elements.icon',['icon'=>'home-outline','variant'=>'large'])
                     </div>
                     <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Home') }}</span>
                 </div>
@@ -210,16 +210,17 @@ Minify::javascript([
 
         <li class="nav-item">
             <a href="#" role="button" class="open-menu nav-link h-pill h-pill-primary text-muted d-flex justify-content-between">
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="icon-wrapper d-flex justify-content-center align-items-center">
-                        @include('elements.icon', [
-                        'icon' => 'ellipsis-horizontal-circle-outline',
-                        'variant' => 'large',
-                        ])
+                <a href="#" role="button" class="open-menu nav-link h-pill h-pill-primary text-muted d-flex justify-content-between">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="icon-wrapper d-flex justify-content-center align-items-center">
+                            @include('elements.icon', [
+                            'icon' => 'ellipsis-horizontal-circle-outline',
+                            'variant' => 'large',
+                            ])
+                        </div>
+                        <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('More') }}</span>
                     </div>
-                    <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('More') }}</span>
-                </div>
-            </a>
+                </a>
         </li>
 
         @if (GenericHelper::isEmailEnforcedAndValidated())

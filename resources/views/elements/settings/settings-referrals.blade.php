@@ -70,7 +70,6 @@
             <p>{{__('There are no referrals to show.')}}</p>
         </div>
         @endif
-
     </div>
 </div>
 

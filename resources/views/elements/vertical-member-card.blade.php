@@ -18,7 +18,7 @@
                                 {{$profile->name}}
                             </a>
                         </div>
-                        <div class="m-0 text-truncate small"><a href="{{route('profile', ['username' => $profile->username])}}" class="text-muted">&commat;{{$profile->username}}</a></div>
+                        <div class="m-0 text-truncate small"><a href="{{route('profile',['username'=>$profile->username])}}" class="text-muted">&commat;{{$profile->username}}</a></div>
                     </div>
                 </div>
             </div>
@@ -27,12 +27,9 @@
     <div class="">
         <div class="my-4 ml-4">
             <ul class="list-unstyled">
-                <li class="d-flex align-items-center">
-                    @include('elements.icon', ['icon' => 'checkmark-sharp', 'centered' => false, 'classes' => 'mr-2 text-muted', 'variant' => 'medium']) {{__("Full access to this user's content")}}</li>
-                <li class="d-flex align-items-center">
-                    @include('elements.icon', ['icon' => 'checkmark-sharp', 'centered' => false, 'classes' => 'mr-2 text-muted', 'variant' => 'medium']) {{__('Direct message with this user')}}</li>
-                <li class="d-flex align-items-center">
-                    @include('elements.icon', ['icon' => 'checkmark-sharp', 'centered' => false, 'classes' => 'mr-2 text-muted', 'variant' => 'medium']) {{__('Cancel your subscription at any time')}}</li>
+                <li class="d-flex align-items-center">@include('elements.icon',['icon'=>'checkmark-sharp','centered'=>false, 'classes' => 'mr-2 text-muted', 'variant'=>'medium']) {{__("Full access to this user's content")}}</li>
+                <li class="d-flex align-items-center">@include('elements.icon',['icon'=>'checkmark-sharp','centered'=>false, 'classes' => 'mr-2 text-muted', 'variant'=>'medium']) {{__('Direct message with this user')}}</li>
+                <li class="d-flex align-items-center">@include('elements.icon',['icon'=>'checkmark-sharp','centered'=>false, 'classes' => 'mr-2 text-muted', 'variant'=>'medium']) {{__('Cancel your subscription at any time')}}</li>
             </ul>
         </div>
     </div>

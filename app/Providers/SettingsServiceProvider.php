@@ -154,7 +154,7 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         config(['app.url' => getSetting('site.app_url')]);
-        config(['filesystems.disks.public.url' => getSetting('site.app_url') . '/storage']);
+        config(['filesystems.disks.public.url' =>  getSetting('site.app_url') . '/storage']);
 
         config(['laravelpwa.manifest.name' => getSetting('site.name')]);
         config(['laravelpwa.manifest.short_name' => getSetting('site.name')]);
@@ -194,11 +194,9 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         if (getSetting('profiles.allow_profile_bio_markdown_links')) {
-            config([
-                'purifier.settings.default' => array_merge(config('purifier.settings.default'), [
-                    'HTML.Allowed' => 'b,strong,blockquote,code,pre,i,em,u,ul,ol,li,p,br,span,a[href|title]',
-                ])
-            ]);
+            config(['purifier.settings.default' => array_merge(config('purifier.settings.default'), [
+                'HTML.Allowed' => 'b,strong,blockquote,code,pre,i,em,u,ul,ol,li,p,br,span,a[href|title]',
+            ])]);
         }
     }
 
