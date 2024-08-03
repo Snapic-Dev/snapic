@@ -68,7 +68,8 @@
                         <p class="font-weight-bolder">Content</p>
                         <p>{{__("Total posts")}}: {{\App\Providers\DashboardServiceProvider::getPostsCount()}}</p>
                         <p>{{__("Post attachments")}}: {{\App\Providers\DashboardServiceProvider::getPostAttachmentsCount()}}</p>
-                        <p>{{__("Post comments")}}: {{\App\Providers\DashboardServiceProvider::getPostCommentsCount()}}</p>
+                        <p>{{__("Post
+                             comments")}}: {{\App\Providers\DashboardServiceProvider::getPostCommentsCount()}}</p>
                         <p class="m-0">{{__("Total reactions")}}: {{\App\Providers\DashboardServiceProvider::getReactionsCount()}}</p>
                         <span class="pull-right"><a href="admin/user-posts" class="primary-link">{{__("Go to content")}} ››</a></span>
                     </div>

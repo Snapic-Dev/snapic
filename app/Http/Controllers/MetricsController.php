@@ -69,19 +69,4 @@ class MetricsController extends Controller
         return response()->json($transactionCount);
     }
 
-    public function getMetrics(Request $request)
-    {
-        $date = $request->input('date');
-
-        $metrics = [
-            'registeredUsersCount' => DashboardServiceProvider::getLast24HoursRegisteredUsersCount($date),
-            'activeSubscriptionsCount' => DashboardServiceProvider::getActiveSubscriptionsCount($date),
-            'totalEarned' => SettingsServiceProvider::getWebsiteFormattedAmount(DashboardServiceProvider::getTotalEarned($date)),
-            'influencerAmount' => DashboardServiceProvider::influencerAmount($date),
-            'comissionPaid' => DashboardServiceProvider::comissionPaid($date),
-            'postsCount' => DashboardServiceProvider::getPostsCount($date),
-        ];
-
-        return response()->json($metrics);
-    }
 }
