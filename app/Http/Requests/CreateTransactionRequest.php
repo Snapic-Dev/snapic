@@ -30,13 +30,6 @@ class CreateTransactionRequest extends FormRequest
             'amount' => 'required',
             'provider' => 'required',
             'transaction_type' => 'required',
-            'billing_address' => 'min:3|max:255',
-            'first_name' => 'min:1|max:255',
-            'last_name' => 'min:1|max:255',
-            'country' => 'min:1|max:255',
-            'state' => 'min:1|max:255',
-            'postcode' => 'min:1|max:255',
-            'city' => 'min:1|max:255',
             'manual_payment_files' => '',
             'manual_payment_description' => ''
         ];

@@ -1583,6 +1583,7 @@ class PaymentHelper
             'GBP' => '826',
             'JPY' => '392',
             'USD' => '840',
+            'BRL' => '986',
         ];
 
         return $availableCurrencies[$currency];

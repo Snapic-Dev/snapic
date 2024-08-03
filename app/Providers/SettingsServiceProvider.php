@@ -206,7 +206,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public static function getWebsiteCurrencySymbol()
     {
-        $symbol = '$';
+        $symbol = 'R$';
         if (getSetting('payments.currency_symbol') != null && !empty(getSetting('payments.currency_symbol'))) {
             $symbol = getSetting('payments.currency_symbol');
         } elseif (getSetting('payments.currency_code') != null && !empty(getSetting('payments.currency_code'))) {
@@ -235,7 +235,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public static function getAppCurrencyCode()
     {
-        $symbol = 'USD';
+        $symbol = 'BRL';
         if (getSetting('payments.currency_code') != null && !empty(getSetting('payments.currency_code'))) {
             $symbol = getSetting('payments.currency_code');
         }

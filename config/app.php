@@ -20,8 +20,8 @@ return [
         'light_logo' => '/img/logo-black.png',
         'dark_logo' => '/img/logo-white.png',
         'favicon' => '/img/rounded-logo-gradient.svg',
-        'currency_code' => 'USD',
-        'currency_symbol' => '$',
+        'currency_code' => 'BRL',
+        'currency_symbol' => 'R$',
         'default_site_language' => 'en',
         'allow_pwa_installs' => false,
     ],
@@ -38,7 +38,7 @@ return [
     ],
 
     'homepage' => [
-      'homepage_type' => 'landing',
+        'homepage_type' => 'landing',
     ],
 
     'media' => [

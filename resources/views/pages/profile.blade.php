@@ -1,8 +1,8 @@
 @extends('layouts.user-no-nav')
 
-@section('page_title', __("user_profile_title_label",['user' => $user->name]))
+@section('page_title', __("user_profile_title_label", ['user' => $user->name]))
 @section('share_url', route('home'))
-@section('share_title', __("user_profile_title_label",['user' => $user->name]) . ' - ' . getSetting('site.name'))
+@section('share_title', __("user_profile_title_label", ['user' => $user->name]) . ' - ' . getSetting('site.name'))
 @section('share_description', $seo_description ?? getSetting('site.description'))
 @section('share_type', 'article')
 @section('share_img', $user->cover)
@@ -25,7 +25,7 @@ Minify::javascript(array_merge([
 '/js/plugins/media/mediaswipe-loader.js',
 '/js/LoginModal.js',
 '/js/messenger/messenger.js',
-],$additionalAssets))->withFullUrl()
+], $additionalAssets))->withFullUrl()
 !!}
 @stop
 
@@ -53,7 +53,7 @@ Minify::stylesheet([
 {!! NoCaptcha::renderJs() !!}
 @endif
 @if($activeFilter)
-<link rel="canonical" href="{{route('profile',['username'=> $user->username])}}" />
+<link rel="canonical" href="{{route('profile', ['username' => $user->username])}}" />
 @endif
 @stop
 
@@ -157,94 +157,109 @@ Minify::stylesheet([
 
         <div class="container pt-2 pl-0 pr-0">
 
-            <div class="pt-2 pl-4 pr-4">
-                <h5 class="text-bold d-flex align-items-center">
-                    <span>{{$user->name}}</span>
-                    @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
-                    <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                        @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1 text-primary'])
-                    </span>
+            <div class="pt-2 pl-4 pr-4 d-flex justify-content-between">
+                <div>
+                    <h5 class="text-bold d-flex align-items-center ml-2">
+                        <span>{{$user->name}}</span>
+                        @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
+                        <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
+                            @include('elements.icon', ['icon' => 'checkmark-circle-outline', 'centered' => true, 'classes' => 'ml-1 text-primary'])
+                        </span>
+                        @endif
+                        @if($hasActiveStream)
+                        <span data-toggle="tooltip" data-placement="right" title="{{__('Live streaming')}}">
+                            <div class="blob red ml-3"></div>
+                        </span>
+                        @endif
+                    </h5>
+                    <h6 class="text-muted ml-2"><span class="text-bold"><span>@</span>{{$user->username}}</span> {{--- Last
+                        seen
+                        X time ago--}}
+                    </h6>
+                </div>
+                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0 ml-2 mt-3">
+                    @if (Auth::check())
+                    <div class="text-truncate">
+                        <a class="p-0 m-0 text-bold mr-1" href="/my/lists/followers">
+                            {{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
+                        </a>
+                        <a class="p-0 m-0 text-bold ml-1" href="{{ url('/my/lists/' . (Auth::user()->id + 2)) }}">
+                            {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
+                        </a>
+                    </div>
                     @endif
-                    @if($hasActiveStream)
-                    <span data-toggle="tooltip" data-placement="right" title="{{__('Live streaming')}}">
-                        <div class="blob red ml-3"></div>
-                    </span>
-                    @endif
-                </h5>
-                <h6 class="text-muted"><span class="text-bold"><span>@</span>{{$user->username}}</span> {{--- Last seen X time ago--}}</h6>
+                </div>
             </div>
 
-            <div class="pt-2 pb-2 pl-4 pr-4 profile-description-holder">
-                <div class="description-content {{$user->bio && !getSetting('profiles.disable_profile_bio_excerpt') ? 'line-clamp-3' : ''}}">
+            <div class="pt-2 pb-2 pl-4 pr-4 profile-description-holder ml-2">
+                <div class="description-content mt-2 {{$user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt') ? 'line-clamp-3' : ''}}">
                     @if($user->bio)
                     @if(getSetting('profiles.allow_profile_bio_markdown'))
                     {!! GenericHelper::parseProfileMarkdownBio($user->bio) !!}
                     @else
-                    {!!GenericHelper::parseSafeHTML($user->bio)!!}
+                    {{$user->bio}}
                     @endif
                     @else
                     {{__('No description available.')}}
                     @endif
                 </div>
-                @if($user->bio && !getSetting('profiles.disable_profile_bio_excerpt'))
-                <span class="text-primary pointer-cursor show-more-actions d-none" onclick="Profile.toggleFullDescription()">
-                    <span class="label-more">{{__('More info')}}</span>
-                    <span class="label-less d-none">{{__('Show less')}}</span>
-                </span>
+                @if($user->bio && (strlen(trim(strip_tags(GenericHelper::parseProfileMarkdownBio($user->bio)))) >= 85 || substr_count($user->bio, "\r\n") > 1) && !getSetting('profiles.disable_profile_bio_excerpt'))
+                <div class="text-primary pointer-cursor bioMoreContentArea mt-3" onclick="Profile.toggleFullDescription()">
+                    <span class="label-more text-md">{{__('More info')}}</span>
+                    <span class="label-less d-none text-md">{{__('Show less')}}</span>
+                </div>
                 @endif
             </div>
 
-            <div class="d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-1">
-
-                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                    @include('elements.icon',['icon'=>'calendar-clear-outline','centered'=>false,'classes'=>'mr-1'])
-                    <div class="text-truncate ml-1">
-                        {{ucfirst($user->created_at->translatedFormat('F d'))}}
-                    </div>
-                </div>
+            <div class=" d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-2 followAndFollowingArea">
+                <!--
                 @if($user->location)
-                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                    @include('elements.icon',['icon'=>'location-outline','centered'=>false,'classes'=>'mr-1'])
-                    <div class="text-truncate ml-1">
-                        {{$user->location}}
+                    <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
+                        @include('elements.icon', ['icon' => 'location-outline', 'centered' => false, 'classes' => 'mr-1'])
+                        <div class="text-truncate ml-1">
+                            {{$user->location}}
+                        </div>
                     </div>
-                </div>
                 @endif
+                -->
                 @if(!getSetting('profiles.disable_website_link_on_profile'))
                 @if($user->website)
-                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                    @include('elements.icon',['icon'=>'globe-outline','centered'=>false,'classes'=>'mr-1'])
+                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0 justify-content-end w-100 pb-4">
+                    @include('elements.icon', ['icon' => 'logo-instagram', 'centered' => false, 'classes' => 'mr-1'])
                     <div class="text-truncate ml-1">
                         <a href="{{$user->website}}" target="_blank" rel="nofollow">
-                            {{str_replace(['https://','http://','www.'],'',$user->website)}}
+                            {{str_replace(['https://', 'http://', 'www.'], '', $user->website)}}
                         </a>
                     </div>
                 </div>
                 @endif
                 @endif
+                <!--
                 @if(getSetting('profiles.allow_gender_pronouns'))
-                @if($user->gender_pronoun)
-                <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                    @include('elements.icon',['icon'=>'male-female-outline','centered'=>false,'classes'=>'mr-1'])
-                    <div class="text-truncate ml-1">
-                        {{$user->gender_pronoun}}
-                    </div>
-                </div>
+                    @if($user->gender_pronoun)
+                        <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
+                            @include('elements.icon', ['icon' => 'male-female-outline', 'centered' => false, 'classes' => 'mr-1'])
+                            <div class="text-truncate ml-1">
+                                {{$user->gender_pronoun}}
+                            </div>
+                        </div>
+                    @endif
                 @endif
-                @endif
-
+                -->
             </div>
 
-            <div class="bg-separator border-top border-bottom"></div>
+            <!--<div class="bg-separator border-top border-bottom"></div>-->
 
-            @include('elements.message-alert',['classes'=>'px-2 pt-4'])
+            @include('elements.message-alert', ['classes' => 'px-2 pt-4'])
             @if($user->paid_profile && (!getSetting('profiles.allow_users_enabling_open_profiles') || (getSetting('profiles.allow_users_enabling_open_profiles') && !$user->open_profile)))
-            @if( (!Auth::check() || Auth::user()->id !== $user->id) && !$hasSub)
-            <div class="p-4 subscription-holder">
-                <h6 class="font-weight-bold text-uppercase mb-3">{{__('Subscription')}}</h6>
-                @if(count($offer) && $offer['discountAmount']['30'] > 0)
-                <h5 class="m-0 text-bold">{{__('Limited offer main label',['discount'=> round($offer['discountAmount']['30']), 'days_remaining'=> $offer['daysRemaining'] ])}}</h5>
-                <small class="">{{__('Offer ends label',['date'=>$offer['expiresAt']->format('d M')])}}</small>
+            @if((!Auth::check() || Auth::user()->id !== $user->id) && !$hasSub)
+            <div class="p-4 subscription-holder holder">
+                <!--<h6 class="font-weight-bold text-uppercase mb-3">{{__('Subscription')}}</h6>-->
+                @if(count($offer))
+                <h5 class="m-0 text-bold">
+                    {{__('Limited offer main label', ['discount' => round($offer['discountAmount']), 'days_remaining' => $offer['daysRemaining']])}}
+                </h5>
+                <small class="">{{__('Offer ends label', ['date' => $offer['expiresAt']->format('d M')])}}</small>
                 @endif
                 @if($hasSub)
                 <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-2 text-center">
@@ -254,7 +269,8 @@ Minify::stylesheet([
 
                 @if(Auth::check())
                 @if(!GenericHelper::isEmailEnforcedAndValidated())
-                <i>{{__('Your email address is not verified.')}} <a href="{{route('verification.notice')}}">{{__("Click here")}}</a> {{__("to re-send the confirmation email.")}}</i>
+                <i>{{__('Your email address is not verified.')}} <a href="{{route('verification.notice')}}">{{__("Click here")}}</a>
+                    {{__("to re-send the confirmation email.")}}</i>
                 @endif
                 @endif
 
@@ -266,13 +282,13 @@ Minify::stylesheet([
                             <div class="label-more">{{__('Subscriptions bundles')}}</div>
                             <div class="label-less d-none">{{__('Hide bundles')}}</div>
                             <div class="ml-1 label-icon">
-                                @include('elements.icon',['icon'=>'chevron-down-outline','centered'=>false])
+                                @include('elements.icon', ['icon' => 'chevron-down-outline', 'centered' => false])
                             </div>
                         </div>
                     </small>
                     @endif
-                    @if(count($offer) && $offer['discountAmount']['30'] > 0)
-                    <small class="">{{__('Regular price label',['currency'=> getSetting('payments.currency_code') ?? 'USD','amount'=>$user->offer->old_profile_access_price])}}</small>
+                    @if(count($offer))
+                    <small class="">{{__('Regular price label', ['currency' => getSetting('payments.currency_code') ?? 'USD', 'amount' => $user->offer->old_profile_access_price])}}</small>
                     @endif
                 </div>
 
@@ -289,7 +305,6 @@ Minify::stylesheet([
                     @if($user->profile_access_price_12_months)
                     @include('elements.checkout.subscribe-button-365')
                     @endif
-
                 </div>
                 @endif
                 @endif
@@ -297,40 +312,46 @@ Minify::stylesheet([
             <div class="bg-separator border-top border-bottom"></div>
             @endif
             @elseif(!Auth::check() || (Auth::check() && Auth::user()->id !== $user->id))
-            <div class=" p-4 subscription-holder">
-                <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
-                @if(Auth::check())
-                <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button" onclick="Lists.manageFollowsAction('{{$user->id}}')">
-                    <span class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
-                </button>
-                @else
-                <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal" data-target="#login-dialog">
-                    <span class="">{{__('Follow')}}</span>
-                </button>
-                @endif
-            </div>
+            <!--<div class=" p-4 subscription-holder">
+                                                                                                    <h6 class="font-weight-bold text-uppercase mb-3">{{__('Follow this creator')}}</h6>
+                                                                                                    @if(Auth::check())
+                                                                                                    <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 manage-follow-button"
+                                                                                                   onclick="Lists.manageFollowsAction('{{$user->id}}')">
+                                                                                                    <span class="manage-follows-text">{{\App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)}}</span>
+                                                                                                    </button>
+                                                                                                    @else
+                                                                                                    <button class="btn btn-round btn-lg btn-primary btn-block mt-3 mb-0 text-center" data-toggle="modal"
+                                                                                                    data-target="#login-dialog">
+                                                                                                    <span class="">{{__('Follow')}}</span>
+                                                                                                    </button>
+                                                                                                    @endif
+                                                                                                    </div>
+                                                                                            -->
             <div class="bg-separator border-top border-bottom"></div>
             @endif
             <div class="mt-3 inline-border-tabs">
                 <nav class="nav nav-pills nav-justified text-bold">
-                    <a class="nav-item nav-link {{$activeFilter == false ? 'active' : ''}}" href="{{route('profile',['username'=> $user->username])}}">{{trans_choice('posts', $posts->total(), ['number'=>$posts->total()])}} </a>
+                    <a class="nav-item nav-link {{$activeFilter == false ? 'active' : ''}}" href="{{route('profile', ['username' => $user->username])}}">{{trans_choice('posts', $posts->total(), ['number' => $posts->total()])}}
+                    </a>
 
                     @if($filterTypeCounts['image'] > 0)
-                    <a class="nav-item nav-link {{$activeFilter == 'image' ? 'active' : ''}}" href="{{route('profile',['username'=> $user->username]) . '?filter=image'}}">{{trans_choice('images', $filterTypeCounts['image'], ['number'=>$filterTypeCounts['image']])}}</a>
+                    <a class="nav-item nav-link {{$activeFilter == 'image' ? 'active' : ''}}" href="{{route('profile', ['username' => $user->username]) . '?filter=image'}}">{{trans_choice('images', $filterTypeCounts['image'], ['number' => $filterTypeCounts['image']])}}</a>
                     @endif
 
                     @if($filterTypeCounts['video'] > 0)
-                    <a class="nav-item nav-link {{$activeFilter == 'video' ? 'active' : ''}}" href="{{route('profile',['username'=> $user->username]) . '?filter=video'}}">{{trans_choice('videos', $filterTypeCounts['video'], ['number'=>$filterTypeCounts['video']])}}</a>
+                    <a class="nav-item nav-link {{$activeFilter == 'video' ? 'active' : ''}}" href="{{route('profile', ['username' => $user->username]) . '?filter=video'}}">{{trans_choice('videos', $filterTypeCounts['video'], ['number' => $filterTypeCounts['video']])}}</a>
 
                     @endif
 
                     @if($filterTypeCounts['audio'] > 0)
-                    <a class="nav-item nav-link {{$activeFilter == 'audio' ? 'active' : ''}}" href="{{route('profile',['username'=> $user->username]) . '?filter=audio'}}">{{trans_choice('audio', $filterTypeCounts['audio'], ['number'=>$filterTypeCounts['audio']])}}</a>
+                    <a class="nav-item nav-link {{$activeFilter == 'audio' ? 'active' : ''}}" href="{{route('profile', ['username' => $user->username]) . '?filter=audio'}}">{{trans_choice('audio', $filterTypeCounts['audio'], ['number' => $filterTypeCounts['audio']])}}</a>
                     @endif
 
                     @if(getSetting('streams.allow_streams'))
                     @if(isset($filterTypeCounts['streams']) && $filterTypeCounts['streams'] > 0)
-                    <a class="nav-item nav-link {{$activeFilter == 'streams' ? 'active' : ''}}" href="{{route('profile',['username'=> $user->username]) . '?filter=streams'}}"> {{$filterTypeCounts['streams']}} {{trans_choice('streams', $filterTypeCounts['streams'], ['number'=>$filterTypeCounts['streams']])}}</a>
+                    <a class="nav-item nav-link {{$activeFilter == 'streams' ? 'active' : ''}}" href="{{route('profile', ['username' => $user->username]) . '?filter=streams'}}">
+                        {{$filterTypeCounts['streams']}}
+                        {{trans_choice('streams', $filterTypeCounts['streams'], ['number' => $filterTypeCounts['streams']])}}</a>
                     @endif
                     @endif
 
@@ -340,11 +361,11 @@ Minify::stylesheet([
                 @if($activeFilter !== 'streams')
                 @include('elements.feed.posts-load-more', ['classes' => 'mb-2'])
                 <div class="feed-box mt-0 posts-wrapper">
-                    @include('elements.feed.posts-wrapper',['posts'=>$posts])
+                    @include('elements.feed.posts-wrapper', ['posts' => $posts])
                 </div>
                 @else
                 <div class="streams-box mt-4 streams-wrapper mb-4">
-                    @include('elements.search.streams-wrapper',['streams'=>$streams,'showLiveIndicators'=>true, 'showUsername' => false])
+                    @include('elements.search.streams-wrapper', ['streams' => $streams, 'showLiveIndicators' => true, 'showUsername' => false])
                 </div>
                 @endif
                 @include('elements.feed.posts-loading-spinner')
@@ -362,9 +383,9 @@ Minify::stylesheet([
 </div>
 
 @if(Auth::check())
-@include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
+@include('elements.lists.list-add-user-dialog', ['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
 @include('elements.checkout.checkout-box')
-@include('elements.messenger.send-user-message',['receiver'=>$user])
+@include('elements.messenger.send-user-message', ['receiver' => $user])
 @else
 @include('elements.modal-login')
 @endif
