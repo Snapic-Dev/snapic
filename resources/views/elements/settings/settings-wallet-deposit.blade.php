@@ -49,7 +49,7 @@
                                         <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
                                     </div>
                                     <div class="p-4 mt-3 mb-2">
-                                        <img class="qrCodeImage" src=""></img>
+                                        <div id="qrcode"></div>
                                     </div>
                                 </div>
                                 <div class="inputPixArea mt-5 mb-5 p-2">
@@ -146,6 +146,7 @@
     </div>
     @include('elements.uploaded-file-preview-template')
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         let pixRadioTxt = document.querySelector(".pixRadioTxt");
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
@@ -159,6 +160,7 @@
         let textLoadingBtn = document.querySelector(".textLoadingBtn");
         let spinner = document.querySelector('.spinner')
         let feedbackForUser = document.querySelector('.feedbackForUser');
+        let dataExpiration=document.getElementById('dataExpiration');
 
         function showCreditInput() {
             if (pixRadio.checked) {
@@ -249,23 +251,32 @@
                         }
 
                         const responseData = await response.json();
-                        console.log(responseData.id);
-                        const qrCode = await responseData.qr_codes[0];
+                        console.log(responseData);
+                        const qrCode = await responseData.pixCopiaECola;
                         console.log(qrCode);
 
 
-                        const expiration_date = qrCode.expiration_date;
+                        const expiration_date = await responseData.calendario.expiracao
+                        console.log(expiration_date);
 
 
                         calculateTimeDifference(expiration_date);
 
 
                         if (responseData) {
-                            qrCodeImage.setAttribute('src', qrCode.links[0].href);
+                            document.getElementById("qrcode").innerHTML = "";
+                            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                            text: responseData.pixCopiaECola,
+                            width: 200,
+                            height: 200,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                            })
                             amountPix.innerText = "R$" + depositInput.value;
                             $('#staticBackdrop').modal('show')
                             launchToast("success",
-                                trans("Success"), "Pix gerado com sucesso");
+                            trans("Success"), "Pix gerado com sucesso");
                         }
 
                         pixCode = qrCode.text;
@@ -310,9 +321,9 @@
                 });
         }
 
-        function calculateTimeDifference(dataExpiration) {
-            const expiration = new Date(dataExpiration);
-            const expirationElement = document.getElementById('dataExpiration');
+        function calculateTimeDifference() {
+            const now = new Date();
+            const expiration = new Date(now.getTime() + 3600000);
             let intervalId;
 
             const updateRemainingTime = () => {
@@ -332,10 +343,11 @@
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
 
-                expirationElement.innerText = `${formattedHours}h ${formattedMinutes}min ${formattedSeconds}s`;
+                dataExpiration.innerText = `${formattedHours}h ${formattedMinutes}min ${formattedSeconds}s`;
             };
 
             intervalId = setInterval(updateRemainingTime, 1000);
             updateRemainingTime();
         }
+
     </script>
