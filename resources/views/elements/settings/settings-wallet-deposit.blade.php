@@ -279,7 +279,7 @@
                             trans("Success"), "Pix gerado com sucesso");
                         }
 
-                        pixCode = qrCode.text;
+                        pixCode = responseData.pixCopiaECola;
                     } catch (error) {
                         console.log(error);
                         launchToast("danger", trans("Error"), "Erro inesperado");
