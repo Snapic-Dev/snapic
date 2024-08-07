@@ -12,7 +12,7 @@
         "anhskohbo/no-captcha": "^3.4",
         "devfactory/minify": "1.0.*",
         "graham-campbell/markdown": "14.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.8",
         "intervention/image": "^2.7",
         "jenssegers/agent": "^2.6",
         "laracasts/utilities": "^3.2",
