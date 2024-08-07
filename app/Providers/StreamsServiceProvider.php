@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use View;
 
 class StreamsServiceProvider extends ServiceProvider
 {
@@ -51,7 +52,6 @@ class StreamsServiceProvider extends ServiceProvider
         $stream = Stream::query()
             ->where(['user_id' => $userId, 'status' => Stream::IN_PROGRESS_STATUS])
             ->first();
-
         if ($stream && $addDurationTag) {
             $stream->duration = $stream->created_at->diffInMinutes($stream->ended_at);
             $stream->duration = $stream->duration === 0 ? 1 : $stream->duration;
@@ -80,150 +80,190 @@ class StreamsServiceProvider extends ServiceProvider
         try {
             $stream = self::getUserInProgressStream();
             if (!$stream) {
-                $bitmovinStreaming = self::createBitmovinStreaming([
-                    'title' => $options['name'],
-                    'description' => $options['description'] ?? '',
-                    'domainRestrictionId' => $options['domainRestrictionId'] ?? ''
-                ]);
-
+                $settings = [
+                    'encoder' => getSetting('streams.pushr_encoder'),
+                    'dvr' => (int)getSetting('streams.allow_dvr'),
+                    'mux' => (int)getSetting('streams.allow_mux'),
+                    '360p' => (int)getSetting('streams.allow_360p'),
+                    '480p' => (int)getSetting('streams.allow_480p'),
+                    '576p' => (int)getSetting('streams.allow_576p'),
+                    '720p' => (int)getSetting('streams.allow_720p'),
+                    '1080p' => (int)getSetting('streams.allow_1080p'),
+                ];
+                $bitmovinStreaming = self::createBitmovinStreaming(['name' => $options['name'], 'settings' => $settings]);
                 if (
                     $bitmovinStreaming && isset($bitmovinStreaming['status'])
-                    && $bitmovinStreaming['status'] === 'SUCCESS'
-                    && isset($bitmovinStreaming['data']['result']['id'])
-                    && isset($bitmovinStreaming['data']['result']['streamKey'])
-                    && isset($bitmovinStreaming['data']['result']['broadcastingUrl'])
-                    && isset($bitmovinStreaming['data']['result']['playerUrl'])
+                    && $bitmovinStreaming['status'] === 'success'
+                    && isset($bitmovinStreaming['rtmp_key'])
+                    && isset($bitmovinStreaming['rtmp_server'])
+                    && isset($bitmovinStreaming['hls_link'])
+                    && isset($bitmovinStreaming['player_link'])
+                    && isset($bitmovinStreaming['id'])
                 ) {
                     $stream = Stream::create([
-                        'user_id' => Auth::id(),
+                        'user_id' => Auth::user()->id,
                         'status' => Stream::IN_PROGRESS_STATUS,
                         'name' => $options['name'],
-                        'poster' => $options['poster'] ?? 'default_poster_value',
+                        'poster' => $options['poster'],
                         'slug' => Str::slug($options['name']),
                         'price' => $options['price'],
-                        'requires_subscription' => $options['requires_subscription'] === 'true' ? 1 : 0,
-                        'is_public' => $options['is_public'] === 'true' ? 1 : 0,
-                        'bitmovin_id' => $bitmovinStreaming['data']['result']['id'],
-                        'stream_key' => $bitmovinStreaming['data']['result']['streamKey'],
-                        'broadcasting_url' => $bitmovinStreaming['data']['result']['broadcastingUrl'],
-                        'player_url' => $bitmovinStreaming['data']['result']['playerUrl']
+                        'requires_subscription' => $options['requires_subscription'] == 'true' ? 1 : 0,
+                        'is_public' => $options['is_public'] == 'true' ? 1 : 0,
+                        'pushr_id' => $bitmovinStreaming['id'],
+                        'rtmp_key' => $bitmovinStreaming['rtmp_key'],
+                        'rtmp_server' => $bitmovinStreaming['rtmp_server'],
+                        'hls_link' => $bitmovinStreaming['hls_link'],
+                        'settings' => $settings
                     ]);
+                } else {
+                    return ['success' => false, 'message' => 'Failed to create streaming with Bitmovin.'];
                 }
             } else {
                 return ['success' => false, 'message' => __('You can only have one active stream at a time.')];
             }
+
             return ['success' => true, 'data' => $stream];
         } catch (\Exception $exception) {
-            Log::error('Error initiating stream: ' . $exception->getMessage());
             return ['success' => false, 'message' => $exception->getMessage()];
         }
     }
 
+    // public static function createBitmovinStreaming($options)
+    // {
+    //     $httpClient = new Client();
+
+    //     $params = [
+    //         'title' => $options['name'],
+    //         'description' => $options['description'] ?? '',
+    //         'domainRestrictionId' => $options['domainRestrictionId'] ?? ''
+    //     ];
+
+    //     try {
+    //         $response = $httpClient->request(
+    //             'POST',
+    //             self::BITMOVIN_API_ENDPOINT,
+    //             [
+    //                 'headers' => [
+    //                     'X-Api-Key' => env('BITMOVIN_API_KEY'),
+    //                     'Accept' => 'application/json',
+    //                     'Content-Type' => 'application/json',
+    //                 ],
+    //                 'json' => $params,
+    //                 'verify' => false
+    //             ]
+    //         );
+
+    //         Log::info('Bitmovin API Response: ' . $response->getBody());
+
+    //         return json_decode($response->getBody(), true);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating Bitmovin stream: ' . $e->getMessage());
+    //         return ['status' => 'error', 'message' => $e->getMessage()];
+    //     }
+    // }]
+
+
+    // public static function createBitmovinStreaming($options)
+    // {
+    //     $httpClient = new Client();
+    //     $createStreamingRequest = $httpClient->request(
+    //         'POST',
+    //         self::PUSHR_API_ENDPOINT . '/stream',
+    //         [
+    //             'headers' => [
+    //                 'Accept' => 'application/json',
+    //                 'APIKEY' => getSetting('streams.pushr_key'),
+    //             ],
+    //             'form_params' => array_merge([
+    //                 'action' => 'create',
+    //                 'zone' => getSetting('streams.pushr_zone_id'),
+    //                 'name' => $options['name'],
+    //             ], $options['settings'])
+    //         ]
+    //     );
+    //     return json_decode($createStreamingRequest->getBody(), true);
+    // }
+
     public static function createBitmovinStreaming($options)
     {
-        $httpClient = new Client();
-
-        $params = [
-            'title' => $options['name'],
-            'description' => isset($options['description']) ? $options['description'] : '',
-            'domainRestrictionId' => isset($options['domainRestrictionId']) ? $options['domainRestrictionId'] : ''
+        Log::info('Options:', $options);
+        return [
+            'status' => 'success',
+            'id' => '123',
+            'rtmp_key' => 'fake-rtmp-key',
+            'rtmp_server' => 'fake-rtmp-server',
+            'hls_link' => 'http://fake-hls-link',
+            'player_link' => 'http://fake-player-link'
         ];
-
-        try {
-            $response = $httpClient->request(
-                'POST',
-                self::BITMOVIN_API_ENDPOINT,
-                [
-                    'headers' => [
-                        'X-Api-Key' => env('BITMOVIN_API_KEY'),
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                    ],
-                    'json' => $params,
-                    'verify' => false
-                ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            Log::error('Error creating Bitmovin stream: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
     }
 
-    public static function getBitmovinStreamingDetails($id)
+
+    public static function getPushrStreamingDetails($id)
     {
         $httpClient = new Client();
-
-        try {
-            $response = $httpClient->request(
-                'GET',
-                self::BITMOVIN_API_ENDPOINT . '/' . $id,
-                [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . env('BITMOVIN_API_KEY'),
-                    ]
+        $createStreamingRequest = $httpClient->request(
+            'GET',
+            self::BITMOVIN_API_ENDPOINT . '/details?id=' . $id,
+            [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'APIKEY' => getSetting('streams.pushr_key'),
                 ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            Log::error('Error getting Bitmovin stream details: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+            ]
+        );
+        return json_decode($createStreamingRequest->getBody(), true);
     }
 
-    public static function getBitmovinStreamingDvr($id)
+    public static function getPushrStreamingDvr($id)
     {
         $httpClient = new Client();
-
-        try {
-            $response = $httpClient->request(
-                'GET',
-                self::BITMOVIN_API_ENDPOINT . '/' . $id . '/dvr',
-                [
-                    'http_errors' => false,
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . env('BITMOVIN_API_KEY'),
-                    ]
+        $createStreamingRequest = $httpClient->request(
+            'GET',
+            self::BITMOVIN_API_ENDPOINT . '/dvr?id=' . $id,
+            [
+                'http_errors' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'APIKEY' => getSetting('streams.pushr_key'),
                 ]
-            );
-
-            if ($response->getStatusCode() == 200) {
-                return json_decode($response->getBody(), true);
-            }
-            return false;
-        } catch (\Exception $e) {
-            Log::error('Error getting Bitmovin DVR: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            ]
+        );
+        if ($createStreamingRequest->getStatusCode() == 200) {
+            return json_decode($createStreamingRequest->getBody(), true);
         }
+        return false;
     }
 
-    public static function destroyBitmovinStream($id)
+    /**
+     * Destroy pushr streaming by id
+     * @param $id
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function destroyPushrStream($id)
     {
         $httpClient = new Client();
-
-        try {
-            $response = $httpClient->request(
-                'DELETE',
-                self::BITMOVIN_API_ENDPOINT . '/' . $id,
-                [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . env('BITMOVIN_API_KEY'),
-                    ]
+        $createStreamingRequest = $httpClient->request(
+            'POST',
+            self::BITMOVIN_API_ENDPOINT . '/destroy',
+            [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'APIKEY' => getSetting('streams.pushr_key'),
+                ],
+                'form_params' => [
+                    'id' => $id
                 ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            Log::error('Error deleting Bitmovin stream: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+            ]
+        );
+        return json_decode($createStreamingRequest->getBody(), true);
     }
 
+    /**
+     * Gets all available public streams
+     * @param $options
+     * @return array
+     */
     public static function getPublicStreams($options)
     {
         $streams = Stream::where('is_public', 1);
@@ -248,34 +288,53 @@ class StreamsServiceProvider extends ServiceProvider
         $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
         $streams->whereNotIn('user_id', $blockedUsers);
 
-        $showUsername = isset($options['showUsername']) ? $options['showUsername'] : true;
+        $showUsername = true;
+        if (isset($options['showUsername']) && $options['showUsername'] == false) $showUsername = false;
 
-        $streams = isset($options['pageNumber'])
-            ? $streams->paginate(9, ['*'], 'page', $options['pageNumber'])
-            : $streams->paginate(9);
-
-        if ($showUsername) {
-            $streams->getCollection()->transform(function ($stream) {
-                $stream->username = $stream->user->name;
-                return $stream;
-            });
+        $streams->orderBy('created_at', 'DESC');
+        if (isset($options['pageNumber'])) {
+            $streams = $streams->paginate(9, ['*'], 'page', $options['pageNumber'])->appends(request()->query());
+        } else {
+            $streams = $streams->paginate(9)->appends(request()->query());
         }
 
-        return $streams;
+        if (!isset($options['encodePostsToHtml'])) {
+            $options['encodePostsToHtml'] = false;
+        }
+        if ($options['encodePostsToHtml']) {
+            // Posts encoded as JSON
+            $data = [
+                'total' => $streams->total(),
+                'currentPage' => $streams->currentPage(),
+                'last_page' => $streams->lastPage(),
+                'prev_page_url' => $streams->previousPageUrl(),
+                'next_page_url' => $streams->nextPageUrl(),
+                'first_page_url' => $streams->nextPageUrl(),
+                'hasMore' => $streams->hasMorePages(),
+            ];
+            $postsData = $streams->map(function ($stream) use ($data, $options, $showUsername) {
+                $stream->setAttribute('postPage', $data['currentPage']);
+                $stream = ['id' => $stream->id, 'html' => View::make('elements.streams.stream-element-public')->with('stream', $stream)->with('showLiveIndicators', false)->with('showUsername', $showUsername)->render()];
+                return $stream;
+            });
+            $data['users'] = $postsData;
+        } else {
+            // Collection data posts | To be rendered on the server side
+            $postsCurrentPage = $streams->currentPage();
+            $streams->map(function ($user) use ($postsCurrentPage) {
+                $user->setAttribute('postPage', $postsCurrentPage);
+                return $user;
+            });
+            $data = $streams;
+        }
+        return $data;
     }
+
 
     public static function getPublicLiveStreamsCount()
     {
-        return Stream::where('is_public', 1)
-            ->where('status', Stream::IN_PROGRESS_STATUS)
-            ->count();
-    }
-
-    public static function userIsEligibleForStreaming()
-    {
-        $streamsCount = Stream::where('user_id', Auth::id())->count();
-        $maxStreamsAllowed = (int) getSetting('streams.max_streams_allowed_per_user');
-
-        return $streamsCount < $maxStreamsAllowed;
+        $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
+        $streams = Stream::where('is_public', 1)->where('status', Stream::IN_PROGRESS_STATUS)->whereNotIn('user_id', $blockedUsers)->count();
+        return $streams;
     }
 }
