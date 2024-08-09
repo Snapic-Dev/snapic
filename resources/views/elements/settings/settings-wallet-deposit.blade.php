@@ -1,10 +1,32 @@
-<h5 class="mt-4 p-2 text-bold text-md">{{ __('Proceed with payment') }}</h5>
-<div class="input-group mb-3 mt-3 p-2">
-    <div class="input-group-prepend">
-        <span class="input-group-text" id="amount-label">@include('elements.icon', ['icon' => 'cash-outline', 'variant' => 'medium'])</span>
+<div class="input-group mb-3 mt-5 p-2 d-block">
+    <div class="">
+        <label class="text-sm text-bold">Valor do Depósito</label>
+        <input class="form-control inputText depositInput" placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}" aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
+        <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
+        <div class="p-1">
+            <label class="text-sm text-muted">Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00 para saque</label>
+        </div>
     </div>
-    <input class="form-control inputText depositInput" placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}" aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
-    <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
+    <div class="ml-2 mt-3 d-flex justify-content-center">
+        <button class="btn10 btn btn-round  border ml-2" onclick="inputDepositValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
+        </button>
+        <button class="btn50 btn btn-round border ml-2" onclick="inputDepositValue(50)">
+            R$50,00
+        </button>
+        <button class="btn100 btn btn-round border ml-2" onclick="inputDepositValue(100)">
+            R$100,00
+        </button>
+        <button class="btn200 btn btn-round border ml-2" onclick="inputDepositValue(200)">
+            R$200,00
+        </button>
+        <button class="btn400 btn btn-round border ml-2" onclick="inputDepositValue(400)">
+            R$400,00
+        </button>
+        <button class="btn1000 btn btn-round border ml-2" onclick="inputDepositValue(1000)">
+            R$1000,00
+        </button>
+    </div>
 </div>
 <div class="feedbackForUser text-sm mb-3 ml-2 text-bold"></div>
 
@@ -49,7 +71,7 @@
                                         <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
                                     </div>
                                     <div class="p-4 mt-3 mb-2">
-                                        <img class="qrCodeImage" src=""></img>
+                                        <div id="qrcode"></div>
                                     </div>
                                 </div>
                                 <div class="inputPixArea mt-5 mb-5 p-2">
@@ -93,6 +115,13 @@
                     <span class="textLoadingBtn">Depositar</span>
                 </div>
             </button>
+            <div class="p-3 pb-4 mt-4">
+                <p class="text-sm alertWitdrawalMsg">
+                    <strong>Aviso Importante:</strong>
+                    Restrição de Idade para Depósitos
+                    Por favor, esteja ciente de que depósitos só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de depósito por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
+                </p>
+            </div>
             <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -146,6 +175,7 @@
     </div>
     @include('elements.uploaded-file-preview-template')
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         let pixRadioTxt = document.querySelector(".pixRadioTxt");
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
@@ -159,6 +189,20 @@
         let textLoadingBtn = document.querySelector(".textLoadingBtn");
         let spinner = document.querySelector('.spinner')
         let feedbackForUser = document.querySelector('.feedbackForUser');
+        let dataExpiration = document.getElementById('dataExpiration');
+
+        let btn10 = document.querySelector('.btn10');
+        let btn50 = document.querySelector('.btn50');
+        let btn100 = document.querySelector('.btn100');
+        let btn200 = document.querySelector('.btn200');
+        let btn400 = document.querySelector('.btn400');
+        let btn1000 = document.querySelector('.btn1000');
+
+
+        function inputDepositValue(withdrawalValue) {
+            depositInput.value = withdrawalValue;
+        }
+
 
         function showCreditInput() {
             if (pixRadio.checked) {
@@ -249,26 +293,35 @@
                         }
 
                         const responseData = await response.json();
-                        console.log(responseData.id);
-                        const qrCode = await responseData.qr_codes[0];
+                        console.log(responseData);
+                        const qrCode = await responseData.pixCopiaECola;
                         console.log(qrCode);
 
 
-                        const expiration_date = qrCode.expiration_date;
+                        const expiration_date = await responseData.calendario.expiracao
+                        console.log(expiration_date);
 
 
                         calculateTimeDifference(expiration_date);
 
 
                         if (responseData) {
-                            qrCodeImage.setAttribute('src', qrCode.links[0].href);
+                            document.getElementById("qrcode").innerHTML = "";
+                            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                                text: responseData.pixCopiaECola,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            })
                             amountPix.innerText = "R$" + depositInput.value;
                             $('#staticBackdrop').modal('show')
                             launchToast("success",
                                 trans("Success"), "Pix gerado com sucesso");
                         }
 
-                        pixCode = qrCode.text;
+                        pixCode = responseData.pixCopiaECola;
                     } catch (error) {
                         console.log(error);
                         launchToast("danger", trans("Error"), "Erro inesperado");
@@ -310,9 +363,9 @@
                 });
         }
 
-        function calculateTimeDifference(dataExpiration) {
-            const expiration = new Date(dataExpiration);
-            const expirationElement = document.getElementById('dataExpiration');
+        function calculateTimeDifference() {
+            const now = new Date();
+            const expiration = new Date(now.getTime() + 3600000);
             let intervalId;
 
             const updateRemainingTime = () => {
@@ -332,7 +385,7 @@
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
 
-                expirationElement.innerText = `${formattedHours}h ${formattedMinutes}min ${formattedSeconds}s`;
+                dataExpiration.innerText = `${formattedHours}h ${formattedMinutes}min ${formattedSeconds}s`;
             };
 
             intervalId = setInterval(updateRemainingTime, 1000);

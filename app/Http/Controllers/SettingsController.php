@@ -161,6 +161,9 @@ class SettingsController extends Controller
                 ]);
                 break;
             case 'payments':
+                $ordination = $request->input('dataFilter');
+                $sortOrder = $ordination ?: 'desc';
+                
                 $payments = Transaction::with(['receiver', 'sender'])
                     ->where(function ($query) use ($userID) {
                         $query->where('sender_user_id', $userID)
@@ -175,8 +178,8 @@ class SettingsController extends Controller
                         return $query->where('type', $type);
                     })
 
-                    ->orderBy('id', 'desc')
-                    ->paginate(6);
+                    ->orderBy('created_at', $sortOrder)
+                    ->paginate(8);
                 $data['payments'] = $payments;
                 break;
             case null:

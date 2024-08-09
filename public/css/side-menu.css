@@ -185,3 +185,15 @@
 .sidebar.light .menu-divider{
     border-bottom: 1px solid  #eee;
 }
+
+.orderDataUp {
+    background-color: transparent;
+    border:none;
+    height: 20px;
+}
+  
+.orderDataDown {
+    background-color: transparent;
+    border:none;
+    height: 20px;
+}
