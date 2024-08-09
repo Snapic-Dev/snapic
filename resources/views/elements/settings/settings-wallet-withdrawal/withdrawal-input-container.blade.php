@@ -6,18 +6,17 @@
                 <input type="text" class="form-control" placeholder="bcdefghijklmnopqrstuvwxyz0123456789" id="validationTooltip01" required>
                 <div class="mt-4">
                     <label class="text-sm text-bold" for=" validationTooltip01">Valor do Saque</label>
-                    <input type="number" class="form-control withdrawalInput" id="validationTooltip01" placeholder="R$50,00" required>
+                    <input type="number" class="form-control withdrawalInput" id="validationTooltip01" placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}" required>
                 </div>
                 <div class="valid-tooltip">
                     Looks good!
                 </div>
-                <label class="mt-2 text-sm text-muted" for="validationTooltip01">Valor mínimo de R$20,00 para saque</label>
             </div>
         </div>
     </form>
     <div class="ml-2 d-flex justify-content-center">
-        <button class="btn10 btn btn-round  border ml-2" onclick="inputWithdrawalValue(10)">
-            R$10,00
+        <button class="btn10 btn btn-round  border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
         <button class="btn50 btn btn-round border ml-2" onclick="inputWithdrawalValue(50)">
             R$50,00
@@ -100,9 +99,10 @@
         <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit">{{__('Request withdrawal')}}</button>
     </div>
     <div class="p-3 pb-4 mt-4">
-        <p class="text-sm alertWitdrawalMsg"><strong>Aviso Importante:</strong> Restrição de Idade para Depósitos
-
-            Por favor, esteja ciente de que depósitos só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de depósito por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
+        <p class="text-sm alertWitdrawalMsg">
+        <strong>Aviso Importante:</strong>
+        Restrição de Idade para Saques
+        Por favor, esteja ciente de que saques só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de saque por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
         </p>
     </div>
 </div>

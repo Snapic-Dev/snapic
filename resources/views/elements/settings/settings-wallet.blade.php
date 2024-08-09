@@ -20,9 +20,9 @@
 <div>
     @include('elements/message-alert', ['classes' =>'mb-2'])
 
-    <div class="alert alert-primary text-white font-weight-bold" role="alert">
+    <div class="alert alert-primary text-white font-weight-bold p-5" role="alert">
         <div class="d-flex"><h3 class="font-weight-bold wallet-total-amount">{{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}</h3> <small class="ml-2"></small> </div>
-        <p class="mb-0">{{__('Available funds. You can deposit more money or become a creator to earn more.')}}</p>
+        <p class="mb-0 text-sm">{{__('Available funds. You can deposit more money or become a creator to earn more.')}}</p>
     </div>
 
     <div class="mt-3 inline-border-tabs">
