@@ -25,6 +25,8 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
+use Gerencianet\Exception\GerencianetException;
+use Gerencianet\Gerencianet;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -165,7 +167,6 @@ class PaymentHelper
             ]);
             $responseBody = $response->getBody()->getContents();
             $responseData = json_decode($responseBody, true);
-            dd($responseData);
             return $responseData;
         } catch (RequestException $e) {
             return $e->getMessage();
@@ -190,6 +191,48 @@ class PaymentHelper
         ];
     }
 
+    public function configureWebhook(Request $request)
+    {
+        try {
+            $data = [
+                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.shop/snapic/webhook'), // Usa a URL do corpo se fornecida
+            ];
+
+            $params = [
+                'chave' => $request->input('chave', '55673748000147'),
+            ];
+
+            $options = [
+                'client_id' => env('GERENCIANET_CLIENT_ID'),
+                'client_secret' => env('GERENCIANET_CLIENT_SECRET'),
+                'sandbox' => env('GERENCIANET_SANDBOX', true),
+                'pix_cert' => env('GERENCIANET_PIX_CERT'),
+                'debug' => env('GERENCIANET_DEBUG', true)
+            ];
+
+
+
+            $api = new Gerencianet($options);
+
+            $response = $api->pixConfigWebhook($params, $data);
+
+            return response()->json($response, 200);
+        } catch (GerencianetException $e) {
+            \Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     private $paypalApiContext;
 

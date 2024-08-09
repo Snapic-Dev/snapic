@@ -20,6 +20,7 @@ Baseado principalmente nas seguintes tecnologias, além de algumas outras depend
 #### Install
 
 ```
+
 1) Create db
 2) cp .env.sample .env # Edit values, add db
 3) composer install
@@ -29,6 +30,7 @@ Baseado principalmente nas seguintes tecnologias, além de algumas outras depend
 8) php artisan migrate
 9) php artisan db:seed
 10) php artisan voyager:admin snapic.supporte@gmail.com To add new admin user
+
 ```
 
 _Note\*_ If having issues with composer install, try `php -d memory_limit=1G /usr/bin/composer install`
