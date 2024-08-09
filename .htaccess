@@ -1,23 +1,23 @@
 <IfModule mod_rewrite.c>
-# That was ONLY to protect you from 500 errors
-# if your server did not have mod_rewrite enabled
+# Isso foi SOMENTE para proteger você de erros 500
+# caso seu servidor não tenha o mod_rewrite ativado
 
 RewriteEngine On
 # RewriteBase /
-# NOT needed unless you're using mod_alias to redirect
+# NÃO necessário, a menos que você esteja usando mod_alias para redirecionar
 
-# Direct all requests to /public folder
+# Direciona todas as solicitações para a pasta /public
 RewriteCond %{REQUEST_URI} !/public
 RewriteRule ^(.*)$ public/$1 [L]
 
-# Direct all requests to pretty url
+# Direciona todas as solicitações para URLs amigáveis
 RewriteCond %{THE_REQUEST} ^.*/index\.php
 RewriteRule ^(.*)index.php$ /$1 [R=301,L]
 
-# Disable Directory listing
+# Desativa a listagem de diretórios
 Options -Indexes
 
-# block files which needs to be hidden, specify .example extension of the file
+# Bloqueia arquivos que precisam ser ocultos, especifique a extensão .example do arquivo
 <Files ~ "\.(env|config.js|md|gitignore|gitattributes|lock)$">
     Order allow,deny
     Deny from all

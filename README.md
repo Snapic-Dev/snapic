@@ -3,7 +3,6 @@
 #### Sobre
 
 Descrição do produto..
-
 Baseado principalmente nas seguintes tecnologias, além de algumas outras dependências e ferramentas para facilitar o desenvolvimento.
 
 - Laravel 9
@@ -35,19 +34,19 @@ _Note\*_ If having issues with composer install, try `php -d memory_limit=1G /us
 
 #### Saving admin state via seeds
 
-_Saving admin panel state. This will remove all prior admin related seeds and reverse genererate new ones - so default admin state & settings will persist._
+_Salvando o estado do painel de administração. Isso removerá todas as sementes relacionadas ao administrador anterior e reverterá a geração de novas - então o estado e as configurações padrão do administrador persistirão._
 
 ```
 php artisan admin:save
 ```
 
-_Publishing frontend libraries to public directory. Eg: You npm add a new lib and need to include it into your views._
+_Publicando bibliotecas frontend em diretório público. Por exemplo: Você npm adiciona uma nova biblioteca e precisa incluí-la em suas visualizações._
 
 ```
 php artisan npm:publish
 ```
 
-_Running Code quality checkers and fixers_
+_Executando verificadores e corretores de qualidade de código_
 
 ```
 php artisan code:check type=php/js

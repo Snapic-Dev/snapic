@@ -3,12 +3,12 @@ require('laravel-mix-purgecss');
 
 /*
  |--------------------------------------------------------------------------
- | Mix Asset Management
+ | Gerenciamento de Assets do Mix
  |--------------------------------------------------------------------------
  |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
+ | O Mix fornece uma API limpa e fluente para definir alguns passos de build
+ | do Webpack para sua aplicação Laravel. Por padrão, estamos compilando o
+ | arquivo Sass para a aplicação, bem como agrupando todos os arquivos JS.
  |
  */
 

@@ -3,7 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Str;
+use Illuminate\Support\Str;
 
 class Sluggable implements Rule
 {
@@ -26,7 +26,7 @@ class Sluggable implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(Str::slug($value)){
+        if (Str::slug($value)) {
             return true;
         }
         return false;

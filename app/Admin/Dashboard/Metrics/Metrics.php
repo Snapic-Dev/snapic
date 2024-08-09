@@ -5,10 +5,10 @@ namespace App\Admin\Dashboard\Metrics;
 class Metrics
 {
     /**
-     * Calculate the growth
+     * Calcula o crescimento
      *
-     * @param $previous
-     * @param $current
+     * @param $previous (valor anterior)
+     * @param $current (valor atual)
      * @return array|int
      */
     protected function calcGrowth($previous, $current)
@@ -21,7 +21,7 @@ class Metrics
     }
 
     /**
-     * @param $message
+     * @param $message (mensagem)
      * @return array
      */
     protected function error($message)
