@@ -305,7 +305,8 @@
                                                     <li>Webhook URL: <code>{{ route('paystack.payment.update') }}</code>
                                                     </li>
                                                     <li>Callback URL:
-                                                        <code>{{ route('payment.checkPaystackPaymentStatus') }}</code></li>
+                                                        <code>{{ route('payment.checkPaystackPaymentStatus') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
 
@@ -333,7 +334,8 @@
                                                 </div>
                                                 <ul>
                                                     <li>IPN Callback URL:
-                                                        <code>{{ route('nowPayments.payment.update') }}</code></li>
+                                                        <code>{{ route('nowPayments.payment.update') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
 
@@ -348,7 +350,8 @@
                                                 </div>
                                                 <ul>
                                                     <li>Webhook URL:
-                                                        <code>{{ route('stripeConnect.payment.update') }}</code></li>
+                                                        <code>{{ route('stripeConnect.payment.update') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>

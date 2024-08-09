@@ -9,11 +9,15 @@ use InvalidArgumentException;
 class Partition extends Metrics
 {
     /**
-     * The available functions
+     * As funções disponíveis
      * @var array
      */
     private $functions = [
-        'count', 'min', 'max', 'sum', 'avg'
+        'count',
+        'min',
+        'max',
+        'sum',
+        'avg'
     ];
 
     /**
@@ -64,15 +68,17 @@ class Partition extends Metrics
         );
 
         $results = $query->select(
-            $groupBy, DB::raw("{$function}({$wrappedColumn}) as aggregate"))
+            $groupBy,
+            DB::raw("{$function}({$wrappedColumn}) as aggregate")
+        )
             ->groupBy($groupBy)
             ->orderBy('aggregate', 'desc')
             ->get();
-//
-//        print '<pre>';
-//        var_dump($wrappedColumn);
-//        var_dump($groupBy);
-//        var_dump($results);
+        //
+        //        print '<pre>';
+        //        var_dump($wrappedColumn);
+        //        var_dump($groupBy);
+        //        var_dump($results);
 
         return [
             'values' => $results->mapWithKeys(function ($result) use ($groupBy, $callback) {

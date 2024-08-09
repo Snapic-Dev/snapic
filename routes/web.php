@@ -1,22 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{
+    Route,
+    Auth
+};
+
 use TCG\Voyager\Facades\Voyager;
-
-use App\Http\Controllers\RegisterInfluencerController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| Aqui é onde você pode registrar as rotas web para sua aplicação. Essas
+| rotas são carregadas pelo RouteServiceProvider dentro de um grupo que
+| contém o middleware "web". Agora crie algo incrível!
 |
 */
-
 
 
 // Admin routes ( Needs to be placed above )
@@ -46,8 +45,6 @@ Route::get('/', ['uses' => 'HomeController@index', 'as'   => 'home']);
 Route::get('/contact', ['uses' => 'GenericController@contact', 'as'   => 'contact']);
 Route::post('/contact/send', ['uses' => 'GenericController@sendContactMessage', 'as'   => 'contact.send']);
 
-
-
 // Language switcher route
 Route::get('language/{locale}', ['uses' => 'GenericController@setLanguage', 'as'   => 'language']);
 
@@ -72,7 +69,6 @@ Route::get('socialAuth/{provider}/callback', ['uses' => 'Auth\LoginController@ha
 /*
  * (User) Protected routes
  */
-
 Route::post('/payment/pix', [
     'uses' => 'PaymentsController@generatePix',
     'as' => 'pix',
@@ -126,10 +122,6 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('campanha.store');
             Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campanha.create');
         });
-
-
-
-
         /*
          * (My) Bookmarks
          */
@@ -317,6 +309,10 @@ Route::get('/search/streams', ['uses' => 'SearchController@getStreamsSearch', 'a
 Route::get('/{username}', ['uses' => 'ProfileController@index', 'as'   => 'profile']);
 Route::get('/{username}/posts', ['uses' => 'ProfileController@getUserPosts', 'as'   => 'profile.posts']);
 Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams', 'as'   => 'profile.streams']);
+
+Route::fallback(function () {
+    abort(404);
+});
 
 Route::fallback(function () {
     return view('errors.404'); // template should exists

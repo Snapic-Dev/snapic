@@ -8,24 +8,24 @@ class DataTypesTableSeeder extends Seeder
 {
 
     /**
-     * Auto generated seed file
+     * Arquivo de semente gerado automaticamente
      *
      * @return void
      */
     public function run()
     {
-        
+
 
         \DB::table('data_types')->delete();
-        
-        \DB::table('data_types')->insert(array (
-            0 => 
-            array (
+
+        \DB::table('data_types')->insert(array(
+            0 =>
+            array(
                 'id' => 1,
                 'name' => 'users',
                 'slug' => 'users',
-                'display_name_singular' => 'User',
-                'display_name_plural' => 'Users',
+                'display_name_singular' => 'Usuário',
+                'display_name_plural' => 'Usuários',
                 'icon' => 'voyager-person',
                 'model_name' => 'App\\User',
                 'policy_name' => 'App\\Policies\\VoyagerUserPolicy',
@@ -37,8 +37,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 18:52:09',
                 'updated_at' => '2024-01-28 22:39:43',
             ),
-            1 => 
-            array (
+            1 =>
+            array(
                 'id' => 2,
                 'name' => 'menus',
                 'slug' => 'menus',
@@ -55,13 +55,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 18:52:09',
                 'updated_at' => '2021-08-07 18:52:09',
             ),
-            2 => 
-            array (
+            2 =>
+            array(
                 'id' => 3,
                 'name' => 'roles',
                 'slug' => 'roles',
-                'display_name_singular' => 'Role',
-                'display_name_plural' => 'Roles',
+                'display_name_singular' => 'Função',
+                'display_name_plural' => 'Funções',
                 'icon' => 'voyager-lock',
                 'model_name' => 'TCG\\Voyager\\Models\\Role',
                 'policy_name' => NULL,
@@ -73,13 +73,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 18:52:09',
                 'updated_at' => '2021-10-23 20:48:27',
             ),
-            3 => 
-            array (
+            3 =>
+            array(
                 'id' => 4,
                 'name' => 'wallets',
                 'slug' => 'wallets',
-                'display_name_singular' => 'Wallet',
-                'display_name_plural' => 'Wallets',
+                'display_name_singular' => 'Carteira',
+                'display_name_plural' => 'Carteiras',
                 'icon' => 'voyager-wallet',
                 'model_name' => 'App\\Model\\Wallet',
                 'policy_name' => NULL,
@@ -91,13 +91,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 19:37:16',
                 'updated_at' => '2024-04-30 23:16:27',
             ),
-            4 => 
-            array (
+            4 =>
+            array(
                 'id' => 6,
                 'name' => 'attachments',
                 'slug' => 'attachments',
-                'display_name_singular' => 'Attachment',
-                'display_name_plural' => 'Attachments',
+                'display_name_singular' => 'Anexo',
+                'display_name_plural' => 'Anexos',
                 'icon' => 'voyager-paperclip',
                 'model_name' => 'App\\Model\\Attachment',
                 'policy_name' => NULL,
@@ -109,13 +109,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:16:55',
                 'updated_at' => '2024-04-30 23:47:58',
             ),
-            5 => 
-            array (
+            5 =>
+            array(
                 'id' => 9,
                 'name' => 'notifications',
                 'slug' => 'notifications',
-                'display_name_singular' => 'Notification',
-                'display_name_plural' => 'Notifications',
+                'display_name_singular' => 'Notificação',
+                'display_name_plural' => 'Notificações',
                 'icon' => 'voyager-bell',
                 'model_name' => 'App\\Model\\Notification',
                 'policy_name' => NULL,
@@ -127,13 +127,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:19:11',
                 'updated_at' => '2024-04-30 23:16:45',
             ),
-            6 => 
-            array (
+            6 =>
+            array(
                 'id' => 10,
                 'name' => 'post_comments',
                 'slug' => 'post-comments',
-                'display_name_singular' => 'Post Comment',
-                'display_name_plural' => 'Post Comments',
+                'display_name_singular' => 'Comentário de Post',
+                'display_name_plural' => 'Comentários de Posts',
                 'icon' => 'voyager-bubble',
                 'model_name' => 'App\\Model\\PostComment',
                 'policy_name' => NULL,
@@ -145,8 +145,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:20:55',
                 'updated_at' => '2024-04-30 23:48:48',
             ),
-            7 => 
-            array (
+            7 =>
+            array(
                 'id' => 11,
                 'name' => 'posts',
                 'slug' => 'user-posts',
@@ -163,13 +163,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:22:37',
                 'updated_at' => '2024-04-30 23:45:47',
             ),
-            8 => 
-            array (
+            8 =>
+            array(
                 'id' => 12,
                 'name' => 'reactions',
                 'slug' => 'reactions',
-                'display_name_singular' => 'Reaction',
-                'display_name_plural' => 'Reactions',
+                'display_name_singular' => 'Reação',
+                'display_name_plural' => 'Reações',
                 'icon' => 'voyager-bubble-hear',
                 'model_name' => 'App\\Model\\Reaction',
                 'policy_name' => NULL,
@@ -181,13 +181,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:24:58',
                 'updated_at' => '2024-04-30 23:27:48',
             ),
-            9 => 
-            array (
+            9 =>
+            array(
                 'id' => 13,
                 'name' => 'subscriptions',
                 'slug' => 'subscriptions',
-                'display_name_singular' => 'Subscription',
-                'display_name_plural' => 'Subscriptions',
+                'display_name_singular' => 'Assinatura',
+                'display_name_plural' => 'Assinaturas',
                 'icon' => 'voyager-credit-cards',
                 'model_name' => 'App\\Model\\Subscription',
                 'policy_name' => NULL,
@@ -199,13 +199,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:25:32',
                 'updated_at' => '2024-05-01 00:01:14',
             ),
-            10 => 
-            array (
+            10 =>
+            array(
                 'id' => 14,
                 'name' => 'transactions',
                 'slug' => 'transactions',
-                'display_name_singular' => 'Transaction',
-                'display_name_plural' => 'Transactions',
+                'display_name_singular' => 'Transmissão',
+                'display_name_plural' => 'Transmissões',
                 'icon' => 'voyager-dollar',
                 'model_name' => 'App\\Model\\Transaction',
                 'policy_name' => NULL,
@@ -214,16 +214,15 @@ class DataTypesTableSeeder extends Seeder
                 'generate_permissions' => 1,
                 'server_side' => 1,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
-                'created_at' => '2021-08-07 20:26:33',
-                'updated_at' => '2024-05-01 00:14:52',
-            ),
-            11 => 
-            array (
+                'created_at' => '2021-08-07 20:26:12',
+                'updated_at' => '2024-04-30 23:50:34',
+            ), 11 =>
+            array(
                 'id' => 15,
                 'name' => 'user_bookmarks',
                 'slug' => 'user-bookmarks',
-                'display_name_singular' => 'User Bookmark',
-                'display_name_plural' => 'User Bookmarks',
+                'display_name_singular' => 'Marcador do usuário',
+                'display_name_plural' => 'Favoritos do usuário',
                 'icon' => 'voyager-bookmark',
                 'model_name' => 'App\\Model\\UserBookmark',
                 'policy_name' => NULL,
@@ -235,13 +234,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:27:47',
                 'updated_at' => '2024-04-30 23:50:11',
             ),
-            12 => 
-            array (
+            12 =>
+            array(
                 'id' => 16,
                 'name' => 'user_lists',
                 'slug' => 'user-lists',
-                'display_name_singular' => 'User List',
-                'display_name_plural' => 'User Lists',
+                'display_name_singular' => 'Lista de usuários',
+                'display_name_plural' => 'Listas de usuários',
                 'icon' => 'voyager-list',
                 'model_name' => 'App\\Model\\UserList',
                 'policy_name' => NULL,
@@ -253,13 +252,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:28:45',
                 'updated_at' => '2024-04-30 23:34:12',
             ),
-            13 => 
-            array (
+            13 =>
+            array(
                 'id' => 17,
                 'name' => 'user_list_members',
                 'slug' => 'user-list-members',
-                'display_name_singular' => 'User List Member',
-                'display_name_plural' => 'User List Members',
+                'display_name_singular' => 'Membro da lista de usuários',
+                'display_name_plural' => 'Membros da lista de usuários',
                 'icon' => 'voyager-people',
                 'model_name' => 'App\\Model\\UserListMember',
                 'policy_name' => NULL,
@@ -271,13 +270,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:29:07',
                 'updated_at' => '2024-04-30 23:37:48',
             ),
-            14 => 
-            array (
+            14 =>
+            array(
                 'id' => 18,
                 'name' => 'user_messages',
                 'slug' => 'user-messages',
-                'display_name_singular' => 'User Message',
-                'display_name_plural' => 'User Messages',
+                'display_name_singular' => 'Mensagem do usuário',
+                'display_name_plural' => 'Mensagens do usuário',
                 'icon' => 'voyager-chat',
                 'model_name' => 'App\\Model\\UserMessage',
                 'policy_name' => NULL,
@@ -289,13 +288,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:42:32',
                 'updated_at' => '2024-04-30 23:21:13',
             ),
-            15 => 
-            array (
+            15 =>
+            array(
                 'id' => 19,
                 'name' => 'withdrawals',
                 'slug' => 'withdrawals',
-                'display_name_singular' => 'Withdrawal',
-                'display_name_plural' => 'Withdrawals',
+                'display_name_singular' => 'Cancelamento',
+                'display_name_plural' => 'Cancelamentos',
                 'icon' => 'voyager-calendar',
                 'model_name' => 'App\\Model\\Withdrawal',
                 'policy_name' => NULL,
@@ -307,13 +306,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-08-07 20:51:14',
                 'updated_at' => '2024-05-01 00:09:56',
             ),
-            16 => 
-            array (
+            16 =>
+            array(
                 'id' => 20,
                 'name' => 'countries',
                 'slug' => 'countries',
-                'display_name_singular' => 'Country',
-                'display_name_plural' => 'Countries',
+                'display_name_singular' => 'País',
+                'display_name_plural' => 'Países',
                 'icon' => 'voyager-location',
                 'model_name' => 'App\\Model\\Country',
                 'policy_name' => NULL,
@@ -325,13 +324,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-09-21 18:10:16',
                 'updated_at' => '2021-10-23 20:43:47',
             ),
-            17 => 
-            array (
+            17 =>
+            array(
                 'id' => 21,
                 'name' => 'taxes',
                 'slug' => 'taxes',
-                'display_name_singular' => 'Tax',
-                'display_name_plural' => 'Taxes',
+                'display_name_singular' => 'Imposto',
+                'display_name_plural' => 'Impostos',
                 'icon' => 'voyager-credit-card',
                 'model_name' => 'App\\Model\\Tax',
                 'policy_name' => NULL,
@@ -343,13 +342,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-09-21 18:11:55',
                 'updated_at' => '2024-02-27 19:29:00',
             ),
-            18 => 
-            array (
+            18 =>
+            array(
                 'id' => 27,
                 'name' => 'public_pages',
                 'slug' => 'custom-pages',
-                'display_name_singular' => 'Public Page',
-                'display_name_plural' => 'Public Pages',
+                'display_name_singular' => 'Página pública',
+                'display_name_plural' => 'Páginas públicas',
                 'icon' => 'voyager-news',
                 'model_name' => 'App\\Model\\PublicPage',
                 'policy_name' => NULL,
@@ -361,13 +360,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-09-29 19:43:27',
                 'updated_at' => '2024-06-20 21:17:41',
             ),
-            19 => 
-            array (
+            19 =>
+            array(
                 'id' => 28,
                 'name' => 'user_verifies',
                 'slug' => 'user-verifies',
-                'display_name_singular' => 'User Verify',
-                'display_name_plural' => 'User Verifies',
+                'display_name_singular' => 'Verificação do usuário',
+                'display_name_plural' => 'Verificações do usuário',
                 'icon' => 'voyager-check',
                 'model_name' => 'App\\Model\\UserVerify',
                 'policy_name' => NULL,
@@ -379,13 +378,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-10-20 16:11:44',
                 'updated_at' => '2024-04-30 22:48:52',
             ),
-            20 => 
-            array (
+            20 =>
+            array(
                 'id' => 29,
                 'name' => 'user_reports',
                 'slug' => 'user-reports',
-                'display_name_singular' => 'User Report',
-                'display_name_plural' => 'User Reports',
+                'display_name_singular' => 'Relatório do usuário',
+                'display_name_plural' => 'Relatórios de usuários',
                 'icon' => 'voyager-eye',
                 'model_name' => 'App\\Model\\UserReport',
                 'policy_name' => NULL,
@@ -397,8 +396,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-11-05 11:32:40',
                 'updated_at' => '2024-05-09 22:08:46',
             ),
-            21 => 
-            array (
+            21 =>
+            array(
                 'id' => 30,
                 'name' => 'contact_messages',
                 'slug' => 'contact-messages',
@@ -415,8 +414,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-11-19 18:11:33',
                 'updated_at' => '2022-06-24 14:53:36',
             ),
-            22 => 
-            array (
+            22 =>
+            array(
                 'id' => 32,
                 'name' => 'featured_users',
                 'slug' => 'featured-users',
@@ -433,13 +432,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-02-01 15:00:10',
                 'updated_at' => '2024-04-22 15:03:58',
             ),
-            23 => 
-            array (
+            23 =>
+            array(
                 'id' => 33,
                 'name' => 'payment_requests',
                 'slug' => 'payment-requests',
-                'display_name_singular' => 'Payment Request',
-                'display_name_plural' => 'Payment Requests',
+                'display_name_singular' => 'Pedido de Pagamento',
+                'display_name_plural' => 'Solicitações de pagamento',
                 'icon' => 'voyager-window-list',
                 'model_name' => 'App\\Model\\PaymentRequest',
                 'policy_name' => NULL,
@@ -451,13 +450,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-02-06 16:23:24',
                 'updated_at' => '2024-05-01 00:18:22',
             ),
-            24 => 
-            array (
+            24 =>
+            array(
                 'id' => 34,
                 'name' => 'invoices',
                 'slug' => 'invoices',
-                'display_name_singular' => 'Invoice',
-                'display_name_plural' => 'Invoices',
+                'display_name_singular' => 'Fatura',
+                'display_name_plural' => 'Faturas',
                 'icon' => 'voyager-receipt',
                 'model_name' => 'App\\Model\\Invoice',
                 'policy_name' => NULL,
@@ -469,8 +468,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-08-04 19:06:47',
                 'updated_at' => '2024-05-01 00:21:33',
             ),
-            25 => 
-            array (
+            25 =>
+            array(
                 'id' => 37,
                 'name' => 'stream_messages',
                 'slug' => 'stream-messages',
@@ -487,8 +486,8 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-06-21 14:48:56',
                 'updated_at' => '2024-04-30 23:55:59',
             ),
-            26 => 
-            array (
+            26 =>
+            array(
                 'id' => 38,
                 'name' => 'streams',
                 'slug' => 'streams',
@@ -505,13 +504,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-06-21 15:01:44',
                 'updated_at' => '2024-05-10 14:45:55',
             ),
-            27 => 
-            array (
+            27 =>
+            array(
                 'id' => 39,
                 'name' => 'referral_code_usages',
                 'slug' => 'referral-code-usages',
-                'display_name_singular' => 'Referrals',
-                'display_name_plural' => 'Referrals',
+                'display_name_singular' => 'Referência',
+                'display_name_plural' => 'Referências',
                 'icon' => 'voyager-group',
                 'model_name' => 'App\\Model\\ReferralCodeUsage',
                 'policy_name' => NULL,
@@ -523,13 +522,13 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-06-21 16:26:01',
                 'updated_at' => '2023-06-21 16:27:13',
             ),
-            28 => 
-            array (
+            28 =>
+            array(
                 'id' => 40,
                 'name' => 'rewards',
                 'slug' => 'rewards',
-                'display_name_singular' => 'Referral',
-                'display_name_plural' => 'Referrals',
+                'display_name_singular' => 'Referência',
+                'display_name_plural' => 'Referências',
                 'icon' => 'voyager-group',
                 'model_name' => 'App\\Model\\Reward',
                 'policy_name' => NULL,
@@ -542,7 +541,5 @@ class DataTypesTableSeeder extends Seeder
                 'updated_at' => '2024-05-01 00:26:33',
             ),
         ));
-        
-        
     }
 }

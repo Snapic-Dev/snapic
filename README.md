@@ -1,10 +1,9 @@
-## JustFans - Paid creator social media platform
+## Snapic - Plataforma Social Paga para Criadores
 
-#### About
+#### Sobre
 
-Product description..
-
-It is mainly based on following techs, plus couple of other dependencies and tools to ease up your development.
+Descrição do produto..
+Baseado principalmente nas seguintes tecnologias, além de algumas outras dependências e ferramentas para facilitar o desenvolvimento.
 
 - Laravel 9
 - Bootstrap 4.6.0
@@ -15,7 +14,7 @@ It is mainly based on following techs, plus couple of other dependencies and too
 - PHP 8.3.6
 - Mysql / MariaDB (5.7/8.X)
 - Apache & mod_rewrite / Nginx
-- Node, Composer & at least 2GB of RAM for dev builds
+- Node, Composer e pelo menos 2GB de RAM para builds de desenvolvimento
 
 #### Install
 
@@ -35,19 +34,19 @@ _Note\*_ If having issues with composer install, try `php -d memory_limit=1G /us
 
 #### Saving admin state via seeds
 
-_Saving admin panel state. This will remove all prior admin related seeds and reverse genererate new ones - so default admin state & settings will persist._
+_Salvando o estado do painel de administração. Isso removerá todas as sementes relacionadas ao administrador anterior e reverterá a geração de novas - então o estado e as configurações padrão do administrador persistirão._
 
 ```
 php artisan admin:save
 ```
 
-_Publishing frontend libraries to public directory. Eg: You npm add a new lib and need to include it into your views._
+_Publicando bibliotecas frontend em diretório público. Por exemplo: Você npm adiciona uma nova biblioteca e precisa incluí-la em suas visualizações._
 
 ```
 php artisan npm:publish
 ```
 
-_Running Code quality checkers and fixers_
+_Executando verificadores e corretores de qualidade de código_
 
 ```
 php artisan code:check type=php/js
@@ -59,19 +58,6 @@ _Setting up the crons_
 ```
 * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
 ```
-
-_Setting up payments_
-
-For stripe:
-
-1. In admin, add stripe public and secret key
-2. In stripe, create a webhook ( all events )
-3. Get Stripe's webhook secret and add it back to admin
-
-For PP:
-
-1. Login to PP Dev dashboard, create new app
-2. Get Paypal's ClientID & Paypal Secret key and add them into the admin
 
 ### Ionicons usage
 
@@ -136,17 +122,3 @@ Tested on a dual core, $10 Digital ocean droplet, running nginx wiht php-fpm and
 - Avg Max concurent request: ~240rps
 - Avg Load time: ~0.5s
 - Total bundle overhead (Gzipped): ~241KB
-
-_Wrk Benchmark tool sample_
-![alt text](https://i.imgur.com/gZ3o7eP.png)
-
-_Google Lighthouse/Page Insights report sample_
-![alt text](https://i.imgur.com/mFXY8Zb.png)
-
-#### Questions?
-
-Send us a message over http://qdev.tech .
-
-<hr>
-
-Qdev Techs SRL - All rights reserved.

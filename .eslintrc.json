@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "jquery" : true
+        "jquery": true,
+        "node": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -45,7 +46,6 @@
         "use-isnan": "error", // require calls to 'isNaN()` when checking for `NaN` (recommended)
         "valid-jsdoc": "off", // enforce valid JSDoc comments
         "valid-typeof": "error", // enforce comparing 'typeof` expressions against valid strings (recommended)
-
         /**
          Best Practices
          *
@@ -117,7 +117,6 @@
         "vars-on-top": "off", // require 'var` declarations be placed at the top of their containing scope
         "wrap-iife": "off", // require parentheses around immediate 'function` invocations
         "yoda": "off", // require or disallow "Yoda" conditions
-
         /**
          Strict Mode
          *
@@ -126,7 +125,6 @@
          *
         **/
         "strict": "off", // require or disallow strict mode directives
-
         /**
          Variables
          *
@@ -146,7 +144,6 @@
         "no-undefined": "off", // disallow the use of 'undefined` as an identifier
         "no-unused-vars": "error", // disallow unused variables (recommended)
         "no-use-before-define": "off", // disallow the use of variables before they are defined
-
         /**
          Node.js and CommonJS
          *
@@ -164,7 +161,6 @@
         "no-process-exit": "off", // disallow the use of 'process.exit()`
         "no-restricted-modules": "off", // disallow specified modules when loaded by 'require`
         "no-sync": "off", // disallow synchronous methods
-
         /**
          Stylistic Issues
          *
@@ -187,7 +183,10 @@
         "id-blacklist": "off", // disallow specified identifiers
         "id-length": "off", // enforce minimum and maximum identifier lengths
         "id-match": "off", // require identifiers to match a specified regular expression
-        "indent": ["warn",4], // enforce consistent indentation (fixable)
+        "indent": [
+            "warn",
+            4
+        ], // enforce consistent indentation (fixable)
         "jsx-quotes": "off", // enforce the consistent use of either double or single quotes in JSX attributes (fixable)
         "key-spacing": "off", // enforce consistent spacing between keys and values in object literal properties (fixable)
         "keyword-spacing": "off", // enforce consistent spacing before and after keywords (fixable)
@@ -247,7 +246,6 @@
         "spaced-comment": "off", // enforce consistent spacing after the '//` or `/*` in a comment (fixable)
         "unicode-bom": "off", // require or disallow the Unicode BOM (fixable)
         "wrap-regex": "off", // require parenthesis around regex literals
-
         /**
          ECMAScript 6
          *
@@ -284,7 +282,5 @@
         "sort-imports": "off", // enforce sorted import declarations within modules
         "template-curly-spacing": "off", // require or disallow spacing around embedded expressions of template strings (fixable)
         "yield-star-spacing": "off" // require or disallow spacing around the '*` in `yield*` expressions (fixable)
-
-
     }
 }

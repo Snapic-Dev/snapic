@@ -1,13 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Broadcast;
 /*
 |--------------------------------------------------------------------------
-| Broadcast Channels
+| Canais de Broadcast
 |--------------------------------------------------------------------------
 |
-| Here you may register all of the event broadcasting channels that your
-| application supports. The given channel authorization callbacks are
-| used to check if an authenticated user can listen to the channel.
+| Aqui você pode registrar todos os canais de broadcast que sua
+| aplicação suporta. Os callbacks de autorização dos canais fornecidos
+| são usados para verificar se um usuário autenticado pode ouvir o canal.
 |
 */
 

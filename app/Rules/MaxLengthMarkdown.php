@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use App\Providers\GenericHelperServiceProvider;
 use Illuminate\Contracts\Validation\Rule;
-use Str;
+use Illuminate\Support\Str;
 
 class MaxLengthMarkdown implements Rule
 {
@@ -27,7 +27,7 @@ class MaxLengthMarkdown implements Rule
      */
     public function passes($attribute, $value)
     {
-        if($value && strlen(trim(strip_tags(GenericHelperServiceProvider::parseProfileMarkdownBio($value)))) > getSetting('profiles.max_profile_bio_length')){
+        if ($value && strlen(trim(strip_tags(GenericHelperServiceProvider::parseProfileMarkdownBio($value)))) > getSetting('profiles.max_profile_bio_length')) {
             return false;
         }
         return true;
@@ -40,6 +40,6 @@ class MaxLengthMarkdown implements Rule
      */
     public function message()
     {
-        return __('The bio may not be greater than :chars characters.',['chars'=>  getSetting('profiles.max_profile_bio_length')]);
+        return __('The bio may not be greater than :chars characters.', ['chars' =>  getSetting('profiles.max_profile_bio_length')]);
     }
 }

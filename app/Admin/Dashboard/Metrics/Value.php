@@ -8,22 +8,36 @@ use InvalidArgumentException;
 class Value extends Metrics
 {
     /**
-     * The available functions
+     * As funções disponíveis
      * @var array
      */
     private $functions = [
-        'count', 'min', 'max', 'sum', 'avg'
+        'count',
+        'min',
+        'max',
+        'sum',
+        'avg'
     ];
 
     /**
-     * The available ranges
+     * Os intervalos disponíveis
      * @var array
      */
     public $ranges = [
-        1, 3, 5, 7, 10, 14, 21, 30, 60, 90
+        1,
+        3,
+        5,
+        7,
+        10,
+        14,
+        21,
+        30,
+        60,
+        90
     ];
 
     /**
+     * Obtém os valores agregados do modelo com base na função e no intervalo fornecidos
      * @param $model
      * @param $function
      * @param $range
@@ -45,7 +59,7 @@ class Value extends Metrics
     }
 
     /**
-     * Calculate the current range
+     * Calcula o intervalo atual
      *
      * @param $range
      * @return array
@@ -59,7 +73,7 @@ class Value extends Metrics
     }
 
     /**
-     * Calculate the previous range
+     * Calcula o intervalo anterior
      *
      * @param $range
      * @return array
@@ -73,6 +87,7 @@ class Value extends Metrics
     }
 
     /**
+     * Realiza a agregação de valores com base na função e intervalo fornecidos
      * @param $model
      * @param $function
      * @param $range

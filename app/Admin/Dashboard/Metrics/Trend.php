@@ -10,28 +10,55 @@ use InvalidArgumentException;
 class Trend extends Metrics
 {
     /**
-     * The available functions
+     * As funções disponíveis
      */
     private $functions = [
-        'count', 'min', 'max', 'sum', 'avg'
+        'count',
+        'min',
+        'max',
+        'sum',
+        'avg'
     ];
 
     /**
-     * The available unit types, the format and the allowed ranges
+     * Os tipos de unidades disponíveis, o formato e os intervalos permitidos
      * @var array
      */
     public $units = [
         'day' => [
             'format' => null,
             'ranges' => [
-                3, 5, 7, 10, 14, 21, 30, 60, 90, 180, 365
+                3,
+                5,
+                7,
+                10,
+                14,
+                21,
+                30,
+                60,
+                90,
+                180,
+                365
             ]
         ],
 
         'month' => [
             'format' => null,
             'ranges' => [
-                2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                24,
+                36,
+                48
             ]
         ]
     ];
@@ -78,12 +105,12 @@ class Trend extends Metrics
         switch ($unit) {
             case 'month':
                 return [
-                    now()->subMonths($range-1)->firstOfMonth()->setTime(0, 0),
+                    now()->subMonths($range - 1)->firstOfMonth()->setTime(0, 0),
                     now()
                 ];
             case 'day':
                 return [
-                    now()->subDays($range-1)->setTime(0, 0),
+                    now()->subDays($range - 1)->setTime(0, 0),
                     now()
                 ];
         }

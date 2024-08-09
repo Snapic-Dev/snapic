@@ -4,13 +4,13 @@ define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
-| Register The Auto Loader
+| Registrar o Auto Loader
 |--------------------------------------------------------------------------
 |
-| Composer provides a convenient, automatically generated class loader for
-| our application. We just need to utilize it! We'll simply require it
-| into the script here so that we don't have to worry about manual
-| loading any of our classes later on. It feels great to relax.
+| O Composer fornece um carregador de classes gerado automaticamente para
+| nossa aplicação. Apenas precisamos utilizá-lo! Vamos requerê-lo
+| no script aqui para que não tenhamos que nos preocupar com o carregamento
+| manual de qualquer uma de nossas classes mais tarde. É ótimo relaxar.
 |
 */
 
@@ -18,13 +18,13 @@ require __DIR__ . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
-| Turn On The Lights
+| Acender as Luzes
 |--------------------------------------------------------------------------
 |
-| We need to illuminate PHP development, so let us turn on the lights.
-| This bootstraps the framework and gets it ready for use, then it
-| will load up this application so that we can run it and send
-| the responses back to the browser and delight our users.
+| Precisamos iluminar o desenvolvimento PHP, então vamos acender as luzes.
+| Isso inicializa o framework e o prepara para uso, depois carregará
+| esta aplicação para que possamos executá-la e enviar
+| as respostas de volta para o navegador e encantar nossos usuários.
 |
 */
 
@@ -32,13 +32,13 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
-| Run The Application
+| Executar a Aplicação
 |--------------------------------------------------------------------------
 |
-| Once we have the application, we can handle the incoming request
-| through the kernel, and send the associated response back to
-| the client's browser allowing them to enjoy the creative
-| and wonderful application we have prepared for them.
+| Uma vez que temos a aplicação, podemos lidar com a solicitação
+| recebida através do kernel e enviar a resposta associada de volta para
+| o navegador do cliente, permitindo que eles desfrutem da aplicação
+| criativa e maravilhosa que preparamos para eles.
 |
 */
 

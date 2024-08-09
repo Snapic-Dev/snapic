@@ -23,7 +23,7 @@ class TrendDateExpression
     public $unit;
 
     /**
-     * TrendDateExpression constructor.
+     * Construtor de TrendDateExpression.
      * @param Builder $query
      * @param $column
      * @param $unit

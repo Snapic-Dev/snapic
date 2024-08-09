@@ -3,7 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Str;
+use Illuminate\Support\Str;
 
 class PPVMinMax implements Rule
 {
@@ -32,37 +32,33 @@ class PPVMinMax implements Rule
     public function passes($attribute, $value)
     {
         $hasError = false;
-        if($this->type === 'stream') {
+        if ($this->type === 'stream') {
             $this->minLimit = getSetting('payments.min_ppv_stream_price') ? (int)getSetting('payments.min_ppv_stream_price') : 5;
             $this->maxLimit = getSetting('payments.max_ppv_stream_price') ? (int)getSetting('payments.max_ppv_stream_price') : 500;
-        }
-        elseif ($this->type == 'post'){
+        } elseif ($this->type == 'post') {
             $this->minLimit = getSetting('payments.min_ppv_post_price') ? (int)getSetting('payments.min_ppv_post_price') : 1;
             $this->maxLimit = getSetting('payments.max_ppv_post_price') ? (int)getSetting('payments.max_ppv_post_price') : 500;
-        }
-        elseif ($this->type == 'message'){
+        } elseif ($this->type == 'message') {
             $this->minLimit = getSetting('payments.min_ppv_message_price') ? (int)getSetting('payments.min_ppv_message_price') : 1;
             $this->maxLimit = getSetting('payments.max_ppv_message_price') ? (int)getSetting('payments.max_ppv_message_price') : 500;
         }
-        if($this->type === 'stream'){
-            if(getSetting('streams.allow_free_streams')){
-                if((int)$value < $this->minLimit && (int)$value != 0){
+        if ($this->type === 'stream') {
+            if (getSetting('streams.allow_free_streams')) {
+                if ((int)$value < $this->minLimit && (int)$value != 0) {
+                    $hasError = true;
+                }
+            } else {
+                if ((int)$value < $this->minLimit) {
                     $hasError = true;
                 }
             }
-            else{
-                if((int)$value < $this->minLimit){
-                    $hasError = true;
-                }
-            }
-        }
-        else{
-            if((int)$value < $this->minLimit && (int)$value != 0){
+        } else {
+            if ((int)$value < $this->minLimit && (int)$value != 0) {
                 $hasError = true;
             }
         }
 
-        if((int)$value > $this->maxLimit){
+        if ((int)$value > $this->maxLimit) {
             $hasError = true;
         }
         return !$hasError;
@@ -75,6 +71,6 @@ class PPVMinMax implements Rule
      */
     public function message()
     {
-        return __('The price must be between :min and :max.',['min' => $this->minLimit ?? 1, 'max' => $this->maxLimit ?? 500]);
+        return __('The price must be between :min and :max.', ['min' => $this->minLimit ?? 1, 'max' => $this->maxLimit ?? 500]);
     }
 }
