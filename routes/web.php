@@ -311,9 +311,5 @@ Route::get('/{username}/posts', ['uses' => 'ProfileController@getUserPosts', 'as
 Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams', 'as'   => 'profile.streams']);
 
 Route::fallback(function () {
-    abort(404);
-});
-
-Route::fallback(function () {
     return view('errors.404'); // template should exists
 });
