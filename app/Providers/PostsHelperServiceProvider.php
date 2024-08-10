@@ -219,39 +219,52 @@ class PostsHelperServiceProvider extends ServiceProvider
     {
         $relations = ['user', 'reactions', 'attachments', 'bookmarks', 'postPurchases'];
 
+        // Fetching basic posts information
         $posts = Post::withCount('tips')
             ->with($relations);
 
+        // For profile page
         if ($ownPosts) {
             $posts->where('user_id', $userID);
-            $posts = self::filterPosts($posts, $userID, 'scheduled')
-                ->filterPosts($posts, $userID, 'approvedPostsOnly')
-                ->filterPosts($posts, $userID, 'pinned');
-        } elseif ($bookMarksOnly) {
-            $posts = self::filterPosts($posts, $userID, 'bookmarks')
-                ->filterPosts($posts, $userID, 'blocked');
-        } else {
+            // Registered
+            if (Auth::check() && Auth::user()->id !== $userID) {
+                $posts = self::filterPosts($posts, $userID, 'scheduled');
+                $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
+            }
+            // Un-registered
+            elseif (!Auth::check()) {
+                $posts = self::filterPosts($posts, $userID, 'scheduled');
+                $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
+            }
+            $posts = self::filterPosts($posts, $userID, 'pinned');
+        }
+        // For bookmarks page
+        elseif ($bookMarksOnly) {
+            $posts = self::filterPosts($posts, $userID, 'bookmarks');
+            $posts = self::filterPosts($posts, $userID, 'blocked');
+        }
+        // For feed page
+        else {
             $posts = self::filterPosts($posts, $userID, 'all');
         }
 
-        if (!$ownPosts) {
-            $posts = self::filterPosts($posts, $userID, 'scheduled')
-                ->filterPosts($posts, $userID, 'approvedPostsOnly');
+        if (!$ownPosts) { // More feed/bookmarks/search rules
+            $posts = self::filterPosts($posts, $userID, 'scheduled');
+            $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
         }
 
+        // Media type filters
         if ($mediaType) {
             $posts = self::filterPosts($posts, $userID, 'media', $mediaType);
         }
 
+        // Filtering the search term
         if ($searchTerm) {
             $posts = self::filterPosts($posts, $userID, 'search', false, false, $searchTerm);
         }
 
-        if ($sortOrder) {
-            $posts = self::filterPosts($posts, $userID, 'order', false, $sortOrder);
-        } else {
-            $posts->orderBy('created_at', 'DESC');
-        }
+        // Processing sorting
+        $posts = self::filterPosts($posts, $userID, 'order', false, $sortOrder);
 
         if ($pageNumber) {
             $posts = $posts->paginate(getSetting('feed.feed_posts_per_page'), ['*'], 'page', $pageNumber)->appends(request()->query());
@@ -263,29 +276,46 @@ class PostsHelperServiceProvider extends ServiceProvider
             $hasSub = true;
         }
 
-        $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts) {
-            if ($ownPosts) {
-                $post->setAttribute('isSubbed', $hasSub);
-            } else {
-                $post->setAttribute('isSubbed', true);
-            }
-            $post->setAttribute('postPage', $posts->currentPage());
-            return $post;
-        });
+        if ($encodePostsToHtml) {
+            // Posts encoded as JSON
+            $data = [
+                'total' => $posts->total(),
+                'currentPage' => $posts->currentPage(),
+                'last_page' => $posts->lastPage(),
+                'prev_page_url' => $posts->previousPageUrl(),
+                'next_page_url' => $posts->nextPageUrl(),
+                'first_page_url' => $posts->nextPageUrl(),
+                'hasMore' => $posts->hasMorePages(),
+            ];
+            $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts, $data) {
+                if ($ownPosts) {
+                    $post->setAttribute('isSubbed', $hasSub);
+                } else {
+                    $post->setAttribute('isSubbed', true);
+                }
+                $post->setAttribute('postPage', $data['currentPage']);
+                $post = ['id' => $post->id, 'html' => View::make('elements.feed.post-box')->with('post', $post)->render()];
 
-        return $encodePostsToHtml ? [
-            'total' => $posts->total(),
-            'currentPage' => $posts->currentPage(),
-            'last_page' => $posts->lastPage(),
-            'prev_page_url' => $posts->previousPageUrl(),
-            'next_page_url' => $posts->nextPageUrl(),
-            'first_page_url' => $posts->nextPageUrl(),
-            'hasMore' => $posts->hasMorePages(),
-            'posts' => $postsData->map(fn($post) => [
-                'id' => $post->id,
-                'html' => View::make('elements.feed.post-box')->with('post', $post)->render()
-            ])
-        ] : $postsData;
+                return $post;
+            });
+            $data['posts'] = $postsData;
+        } else {
+            // Collection data posts | To be rendered on the server side
+            $postsCurrentPage = $posts->currentPage();
+            $posts->map(function ($post) use ($hasSub, $ownPosts, $postsCurrentPage) {
+                if ($ownPosts) {
+                    $post->hasSub = $hasSub;
+                    $post->setAttribute('isSubbed', $hasSub);
+                } else {
+                    $post->setAttribute('isSubbed', true);
+                }
+                $post->setAttribute('postPage', $postsCurrentPage);
+                return $post;
+            });
+            $data = $posts;
+        }
+
+        return $data;
     }
 
     /**
@@ -328,6 +358,9 @@ class PostsHelperServiceProvider extends ServiceProvider
                 $join->on('user_bookmarks.post_id', '=', 'posts.id');
                 $join->on('user_bookmarks.user_id', '=', DB::raw($userID));
             });
+            // Filtering allowed userIDs only for active bookmarks
+            $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
+            $posts->whereIn('posts.user_id', $userIds);
         }
 
         if ($filterType == 'media') {
