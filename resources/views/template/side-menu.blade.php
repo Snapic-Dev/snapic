@@ -234,7 +234,7 @@ Minify::javascript([
                                 <div class="mr-4">
                                     <div class="blob red"></div>
                                 </div>
-                                <div class="ml-2">{{ __('On air') }} </div>
+                                <div class="">{{ __('On air') }} </div>
                             </div>
                         </div>
                         <div class="stream-off-label w-100 {{ StreamsHelper::getUserInProgressStream() ? 'd-none' : '' }}">
