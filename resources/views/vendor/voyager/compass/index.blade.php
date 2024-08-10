@@ -1,96 +1,91 @@
 @extends('voyager::master')
 
 @section('css')
-
     @include('voyager::compass.includes.styles')
-
 @stop
 
 @section('page_header')
     <h1 class="page-title">
         <i class="voyager-compass"></i>
-        <p> {{ __('voyager::generic.compass') }}</p>
+        <p>{{ __('voyager::generic.compass') }}</p>
     </h1>
 @stop
 
 @section('content')
-
     <div class="container-fluid">
         @include('voyager::alerts')
     </div>
 
     <div class="page-content compass container-fluid">
-        <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#logs"><i class="voyager-logbook"></i> {{ __('voyager::compass.logs.title') }}</a></li>
-        </ul>
 
-        <div class="tab-content">
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="voyager-html5"></i>
+                            {{ __('voyager::compass.fonts.title') }}
+                        </button>
+                    </h2>
+                </div>
 
-          <div id="logs" class="tab-pane fade in active">
-            <div class="row">
-                @include('voyager::compass.includes.logs')
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div id="fonts" class="tab-pane fade in active">
+                                <div class="row">
+
+                                    @include('voyager::compass.includes.fonts')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <br>
+            <div class="card mb-3">
+                <div class="card-header" id="headingTwo">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                            data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <i class="voyager-terminal"></i>
+                            {{ __('voyager::compass.commands.title') }}
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div id="commands" class="tab fade in active">
+                            <div class="row">
+
+                                @include('voyager::compass.includes.commands')
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="voyager-logbook"></i>
+                            {{ __('voyager::compass.logs.title') }}
+                        </button>
+                    </h2>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                    <div class="card-body">
+                        @include('voyager::compass.includes.logs')
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
-
 @stop
+
 @section('javascript')
-    <script>
-        $('document').ready(function(){
-            $('.collapse-head').click(function(){
-                var collapseContainer = $(this).parent();
-                if(collapseContainer.find('.collapse-content').hasClass('in')){
-                    collapseContainer.find('.voyager-angle-up').fadeOut('fast');
-                    collapseContainer.find('.voyager-angle-down').fadeIn('slow');
-                } else {
-                    collapseContainer.find('.voyager-angle-down').fadeOut('fast');
-                    collapseContainer.find('.voyager-angle-up').fadeIn('slow');
-                }
-            });
-        });
-    </script>
-    <!-- JS for commands -->
-    <script>
-
-        $(document).ready(function(){
-            $('.command').click(function(){
-                $(this).find('.cmd_form').slideDown();
-                $(this).addClass('more_args');
-                $(this).find('input[type="text"]').focus();
-            });
-
-            $('.close-output').click(function(){
-                $('#commands pre').slideUp();
-            });
-        });
-
-    </script>
-
-    <!-- JS for logs -->
-    <script>
-      $(document).ready(function () {
-        $('.table-container tr').on('click', function () {
-          $('#' + $(this).data('display')).toggle();
-        });
-        $('#table-log').DataTable({
-          "order": [1, 'desc'],
-          "stateSave": true,
-          "language": {!! json_encode(__('voyager::datatable')) !!},
-          "stateSaveCallback": function (settings, data) {
-            window.localStorage.setItem("datatable", JSON.stringify(data));
-          },
-          "stateLoadCallback": function (settings) {
-            var data = JSON.parse(window.localStorage.getItem("datatable"));
-            if (data) data.start = 0;
-            return data;
-          }
-        });
-
-        $('#delete-log, #delete-all-log').click(function () {
-          return confirm('{{ __('voyager::generic.are_you_sure') }}');
-        });
-      });
-    </script>
+    <!-- Remover JavaScript personalizado se não for necessário -->
 @stop

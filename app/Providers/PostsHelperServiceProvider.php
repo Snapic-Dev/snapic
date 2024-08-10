@@ -63,7 +63,7 @@ class PostsHelperServiceProvider extends ServiceProvider
             $attachments->whereIn('attachments.type', $extensions);
         }
         // validate access for paid posts attachments
-        if(Auth::check() && Auth::user()->role_id !== 1 && Auth::user()->id !== $userID) {
+        if (Auth::check() && Auth::user()->role_id !== 1 && Auth::user()->id !== $userID) {
             $attachments->leftJoin('posts', 'posts.id', '=', 'attachments.post_id')
                 ->leftJoin('transactions', 'transactions.post_id', '=', 'posts.id')
                 ->where(function ($query) {
@@ -75,13 +75,13 @@ class PostsHelperServiceProvider extends ServiceProvider
                                 ->where('transactions.sender_user_id', '=', Auth::user()->id);
                         });
                 })
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->where('posts.expire_date', '>', Carbon::now());
                     $query->orWhere('posts.expire_date', null);
                 })
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->where('posts.release_date', '<', Carbon::now());
-                    $query->orWhere('posts.release_date',null);
+                    $query->orWhere('posts.release_date', null);
                 })
                 ->where('posts.status', 1);
         }
@@ -128,11 +128,12 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $userId
      * @return mixed
      */
-    public static function getFreeFollowingProfiles($userId){
-        $followingList = UserList::where('user_id', $userId)->where('type', 'following')->with(['members','members.user'])->first();
+    public static function getFreeFollowingProfiles($userId)
+    {
+        $followingList = UserList::where('user_id', $userId)->where('type', 'following')->with(['members', 'members.user'])->first();
         $followingUserIds = [];
-        foreach($followingList->members as $member){
-            if(!$member->user->paid_profile || (getSetting('profiles.allow_users_enabling_open_profiles') && $member->user->open_profile)){
+        foreach ($followingList->members as $member) {
+            if (!$member->user->paid_profile || (getSetting('profiles.allow_users_enabling_open_profiles') && $member->user->open_profile)) {
                 $followingUserIds[] =  $member->user->id;
             }
         }
@@ -218,52 +219,39 @@ class PostsHelperServiceProvider extends ServiceProvider
     {
         $relations = ['user', 'reactions', 'attachments', 'bookmarks', 'postPurchases'];
 
-        // Fetching basic posts information
         $posts = Post::withCount('tips')
             ->with($relations);
 
-        // For profile page
         if ($ownPosts) {
             $posts->where('user_id', $userID);
-            // Registered
-            if(Auth::check() && Auth::user()->id !== $userID) {
-                $posts = self::filterPosts($posts, $userID, 'scheduled');
-                $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
-            }
-            // Un-registered
-            elseif (!Auth::check()){
-                $posts = self::filterPosts($posts, $userID, 'scheduled');
-                $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
-            }
-            $posts = self::filterPosts($posts, $userID, 'pinned');
-        }
-        // For bookmarks page
-        elseif ($bookMarksOnly) {
-            $posts = self::filterPosts($posts, $userID, 'bookmarks');
-            $posts = self::filterPosts($posts, $userID, 'blocked');
-        }
-        // For feed page
-        else {
+            $posts = self::filterPosts($posts, $userID, 'scheduled')
+                ->filterPosts($posts, $userID, 'approvedPostsOnly')
+                ->filterPosts($posts, $userID, 'pinned');
+        } elseif ($bookMarksOnly) {
+            $posts = self::filterPosts($posts, $userID, 'bookmarks')
+                ->filterPosts($posts, $userID, 'blocked');
+        } else {
             $posts = self::filterPosts($posts, $userID, 'all');
         }
 
-        if (!$ownPosts) { // More feed/bookmarks/search rules
-            $posts = self::filterPosts($posts, $userID, 'scheduled');
-            $posts = self::filterPosts($posts, $userID, 'approvedPostsOnly');
+        if (!$ownPosts) {
+            $posts = self::filterPosts($posts, $userID, 'scheduled')
+                ->filterPosts($posts, $userID, 'approvedPostsOnly');
         }
 
-        // Media type filters
         if ($mediaType) {
             $posts = self::filterPosts($posts, $userID, 'media', $mediaType);
         }
 
-        // Filtering the search term
-        if($searchTerm){
-            $posts = self::filterPosts($posts, $userID, 'search',false,false,$searchTerm);
+        if ($searchTerm) {
+            $posts = self::filterPosts($posts, $userID, 'search', false, false, $searchTerm);
         }
 
-        // Processing sorting
-        $posts = self::filterPosts($posts, $userID, 'order',false,$sortOrder);
+        if ($sortOrder) {
+            $posts = self::filterPosts($posts, $userID, 'order', false, $sortOrder);
+        } else {
+            $posts->orderBy('created_at', 'DESC');
+        }
 
         if ($pageNumber) {
             $posts = $posts->paginate(getSetting('feed.feed_posts_per_page'), ['*'], 'page', $pageNumber)->appends(request()->query());
@@ -271,50 +259,33 @@ class PostsHelperServiceProvider extends ServiceProvider
             $posts = $posts->paginate(getSetting('feed.feed_posts_per_page'))->appends(request()->query());
         }
 
-        if(Auth::check() && Auth::user()->role_id === 1){
+        if (Auth::check() && Auth::user()->role_id === 1) {
             $hasSub = true;
         }
 
-        if ($encodePostsToHtml) {
-            // Posts encoded as JSON
-            $data = [
-                'total' => $posts->total(),
-                'currentPage' => $posts->currentPage(),
-                'last_page' => $posts->lastPage(),
-                'prev_page_url' => $posts->previousPageUrl(),
-                'next_page_url' => $posts->nextPageUrl(),
-                'first_page_url' => $posts->nextPageUrl(),
-                'hasMore' => $posts->hasMorePages(),
-            ];
-            $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts, $data) {
-                if ($ownPosts) {
-                    $post->setAttribute('isSubbed', $hasSub);
-                } else {
-                    $post->setAttribute('isSubbed', true);
-                }
-                $post->setAttribute('postPage',$data['currentPage']);
-                $post = ['id' => $post->id, 'html' => View::make('elements.feed.post-box')->with('post', $post)->render()];
+        $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts) {
+            if ($ownPosts) {
+                $post->setAttribute('isSubbed', $hasSub);
+            } else {
+                $post->setAttribute('isSubbed', true);
+            }
+            $post->setAttribute('postPage', $posts->currentPage());
+            return $post;
+        });
 
-                return $post;
-            });
-            $data['posts'] = $postsData;
-        } else {
-            // Collection data posts | To be rendered on the server side
-            $postsCurrentPage = $posts->currentPage();
-            $posts->map(function ($post) use ($hasSub, $ownPosts, $postsCurrentPage) {
-                if ($ownPosts) {
-                    $post->hasSub = $hasSub;
-                    $post->setAttribute('isSubbed', $hasSub);
-                } else {
-                    $post->setAttribute('isSubbed', true);
-                }
-                $post->setAttribute('postPage',$postsCurrentPage);
-                return $post;
-            });
-            $data = $posts;
-        }
-
-        return $data;
+        return $encodePostsToHtml ? [
+            'total' => $posts->total(),
+            'currentPage' => $posts->currentPage(),
+            'last_page' => $posts->lastPage(),
+            'prev_page_url' => $posts->previousPageUrl(),
+            'next_page_url' => $posts->nextPageUrl(),
+            'first_page_url' => $posts->nextPageUrl(),
+            'hasMore' => $posts->hasMorePages(),
+            'posts' => $postsData->map(fn($post) => [
+                'id' => $post->id,
+                'html' => View::make('elements.feed.post-box')->with('post', $post)->render()
+            ])
+        ] : $postsData;
     }
 
     /**
@@ -342,7 +313,7 @@ class PostsHelperServiceProvider extends ServiceProvider
         }
 
         if ($filterType == 'subs' || $filterType == 'all') {
-            if($filterType == 'all'){
+            if ($filterType == 'all') {
                 $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
                 $posts->whereIn('posts.user_id', $userIds);
             } else {
@@ -367,36 +338,34 @@ class PostsHelperServiceProvider extends ServiceProvider
             });
         }
 
-        if ($filterType == 'search'){
+        if ($filterType == 'search') {
             $posts->where(
-                function($query) use ($searchTerm){
-                    $query->where('text', 'like', '%'.$searchTerm.'%')
-                        ->orWhereHas('user', function($q) use ($searchTerm) {
-                            $q->where('username', 'like', '%'.$searchTerm.'%');
-                            $q->orWhere('name', 'like', '%'.$searchTerm.'%');
+                function ($query) use ($searchTerm) {
+                    $query->where('text', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('user', function ($q) use ($searchTerm) {
+                            $q->where('username', 'like', '%' . $searchTerm . '%');
+                            $q->orWhere('name', 'like', '%' . $searchTerm . '%');
                         });
                 }
             );
         }
 
-        if ($filterType == 'pinned'){
-            $posts->orderBy('is_pinned','DESC');
+        if ($filterType == 'pinned') {
+            $posts->orderBy('is_pinned', 'DESC');
         }
 
-        if ($filterType == 'order'){
-            if($sortOrder){
-                if($sortOrder == 'top'){
-                    $relationsCount = ['reactions','comments'];
+        if ($filterType == 'order') {
+            if ($sortOrder) {
+                if ($sortOrder == 'top') {
+                    $relationsCount = ['reactions', 'comments'];
                     $posts->withCount($relationsCount);
-                    $posts->orderBy('comments_count','DESC');
-                    $posts->orderBy('reactions_count','DESC');
+                    $posts->orderBy('comments_count', 'DESC');
+                    $posts->orderBy('reactions_count', 'DESC');
+                } elseif ($sortOrder == 'latest') {
+                    $posts->orderBy('created_at', 'DESC');
                 }
-                elseif($sortOrder =='latest'){
-                    $posts->orderBy('created_at','DESC');
-                }
-            }
-            else{
-                $posts->orderBy('created_at','DESC');
+            } else {
+                $posts->orderBy('created_at', 'DESC');
             }
         }
 
@@ -456,7 +425,7 @@ class PostsHelperServiceProvider extends ServiceProvider
     public static function hasUserUnlockedPost($transactions)
     {
         if (Auth::check()) {
-            if(Auth::user()->role_id === 1) {
+            if (Auth::user()->role_id === 1) {
                 return true;
             }
 
@@ -562,16 +531,15 @@ class PostsHelperServiceProvider extends ServiceProvider
      */
     public static function getUserMediaTypesCount($userID)
     {
-        $attachments = Attachment::
-        leftJoin('posts', 'posts.id', '=', 'attachments.post_id')
+        $attachments = Attachment::leftJoin('posts', 'posts.id', '=', 'attachments.post_id')
             ->where('attachments.user_id', $userID)->where('post_id', '<>', null)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('posts.expire_date', '>', Carbon::now());
                 $query->orWhere('posts.expire_date', null);
             })
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('posts.release_date', '<', Carbon::now());
-                $query->orWhere('posts.release_date',null);
+                $query->orWhere('posts.release_date', null);
             })
             ->get();
         $typeCounts = [
@@ -582,7 +550,7 @@ class PostsHelperServiceProvider extends ServiceProvider
         foreach ($attachments as $attachment) {
             $typeCounts[AttachmentServiceProvider::getAttachmentType($attachment->type)] += 1;
         }
-        $streams = Stream::where('user_id',$userID)->where('is_public',1)->whereIn('status',[Stream::ENDED_STATUS,Stream::IN_PROGRESS_STATUS])->count();
+        $streams = Stream::where('user_id', $userID)->where('is_public', 1)->whereIn('status', [Stream::ENDED_STATUS, Stream::IN_PROGRESS_STATUS])->count();
         $typeCounts['streams'] = $streams;
         return $typeCounts;
     }
@@ -593,15 +561,16 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $postId
      * @return bool
      */
-    public static function userPaidForPost($userId, $postId){
+    public static function userPaidForPost($userId, $postId)
+    {
         return Transaction::query()->where(
-                [
-                    'post_id' => $postId,
-                    'sender_user_id' => $userId,
-                    'type' => Transaction::POST_UNLOCK,
-                    'status' => Transaction::APPROVED_STATUS
-                ]
-            )->first() != null;
+            [
+                'post_id' => $postId,
+                'sender_user_id' => $userId,
+                'type' => Transaction::POST_UNLOCK,
+                'status' => Transaction::APPROVED_STATUS
+            ]
+        )->first() != null;
     }
 
     /**
@@ -610,15 +579,16 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $streamId
      * @return bool
      */
-    public static function userPaidForStream($userId, $streamId){
+    public static function userPaidForStream($userId, $streamId)
+    {
         return Transaction::query()->where(
-                [
-                    'stream_id' => $streamId,
-                    'sender_user_id' => $userId,
-                    'type' => Transaction::STREAM_ACCESS,
-                    'status' => Transaction::APPROVED_STATUS
-                ]
-            )->first() != null;
+            [
+                'stream_id' => $streamId,
+                'sender_user_id' => $userId,
+                'type' => Transaction::STREAM_ACCESS,
+                'status' => Transaction::APPROVED_STATUS
+            ]
+        )->first() != null;
     }
 
     /**
@@ -627,15 +597,16 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $messageId
      * @return bool
      */
-    public static function userPaidForMessage($userId, $messageId){
+    public static function userPaidForMessage($userId, $messageId)
+    {
         return Transaction::query()->where(
-                [
-                    'user_message_id' => $messageId,
-                    'sender_user_id' => $userId,
-                    'type' => Transaction::MESSAGE_UNLOCK,
-                    'status' => Transaction::APPROVED_STATUS
-                ]
-            )->first() != null;
+            [
+                'user_message_id' => $messageId,
+                'sender_user_id' => $userId,
+                'type' => Transaction::MESSAGE_UNLOCK,
+                'status' => Transaction::APPROVED_STATUS
+            ]
+        )->first() != null;
     }
 
 
@@ -644,14 +615,16 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $userID
      * @return mixed
      */
-    public static function getUserApprovedPostsCount($userID){
+    public static function getUserApprovedPostsCount($userID)
+    {
         return $postsCount = Post::where([
             'user_id' =>  $userID,
             'status' => Post::APPROVED_STATUS
         ])->count();
     }
 
-    public static function getPostsCountLeftTillAutoApprove($userID){
+    public static function getPostsCountLeftTillAutoApprove($userID)
+    {
         return (int)getSetting('compliance.admin_approved_posts_limit') - self::getUserApprovedPostsCount(Auth::user()->id);
     }
 
@@ -661,11 +634,12 @@ class PostsHelperServiceProvider extends ServiceProvider
      * Otherwise, post goes to pending state
      * @return int
      */
-    public static function getDefaultPostStatus($userID){
+    public static function getDefaultPostStatus($userID)
+    {
         $postStatus = Post::APPROVED_STATUS;
-        if(getSetting('compliance.admin_approved_posts_limit')){
+        if (getSetting('compliance.admin_approved_posts_limit')) {
             $postsCount = self::getUserApprovedPostsCount($userID);
-            if((int)getSetting('compliance.admin_approved_posts_limit') > $postsCount){
+            if ((int)getSetting('compliance.admin_approved_posts_limit') > $postsCount) {
                 $postStatus = Post::PENDING_STATUS;
             }
         }
@@ -677,19 +651,19 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param $attachments
      * @return array
      */
-    public static function getAttachmentsTypesCount($attachments){
+    public static function getAttachmentsTypesCount($attachments)
+    {
         $counts = [
             'image' => 0,
             'video' => 0,
             'audio' => 0
         ];
-        foreach($attachments as $attachment){
+        foreach ($attachments as $attachment) {
             AttachmentServiceProvider::getAttachmentType($attachment->type);
-            if(isset($counts[AttachmentServiceProvider::getAttachmentType($attachment->type)])){
+            if (isset($counts[AttachmentServiceProvider::getAttachmentType($attachment->type)])) {
                 $counts[AttachmentServiceProvider::getAttachmentType($attachment->type)] += 1;
             }
         }
         return $counts;
     }
-
 }

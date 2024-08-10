@@ -58,7 +58,8 @@
                 <div class="page-content settings container-fluid">
                     <ul class="nav nav-tabs">
                         <?php
-                        $categoriesOrder = ['Site', 'Profiles', 'Storage', 'Media', 'Feed', 'Payments', 'Websockets', 'Emails', 'Social login', 'Social links', 'Custom Code / Ads', 'Admin', 'Streams', 'Compliance', 'Security', 'Referrals', 'AI', 'Colors', 'cpa'];
+                        {{--  $categoriesOrder = ['Site', 'Profiles', 'Storage', 'Media', 'Feed', 'Payments', 'Websockets', 'Emails', 'Social login', 'Social links', 'Custom Code / Ads', 'Admin', 'Streams', 'Compliance', 'Security', 'Referrals', 'AI', 'Colors'];  --}}
+                        $categoriesOrder = ['Site', 'Profiles', 'Storage', 'Media', 'Feed', 'Payments', 'Websockets', 'Emails', 'Social links',  'Admin', 'Streams', 'Compliance', 'Security', 'Referrals', 'AI', 'Colors'];
                         $categories = [];
                         foreach ($categoriesOrder as $category) {
                             if (isset($settings[$category])) {
@@ -66,6 +67,7 @@
                             }
                         }
                         $settings = $categories;
+                        
                         ?>
                         @foreach ($settings as $group => $setting)
                             @if ($group != 'Colors' && $group != 'License')
@@ -75,12 +77,12 @@
                                 </li>
                             @endif
                         @endforeach
-                        <li @if ($group === $active && $active === 'Colors') class="active" @endif>
+                        {{--  <li @if ($group === $active && $active === 'Colors') class="active" @endif>
                             <a data-toggle="tab" href="#colors">Colors</a>
-                        </li>
-                        <li @if ($group === $active && $active === 'License') class="active" @endif>
+                        </li>  --}}
+                        {{--  <li @if ($group === $active && $active === 'License') class="active" @endif>
                             <a data-toggle="tab" href="#license">License</a>
-                        </li>
+                        </li>  --}}
                     </ul>
 
                     <div class="tab-content">
@@ -106,30 +108,6 @@
                                                         href="https://docs.qdev.tech/justfans/#emails">the documentation</a>
                                                     .
                                                 </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    @if ($group == 'Social login')
-                                        <div class="social-login-info">
-                                            <div class="alert alert-info alert-dismissible mb-1">
-                                                <button type="button" class="close" data-dismiss="alert"
-                                                    aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                <div class="info-label">
-                                                    <div class="icon voyager-info-circled"></div>Each of the social login
-                                                    provider will require you a <i><strong>"Callback Url"</strong></i>. Here
-                                                    are the endpoints that you will need to set up for each provider:
-                                                </div>
-                                                <ul>
-                                                    <li><code>Facebook:
-                                                            {{ route('social.login.callback', ['provider' => 'facebook']) }}</code>
-                                                    </li>
-                                                    <li><code>Twitter:
-                                                            {{ route('social.login.callback', ['provider' => 'twitter']) }}</code>
-                                                    </li>
-                                                    <li><code>Google:
-                                                            {{ route('social.login.callback', ['provider' => 'google']) }}</code>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </div>
                                     @endif
@@ -199,8 +177,7 @@
                                             @if (!file_exists(storage_path('logs/cronjobs.log')))
                                                 <div class="alert alert-info alert-dismissible mb-1 payments-info-crons">
                                                     <button type="button" class="close" data-dismiss="alert"
-                                                        aria-label="Close"><span
-                                                            aria-hidden="true">&times;</span></button>
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                     <div class="info-label">
                                                         <div class="icon voyager-dollar"></div>The payment system requires
                                                         cronjobs so you can easily setup them by using the following line:
@@ -209,7 +186,8 @@
                                                         <li><code>* * * * * cd {{ base_path() }} && php artisan
                                                                 schedule:run >> /dev/null 2>&1</code></li>
                                                     </ul>
-                                                    {{--                                                <div class="info-label mt-05">For cPanel based installations, you can remove the <i>{root}</i> username out of the command above.</div> --}}
+                                                    <div class="info-label mt-05">For cPanel based installations, you can
+                                                        remove the <i>{root}</i> username out of the command above.</div>
                                                     <div class="mt-05">
                                                         Before setting up the payment processors, please also give the <a
                                                             class="text-white" target="_blank"
@@ -305,7 +283,8 @@
                                                     <li>Webhook URL: <code>{{ route('paystack.payment.update') }}</code>
                                                     </li>
                                                     <li>Callback URL:
-                                                        <code>{{ route('payment.checkPaystackPaymentStatus') }}</code></li>
+                                                        <code>{{ route('payment.checkPaystackPaymentStatus') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
 
@@ -333,7 +312,8 @@
                                                 </div>
                                                 <ul>
                                                     <li>IPN Callback URL:
-                                                        <code>{{ route('nowPayments.payment.update') }}</code></li>
+                                                        <code>{{ route('nowPayments.payment.update') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
 
@@ -348,7 +328,8 @@
                                                 </div>
                                                 <ul>
                                                     <li>Webhook URL:
-                                                        <code>{{ route('stripeConnect.payment.update') }}</code></li>
+                                                        <code>{{ route('stripeConnect.payment.update') }}</code>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -365,22 +346,22 @@
                                                             <li class="active">
                                                                 <a href="#payments-general" data-toggle="tab"
                                                                     onclick="Admin.paymentsSettingsSubTabSwitch('general')">
-                                                                    General </a>
+                                                                    Em geral </a>
                                                             </li>
-                                                            <li>
+                                                            {{--  <li>
                                                                 <a href="#payments-processors" data-toggle="tab"
                                                                     onclick="Admin.paymentsSettingsSubTabSwitch('processors')">
                                                                     Payment processors </a>
-                                                            </li>
+                                                            </li>  --}}
                                                             <li>
                                                                 <a href="#payments-invoices" data-toggle="tab"
                                                                     onclick="Admin.paymentsSettingsSubTabSwitch('invoices')">
-                                                                    Invoices </a>
+                                                                    Faturas </a>
                                                             </li>
                                                             <li>
                                                                 <a href="#payments-withdrawals" data-toggle="tab"
                                                                     onclick="Admin.paymentsSettingsSubTabSwitch('withdrawals')">
-                                                                    Withdrawals </a>
+                                                                    Retiradas </a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -637,7 +618,6 @@
             'colors.theme_color_code': "{{ getSetting('colors.theme_color_code') }}",
             'colors.theme_gradient_from': "{{ getSetting('colors.theme_gradient_from') }}",
             'colors.theme_gradient_to': "{{ getSetting('colors.theme_gradient_to') }}",
-            'license.product_license_key': "{{ getSetting('license.product_license_key') }}",
         }
     </script>
 @stop

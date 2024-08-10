@@ -55,7 +55,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 3,
                 'menu_id' => 1,
-                'title' => 'Users',
+                'title' => 'Usuários',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-person',
@@ -71,7 +71,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 4,
                 'menu_id' => 1,
-                'title' => 'Roles',
+                'title' => 'Funções',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-lock',
@@ -167,7 +167,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 12,
                 'menu_id' => 1,
-                'title' => 'Wallets',
+                'title' => 'Carteiras',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-wallet',
@@ -183,7 +183,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 14,
                 'menu_id' => 1,
-                'title' => 'Attachments',
+                'title' => 'Anexos',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-paperclip',
@@ -199,7 +199,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 15,
                 'menu_id' => 1,
-                'title' => 'Notifications',
+                'title' => 'Notificações',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-bell',
@@ -263,7 +263,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 19,
                 'menu_id' => 1,
-                'title' => 'Subscriptions',
+                'title' => 'Assinaturas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-credit-cards',
@@ -279,7 +279,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 20,
                 'menu_id' => 1,
-                'title' => 'Transactions',
+                'title' => 'Transações',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-dollar',
@@ -295,7 +295,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 21,
                 'menu_id' => 1,
-                'title' => 'User Bookmarks',
+                'title' => 'Favoritos do usuário',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-bookmark',
@@ -311,7 +311,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 22,
                 'menu_id' => 1,
-                'title' => 'Lists',
+                'title' => 'Listas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-list',
@@ -327,7 +327,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 23,
                 'menu_id' => 1,
-                'title' => 'List Members',
+                'title' => 'Membros da lista',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-people',
@@ -343,7 +343,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 24,
                 'menu_id' => 1,
-                'title' => 'Messages',
+                'title' => 'Mensagens',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-chat',
@@ -375,7 +375,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 26,
                 'menu_id' => 1,
-                'title' => 'User lists',
+                'title' => 'Listas de usuários',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-list',
@@ -391,7 +391,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 27,
                 'menu_id' => 1,
-                'title' => 'Money',
+                'title' => 'Dinheiro',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-dollar',
@@ -423,7 +423,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 29,
                 'menu_id' => 1,
-                'title' => 'Users',
+                'title' => 'Usuários',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-person',
@@ -439,7 +439,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 30,
                 'menu_id' => 1,
-                'title' => 'Countries',
+                'title' => 'Países',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-location',
@@ -455,7 +455,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 31,
                 'menu_id' => 1,
-                'title' => 'Taxes',
+                'title' => 'Impostos',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-credit-card',
@@ -471,7 +471,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 32,
                 'menu_id' => 1,
-                'title' => 'Pages',
+                'title' => 'Páginas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-news',
@@ -487,7 +487,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 33,
                 'menu_id' => 1,
-                'title' => 'Taxes',
+                'title' => 'Impostos',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-credit-card',
@@ -503,7 +503,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 34,
                 'menu_id' => 1,
-                'title' => 'Identity Checks',
+                'title' => 'Verificações de identidade',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-check',
@@ -519,7 +519,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 35,
                 'menu_id' => 1,
-                'title' => 'User Reports',
+                'title' => 'Relatórios de Usuários',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-eye',
@@ -535,7 +535,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 36,
                 'menu_id' => 1,
-                'title' => 'Contact Messages',
+                'title' => 'Mensagens de contato',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-book',
@@ -551,7 +551,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 37,
                 'menu_id' => 1,
-                'title' => 'Featured Users',
+                'title' => 'Usuários em destaque',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-star',
@@ -567,7 +567,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 38,
                 'menu_id' => 1,
-                'title' => 'Payment Requests',
+                'title' => 'Solicitações de pagamento',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-window-list',
@@ -583,7 +583,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 39,
                 'menu_id' => 1,
-                'title' => 'Invoices',
+                'title' => 'Faturas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-receipt',
@@ -647,7 +647,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 46,
                 'menu_id' => 1,
-                'title' => 'Referrals',
+                'title' => 'Referências',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-group',
@@ -660,9 +660,9 @@ class MenuItemsTableSeeder extends Seeder
                 'parameters' => 'null',
             ),
             32 => array(
-                'id' => 47,
+                'id' => 5,
                 'menu_id' => 1,
-                'title' => __('voyager::seeders.menu_items.tools'),
+                'title' => "Tools",
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-tools',
