@@ -14,6 +14,7 @@ use View;
 class StreamsServiceProvider extends ServiceProvider
 {
     const BITMOVIN_API_ENDPOINT = 'https://api.bitmovin.com/v1/streams/live';
+    // const PUSHR_API_ENDPOINT = 'https://www.pushrcdn.com/api/v3/streams/stream';
 
     /**
      * Register any application services.
@@ -127,6 +128,56 @@ class StreamsServiceProvider extends ServiceProvider
             return ['success' => false, 'message' => $exception->getMessage()];
         }
     }
+
+    // public static function createPushrStreaming($options)
+    // {
+    //     try {
+    //         $httpClient = new Client();
+
+    //         $response = $httpClient->request(
+    //             'POST',
+    //             self::PUSHR_API_ENDPOINT,
+    //             [
+    //                 'headers' => [
+    //                     'Accept' => 'application/json',
+    //                     'APIKEY' => config('services.pushr.api_key'),
+    //                 ],
+    //                 'form_params' => [
+    //                     'action' => 'create',
+    //                     'zone' => config('services.pushr.push_zone_id'),
+    //                     'name' => $options['name'],
+    //                     'encoder' => $options['settings']['encoder'] ?? 'eu', // Localização do encoder
+    //                     'dvr' => $options['settings']['dvr'] ?? 0,
+    //                     'mux' => $options['settings']['mux'] ?? 0,
+    //                     '360p' => $options['settings']['360p'] ?? 0,
+    //                     '480p' => $options['settings']['480p'] ?? 0,
+    //                     '576p' => $options['settings']['576p'] ?? 0,
+    //                     '720p' => $options['settings']['720p'] ?? 1,
+    //                     '1080p' => $options['settings']['1080p'] ?? 0,
+    //                 ],
+    //             ]
+    //         );
+
+    //         $result = json_decode($response->getBody(), true);
+
+    //         if (isset($result['status']) && $result['status'] === 'success') {
+    //             return [
+    //                 'status' => 'success',
+    //                 'id' => $result['id'],
+    //                 'rtmp_key' => $result['rtmp_key'],
+    //                 'rtmp_server' => $result['rtmp_server'],
+    //                 'hls_link' => $result['hls_link'],
+    //                 'player_link' => $result['player_link'],
+    //             ];
+    //         }
+
+    //         return ['status' => 'error', 'message' => 'Failed to create stream on Pushr.'];
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating Pushr stream: ' . $e->getMessage());
+    //         return ['status' => 'error', 'message' => $e->getMessage()];
+    //     }
+    // }
+
 
     // public static function createBitmovinStreaming($options)
     // {

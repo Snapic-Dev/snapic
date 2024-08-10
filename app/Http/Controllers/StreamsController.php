@@ -215,6 +215,66 @@ class StreamsController extends Controller
 
         return response()->json($responseData);
     }
+
+
+    // public function initStream(SaveNewStreamRequest $request)
+    // {
+    //     $streamName = $request->get('name');
+    //     $requires_subscription = $request->get('requires_subscription') == 'true' ? 1 : 0;
+    //     $is_public = $request->get('is_public') == 'true' ? 1 : 0;
+    //     $price = $request->get('price');
+    //     $poster = $request->get('poster') ?? 'default_poster_value';
+
+    //     if (!GenericHelperServiceProvider::isUserVerified() && getSetting('site.enforce_user_identity_checks')) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => __('Please confirm your ID first.')
+    //         ]);
+    //     }
+
+    //     $pushrStreaming = StreamsServiceProvider::createPushrStreaming([
+    //         'name' => $streamName,
+    //         'settings' => [
+    //             'encoder' => 'eu', // Pode ser 'eu', 'us', 'sg'
+    //             'dvr' => 1,
+    //             'mux' => 0,
+    //             '360p' => 0,
+    //             '480p' => 1,
+    //             '576p' => 0,
+    //             '720p' => 1,
+    //             '1080p' => 0,
+    //         ],
+    //     ]);
+
+    //     if ($pushrStreaming['status'] === 'success') {
+    //         // Criar o stream no banco de dados
+    //         $stream = Stream::create([
+    //             'user_id' => Auth::user()->id,
+    //             'status' => Stream::IN_PROGRESS_STATUS,
+    //             'name' => $streamName,
+    //             'poster' => $poster,
+    //             'slug' => Str::slug($streamName),
+    //             'price' => $price,
+    //             'requires_subscription' => $requires_subscription,
+    //             'is_public' => $is_public,
+    //             'pushr_id' => $pushrStreaming['id'],
+    //             'rtmp_key' => $pushrStreaming['rtmp_key'],
+    //             'rtmp_server' => $pushrStreaming['rtmp_server'],
+    //             'hls_link' => $pushrStreaming['hls_link'],
+    //         ]);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'data' => $stream,
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => $pushrStreaming['message'],
+    //         ]);
+    //     }
+    // }
+
     /**
      * (Re)saves stream details when updating
      * @param SaveNewStreamRequest $request
