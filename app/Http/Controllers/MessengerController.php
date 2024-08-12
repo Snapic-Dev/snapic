@@ -18,6 +18,7 @@ use App\Providers\NotificationServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\User;
+use AWS\CRT\Log;
 use Carbon\Carbon;
 use DB;
 use Exception;
@@ -232,6 +233,7 @@ class MessengerController extends Controller
             return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
         }
 
+
         $conversation = UserMessage::with(['sender', 'receiver', 'attachments'])->where(function ($q) use ($senderID, $receiverID) {
             $q->where('sender_id', $senderID)
                 ->where('receiver_id', $receiverID);
@@ -279,104 +281,132 @@ class MessengerController extends Controller
      */
     public function sendUserMessage($options)
     {
+        try {
+            // Obtendo os valores das opções fornecidas
+            $senderID = $options['senderID'];
+            $receiverID = $options['receiverID'];
+            $messageValue = $options['messageValue'];
+            $messagePrice = $options['messagePrice'];
+            $attachments =  $options['attachments'];
+            $images =  $options['images'];
 
-        $senderID = $options['senderID'];
-        $receiverID = $options['receiverID'];
-        $messageValue = $options['messageValue'];;
-        $messagePrice = $options['messagePrice'];;
-        $attachments =  $options['attachments'];
-
-        $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
-            $query->where('sender_id', $senderID)
-                ->orWhere('sender_id', $receiverID);
-        })
-            ->where(function ($query) use ($senderID, $receiverID) {
-                $query->where('receiver_id', $senderID)
-                    ->orWhere('receiver_id', $receiverID);
+            // Verificando se é a primeira mensagem entre os dois usuários
+            $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
+                $query->where('sender_id', $senderID)
+                    ->orWhere('sender_id', $receiverID);
             })
-            ->count();
+                ->where(function ($query) use ($senderID, $receiverID) {
+                    $query->where('receiver_id', $senderID)
+                        ->orWhere('receiver_id', $receiverID);
+                })
+                ->count();
 
-        $message = UserMessage::create([
-            'sender_id' => $senderID,
-            'receiver_id' => $receiverID,
-            'message' => $messageValue,
-            'price' => $messagePrice
-        ]);
+            // Criando uma nova mensagem no banco de dados
+            $message = UserMessage::create([
+                'sender_id' => $senderID,
+                'receiver_id' => $receiverID,
+                'message' => $messageValue,
+                'price' => $messagePrice,
+                'attachments' => $attachments
+            ]);
 
+            // Convertendo a data de criação da mensagem para um formato legível
+            $dateDiff = $message->created_at->diffForHumans(null, true, true);
+            $message = $message->toArray();
+            $message['dateAdded'] = $dateDiff;
 
-        // Turning date into human readable format
-        $dateDiff = $message->created_at->diffForHumans(null, true, true);
-        $message = $message->toArray();
-        $message['dateAdded'] = $dateDiff;
-
-        if ($message['id']) {
-            $attachments = collect($attachments)->map(function ($v, $k) {
-                if (isset($v['attachmentID'])) {
-                    return $v['attachmentID'];
-                }
-                if (isset($v['id'])) {
-                    return $v['id'];
-                }
-            })->toArray();
-            $attachments = Attachment::whereIn('id', $attachments)->get();
-
-            // Attaching the assets to the message
-            // TODO: Review if createAttachment could have been used
-            if ($attachments) {
-                foreach ($attachments as $attachment) {
-                    // Creating unique attachment-message relation, for mass-media-messages
-                    $id = Uuid::uuid4()->getHex();
-                    $newFileName = 'messenger/images/' . $id . '.' . $attachment->type;
-                    // 1. Create new attachment
-                    Attachment::create([
-                        'id' => $id,
-                        'user_id' => Auth::user()->id,
-                        'filename' => $newFileName,
-                        'driver' => $attachment->driver,
-                        'type' => $attachment->type,
-                        'message_id' => $message['id'],
-                    ]);
-                    // 2. Copy the assets of previous attachment to the new one
-                    $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
-                    if ($attachment->driver != Attachment::PUSHR_DRIVER) {
-                        $storage->copy($attachment->filename, $newFileName);
-                    } else {
-                        // Pushr logic - Copy alternative as S3Adapter fails to do ->copy operations
-                        AttachmentServiceProvider::pushrCDNCopy($attachment, $newFileName);
+            if ($message['id']) {
+                // Processando os anexos
+                $attachments = collect($attachments)->map(function ($v, $k) {
+                    if (isset($v['attachmentID'])) {
+                        return $v['attachmentID'];
                     }
-                    if (AttachmentServiceProvider::getAttachmentType($attachment->type) == 'image') {
-                        $thumbnailDir = 'messenger/images/150X150/';
-                        $thumbnailfilePath = $thumbnailDir . '/' . $id . '.jpg';
+                    if (isset($v['id'])) {
+                        return $v['id'];
+                    }
+                })->toArray();
+
+                $attachments = Attachment::whereIn('id', $attachments)->get();
+
+                // Se houver imagens, cria um novo anexo para cada imagem
+                if ($images) {
+                    foreach ($images as $image) {
+                        $id = Uuid::uuid4()->getHex();
+                        Attachment::create([
+                            'id' => $id,
+                            'user_id' => Auth::user()->id,
+                            'filename' => $image['path'],
+                            'driver' => 0,
+                            'type' => pathinfo($image['path'], PATHINFO_EXTENSION),
+                            'message_id' => $message['id'],
+                        ]);
+                    }
+                }
+
+                // Anexando os arquivos à mensagem
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        // Criando uma nova relação única entre anexo e mensagem
+                        $id = Uuid::uuid4()->getHex();
+                        $newFileName = 'messenger/images/' . $id . '.' . $attachment->type;
+
+                        // Criando novo anexo
+                        Attachment::create([
+                            'id' => $id,
+                            'user_id' => Auth::user()->id,
+                            'filename' => $newFileName,
+                            'driver' => $attachment->driver,
+                            'type' => $attachment->type,
+                            'message_id' => $message['id'],
+                        ]);
+
+                        // Copiando os arquivos do anexo anterior para o novo
+                        $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
                         if ($attachment->driver != Attachment::PUSHR_DRIVER) {
-                            $storage->copy($thumbnailDir . '/' . $attachment->id . '.jpg', $thumbnailfilePath);
+                            $storage->copy($attachment->filename, $newFileName);
                         } else {
-                            // Pushr logic - Copy alternative as S3Adapter fails to do ->copy operations
-                            AttachmentServiceProvider::pushrCDNCopy($attachment, $thumbnailfilePath);
+                            // Lógica Pushr - Copiando alternativa, pois o S3Adapter falha em fazer operações de ->copy
+                            AttachmentServiceProvider::pushrCDNCopy($attachment, $newFileName);
+                        }
+
+                        // Se o anexo for uma imagem, copia também a miniatura
+                        if (AttachmentServiceProvider::getAttachmentType($attachment->type) == 'image') {
+                            $thumbnailDir = 'messenger/images/150X150/';
+                            $thumbnailfilePath = $thumbnailDir . '/' . $id . '.jpg';
+                            if ($attachment->driver != Attachment::PUSHR_DRIVER) {
+                                $storage->copy($thumbnailDir . '/' . $attachment->id . '.jpg', $thumbnailfilePath);
+                            } else {
+                                // Lógica Pushr - Copiando alternativa, pois o S3Adapter falha em fazer operações de ->copy
+                                AttachmentServiceProvider::pushrCDNCopy($attachment, $thumbnailfilePath);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Fetching serialized message object
-        $message = UserMessage::with(['sender', 'receiver', 'attachments'])->where('user_messages.id', $message['id'])
-            ->leftJoin('transactions', function ($join) {
-                $join->on('transactions.user_message_id', '=', 'user_messages.id');
-                $join->on('transactions.sender_user_id', '=', DB::raw(Auth::user()->id));
-            })
-            ->select(['user_messages.*', DB::raw('COALESCE(transactions.id,NULL) as hasUserUnlockedMessage')])
-            ->first();
-        $message->hasUserUnlockedMessage = $message->hasUserUnlockedMessage ? true : false;
-        $message->sender->profileUrl = route('profile', ['username' => $message->sender->username]);
-        $message->receiver->profileUrl = route('profile', ['username' => $message->receiver->username]);
+            // Buscando a mensagem completa com os anexos e remetentes
+            $message = UserMessage::with(['sender', 'receiver', 'attachments'])
+                ->where('user_messages.id', $message['id'])
+                ->leftJoin('transactions', function ($join) {
+                    $join->on('transactions.user_message_id', '=', 'user_messages.id');
+                    $join->on('transactions.sender_user_id', '=', DB::raw(Auth::user()->id));
+                })
+                ->select(['user_messages.*', DB::raw('COALESCE(transactions.id,NULL) as hasUserUnlockedMessage')])
+                ->first();
 
-        // Sending the email
-        if (isset($message->receiver->settings['notification_email_new_message']) && $message->receiver->settings['notification_email_new_message'] == 'true') {
-            $throttleNotification = Notification::where('user_message_id', '<>', null)->where('to_user_id', $receiverID)->where('created_at', '>=', Carbon::now()->subHours(6))->count();
-            if ($throttleNotification === 0) {
-                App::setLocale($message->receiver->settings['locale']);
-                EmailsServiceProvider::sendGenericEmail(
-                    [
+            $message->hasUserUnlockedMessage = $message->hasUserUnlockedMessage ? true : false;
+            $message->sender->profileUrl = route('profile', ['username' => $message->sender->username]);
+            $message->receiver->profileUrl = route('profile', ['username' => $message->receiver->username]);
+
+            // Enviando notificação por e-mail, se configurado
+            if (isset($message->receiver->settings['notification_email_new_message']) && $message->receiver->settings['notification_email_new_message'] == 'true') {
+                $throttleNotification = Notification::where('user_message_id', '<>', null)
+                    ->where('to_user_id', $receiverID)
+                    ->where('created_at', '>=', Carbon::now()->subHours(6))
+                    ->count();
+                if ($throttleNotification === 0) {
+                    App::setLocale($message->receiver->settings['locale']);
+                    EmailsServiceProvider::sendGenericEmail([
                         'email' => $message->receiver->email,
                         'subject' => __('New message received'),
                         'title' => __('Hello, :name,', ['name' => $message->receiver->name]),
@@ -385,38 +415,51 @@ class MessengerController extends Controller
                             'text' => __('View your messages'),
                             'url' => route('my.messenger.get'),
                         ],
-                    ]
-                );
-                App::setLocale(Auth::user()->settings['locale']);
+                    ]);
+                    App::setLocale(Auth::user()->settings['locale']);
+                }
             }
+
+            // Criando notificação de nova mensagem
+            NotificationServiceProvider::createNewUserMessageNotification($message);
+
+            // Limpando os dados da mensagem
+            $message = self::cleanUpMessageData($message);
+
+            // Enviando a mensagem via WebSocket para os outros usuários
+            broadcast(new NewUserMessage(json_encode($message), $senderID, $receiverID))->toOthers();
+
+            $return = [
+                'message' => $message,
+            ];
+
+            // Se for a primeira mensagem, adiciona um novo contato
+            if ($isFirstMessage === 0) {
+                dd($isFirstMessage);
+                $lastContact = $this->fetchContacts(1);
+                $return['contact'] = $lastContact;
+                NotificationServiceProvider::publishNotification(
+                    (object)[
+                        'message' => 'new-messenger-conversation',
+                        'type' => 'new-messenger-conversation',
+                        'fromUserID' => $senderID,
+                    ],
+                    User::where('id', $receiverID)->first(),
+                    'messenger-actions'
+                );
+            }
+
+            // Retorna a mensagem e, se aplicável, o novo contato
+            return $return;
+        } catch (\Exception $exception) {
+            // Exibe a mensagem da exceção
+            echo ("Exceção capturada: " . $exception->getMessage());
+            // Exibe o traço da pilha (opcional)
         }
-        NotificationServiceProvider::createNewUserMessageNotification($message);
-
-        // Cleaning up the message
-        $message = self::cleanUpMessageData($message);
-
-        // Sending the message to the socket
-        broadcast(new NewUserMessage(json_encode($message), $senderID, $receiverID))->toOthers();
-
-        $return = [
-            'message' => $message,
-        ];
-
-        if ($isFirstMessage === 0) {
-            $lastContact = $this->fetchContacts(1);
-            $return['contact'] = $lastContact;
-            NotificationServiceProvider::publishNotification(
-                (object)[
-                    'message' => 'new-messenger-conversation',
-                    'type' => 'new-messenger-conversation',
-                    'fromUserID' => $senderID,
-                ],
-                User::where('id', $receiverID)->first(),
-                'messenger-actions'
-            );
-        }
-        return $return;
     }
+
+
+
 
     /**
      * Sends the user message.
@@ -427,10 +470,7 @@ class MessengerController extends Controller
     public function sendMessage(SaveNewMessageRequest $request)
     {
 
-
-
         try {
-            dd($request->getAll());
 
             $receiverIDs = $request->get('receiverIDs');
             $senderID = (int) Auth::user()->id;
@@ -442,7 +482,6 @@ class MessengerController extends Controller
 
                 if ($request->followers) {
                     $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
-
                     foreach ($followers as $follower) {
                         if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
                             $receiverIDs[]  = $follower['user_id'];
@@ -467,6 +506,7 @@ class MessengerController extends Controller
             foreach ($receiverIDs as $receiverID) {
                 $receiverID = (int) $receiverID;
                 if (!self::checkMessengerAccess($senderID, $receiverID)) {
+                    dd(self::checkMessengerAccess($senderID, $receiverID));
                     $errors[] = __('Not authorized');
                     if (count($receiverIDs) == 1) {
                         return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
@@ -478,24 +518,27 @@ class MessengerController extends Controller
                         return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
                     }
                 }
+
                 $return[] = $this->sendUserMessage([
                     'senderID' => $senderID,
                     'receiverID' => $receiverID,
                     'messageValue' => $request->get('message'),
                     'messagePrice' => $request->get('price'),
                     'isFirstMessage' => $request->get('new'),
-                    'attachments' => $request->get('attachments')
+                    'attachments' => $request->get('attachments'),
+                    'images' => $request->get('images')
+
                 ]);
             }
-            // Delete initially created attachments, after attaching them to the messages
 
             if ($request->get('attachments')) {
                 foreach ($request->get('attachments') as $attachment) {
                     Attachment::where('id', $attachment['attachmentID'])->first()->delete();
                 }
             }
-            // If single message, return the single message entry | keep ui as it was
+
             if (count($receiverIDs) === 1) $return = $return[0];
+            // dd($errors);
             return response()->json([
                 'status' => 'success',
                 'data' => $return,
@@ -503,9 +546,9 @@ class MessengerController extends Controller
             ]);
         } catch (\Exception $exception) {
             // Exibe a mensagem da exceção
-            echo "Exceção capturada: " . $exception->getMessage();
+            echo ("Exceção capturada: " . $exception);
             // Exibe o traço da pilha (opcional)
-            echo "<br>Rastreamento da pilha: " . nl2br($exception->getTraceAsString());
+            echo "<br>Rastreamento da pilha: " . nl2br($exception);
         }
     }
 
@@ -682,11 +725,29 @@ class MessengerController extends Controller
 
     public static function cleanUpMessageData($message)
     {
-        // Cleaning up the message data, removing any sensitive / un-needed data
         $toRemove = [
-            'settings', 'role_id', 'email', 'postcode', 'country', 'state', 'birthdate', 'billing_address', 'auth_provider', 'auth_provider_id',
-            'public_profile', 'identity_verified_at', 'enable_2fa', 'created_at', 'email_verified_at', 'updated_at', 'paid_profile',
-            'profile_access_price_3_months', 'profile_access_price', 'profile_access_price_6_months', 'profile_access_price_12_months', 'enable_geoblocking'
+            'settings',
+            'role_id',
+            'email',
+            'postcode',
+            'country',
+            'state',
+            'birthdate',
+            'billing_address',
+            'auth_provider',
+            'auth_provider_id',
+            'public_profile',
+            'identity_verified_at',
+            'enable_2fa',
+            'created_at',
+            'email_verified_at',
+            'updated_at',
+            'paid_profile',
+            'profile_access_price_3_months',
+            'profile_access_price',
+            'profile_access_price_6_months',
+            'profile_access_price_12_months',
+            'enable_geoblocking'
         ];
         foreach ($toRemove as $prop) {
             unset($message->sender[$prop]);
@@ -781,6 +842,8 @@ class MessengerController extends Controller
         return false;
     }
 
+
+
     /**
      * Method used for deleting messenger messages
      * @param Request $request
@@ -834,62 +897,5 @@ class MessengerController extends Controller
     public function create()
     {
         return view('pages.campanha');
-    }
-
-
-    public function trigger(Request $request)
-    {
-        try {
-
-            $list = [];
-            $currentUserId = auth()->id();
-
-            if ($request->followers) {
-                $followers = ListsHelperServiceProvider::getUserFollowers($currentUserId);
-
-                foreach ($followers as $follower) {
-                    if (!in_array($follower['user_id'], $list) && !is_null($follower['user_id'])) {
-                        $list[] = $follower['user_id'];
-                    }
-                }
-            }
-
-            if ($request->subscribers) {
-                $subscribers = Subscription::where('recipient_user_id', $currentUserId)
-                    ->where('expires_at', '>', Carbon::now('UTC'))
-                    ->get();
-
-                foreach ($subscribers as $subscriber) {
-                    if (!in_array($subscriber->user_id, $list) && !is_null($subscriber->user_id)) {
-                        $list[] = $subscriber->user_id;
-                    }
-                }
-            }
-
-            foreach ($list as $receiverId) {
-                if (!is_null($receiverId)) {
-                    $this->sendUserMessage([
-                        'senderID' => $currentUserId,
-                        'receiverID' => $receiverId,
-                        'messageValue' => $request->get('message'),
-                        'messagePrice' => $request->get('price'),
-                        'isFirstMessage' => $request->get('new'),
-                        'attachments' => $request->get('attachments')
-                    ]);
-                } else {
-                    dd('Receiver ID is null');
-                }
-            }
-
-            if ($request->get('attachments')) {
-                foreach ($request->get('attachments') as $attachment) {
-                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
-                }
-            }
-
-            return response()->json(['status' => 'Mensagens enviadas com sucesso!']);
-        } catch (\Exception $e) {
-            dd('Failed to send message: ' . $e->getMessage());
-        }
     }
 }

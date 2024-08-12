@@ -26,20 +26,13 @@
                     </span>
                 </div>
                 <a class="walletPerfil mt-1 d-flex flex-row" href="/my/settings/wallet">
-                    <div class="d-flex justify-content-center align-items-center ml-2"">
-                                                                                        @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
-                                                                                    </div>
-                                                                        <span class=" font-weight-medium wallet-total-amount ml-1">
+                    <div class="d-flex justify-content-center align-items-center ml-2">
+                        @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
+                    </div>
+                    <span class=" font-weight-medium wallet-total-amount ml-1">
                         {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
-                        </span>
+                    </span>
                 </a>
-                <!--
-                                                                           <small
-                                                                                class="p-0 m-0">{{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
-                                                                                -
-                                                                                {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
-                                                                           </small>
-                                                                        -->
                 @endif
             </div>
         </div>
@@ -78,6 +71,17 @@
                 'classes' => 'mr-2',
                 ])
                 {{ __('Bookmarks') }}</a>
+        </li>
+        <li class="{{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }} py-2">
+            <a class="scroll-link d-flex align-items-center" href="{{ route('my.messenger.campanha.create') }}">
+                @include('elements.icon', [
+                'icon' => 'paper-plane-outline',
+                'variant' => 'medium',
+                'centered' => false,
+                'classes' => 'mr-2',
+                ])
+                {{ __('Campanha') }}
+            </a>
         </li>
         <li class="{{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center" href="{{ route('my.lists.all') }}">
