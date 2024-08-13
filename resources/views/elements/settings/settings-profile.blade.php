@@ -162,7 +162,14 @@
 
     <div class="form-group p-2">
         <label for="website" value="{{Auth::user()->website}}">{{__('Website URL')}}</label>
-        <input type="url" class="form-control {{ $errors->has('website') ? 'is-invalid' : '' }}" id="website" name="website" aria-describedby="emailHelp" value="{{Auth::user()->website}}">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">
+                    @include('elements.icon',['icon'=>'logo-instagram','variant'=>'medium'])
+                </span>
+            </div>
+            <input type="url" class="form-control {{ $errors->has('website') ? 'is-invalid' : '' }}" id="website" name="website" aria-describedby="emailHelp" value="{{Auth::user()->website}}">
+        </div>
         @if($errors->has('website'))
         <span class="invalid-feedback" role="alert">
             <strong>{{$errors->first('website')}}</strong>

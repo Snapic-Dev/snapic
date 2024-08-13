@@ -3,7 +3,7 @@
         <div class="form-row p-3">
             <div class="col mb-3">
                 <label class="text-sm text-bold" for="validationTooltip01">Chave Pix</label>
-                <input type="text" class="form-control" placeholder="bcdefghijklmnopqrstuvwxyz0123456789" id="validationTooltip01" required>
+                <input type="text" class="form-control" placeholder="6d6e36e5-2c43-4c8e-823d-9e9a2d2f5b67" id="validationTooltip01" required>
                 <div class="mt-4">
                     <label class="text-sm text-bold" for=" validationTooltip01">Valor do Saque</label>
                     <input type="number" class="form-control withdrawalInput" id="validationTooltip01" placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}" required>
@@ -95,20 +95,22 @@
         </div>
         @endif
     </div> -->
+
     <div class="mt-4">
-        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit">{{__('Request withdrawal')}}</button>
+        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit" disabled="true">{{__('Request withdrawal')}}</button>
     </div>
     <div class="p-3 pb-4 mt-4">
         <p class="text-sm alertWitdrawalMsg">
-        <strong>Aviso Importante:</strong>
-        Restrição de Idade para Saques
-        Por favor, esteja ciente de que saques só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de saque por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
+            <strong>Aviso Importante:</strong>
+            Restrição de Idade para Saques
+            Por favor, esteja ciente de que saques só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de saque por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
         </p>
     </div>
 </div>
 
 <script>
     let withdrawalInput = document.querySelector('.withdrawalInput')
+    let withdrawalContinueBtn = document.querySelector('.withdrawal-continue-btn')
 
     let btn10 = document.querySelector('.btn10');
     let btn50 = document.querySelector('.btn50');
@@ -120,5 +122,24 @@
 
     function inputWithdrawalValue(withdrawalValue) {
         withdrawalInput.value = withdrawalValue;
+        validateInput();
     }
+
+    function validateInput() {
+        const minWithdrawalAmount = `{{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', ''))}}`;
+        let InputWithdrawalValue = withdrawalInput.value;
+        let latestWithdrawal = `{{\App\Providers\PaymentsServiceProvider::verifyDiaryWithdrawal(Auth::user()->id)}}`
+
+        if (InputWithdrawalValue !== "" && latestWithdrawal) {
+            if (InputWithdrawalValue < 100 && minWithdrawalAmount < InputWithdrawalValue) {
+                withdrawalContinueBtn.disabled = true;
+            } else {
+                withdrawalContinueBtn.disabled = false;
+            }
+        } else {
+            withdrawalContinueBtn.disabled = true;
+        }
+    }
+
+    withdrawalInput.addEventListener('input', validateInput)
 </script>

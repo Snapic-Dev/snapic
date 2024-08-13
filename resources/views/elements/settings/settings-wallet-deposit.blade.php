@@ -1,4 +1,3 @@
-
 <div class="input-group mb-3 mt-5 p-2 d-block">
     <div class="">
         <label class="text-sm text-bold">Valor do Depósito</label>
@@ -9,22 +8,22 @@
         </div>
     </div>
     <div class="ml-2 mt-3 d-flex justify-content-center">
-        <button class="btn10 btn btn-round  border ml-2" onclick="inputDepositValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
+        <button class="btn10 btn btn-round  border ml-2" onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
-        <button class="btn50 btn btn-round border ml-2" onclick="inputDepositValue(50)">
+        <button class="btn50 btn btn-round border ml-2" onclick="inputDepositValueBtn(50)">
             R$50,00
         </button>
-        <button class="btn100 btn btn-round border ml-2" onclick="inputDepositValue(100)">
+        <button class="btn100 btn btn-round border ml-2" onclick="inputDepositValueBtn(100)">
             R$100,00
         </button>
-        <button class="btn200 btn btn-round border ml-2" onclick="inputDepositValue(200)">
+        <button class="btn200 btn btn-round border ml-2" onclick="inputDepositValueBtn(200)">
             R$200,00
         </button>
-        <button class="btn400 btn btn-round border ml-2" onclick="inputDepositValue(400)">
+        <button class="btn400 btn btn-round border ml-2" onclick="inputDepositValueBtn(400)">
             R$400,00
         </button>
-        <button class="btn1000 btn btn-round border ml-2" onclick="inputDepositValue(1000)">
+        <button class="btn1000 btn btn-round border ml-2" onclick="inputDepositValueBtn(1000)">
             R$1000,00
         </button>
     </div>
@@ -110,7 +109,7 @@
         </div>
 
         <div class="mt-4">
-            <button type="button" onclick="generatePix()" class="modalCreditCard btn-block btn-round btn border btn-primary p-3" data-target="#staticBackdrop" onclick="showDepositValue()" <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            <button type="button" onclick="generatePix()" class="modalCreditCard btnDeposit btn-block btn-round btn border btn-primary p-3" data-target="#staticBackdrop" onclick="showDepositValue()" <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" disabled>
                 <div class="d-flex justify-content-center">
                     <span class="spinner spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                     <span class="textLoadingBtn">Depositar</span>
@@ -119,7 +118,7 @@
             <div class="p-3 pb-4 mt-4">
                 <p class="text-sm alertWitdrawalMsg">
                     <strong>Aviso Importante:</strong>
-                     Restrição de Idade para Depósitos
+                    Restrição de Idade para Depósitos
                     Por favor, esteja ciente de que depósitos só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de depósito por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
                 </p>
             </div>
@@ -190,7 +189,7 @@
         let textLoadingBtn = document.querySelector(".textLoadingBtn");
         let spinner = document.querySelector('.spinner')
         let feedbackForUser = document.querySelector('.feedbackForUser');
-        let dataExpiration=document.getElementById('dataExpiration');
+        let dataExpiration = document.getElementById('dataExpiration');
 
         let btn10 = document.querySelector('.btn10');
         let btn50 = document.querySelector('.btn50');
@@ -198,11 +197,25 @@
         let btn200 = document.querySelector('.btn200');
         let btn400 = document.querySelector('.btn400');
         let btn1000 = document.querySelector('.btn1000');
+        let btnDeposit = document.querySelector('.btnDeposit');
 
 
-        function inputDepositValue(withdrawalValue) {
+        function inputDepositValueBtn(withdrawalValue) {
             depositInput.value = withdrawalValue;
+            inputDepositValue();
         }
+
+        function inputDepositValue() {
+            let inputValue = depositInput.value
+
+            if (!depositInput.value == "") {
+                btnDeposit.disabled = false;
+            } else {
+                btnDeposit.disabled = true;
+            }
+        }
+
+        depositInput.addEventListener('input', inputDepositValue)
 
 
         function showCreditInput() {
@@ -309,17 +322,17 @@
                         if (responseData) {
                             document.getElementById("qrcode").innerHTML = "";
                             var qrcode = new QRCode(document.getElementById("qrcode"), {
-                            text: responseData.pixCopiaECola,
-                            width: 200,
-                            height: 200,
-                            colorDark: "#000000",
-                            colorLight: "#ffffff",
-                            correctLevel: QRCode.CorrectLevel.H
+                                text: responseData.pixCopiaECola,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
                             })
                             amountPix.innerText = "R$" + depositInput.value;
                             $('#staticBackdrop').modal('show')
                             launchToast("success",
-                            trans("Success"), "Pix gerado com sucesso");
+                                trans("Success"), "Pix gerado com sucesso");
                         }
 
                         pixCode = responseData.pixCopiaECola;
@@ -392,5 +405,4 @@
             intervalId = setInterval(updateRemainingTime, 1000);
             updateRemainingTime();
         }
-
     </script>
