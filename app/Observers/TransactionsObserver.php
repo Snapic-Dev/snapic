@@ -32,8 +32,9 @@ class TransactionsObserver
      * @param Transaction $transaction
      * @return void
      */
-    public function created(Transaction $transaction) {
-        if($transaction->status === Transaction::APPROVED_STATUS) {
+    public function created(Transaction $transaction)
+    {
+        if ($transaction->status === Transaction::APPROVED_STATUS) {
             // first make sure there's a referral code usage entry for this user referral code
             $this->createRewardForTransaction($transaction);
         }
@@ -44,50 +45,50 @@ class TransactionsObserver
      * @param Transaction $transaction
      * @return void
      */
-    public function updating(Transaction  $transaction) {
-        if($transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS) {
+    public function updating(Transaction  $transaction)
+    {
+        if ($transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS) {
             $this->createRewardForTransaction($transaction);
         }
     }
 
-    private function createRewardForTransaction($transaction) {
-        if(getSetting('referrals.enabled')) {
-            try{
-                if(floatval(getSetting('referrals.fee_percentage')) > 0) {
-                    // make sure this transaction is not a top-up wallet payment
-                    if($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id)) {
+    private function createRewardForTransaction($transaction)
+    {
+        if (getSetting('referrals.enabled')) {
+            try {
+                if (floatval(getSetting('referrals.fee_percentage')) > 0) {
+                    if ($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id)) {
                         return;
                     }
 
-                    // make sure there's not already a reward generated for this transaction
                     $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
-                    if(!$existingReward){
+                    if (!$existingReward) {
                         // check if there is a referral code usage for this user
                         $referralCodeUsage = ReferralCodeUsage::where(['used_by' => $transaction->recipient_user_id])->first();
-                        if($referralCodeUsage) {
+                        if ($referralCodeUsage) {
                             // find a user with this referral code
                             $referralCodeUser = User::where(['referral_code' => $referralCodeUsage->referral_code])->first();
-                            if($referralCodeUser) {
-                                if(getSetting('referrals.apply_for_months') && intval(getSetting('referrals.apply_for_months')) > 0) {
-                                    $expiryDatetime = new \DateTime('-'.intval(getSetting('referrals.apply_for_months')).' months');
+                            if ($referralCodeUser) {
+                                if (getSetting('referrals.apply_for_months') && intval(getSetting('referrals.apply_for_months')) > 0) {
+                                    $expiryDatetime = new \DateTime('-' . intval(getSetting('referrals.apply_for_months')) . ' months');
 
                                     // this referral is older enough so stop here and don't create anymore rewards for him
-                                    if($expiryDatetime >= $referralCodeUsage->created_at) {
+                                    if ($expiryDatetime >= $referralCodeUsage->created_at) {
                                         return;
                                     }
                                 }
 
                                 $totalEarnedByUser = 0;
                                 // make sure we don't send more money than the limit set by the admin
-                                if(getSetting('referrals.fee_limit') && intval(getSetting('referrals.fee_limit')) > 0) {
+                                if (getSetting('referrals.fee_limit') && intval(getSetting('referrals.fee_limit')) > 0) {
                                     $totalEarnedByUser = UsersServiceProvider::getTotalAmountEarnedFromRewardsByUsers($referralCodeUser->id, $transaction->recipient_user_id);
                                     // reached maximum limit set by the admin
-                                    if($totalEarnedByUser >= floatval(getSetting('referrals.fee_limit'))) {
+                                    if ($totalEarnedByUser >= floatval(getSetting('referrals.fee_limit'))) {
                                         return;
                                     }
                                 }
 
-                                if($transaction->amount <= 0) {
+                                if ($transaction->amount <= 0) {
                                     return;
                                 }
 
@@ -95,7 +96,7 @@ class TransactionsObserver
                                 $amountWithTaxesDeducted = PaymentsServiceProvider::getTransactionAmountWithTaxesDeducted($transaction);
 
                                 $rewardFee = (floatval(getSetting('referrals.fee_percentage')) / 100) * $amountWithTaxesDeducted;
-                                if($rewardFee + $totalEarnedByUser >= floatval(getSetting('referrals.fee_limit')) || $rewardFee === 0) {
+                                if ($rewardFee + $totalEarnedByUser >= floatval(getSetting('referrals.fee_limit')) || $rewardFee === 0) {
                                     return;
                                 }
 
@@ -110,7 +111,7 @@ class TransactionsObserver
 
                                 // add money to user wallet
                                 $recipientUser = User::where('id', $referralCodeUser->id)->first();
-                                if($recipientUser) {
+                                if ($recipientUser) {
                                     $wallet = $recipientUser->wallet;
                                     $updateData = ['total' => $wallet->total + $rewardFee];
                                     $wallet->update($updateData);
@@ -119,7 +120,7 @@ class TransactionsObserver
                         }
                     }
                 }
-            } catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 Log::log(LogLevel::ERROR, "Failed to generate reward: " . $exception->getMessage());
             }
         }
