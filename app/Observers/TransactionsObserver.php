@@ -5,7 +5,10 @@ namespace App\Observers;
 use App\Model\ReferralCodeUsage;
 use App\Model\Reward;
 use App\Model\Transaction;
+use App\Model\Wallet;
+use App\Model\Agreement;
 use App\Providers\PaymentsServiceProvider;
+use App\Providers\SettingsServiceProvider;
 use App\Providers\UsersServiceProvider;
 use App\User;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +38,7 @@ class TransactionsObserver
     public function created(Transaction $transaction)
     {
         if ($transaction->status === Transaction::APPROVED_STATUS) {
-            // first make sure there's a referral code usage entry for this user referral code
+            $this->discountAgreement($transaction);
             $this->createRewardForTransaction($transaction);
         }
     }
@@ -48,7 +51,50 @@ class TransactionsObserver
     public function updating(Transaction  $transaction)
     {
         if ($transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS) {
+            $this->discountAgreement($transaction);
             $this->createRewardForTransaction($transaction);
+        }
+    }
+
+    private function discountAgreement(Transaction $transaction)
+    {
+        try {
+            $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
+            if (!$existingReward) {
+                $recipientUserId = (int) $transaction->recipient_user_id;
+
+                if ($recipientUserId <= 0) {
+                    throw new \Exception('Invalid recipient user ID.');
+                }
+
+                $recipient = User::query()->where('id', $recipientUserId)->first();
+
+                if (!$recipient) {
+                    throw new \Exception('Recipient user not found.');
+                }
+
+                $recipientWallet = Wallet::query()->where('user_id', $recipientUserId)->first();
+                if (!$recipientWallet) {
+                    throw new \Exception('Recipient wallet not found.');
+                }
+
+                $discount = round($transaction->amount * ($recipient->discount / 100), 2);
+
+                $recipientWallet->total -= $discount;
+                $recipientWallet->save();
+
+                $data = [
+                    'user_id' => $recipientUserId,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $discount,
+                    'percentage' => (int) $recipient->discount,
+                    'currency' => SettingsServiceProvider::getAppCurrencyCode(),
+                ];
+
+                Agreement::create($data);
+            }
+        } catch (\Exception $e) {
+            dd(LogLevel::ERROR, "Failed to apply discount agreement: " . $e->getMessage());
         }
     }
 
