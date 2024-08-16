@@ -18,6 +18,7 @@ RUN apt-get update \
     && apt-get -y install libldap2-dev \
     && apt-get -y install gnupg
 
+
 COPY --from=composer:2.2.0 /usr/bin/composer /usr/local/bin/composer
 
 RUN docker-php-ext-install gettext intl pdo_mysql gd zip exif bcmath \
@@ -35,6 +36,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 COPY --chown=www-data:www-data . /var/www/html/
+
 
 WORKDIR /var/www/html
 RUN composer install
