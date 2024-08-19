@@ -171,7 +171,6 @@ class PaymentHelper
             return $e->getMessage();
         }
     }
-
     private function preparePaymentData($dto)
     {
         return [
@@ -190,6 +189,44 @@ class PaymentHelper
         ];
     }
 
+    public function makeTransfer($dto)
+    {
+        try {
+
+            $data = $this->prepareTransferData($dto);
+            $accessToken = $this->getAccessToken();
+
+            $randomId = rand(100, 9999999);
+
+            $config = $this->getGuzzleConfig("Bearer $accessToken", $data, "/v2/gn/pix/$randomId", true);
+
+            $response = $this->client->request($config['method'], $config['url'], [
+                'headers' => $config['headers'],
+                'body' => $config['body']
+            ]);
+
+            $responseBody = $response->getBody()->getContents();
+            $responseData = json_decode($responseBody, true);
+            dd($responseData);
+            return $responseData;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+
+    private function prepareTransferData($dto)
+    {
+        return [
+            'valor' => '0.01',
+            'pagador' => [
+                'chave' => '55673748000147',
+                'infoPagador' => 'Segue o pagamento da conta',
+            ],
+            'favorecido' => [
+                'chave' => '46551087892',
+            ],
+        ];
+    }
     public function configureWebhook(Request $request)
     {
         try {
@@ -1139,49 +1176,71 @@ class PaymentHelper
      */
     public function redirectByTransaction($transaction, $message = null)
     {
-
-        // Not sure why translation locale is not being applied here, re-appliying it
+        // Reaplica a tradução preferida do usuário, caso não esteja sendo aplicada corretamente.
         App::setLocale(GenericHelperServiceProvider::getPreferredLanguage());
 
+        // Define uma mensagem de erro padrão caso o pagamento falhe.
         $errorMessage = __('Payment failed.');
+        // Se uma mensagem customizada foi passada, ela é usada em vez da mensagem padrão.
         if ($message != null) {
             $errorMessage = $message;
         }
+
+        // Verifica se há uma transação válida.
         if ($transaction != null) {
-            // handles approved status
+            // Recupera o usuário destinatário da transação.
             $recipient = User::query()->where(['id' => $transaction->recipient_user_id])->first();
+
+            // Verifica se a transação foi aprovada.
             if ($transaction->status === Transaction::APPROVED_STATUS) {
+                // Define uma mensagem de sucesso padrão.
                 $successMessage = __('Payment succeeded');
+
+                // Verifica o tipo de transação e ajusta a mensagem de sucesso de acordo.
                 if ($this->isSubscriptionPayment($transaction->type)) {
                     $successMessage = __('You can now access this user profile.');
                 } elseif ($transaction->type === Transaction::DEPOSIT_TYPE) {
+                    // Define a mensagem para depósitos, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You have been credited :currencySymbol:amount Happy spending!'
                         : 'You have been credited :amount:currencySymbol Happy spending!';
-                    $successMessage = __($key, ['amount' => $transaction->amount, 'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()]);
+                    $successMessage = __($key, [
+                        'amount' => $transaction->amount,
+                        'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
+                    ]);
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
+                    // Define a mensagem para gorjetas, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You successfully sent a tip of :currencySymbol:amount.'
                         : 'You successfully sent a tip of :amount:currencySymbol.';
-                    $successMessage = __($key, ['amount' => $transaction->amount, 'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()]);
+                    $successMessage = __($key, [
+                        'amount' => $transaction->amount,
+                        'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
+                    ]);
                 } elseif ($transaction->type === Transaction::POST_UNLOCK) {
+                    // Define a mensagem para desbloqueio de postagens.
                     $successMessage = __('You successfully unlocked this post.');
                 } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
+                    // Define a mensagem para pagamento de acesso a streaming.
                     $successMessage = __('You successfully paid for this streaming.');
                 } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
+                    // Define a mensagem para desbloqueio de mensagens.
                     $successMessage = __('You successfully unlocked this message.');
                 }
 
+                // Redireciona o usuário com uma mensagem de sucesso.
                 return $this->handleRedirectByTransaction($transaction, $recipient, $successMessage, $success = true);
-                // handles any other status
             } else {
+                // Se a transação não foi aprovada, redireciona com uma mensagem de erro.
                 return $this->handleRedirectByTransaction($transaction, $recipient, $errorMessage, $success = false);
             }
         } else {
+            // Se não há uma transação válida, redireciona o usuário para a página principal (feed) com uma mensagem de erro.
             return Redirect::route('feed')
                 ->with('error', $errorMessage);
         }
     }
+
 
     /**
      * Handles redirect by transaction type

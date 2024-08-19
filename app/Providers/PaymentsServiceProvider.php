@@ -245,6 +245,10 @@ class PaymentsServiceProvider extends ServiceProvider
     public static function getTransactionAmountWithTaxesDeducted($transaction)
     {
         $amount = $transaction->amount;
+
+        $percentageDeduction = $amount * (Auth::user()->discount / 100);
+        $amount = $amount - $percentageDeduction;
+
         $transactionTaxes = PaymentsServiceProvider::calculateTaxesForTransaction($transaction);
         if ($transactionTaxes['inclusiveTaxesAmount'] > 0) {
             $amount = $amount - $transactionTaxes['inclusiveTaxesAmount'];
