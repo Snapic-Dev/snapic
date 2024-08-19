@@ -163,7 +163,7 @@ class SettingsController extends Controller
             case 'payments':
                 $ordination = $request->input('dataFilter');
                 $sortOrder = $ordination ?: 'desc';
-                
+
                 $payments = Transaction::with(['receiver', 'sender'])
                     ->where(function ($query) use ($userID) {
                         $query->where('sender_user_id', $userID)
@@ -657,42 +657,54 @@ class SettingsController extends Controller
     {
         if ($request->session()->get('verifyAssets')) {
             if (!Auth::user()->verification) {
-                UserVerify::create([
-                    'user_id' => Auth::user()->id,
-                    'files' => $request->session()->get('verifyAssets'),
-                ]);
+
+                $verifyAssets = $request->session()->get('verifyAssets');
+
+                $isArrayVerify = json_decode($verifyAssets, true);
+
+                if (is_array($isArrayVerify)) {
+                    $docFront = isset($isArrayVerify[0]) ? $isArrayVerify[0] : null;
+                    $docBack = isset($isArrayVerify[1]) ? $isArrayVerify[1] : null;
+
+                    if (!Auth::user()->verification) {
+
+                        UserVerify::create([
+                            'user_id' => Auth::user()->id,
+                            'doc_front' => $docFront,
+                            'doc_back' => $docBack,
+                        ]);
+                    } else {
+                        Auth::user()->verification->update([
+                            'user_id' => Auth::user()->id,
+                            'doc_front' => $docFront,
+                            'doc_back' => $docBack,
+                            'status' => 'pending',
+                        ]);
+                    }
+                }
+
+                $adminEmails = User::where('role_id', 1)->select(['email', 'name'])->get();
+                foreach ($adminEmails as $user) {
+                    EmailsServiceProvider::sendGenericEmail(
+                        [
+                            'email' => $user->email,
+                            'subject' => __('Action required | New identity check'),
+                            'title' => __('Hello, :name,', ['name' => $user->name]),
+                            'content' => __('There is a new identity check on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
+                            'button' => [
+                                'text' => __('Go to admin'),
+                                'url' => route('voyager.dashboard'),
+                            ],
+                        ]
+                    );
+                }
+
+                $request->session()->forget('verifyAssets');
+
+                return back()->with('success', __('Request sent. You will be notified once your verification is processed.'));
             } else {
-                Auth::user()->verification->update(
-                    [
-                        'user_id' => Auth::user()->id,
-                        'files' => $request->session()->get('verifyAssets'),
-                        'status' => 'pending',
-                    ]
-                );
+                return back()->with('error', __('Please attach photos with the front and back sides of your ID.'));
             }
-
-            // Sending out admin email
-            $adminEmails = User::where('role_id', 1)->select(['email', 'name'])->get();
-            foreach ($adminEmails as $user) {
-                EmailsServiceProvider::sendGenericEmail(
-                    [
-                        'email' => $user->email,
-                        'subject' => __('Action required | New identity check'),
-                        'title' => __('Hello, :name,', ['name' => $user->name]),
-                        'content' => __('There is a new identity check on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
-                        'button' => [
-                            'text' => __('Go to admin'),
-                            'url' => route('voyager.dashboard'),
-                        ],
-                    ]
-                );
-            }
-
-            $request->session()->forget('verifyAssets');
-
-            return back()->with('success', __('Request sent. You will be notified once your verification is processed.'));
-        } else {
-            return back()->with('error', __('Please attach photos with the front and back sides of your ID.'));
         }
     }
 
