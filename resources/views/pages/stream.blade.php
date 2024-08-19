@@ -91,7 +91,7 @@ Minify::javascript([
             <div class="pb-3">
                 <div class="giftArea d-flex mt-4">
                     <p>
-                        <button class="btn btn-primary mr-5" type="button" data-toggle="collapse" data-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                        <button class="btn btn-primary mr-5 btn-round" type="button" data-toggle="collapse" data-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
                             Presentear
                         </button>
                     </p>

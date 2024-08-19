@@ -180,12 +180,12 @@ Minify::stylesheet([
                 <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0 ml-2 mt-3">
                     @if (Auth::check())
                     <div class="text-truncate">
-                        <a class="p-0 m-0 text-bold mr-1 fanLink">
+                        <!-- <a class="p-0 m-0 text-bold mr-1 fanLink">
                             {{ trans_choice('fans',"",['number' =>count(ListsHelper::getUserSubscribers())]) }}
-                        </a>
-                        <a class="p-0 m-0 text-bold ml-1 followingLink">
+                        </a> -->
+                        <!-- <a class="p-0 m-0 text-bold ml-1 followingLink">
                             {{ trans_choice('following', "", ['number' => Auth::user()->followingCount]) }}
-                        </a>
+                        </a> -->
                     </div>
                     @endif
                 </div>

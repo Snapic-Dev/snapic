@@ -25,6 +25,8 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
+use Gerencianet\Exception\GerencianetException;
+use Gerencianet\Gerencianet;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -80,7 +82,7 @@ class PaymentHelper
 
     private function initializeCertificado()
     {
-        $this->certificado = Storage::disk('local')->get('certs/cert-homolog.p12');
+        $this->certificado = Storage::disk('local')->get('certs/cert-production.p12');
 
         if ($this->certificado === false) {
             throw new \Exception('Erro ao carregar o certificado.');
@@ -90,11 +92,11 @@ class PaymentHelper
     private function initializeCredentials()
     {
         $this->credentials = [
-            'client_id' => 'Client_Id_fc988c1008cbc2ecebf4416155d487831d0704d8',
-            'client_secret' => 'Client_Secret_41320d15fd9175ea4c418f1cfa50e4f663cb8fee',
+            'client_id' => ' Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
+            'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
         ];
 
-        $this->gateway_url = 'https://pix-h.api.efipay.com.br';
+        $this->gateway_url = 'https://pix.api.efipay.com.br';
         $this->data_credentials = $this->credentials['client_id'] . ':' . $this->credentials['client_secret'];
     }
 
@@ -105,11 +107,11 @@ class PaymentHelper
             'http_errors' => false,
             'verify' => false,
             'cert' => [
-                'certs/cert-homolog.p12',
+                'certs/cert-production.p12',
                 ''
             ],
             'ssl_key' => [
-                'certs/cert-homolog.p12',
+                'certs/cert-production.p12',
                 ''
             ]
         ]);
@@ -133,10 +135,9 @@ class PaymentHelper
     private function getAccessToken()
     {
         $data = ['grant_type' => 'client_credentials'];
-        $auth = base64_encode($this->data_credentials);
-
+        $auth = base64_encode('Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da:Client_Secret_7852a68ae57877666a62866fdbfea77801953657');
         try {
-            $config = $this->getGuzzleConfig("Basic $auth", $data, '/oauth/token');
+            $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
 
             $response = $this->client->request($config['method'], $config['url'], [
                 'headers' => $config['headers'],
@@ -144,10 +145,9 @@ class PaymentHelper
             ]);
 
             $body = json_decode($response->getBody(), true);
-
             return $body['access_token'];
         } catch (RequestException $e) {
-            return $e->getMessage();
+            dd('' . $e->getMessage());
         }
     }
 
@@ -185,11 +185,53 @@ class PaymentHelper
             "valor" => [
                 "original" => "123.45"
             ],
-            "chave" => "john.doe@gmail.com",
+            "chave" => "55673748000147",
             "solicitacaoPagador" => "Cobrança dos serviços prestados."
         ];
     }
 
+    public function configureWebhook(Request $request)
+    {
+        try {
+            $data = [
+                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.shop/snapic/webhook'), // Usa a URL do corpo se fornecida
+            ];
+
+            $params = [
+                'chave' => $request->input('chave', '55673748000147'),
+            ];
+
+            $options = [
+                'client_id' => env('GERENCIANET_CLIENT_ID'),
+                'client_secret' => env('GERENCIANET_CLIENT_SECRET'),
+                'sandbox' => env('GERENCIANET_SANDBOX', true),
+                'pix_cert' => env('GERENCIANET_PIX_CERT'),
+                'debug' => env('GERENCIANET_DEBUG', true)
+            ];
+
+
+
+            $api = new Gerencianet($options);
+
+            $response = $api->pixConfigWebhook($params, $data);
+
+            return response()->json($response, 200);
+        } catch (GerencianetException $e) {
+            \Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     private $paypalApiContext;
 
