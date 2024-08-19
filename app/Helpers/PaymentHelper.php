@@ -171,7 +171,6 @@ class PaymentHelper
             return $e->getMessage();
         }
     }
-
     private function preparePaymentData($dto)
     {
         return [
@@ -190,6 +189,44 @@ class PaymentHelper
         ];
     }
 
+    public function makeTransfer($dto)
+    {
+        try {
+
+            $data = $this->prepareTransferData($dto);
+            $accessToken = $this->getAccessToken();
+
+            $randomId = rand(100, 9999999);
+
+            $config = $this->getGuzzleConfig("Bearer $accessToken", $data, "/v2/gn/pix/$randomId", true);
+
+            $response = $this->client->request($config['method'], $config['url'], [
+                'headers' => $config['headers'],
+                'body' => $config['body']
+            ]);
+
+            $responseBody = $response->getBody()->getContents();
+            $responseData = json_decode($responseBody, true);
+            dd($responseData);
+            return $responseData;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+
+    private function prepareTransferData($dto)
+    {
+        return [
+            'valor' => '0.01',
+            'pagador' => [
+                'chave' => '55673748000147',
+                'infoPagador' => 'Segue o pagamento da conta',
+            ],
+            'favorecido' => [
+                'chave' => '46551087892',
+            ],
+        ];
+    }
     public function configureWebhook(Request $request)
     {
         try {
