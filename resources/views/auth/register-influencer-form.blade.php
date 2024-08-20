@@ -163,14 +163,18 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
+    <div class="form-group p-1 ">
         <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label>
-        <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
-            name="frontDoc" value="{{ old('frontDoc') }}" required autocomplete="file"
-            accept=".jpg, .jpeg, .png, .webp" onchange="previewImage(this, document.getElementById('frontPreview'))">
-        <div class="preview">
-            <img id="frontPreview" src="#" alt="Preview da CNH - Frente"
-                style="display: none; max-height: 200px;">
+        <div class="file-upload ">
+            <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
+                name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
+                onchange="previewImage(this, document.getElementById('frontPreview'))">
+            <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                <ion-icon name="document-outline"></ion-icon>
+                {{ __('Escolher arquivo') }}</label>
+            <div class="preview">
+                <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
+            </div>
         </div>
         @error('frontDoc')
             <span class="invalid-feedback" role="alert">
@@ -179,14 +183,18 @@
         @enderror
     </div>
 
-    <div class="form-group p-1">
+    <div class="form-group p-1 ">
         <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label>
-        <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid @enderror"
-            name="backDoc" accept=".jpg, .jpeg, .png, .webp" required
-            onchange="previewImage(this, document.getElementById('backPreview'))">
-        <div class="preview">
-            <img id="backPreview" src="#" alt="Preview da CNH - Verso"
-                style="display: none; max-height: 200px;">
+        <div class="file-upload ">
+            <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
+                class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
+                onchange="previewImage(this, document.getElementById('backPreview'))">
+            <label for="backDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                <ion-icon name="document-outline"></ion-icon>
+                {{ __('Escolher arquivo') }}</label>
+            <div class="preview">
+                <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none;">
+            </div>
         </div>
         @error('backDoc')
             <span class="invalid-feedback" role="alert">
@@ -194,6 +202,7 @@
             </span>
         @enderror
     </div>
+
 
     <div class="form-group">
         <div class="custom-control custom-checkbox">
@@ -272,4 +281,20 @@
         const queryParams = url.search;
         form.action = form.action + queryParams;
     });
+
+    function previewImage(input, previewElement) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                previewElement.src = e.target.result;
+                previewElement.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            previewElement.src = '#';
+            previewElement.style.display = 'none';
+        }
+    }
 </script>
