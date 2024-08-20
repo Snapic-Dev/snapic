@@ -6,6 +6,7 @@ use App\Model\Tax;
 use App\Model\Transaction;
 use App\Model\Withdrawal;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
@@ -76,7 +77,7 @@ class PaymentsServiceProvider extends ServiceProvider
             $withdrawalsMaxAmount = SettingsServiceProvider::getWebsiteFormattedAmount(getSetting('payments.withdrawal_max_amount'));
         }
 
-        return __('Amount').' ('.$withdrawalsMinAmount.' min, '.$withdrawalsMaxAmount.' max)';
+        return __('Amount') . ' (' . $withdrawalsMinAmount . ' min, ' . $withdrawalsMaxAmount . ' max)';
     }
 
     /**
@@ -94,60 +95,65 @@ class PaymentsServiceProvider extends ServiceProvider
             $depositMaxAmount = SettingsServiceProvider::getWebsiteFormattedAmount(getSetting('payments.deposit_max_amount'));
         }
 
-        return __('Amount').' ('.$depositMinAmount.' min, '.$depositMaxAmount.' max)';
+        return __('Amount') . ' (' . $depositMinAmount . ' min, ' . $depositMaxAmount . ' max)';
     }
 
     /**
      * Get withdrawals minimum amount
      * @return \Illuminate\Config\Repository|int|mixed|null
      */
-    public static function getWithdrawalMinimumAmount(){
+    public static function getWithdrawalMinimumAmount()
+    {
         return
             getSetting('payments.withdrawal_min_amount') != null
             && getSetting('payments.withdrawal_min_amount') > 0
-                ? getSetting('payments.withdrawal_min_amount') : 20;
+            ? getSetting('payments.withdrawal_min_amount') : 20;
     }
 
     /**
      * Get withdrawals maximum amount
      * @return \Illuminate\Config\Repository|int|mixed|null
      */
-    public static function getWithdrawalMaximumAmount(){
+    public static function getWithdrawalMaximumAmount()
+    {
         return
             getSetting('payments.withdrawal_max_amount') != null
             && getSetting('payments.withdrawal_max_amount') > 0
-                ? getSetting('payments.withdrawal_max_amount') : 500;
+            ? getSetting('payments.withdrawal_max_amount') : 500;
     }
 
     /**
      * Get deposit minimum amount
      * @return \Illuminate\Config\Repository|int|mixed|null
      */
-    public static function getDepositMinimumAmount(){
+    public static function getDepositMinimumAmount()
+    {
         return
             getSetting('payments.deposit_min_amount') != null
             && getSetting('payments.deposit_min_amount') > 0
-                ? getSetting('payments.deposit_min_amount') : 5;
+            ? getSetting('payments.deposit_min_amount') : 5;
     }
 
     /**
      * Get deposit maximum amount
      * @return \Illuminate\Config\Repository|int|mixed|null
      */
-    public static function getDepositMaximumAmount(){
+    public static function getDepositMaximumAmount()
+    {
         return
             getSetting('payments.deposit_max_amount') != null
             && getSetting('payments.deposit_max_amount') > 0
-                ? getSetting('payments.deposit_max_amount') : 500;
+            ? getSetting('payments.deposit_max_amount') : 500;
     }
 
     /**
      * Creates transaction for an approved withdrawal
      * @param $withdrawal
      */
-    public static function createTransactionForWithdrawal($withdrawal){
-        try{
-            if($withdrawal->status === Withdrawal::APPROVED_STATUS){
+    public static function createTransactionForWithdrawal($withdrawal)
+    {
+        try {
+            if ($withdrawal->status === Withdrawal::APPROVED_STATUS) {
                 $data = [];
                 $data['recipient_user_id'] = $withdrawal->user_id;
                 $data['sender_user_id'] = $withdrawal->user_id;
@@ -159,7 +165,7 @@ class PaymentsServiceProvider extends ServiceProvider
 
                 Transaction::create($data);
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::channel('withdrawals')->error($e->getMessage());
         }
     }
@@ -168,19 +174,20 @@ class PaymentsServiceProvider extends ServiceProvider
      * Fetch withdrawals allowed payment methods from admin panel
      * @return array
      */
-    public static function getWithdrawalsAllowedPaymentMethods() {
+    public static function getWithdrawalsAllowedPaymentMethods()
+    {
         $allowedPaymentMethods = [];
-        if(getSetting('payments.withdrawal_payment_methods')) {
+        if (getSetting('payments.withdrawal_payment_methods')) {
             $allowedPaymentMethods = explode(', ', getSetting('payments.withdrawal_payment_methods'));
         }
 
         // adds Stripe Connect to the list if enabled
-        if(getSetting('payments.withdrawal_enable_stripe_connect')) {
+        if (getSetting('payments.withdrawal_enable_stripe_connect')) {
             $allowedPaymentMethods[] = 'Stripe Connect';
         }
 
         // adds a default value in case there is nothing set in admin panel
-        if(empty($allowedPaymentMethods)){
+        if (empty($allowedPaymentMethods)) {
             $allowedPaymentMethods[] = 'Other';
         }
 
@@ -191,9 +198,10 @@ class PaymentsServiceProvider extends ServiceProvider
      * Checks if CCBill keys are provided in admin panel
      * @return bool
      */
-    public static function ccbillCredentialsProvided() {
+    public static function ccbillCredentialsProvided()
+    {
         return getSetting('payments.ccbill_account_number') && (getSetting('payments.ccbill_subaccount_number_recurring')
-                || getSetting('payments.ccbill_subaccount_number_one_time'))
+            || getSetting('payments.ccbill_subaccount_number_one_time'))
             && getSetting('payments.ccbill_flex_form_id') && getSetting('payments.ccbill_salt_key') && !getSetting('payments.ccbill_checkout_disabled');
     }
 
@@ -234,21 +242,44 @@ class PaymentsServiceProvider extends ServiceProvider
      * @param $transaction
      * @return float
      */
-    public static function getTransactionAmountWithTaxesDeducted($transaction) {
+    public static function getTransactionAmountWithTaxesDeducted($transaction)
+    {
         $amount = $transaction->amount;
+
+        $percentageDeduction = $amount * (Auth::user()->discount / 100);
+        $amount = $amount - $percentageDeduction;
+
         $transactionTaxes = PaymentsServiceProvider::calculateTaxesForTransaction($transaction);
-        if($transactionTaxes['inclusiveTaxesAmount'] > 0){
+        if ($transactionTaxes['inclusiveTaxesAmount'] > 0) {
             $amount = $amount - $transactionTaxes['inclusiveTaxesAmount'];
         }
 
-        if($transactionTaxes['exclusiveTaxesAmount'] > 0){
+        if ($transactionTaxes['exclusiveTaxesAmount'] > 0) {
             $amount = $amount - $transactionTaxes['exclusiveTaxesAmount'];
         }
 
-        if($transactionTaxes['fixedTaxesAmount'] > 0){
+        if ($transactionTaxes['fixedTaxesAmount'] > 0) {
             $amount = $amount - $transactionTaxes['fixedTaxesAmount'];
         }
 
         return $amount;
+    }
+
+
+    public static function verifyDiaryWithdrawal($userId)
+    {
+        $now = Carbon::now();
+
+        $past24Hours = $now->copy()->subHours(24);
+
+        $lastWithdrawal = Withdrawal::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->first(['created_at']);
+
+        if (!$lastWithdrawal) {
+            return true;
+        }
+
+        return $lastWithdrawal->created_at <= $past24Hours;
     }
 }

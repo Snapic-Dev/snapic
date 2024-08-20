@@ -6,6 +6,7 @@ use App\Model\Subscription;
 use App\Model\UserList;
 use App\Model\UserListMember;
 use App\Model\UserReport;
+use Illuminate\Http\Request;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -315,27 +316,34 @@ class ListsHelperServiceProvider extends ServiceProvider
         }
     }
 
-    public static function getUserFollowers($userID)
+    public static function getUserFollowers()
     {
+
+        $request = request();
+
+        $userID = $request->query('user');
+
         $followers = UserListMember::select('user_lists.user_id', 'users.email', 'users.settings', 'users.name')
             ->join('user_lists', 'user_list_members.list_id', '=', 'user_lists.id')
             ->join('users', 'users.id', '=', 'user_lists.user_id')
-            ->where('user_list_members.user_id', $userID)
+            ->where('user_list_members.user_id',  $userID)
             ->where('user_lists.type', 'following')
             ->get()
             ->toArray();
+
         return $followers;
     }
 
-    public static function getUserSubscribers($userID)
+    public static function getUserSubscribers()
     {
-        $subscribers = UserListMember::select('user_lists.user_id', 'users.email', 'users.settings', 'users.name')
-            ->join('user_lists', 'user_list_members.list_id', '=', 'user_lists.id')
-            ->join('users', 'users.id', '=', 'user_lists.user_id')
-            ->where('user_list_members.user_id', $userID)
-            ->where('user_lists.type', 'following')
-            ->get()
-            ->toArray();
+
+        $request = request();
+
+        $userID = $request->query('user');
+
+        $subscribers = Subscription::where('recipient_user_id', $userID)
+            ->where('expires_at', '>', Carbon::now('UTC'))
+            ->get();
         return $subscribers;
     }
 }

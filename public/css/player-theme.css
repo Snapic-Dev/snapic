@@ -149,3 +149,82 @@
 .vjs-icon-cog:before {
     font-size:16px;
 }
+
+.giftText {
+   justify-content: center;
+   align-items: center;
+   width: 150px;
+   height: 150px;
+   flex-direction: column;
+}
+
+.giftArea {
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+#giftCarousel {
+    width: 100%;
+}
+
+.carousel-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-wrap: nowrap; 
+    height: 100%;
+}
+
+.carousel-item {
+    width: auto;
+    justify-content: space-between; 
+    margin: 0 auto;
+    flex: 0 0 auto;
+    transition: transform 0.2s linear;
+}
+
+
+.giftImage {
+    width: 40px;
+    height: auto;
+    object-fit: cover;
+}
+
+
+.giftText h4{
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.giftText p{
+    font-size: 12px;
+    text-align: center;
+
+}
+
+.rounded-circle-stream  {
+    border: 2.5px solid #673AB7;
+}
+
+.watchingUsersPill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: #8861cc;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.textWatchingArea {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 40%;
+}

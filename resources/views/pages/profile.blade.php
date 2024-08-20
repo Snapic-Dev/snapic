@@ -180,12 +180,12 @@ Minify::stylesheet([
                 <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0 ml-2 mt-3">
                     @if (Auth::check())
                     <div class="text-truncate">
-                        <a class="p-0 m-0 text-bold mr-1" href="/my/lists/followers">
-                            {{ trans_choice('fans', Auth::user()->fansCount, ['number' => count(ListsHelper::getUserFollowers(Auth::user()->id))]) }}
-                        </a>
-                        <a class="p-0 m-0 text-bold ml-1" href="{{ url('/my/lists/' . (Auth::user()->id + 2)) }}">
-                            {{ trans_choice('following', Auth::user()->followingCount, ['number' => Auth::user()->followingCount]) }}
-                        </a>
+                        <!-- <a class="p-0 m-0 text-bold mr-1 fanLink">
+                            {{ trans_choice('fans',"",['number' =>count(ListsHelper::getUserSubscribers())]) }}
+                        </a> -->
+                        <!-- <a class="p-0 m-0 text-bold ml-1 followingLink">
+                            {{ trans_choice('following', "", ['number' => Auth::user()->followingCount]) }}
+                        </a> -->
                     </div>
                     @endif
                 </div>
@@ -382,8 +382,32 @@ Minify::stylesheet([
     <ion-icon name="heart-outline"></ion-icon>
 </div>
 
+<script>
+    // let fanLink = document.querySelector('.fanLink')
+    // let followingLink = document.querySelector('.followingLink')
+
+    // function makeUrlFan() {
+    //     let path = window.location.pathname;
+    //     let lastSegment = path.substring(path.lastIndexOf('/') + 1);
+
+    //     let urlLink = `/my/lists/followers/?user=${lastSegment}`
+    //     fanLink.setAttribute('href', urlLink)
+    // }
+
+    // function makeUrlFollowing() {
+    //     let path = window.location.pathname;
+    //     let lastSegment = path.substring(path.lastIndexOf('/') + 1);
+
+    //     let urlLink = `/my/lists/?user=${lastSegment}`
+    //     followingLink.setAttribute('href', urlLink)
+    // }
+
+    // fanLink.addEventListener('click', makeUrlFan())
+    // followingLink.addEventListener('click', makeUrlFollowing())
+</script>
+
 @if(Auth::check())
-@include('elements.lists.list-add-user-dialog', ['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
+@include('elements.lists.list-add-user-dialog', ['user_id' => $user -> id, 'lists' => ListsHelper::getUserLists()])
 @include('elements.checkout.checkout-box')
 @include('elements.messenger.send-user-message', ['receiver' => $user])
 @else
@@ -391,5 +415,4 @@ Minify::stylesheet([
 @endif
 
 @include('elements.profile.qr-code-dialog')
-
 @stop

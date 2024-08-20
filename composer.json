@@ -11,6 +11,8 @@
         "php": "^8.0.2",
         "anhskohbo/no-captcha": "^3.4",
         "devfactory/minify": "1.0.*",
+        "gerencianet/gerencianet-sdk-php": "^5.1",
+        "google/cloud-storage": "^1.42",
         "graham-campbell/markdown": "14.0",
         "guzzlehttp/guzzle": "^7.8",
         "intervention/image": "^2.7",

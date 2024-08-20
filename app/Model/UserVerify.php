@@ -15,15 +15,14 @@ class UserVerify extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'files', 'status', 'rejectionReason'];
+    protected $fillable = ['user_id', 'doc_front', 'doc_back', 'status', 'rejectionReason'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     /*
      * Relationships

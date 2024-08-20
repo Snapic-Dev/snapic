@@ -23,6 +23,7 @@ use Stripe\StripeClient;
 use Yabacon\Paystack;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Exception;
 
 class PaymentsController extends Controller
 {
@@ -36,6 +37,152 @@ class PaymentsController extends Controller
     {
         $this->paymentHandler = $paymentHandler;
     }
+
+    public function generatePix(Request $request)
+    {
+        $transactionType = $request->get('transaction_type');
+        $redirectLink = null;
+
+        try {
+            $transaction = new Transaction();
+            $transaction['sender_user_id'] = Auth::user()->id;
+            $transaction['recipient_user_id'] = $request->get('recipient_user_id');
+            $transaction['post_id'] = $request->get('post_id');
+            $transaction['user_message_id'] = $request->get('user_message_id');
+            $transaction['type'] = $transactionType;
+            $transaction['status'] = Transaction::INITIATED_STATUS;
+            $transaction['amount'] = $request->get('amount');
+            $transaction['currency'] = config('app.site.currency_code');
+            $transaction['payment_provider'] = $request->get('provider');
+            $transaction['taxes'] = $request->get('taxes');
+            $transaction['stream_id'] = $request->get('stream');
+            $errorMessage = __('Something went wrong with this transaction. Please try again');
+
+            $recipientUser = User::query()->where('id', $transaction['recipient_user_id'])->first();
+
+
+            if ($transaction['amount'] <= 0 || (!$recipientUser && $transactionType !== Transaction::DEPOSIT_TYPE)) {
+                return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+            }
+
+            $validationAmount = $this->paymentHandler->validateTransaction($transaction, $recipientUser);
+
+            if (!$validationAmount) {
+                return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+            }
+
+            if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+                $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
+                if ($userAvailableAmount < $transaction['amount']) {
+                    $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
+
+                    return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+                }
+            }
+
+
+            switch ($transactionType) {
+                case Transaction::TIP_TYPE:
+                case Transaction::CHAT_TIP_TYPE:
+                case Transaction::STREAM_ACCESS:
+                case Transaction::POST_UNLOCK:
+                case Transaction::MESSAGE_UNLOCK:
+                    $userId = Auth::user()->id;
+                    $postId = $transaction['post_id'];
+                    $streamId = $transaction['stream_id'];
+                    $messageId = $transaction['user_message_id'];
+                    if ($recipientUser->id === $transaction['sender_user_id']) {
+                        return $this->paymentHandler->redirectByTransaction(
+                            $transaction,
+                            $errorMessage = __('Cannot pay to yourself.')
+                        );
+                    }
+
+                    if ($transactionType === Transaction::POST_UNLOCK && PostsHelperServiceProvider::userPaidForPost($userId, $postId)) {
+                        return $this->paymentHandler->redirectByTransaction(
+                            $transaction,
+                            $errorMessage = __('You already unlocked this post.')
+                        );
+                    } elseif ($transactionType === Transaction::STREAM_ACCESS && PostsHelperServiceProvider::userPaidForStream($userId, $streamId)) {
+                        return $this->paymentHandler->redirectByTransaction(
+                            $transaction,
+                            $errorMessage = __('You already paid for this streaming')
+                        );
+                    } elseif ($transactionType === Transaction::MESSAGE_UNLOCK && PostsHelperServiceProvider::userPaidForMessage($userId, $messageId)) {
+                        return $this->paymentHandler->redirectByTransaction(
+                            $transaction,
+                            $errorMessage = __('You already paid access for this message')
+                        );
+                    }
+
+                    if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+                        $this->paymentHandler->generateOneTimeCreditTransaction($transaction);
+                    }
+                    break;
+                case Transaction::DEPOSIT_TYPE:
+                    $transaction['recipient_user_id'] = Auth::user()->id;
+
+                    if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
+                        $user = User::where('id', $transaction['recipient_user_id'])->first();
+                        if (!$user->cpf) {
+                            throw new Exception("CPF não cadastrado");
+                        }
+                        $res = $this->paymentHandler->generationPixPayment($transaction);
+                        $transaction['status'] = 'pending';
+                        $transaction->save();
+                        return response()->json($res, 201);
+                    }
+
+                    break;
+                case Transaction::ONE_MONTH_SUBSCRIPTION:
+                case Transaction::THREE_MONTHS_SUBSCRIPTION:
+                case Transaction::SIX_MONTHS_SUBSCRIPTION:
+                case Transaction::YEARLY_SUBSCRIPTION:
+                    if ($recipientUser->id === $transaction['sender_user_id']) {
+                        return $this->paymentHandler->redirectByTransaction(
+                            $transaction,
+                            $errorMessage = __('Cannot subscribe to yourself.')
+                        );
+                    }
+
+                    if (PostsHelperServiceProvider::hasActiveSub($transaction['sender_user_id'], $transaction['recipient_user_id'])) {
+                        $errorMessage = __('You already have an active subscription for this user.');
+
+                        return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+                    }
+
+                    if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+                        $this->paymentHandler->generateCreditSubscriptionByTransaction($transaction);
+                    }
+                    break;
+                default:
+                    return $this->paymentHandler->redirectByTransaction($transaction);
+            }
+
+
+
+
+            return response()->json([
+                'transaction_type' => $transactionType,
+                'redirect_link' => $redirectLink,
+                'transaction' => $transaction,
+                'isValid' => $validationAmount,
+            ]);
+
+
+            // Retornar resposta JSON
+        } catch (\Exception $exception) {
+            // Log da exceção para depuração
+            Log::error('Error in generatePix function: ' . $exception->getMessage());
+
+            // Retornar uma resposta de erro
+            return response()->json([
+                'error' => 'An error occurred while processing your request.',
+                'message' => $exception->getMessage()
+            ], 500);
+        }
+    }
+
     public function paymentInitiateValidator(CreateTransactionRequest $request)
     {
         return response()->json([

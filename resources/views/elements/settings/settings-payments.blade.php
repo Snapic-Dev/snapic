@@ -27,8 +27,16 @@
             <div class="col-lg-2 text-truncate d-none d-md-block">{{__('Amount')}}</div>
             <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
             <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
-            <div class="col-lg-3 text-truncate d-none d-md-block">
+            <div class="col-lg-3 text-truncate d-none d-md-flex align-items-center justify-content-center">
                 Data
+                <div class="d-flex flex-column">
+                    <button class="orderDataUp">
+                        @include('elements.icon',['icon'=>'caret-up-outline','centered'=>false,'classes'=>'ml-1'])
+                    </button>
+                    <button  class="orderDataDown">
+                        @include('elements.icon',['icon'=>'caret-down-outline','centered'=>false,'classes'=>'ml-1'])
+                    </button>
+                </div>
             </div>
         </div>
         @foreach($payments as $payment)
@@ -166,8 +174,16 @@
         <div class="col-lg-2 text-truncate d-none d-md-block">{{__('Amount')}}</div>
         <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
         <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
-        <div class="col-lg-3 text-truncate d-none d-md-block">
+        <div class="col-lg-3 text-truncate d-none d-md-flex align-items-center justify-content-center">
             Data
+            <div class="d-flex flex-column">
+                    <button class="orderDataUp">
+                        @include('elements.icon',['icon'=>'caret-up-outline','centered'=>false,'classes'=>'ml-1'])
+                    </button>
+                    <button  class="orderDataDown">
+                        @include('elements.icon',['icon'=>'caret-down-outline','centered'=>false,'classes'=>'ml-1'])
+                    </button>
+            </div>
         </div>
     </div>
     <div class="p-3">
@@ -179,46 +195,59 @@
 <script>
     let statusPayment = document.querySelector('.statusPayment');
     let statusType = document.querySelector('.statusType');
+    let orderDataUp = document.querySelector('.orderDataUp');
+    let orderDataDown = document.querySelector('.orderDataDown');
 
-    function statusOption() {
-        let selectValue = statusPayment.value;
-        let selectType = statusType.value;
-        console.log(selectValue);
-        console.log(selectType);
+    function statusOption(ordination = 'desc') {
+    let selectValue = statusPayment.value;
+    let selectType = statusType.value;
 
-        let linkFilter = "";
-        console.log(linkFilter)
+    // Cria um objeto URLSearchParams para construir a query string
+    let params = new URLSearchParams();
 
-        if (selectValue === "") {
-            linkFilter = `//localhost:8000/my/settings/payments?type=${selectType}`
-        }
-
-        if (selectType === "") {
-            linkFilter = `//localhost:8000/my/settings/payments?status=${selectValue}`
-        }
-
-        linkFilter = `//localhost:8000/my/settings/payments?status=${selectValue}&type=${selectType}`;
-
-        window.location.href = linkFilter;
-        statusPayment.value = selectValue;
+    if (selectValue !== "") {
+        params.append('status', selectValue);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        let urlParams = new URLSearchParams(window.location.search);
-        let status = urlParams.get('status');
-        console.log(status);
-        let type = urlParams.get('type');
-        console.log(status);
+    if (selectType !== "") {
+        params.append('type', selectType);
+    }
 
-        if (status) {
-            statusPayment.value = status;
-        }
+    params.append('dataFilter', ordination);
 
-        if (type) {
-            statusType.value = type
-        }
-    });
+    // Construa o link final com a origem da janela e os parâmetros atualizados
+    let linkFilter = `${window.location.origin}/my/settings/payments?${params.toString()}`;
 
-    statusPayment.addEventListener('change', statusOption);
-    statusType.addEventListener('change', statusOption)
+    // Redireciona para o novo link
+    window.location.href = linkFilter;
+
+    // Atualiza o valor dos elementos de status (opcional, se necessário)
+    statusPayment.value = selectValue;
+}
+
+// Espera o carregamento completo do DOM
+document.addEventListener('DOMContentLoaded', function() {
+    let urlParams = new URLSearchParams(window.location.search);
+    let status = urlParams.get('status');
+    let type = urlParams.get('type');
+    let dataFilter = urlParams.get('dataFilter');
+
+    if (status) {
+        statusPayment.value = status;
+    }
+
+    if (type) {
+        statusType.value = type;
+    }
+
+});
+
+// Adiciona os event listeners corretamente
+orderDataUp.addEventListener('click', () => statusOption('asc'));
+orderDataDown.addEventListener('click', () => statusOption('desc'));
+
+statusPayment.addEventListener('change', () => statusOption());
+statusType.addEventListener('change', () => statusOption());
+
+
 </script>
