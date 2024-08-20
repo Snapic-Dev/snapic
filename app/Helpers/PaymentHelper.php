@@ -204,12 +204,11 @@ class PaymentHelper
                 'headers' => $config['headers'],
                 'body' => $config['body']
             ]);
-
             $responseBody = $response->getBody()->getContents();
             $responseData = json_decode($responseBody, true);
             return $responseData;
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            echo ($e->getMessage());
         }
     }
 
@@ -222,7 +221,7 @@ class PaymentHelper
                 'infoPagador' => 'Segue o pagamento da conta',
             ],
             'favorecido' => [
-                'chave' => '46551087892',
+                'chave' => '4651087892',
             ],
         ];
     }
