@@ -83,7 +83,7 @@ class WithdrawalsController extends Controller
 
 
                 if (floatval($minimal) > floatval($amount)) {
-                    $res =  $this->paymentHandler->makeTransfer('aaa');
+                    $res =  $this->paymentHandler->makeTransfer($amount, $identifier);
 
                     if (!array_key_exists('STATUS', $res) || $res['STATUS'] !== 'EM_PROCESSAMENTO') {
                         switch ($res['nome']) {

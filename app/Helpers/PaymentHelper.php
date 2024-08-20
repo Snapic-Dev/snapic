@@ -173,27 +173,28 @@ class PaymentHelper
     }
     private function preparePaymentData($dto)
     {
+        $user = User::where('id', $dto['recipient_user_id'])->first();
         return [
             "calendario" => [
                 "expiracao" => 3600
             ],
             "devedor" => [
-                "cpf" => "12345678909",
-                "nome" => "John Doe"
+                "cpf" => $user->cpf,
+                "nome" => $user->name
             ],
             "valor" => [
-                "original" => "123.45"
+                "original" => number_format($dto['amount'], 2, '.', ''),
             ],
             "chave" => "55673748000147",
-            "solicitacaoPagador" => "Cobrança dos serviços prestados."
+            "solicitacaoPagador" => "Compra de créditos no Snapic."
         ];
     }
 
-    public function makeTransfer($dto)
+    public function makeTransfer($amount, $identifier)
     {
         try {
 
-            $data = $this->prepareTransferData($dto);
+            $data = $this->prepareTransferData($amount, $identifier);
             $accessToken = $this->getAccessToken();
 
             $randomId = rand(100, 9999999);
@@ -212,16 +213,16 @@ class PaymentHelper
         }
     }
 
-    private function prepareTransferData($dto)
+    private function prepareTransferData($amount, $identifier)
     {
         return [
-            'valor' => '0.01',
+            'valor' => number_format($amount, 2, '.', ''),
             'pagador' => [
                 'chave' => '55673748000147',
-                'infoPagador' => 'Segue o pagamento da conta',
+                'infoPagador' => '',
             ],
             'favorecido' => [
-                'chave' => '4651087892',
+                'chave' => $identifier,
             ],
         ];
     }
