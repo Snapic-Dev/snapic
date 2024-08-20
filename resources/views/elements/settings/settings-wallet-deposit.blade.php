@@ -283,7 +283,7 @@
 
         const generatePix = async () => {
             feedbackForUser.innerText = ""
-            if (depositInput.value !== "" && depositInput.value >= `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`) {
+            if (depositInput.value !== "" && `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`) {
                 if (modalCreditCard.getAttribute("data-target") === "#staticBackdrop") {
                     amountPix.innerText = ""
                     showSpinner();

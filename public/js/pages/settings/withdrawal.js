@@ -33,6 +33,7 @@ var Wallet = {
      */
     initWithdrawal: function () {
 
+
         let submitButton = $('.withdrawal-continue-btn');
         updateButtonState('loading',submitButton, trans('Request withdrawal'),'white');
 
@@ -48,7 +49,7 @@ var Wallet = {
                 amount: $('#withdrawal-amount').val(),
                 message: $('#withdrawal-message').val(),
                 identifier: $('#withdrawal-payment-identifier').val(),
-                method: $('#payment-methods').find(":selected").text(),
+                method:"POST",
             },
             url: app.baseUrl + '/withdrawals/request',
             success: function (result) {

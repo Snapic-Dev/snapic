@@ -6,7 +6,7 @@
                 <input type="text" class="form-control" placeholder="6d6e36e5-2c43-4c8e-823d-9e9a2d2f5b67" id="validationTooltip01" required>
                 <div class="mt-4">
                     <label class="text-sm text-bold" for=" validationTooltip01">Valor do Saque</label>
-                    <input type="number" class="form-control withdrawalInput" id="validationTooltip01" placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}" required>
+                    <input type="number" class="form-control withdrawalInput validationTooltip01" id="withdrawal-amount" placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}" required>
                 </div>
                 <div class="valid-tooltip">
                     Looks good!
@@ -97,7 +97,9 @@
     </div> -->
 
     <div class="mt-4">
-        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit" disabled="true">{{__('Request withdrawal')}}</button>
+        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit" disabled="true">
+            {{__('Request withdrawal')}}
+        </button>
     </div>
     <div class="p-3 pb-4 mt-4">
         <p class="text-sm alertWitdrawalMsg">
@@ -108,6 +110,7 @@
     </div>
 </div>
 
+<script src="{{ asset('C:\Users\Pichau\Documents\Programação\Php\snapic\public\js\pages\settings\withdrawal.js') }}"></script>
 <script>
     let withdrawalInput = document.querySelector('.withdrawalInput')
     let withdrawalContinueBtn = document.querySelector('.withdrawal-continue-btn')

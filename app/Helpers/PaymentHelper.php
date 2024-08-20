@@ -207,7 +207,6 @@ class PaymentHelper
 
             $responseBody = $response->getBody()->getContents();
             $responseData = json_decode($responseBody, true);
-            dd($responseData);
             return $responseData;
         } catch (\Exception $e) {
             dd($e->getMessage());
