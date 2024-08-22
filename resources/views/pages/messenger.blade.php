@@ -47,23 +47,29 @@
     <div class="min-vh-100 col-12">
         <div class="container messenger min-vh-100">
             <div class="row min-vh-100">
-                <div class="col-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-2 border border-right-0 border-left-0 rounded-left conversations-wrapper min-vh-100 overflow-hidden border-top">
+                <div
+                    class="col-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-2 border border-right-0 border-left-0 rounded-left conversations-wrapper min-vh-100 overflow-hidden border-top">
                     <div class="d-flex justify-content-center justify-content-md-between pt-3 pr-1 pb-2">
-                        <h5 class="d-none d-md-block text-truncate pl-3 pl-md-0 text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
+                        <h5
+                            class="d-none d-md-block text-truncate pl-3 pl-md-0 text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
                             {{ __('Contacts') }}
                         </h5>
-                        <span data-toggle="tooltip" title="" class="pointer-cursor" @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}" @else data-original-title="{{ trans_choice('Trigger messages', ['user' => 0]) }}" @endif>
-                            <a href="{{ route('my.messenger.campanha.create') }}" class="pointer-cursor new-conversation-toggle nav-link d-flex justify-content-center align-items-center h-pill h-pill-primary d-flex justify-content-between">
-                                <div class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
-                                    @include('elements.icon', [
-                                    'icon' => 'paper-plane-outline',
-                                    'variant' => 'medium',
-                                    ])
-                                </div>
-                            </a>
+                        <span data-toggle="tooltip" title="" class="pointer-cursor"
+                            @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}" @else data-original-title="{{ trans_choice('Trigger messages', ['user' => 0]) }}" @endif>
+                            <!-- <a href="{{ route('my.messenger.campanha.create') }}"
+                                    class="pointer-cursor new-conversation-toggle nav-link d-flex justify-content-center align-items-center h-pill h-pill-primary d-flex justify-content-between">
+                                    <div
+                                        class="icon-wrapper d-flex justify-content-center align-items-center position-relative">
+                                        @include('elements.icon', [
+                                            'icon' => 'paper-plane-outline',
+                                            'variant' => 'medium',
+                                        ])
+                                    </div>
+                                </a> -->
                         </span>
 
-                        <div class="modal fade" id="campanhaModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="campanhaModal" data-backdrop="static" data-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -73,15 +79,18 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form id="tp2" method="POST" action="{{ route('my.messenger.campanha.store') }}">
+                                        <form id="tp2" method="POST"
+                                            action="{{ route('my.messenger.campanha.store') }}">
                                             @csrf
                                             <div class="form-group p-3">
                                                 <label for="formGroupExampleInput">Valor do conteúdo</label>
-                                                <input type="text" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor do anuncio">
+                                                <input type="text" class="form-control" name="valor"
+                                                    id="formGroupExampleInput" placeholder="Definir valor do anuncio">
                                             </div>
                                             <div class="form-group p-3">
                                                 <label for="formGroupExampleInput2">Mensagem</label>
-                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message"></textarea>
+                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha"
+                                                    name="message"></textarea>
                                             </div>
                                             <div id="tp2" style="display: none;">
                                                 <div class="dz-preview dz-file-preview">
@@ -90,7 +99,8 @@
                                                         <div class="dz-size" data-dz-size></div>
                                                         <img data-dz-thumbnail alt="Preview" />
                                                     </div>
-                                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                                    <div class="dz-progress"><span class="dz-upload"
+                                                            data-dz-uploadprogress></span></div>
                                                     <div class="dz-error-message"><span data-dz-errormessage></span>
                                                     </div>
                                                     <div class="dz-success-mark"><span>✔</span></div>
@@ -104,7 +114,8 @@
                                                         <div class="dz-size" data-dz-size></div>
                                                         <img data-dz-thumbnail alt="Preview" />
                                                     </div>
-                                                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                                    <div class="dz-progress"><span class="dz-upload"
+                                                            data-dz-uploadprogress></span></div>
                                                     <div class="dz-error-message"><span data-dz-errormessage></span>
                                                     </div>
                                                     <div class="dz-success-mark"><span>✔</span></div>
@@ -121,20 +132,23 @@
 
                                             <div class="p-3">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="subscribers">
+                                                    <input class="form-check-input" type="checkbox" value=""
+                                                        id="defaultCheck1" name="subscribers">
                                                     <label class="form-check-label" for="defaultCheck1">
                                                         Assinantes
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" name="followers">
+                                                    <input class="form-check-input" type="checkbox" value=""
+                                                        id="defaultCheck2" name="followers">
                                                     <label class="form-check-label" for="defaultCheck2">
                                                         Seguidores
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="ml-3 mr-3 mb-2">
-                                                <button type="submit" class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
+                                                <button type="submit"
+                                                    class="btn btn-block btn-round border btn-primary btn-round px-3 p-3 mt-3 border text-sm">
                                                     Promover
                                                 </button>
                                             </div>
@@ -143,8 +157,10 @@
                                 </div>
                             </div>
                         </div>
-                        <span data-toggle="tooltip" title="" class="pointer-cursor" @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}" @else data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}" @endif>
-                            <a title="" class="pointer-cursor new-conversation-toggle" data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}">
+                        <span data-toggle="tooltip" title="" class="pointer-cursor"
+                            @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}" @else data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}" @endif>
+                            <a title="" class="pointer-cursor new-conversation-toggle"
+                                data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}">
                                 <div class="mt-0 h5">@include('elements.icon', [
                                     'icon' => 'create-outline',
                                     'variant' => 'medium',
@@ -163,29 +179,36 @@
                     </div>
                 </div>
 
-                <div class="col-9 col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-10 border conversation-wrapper rounded-right p-0 d-flex flex-column min-vh-100 pl-5 pr-5">
+                <div
+                    class="col-9 col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-10 border conversation-wrapper rounded-right p-0 d-flex flex-column min-vh-100 px-2">
                     @include('elements.message-alert')
                     @include('elements.messenger.messenger-conversation-header')
                     @include('elements.messenger.messenger-new-conversation-header')
                     @include('elements.preloading.messenger-conversation-header-box')
                     @include('elements.preloading.messenger-conversation-box')
-                    <div class="conversation-content pt-4 pb-1 px-3 flex-fill"></div>
+                    <div class="conversation-content pt-4 pb-1 flex-fill"></div>
                     <div class="dropzone-previews dropzone w-100 ppl-0 pr-0 pt-1 pb-1"></div>
-                    <div class="conversation-writeup pt-1 pb-3 d-flex align-items-center {{ !$lastContactID ? 'hidden' : '' }}">
+                    <div
+                        class="conversation-writeup pt-1 pb-3 d-flex align-items-center {{ !$lastContactID ? 'hidden' : '' }}">
                         <form class="message-form w-100">
                             <div class="input-group messageBoxInput-wrapper">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="receiverID" id="receiverID" value="">
-                                <textarea name="message" class="form-control messageBoxInput dropzone" placeholder="{{ __('Write a message..') }}" onkeyup="messenger.textAreaAdjust(this)"></textarea>
+                                <textarea name="message" class="form-control messageBoxInput dropzone" placeholder="{{ __('Write a message..') }}"
+                                    onkeyup="messenger.textAreaAdjust(this)"></textarea>
                                 <div class="btn-group dropup">
-                                    <button type="button" class="icon-drop-menu d-flex btn-dropdown-message bg-transparent border-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button"
+                                        class="icon-drop-menu d-flex btn-dropdown-message bg-transparent border-none"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @include('elements.icon', [
                                         'icon' => 'ellipsis-horizontal-outline',
                                         'variant' => '',
                                         ])
                                     </button>
                                     <div class="dropdown-menu">
-                                        <button type="button" class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Attach file') }}">
+                                        <button type="button"
+                                            class="dropdown-item messenger-button attach-file file-upload-button to-tooltip dz-clickable"
+                                            data-placement="top" title="{{ __('Attach file') }}">
                                             <div class="d-flex justify-content-between button-message-drop">
                                                 <h5 class="text-sm dropdown-message-text">Anexar arquivo</h5>
                                                 <div class="d-flex justify-content-center align-items-center">
@@ -199,21 +222,27 @@
                                         @if (GenericHelper::creatorCanEarnMoney(Auth::user()) &&
                                         !(!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks')) &&
                                         Auth::user()->paid_profile === 1)
-                                        <button class="dropdown-item  messenger-button attach-file file-upload-button to-tooltip dz-clickable" data-placement="top" title="{{ __('Message price') }}" onClick="messenger.showSetPriceDialog()">
+                                        <button
+                                            class="dropdown-item  messenger-button attach-file file-upload-button to-tooltip dz-clickable"
+                                            data-placement="top" title="{{ __('Message price') }}"
+                                            onClick="messenger.showSetPriceDialog()">
                                             <h5 class="text-sm dropdown-message-text">Preço mensagem</h5>
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <span class="message-price-lock">@include('elements.icon', [
+                                                <span
+                                                    class="message-price-lock">@include('elements.icon', [
                                                     'icon' => 'lock-open',
                                                     'variant' => '',
                                                     ])</span>
-                                                <span class="message-price-close d-none">@include('elements.icon', [
+                                                <span
+                                                    class="message-price-close d-none">@include('elements.icon', [
                                                     'icon' => 'lock-closed',
                                                     'variant' => '',
                                                     ])</span>
                                             </div>
                                         </button>
                                         @else
-                                        <span class="p-pill ml-2 pointer-cursor to-tooltip" @if (!Auth::user()->email_verified_at && getSetting('site.enforce_email_validation')) data-placement="top" title="{{ __('Please verify your account') }}"
+                                        <span class="p-pill ml-2 pointer-cursor to-tooltip"
+                                            @if (!Auth::user()->email_verified_at && getSetting('site.enforce_email_validation')) data-placement="top" title="{{ __('Please verify your account') }}"
                                             @elseif(!GenericHelper::creatorCanEarnMoney(Auth::user()))
                                             data-placement="top" title="{{ __('This creator cannot earn money yet') }}"
                                             @else
@@ -230,7 +259,9 @@
                                         @endif
                                         <div class="d-flex">
                                             <h5 class="text-sm dropdown-message-text">Emoji</h5>
-                                            <span class="h-pill h-pill-primary rounded mr-3 trigger" data-toggle="tooltip" data-placement="top" title="{{ __('Like') }}">😊</span>
+                                            <span class="h-pill h-pill-primary rounded mr-3 trigger"
+                                                data-toggle="tooltip" data-placement="top"
+                                                title="{{ __('Like') }}">😊</span>
                                             <div>
                                             </div>
                                         </div>
@@ -242,7 +273,10 @@
                             !(
                             !GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks')
                             ) /*|| Auth::user()->role_id === 1*/)
-                            <button class="btn btn-outline-primary btn-rounded-icon messenger-button mx-2 to-tooltip" data-placement="top" title="{{ __('Message price') }}" onClick="messenger.showSetPriceDialog()">
+                            <button
+                                class="btn btn-outline-primary btn-rounded-icon messenger-button mx-2 to-tooltip"
+                                data-placement="top" title="{{ __('Message price') }}"
+                                onClick="messenger.showSetPriceDialog()">
                                 <div class="d-flex justify-content-center align-items-center">
                                     <span class="message-price-lock">@include('elements.icon', [
                                         'icon' => 'lock-open',
@@ -255,7 +289,10 @@
                                 </div>
                             </button>
                             @endif
-                            <button class="btn btn-outline-primary btn-rounded-icon messenger-button send-message mr-2 to-tooltip" onClick="messenger.sendMessage()" data-placement="top" title="{{ __('Send message') }}">
+                            <button
+                                class="btn btn-outline-primary btn-rounded-icon messenger-button send-message mr-2 to-tooltip"
+                                onClick="messenger.sendMessage()" data-placement="top"
+                                title="{{ __('Send message') }}">
                                 <div class="d-flex justify-content-center align-items-center">
                                     @include('elements.icon', [
                                     'icon' => 'paper-plane',

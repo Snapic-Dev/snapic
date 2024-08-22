@@ -777,6 +777,19 @@ var messenger = {
    */
   parseMessageAttachment: function (file) {
     let attachmentsHtml = "";
+    function adjustUrl(url) {
+      if (url.includes("firebasestorage.googleapis.com")) {
+        const startIndex = url.indexOf(
+          "https://firebasestorage.googleapis.com"
+        );
+        const adjustedUrl = url.substring(startIndex);
+
+        return adjustedUrl;
+      } else {
+        return url;
+      }
+    }
+    let adjustedThumbnailUrl = adjustUrl(file.thumbnail);
     switch (file.type) {
       case "avi":
       case "mp4":
@@ -807,11 +820,13 @@ var messenger = {
       case "jpeg":
         attachmentsHtml = `
                     <a href="${file.path}" rel="mswp" title="">
-                        <img src="${file.thumbnail}" class="mr-2 mt-2">
+                        <img src="${adjustedThumbnailUrl}" class="mr-2 mt-2">
                     </a>`;
         break;
       default:
-        attachmentsHtml = `<img src="${file.thumbnail}" class="mr-2 mt-2">`;
+        attachmentsHtml = ` <a href="${file.path}" rel="mswp" title="">
+                        <img src="${adjustedThumbnailUrl}" class="mr-2 mt-2">
+                    </a>`;
         break;
     }
     return attachmentsHtml;

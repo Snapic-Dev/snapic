@@ -237,14 +237,14 @@ class StreamsServiceProvider extends ServiceProvider
 
     public static function createBitmovinStreaming($options)
     {
-        Log::info('Options:', $options);
+        // Log::info('Options:', $options);
 
-        $userId = Auth::id();
-        Log::info('userId:', $userId);
+        // $userId = Auth::id();
+        // Log::info('userId:', $userId);
 
         return [
             'status' => 'success',
-            'id' =>  $userId,
+            'id' =>  "123",
             'rtmp_key' => 'fake-rtmp-key',
             'rtmp_server' => 'fake-rtmp-server',
             'hls_link' => 'http://fake-hls-link',

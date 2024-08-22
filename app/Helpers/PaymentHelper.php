@@ -25,6 +25,8 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
+use Gerencianet\Exception\GerencianetException;
+use Gerencianet\Gerencianet;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -80,7 +82,7 @@ class PaymentHelper
 
     private function initializeCertificado()
     {
-        $this->certificado = Storage::disk('local')->get('certs/cert-homolog.p12');
+        $this->certificado = Storage::disk('local')->get('certs/cert-production.p12');
 
         if ($this->certificado === false) {
             throw new \Exception('Erro ao carregar o certificado.');
@@ -90,11 +92,11 @@ class PaymentHelper
     private function initializeCredentials()
     {
         $this->credentials = [
-            'client_id' => 'Client_Id_fc988c1008cbc2ecebf4416155d487831d0704d8',
-            'client_secret' => 'Client_Secret_41320d15fd9175ea4c418f1cfa50e4f663cb8fee',
+            'client_id' => ' Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
+            'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
         ];
 
-        $this->gateway_url = 'https://pix-h.api.efipay.com.br';
+        $this->gateway_url = 'https://pix.api.efipay.com.br';
         $this->data_credentials = $this->credentials['client_id'] . ':' . $this->credentials['client_secret'];
     }
 
@@ -105,11 +107,11 @@ class PaymentHelper
             'http_errors' => false,
             'verify' => false,
             'cert' => [
-                'certs/cert-homolog.p12',
+                'certs/cert-production.p12',
                 ''
             ],
             'ssl_key' => [
-                'certs/cert-homolog.p12',
+                'certs/cert-production.p12',
                 ''
             ]
         ]);
@@ -133,10 +135,9 @@ class PaymentHelper
     private function getAccessToken()
     {
         $data = ['grant_type' => 'client_credentials'];
-        $auth = base64_encode($this->data_credentials);
-
+        $auth = base64_encode('Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da:Client_Secret_7852a68ae57877666a62866fdbfea77801953657');
         try {
-            $config = $this->getGuzzleConfig("Basic $auth", $data, '/oauth/token');
+            $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
 
             $response = $this->client->request($config['method'], $config['url'], [
                 'headers' => $config['headers'],
@@ -144,10 +145,9 @@ class PaymentHelper
             ]);
 
             $body = json_decode($response->getBody(), true);
-
             return $body['access_token'];
         } catch (RequestException $e) {
-            return $e->getMessage();
+            dd('' . $e->getMessage());
         }
     }
 
@@ -165,31 +165,109 @@ class PaymentHelper
             ]);
             $responseBody = $response->getBody()->getContents();
             $responseData = json_decode($responseBody, true);
-            dd($responseData);
+
             return $responseData;
         } catch (RequestException $e) {
             return $e->getMessage();
         }
     }
-
     private function preparePaymentData($dto)
     {
+        $user = User::where('id', $dto['recipient_user_id'])->first();
         return [
             "calendario" => [
                 "expiracao" => 3600
             ],
             "devedor" => [
-                "cpf" => "12345678909",
-                "nome" => "John Doe"
+                "cpf" => $user->cpf,
+                "nome" => $user->name
             ],
             "valor" => [
-                "original" => "123.45"
+                "original" => number_format($dto['amount'], 2, '.', ''),
             ],
-            "chave" => "john.doe@gmail.com",
-            "solicitacaoPagador" => "Cobrança dos serviços prestados."
+            "chave" => "55673748000147",
+            "solicitacaoPagador" => "Compra de créditos no Snapic."
         ];
     }
 
+    public function makeTransfer($amount, $identifier)
+    {
+        try {
+
+            $data = $this->prepareTransferData($amount, $identifier);
+            $accessToken = $this->getAccessToken();
+
+            $randomId = rand(100, 9999999);
+
+            $config = $this->getGuzzleConfig("Bearer $accessToken", $data, "/v2/gn/pix/$randomId", true);
+
+            $response = $this->client->request($config['method'], $config['url'], [
+                'headers' => $config['headers'],
+                'body' => $config['body']
+            ]);
+            $responseBody = $response->getBody()->getContents();
+            $responseData = json_decode($responseBody, true);
+            return $responseData;
+        } catch (\Exception $e) {
+            echo ($e->getMessage());
+        }
+    }
+
+    private function prepareTransferData($amount, $identifier)
+    {
+        return [
+            'valor' => number_format($amount, 2, '.', ''),
+            'pagador' => [
+                'chave' => '55673748000147',
+                'infoPagador' => '',
+            ],
+            'favorecido' => [
+                'chave' => $identifier,
+            ],
+        ];
+    }
+    public function configureWebhook(Request $request)
+    {
+        try {
+            $data = [
+                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.shop/snapic/webhook'), // Usa a URL do corpo se fornecida
+            ];
+
+            $params = [
+                'chave' => $request->input('chave', '55673748000147'),
+            ];
+
+            $options = [
+                'client_id' => env('GERENCIANET_CLIENT_ID'),
+                'client_secret' => env('GERENCIANET_CLIENT_SECRET'),
+                'sandbox' => env('GERENCIANET_SANDBOX', true),
+                'pix_cert' => env('GERENCIANET_PIX_CERT'),
+                'debug' => env('GERENCIANET_DEBUG', true)
+            ];
+
+
+
+            $api = new Gerencianet($options);
+
+            $response = $api->pixConfigWebhook($params, $data);
+
+            return response()->json($response, 200);
+        } catch (GerencianetException $e) {
+            \Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     private $paypalApiContext;
 
@@ -1097,49 +1175,71 @@ class PaymentHelper
      */
     public function redirectByTransaction($transaction, $message = null)
     {
-
-        // Not sure why translation locale is not being applied here, re-appliying it
+        // Reaplica a tradução preferida do usuário, caso não esteja sendo aplicada corretamente.
         App::setLocale(GenericHelperServiceProvider::getPreferredLanguage());
 
+        // Define uma mensagem de erro padrão caso o pagamento falhe.
         $errorMessage = __('Payment failed.');
+        // Se uma mensagem customizada foi passada, ela é usada em vez da mensagem padrão.
         if ($message != null) {
             $errorMessage = $message;
         }
+
+        // Verifica se há uma transação válida.
         if ($transaction != null) {
-            // handles approved status
+            // Recupera o usuário destinatário da transação.
             $recipient = User::query()->where(['id' => $transaction->recipient_user_id])->first();
+
+            // Verifica se a transação foi aprovada.
             if ($transaction->status === Transaction::APPROVED_STATUS) {
+                // Define uma mensagem de sucesso padrão.
                 $successMessage = __('Payment succeeded');
+
+                // Verifica o tipo de transação e ajusta a mensagem de sucesso de acordo.
                 if ($this->isSubscriptionPayment($transaction->type)) {
                     $successMessage = __('You can now access this user profile.');
                 } elseif ($transaction->type === Transaction::DEPOSIT_TYPE) {
+                    // Define a mensagem para depósitos, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You have been credited :currencySymbol:amount Happy spending!'
                         : 'You have been credited :amount:currencySymbol Happy spending!';
-                    $successMessage = __($key, ['amount' => $transaction->amount, 'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()]);
+                    $successMessage = __($key, [
+                        'amount' => $transaction->amount,
+                        'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
+                    ]);
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
+                    // Define a mensagem para gorjetas, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You successfully sent a tip of :currencySymbol:amount.'
                         : 'You successfully sent a tip of :amount:currencySymbol.';
-                    $successMessage = __($key, ['amount' => $transaction->amount, 'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()]);
+                    $successMessage = __($key, [
+                        'amount' => $transaction->amount,
+                        'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
+                    ]);
                 } elseif ($transaction->type === Transaction::POST_UNLOCK) {
+                    // Define a mensagem para desbloqueio de postagens.
                     $successMessage = __('You successfully unlocked this post.');
                 } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
+                    // Define a mensagem para pagamento de acesso a streaming.
                     $successMessage = __('You successfully paid for this streaming.');
                 } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
+                    // Define a mensagem para desbloqueio de mensagens.
                     $successMessage = __('You successfully unlocked this message.');
                 }
 
+                // Redireciona o usuário com uma mensagem de sucesso.
                 return $this->handleRedirectByTransaction($transaction, $recipient, $successMessage, $success = true);
-                // handles any other status
             } else {
+                // Se a transação não foi aprovada, redireciona com uma mensagem de erro.
                 return $this->handleRedirectByTransaction($transaction, $recipient, $errorMessage, $success = false);
             }
         } else {
+            // Se não há uma transação válida, redireciona o usuário para a página principal (feed) com uma mensagem de erro.
             return Redirect::route('feed')
                 ->with('error', $errorMessage);
         }
     }
+
 
     /**
      * Handles redirect by transaction type

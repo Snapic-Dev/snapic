@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\ReferralCodeUsage;
 use App\Model\UserVerify;
+use App\Models\Niche;
 use App\Providers\AuthServiceProvider;
+use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class RegisterInfluencerController extends Controller
 {
     protected $redirectTo;
+    protected $providerFirebase;
 
-    public function __construct()
+    /**
+     * PaymentsController constructor.
+     * @param FirebaseProvider $providerFirebase
+     */
+
+    public function __construct(FirebaseProvider $providerFirebase)
     {
+        $this->providerFirebase = $providerFirebase;
+
         $redirectRoute = route('feed');
         if (getSetting('site.redirect_page_after_register') && getSetting('site.redirect_page_after_register') == 'settings') {
             $redirectRoute = route('my.settings');
@@ -71,6 +79,7 @@ class RegisterInfluencerController extends Controller
     {
         return AuthServiceProvider::createInfluencer($data);
     }
+
     protected function registered(Request $request, $user)
     {
         if ($request->ajax()) {
@@ -80,18 +89,37 @@ class RegisterInfluencerController extends Controller
 
     public function showRegistrationForm()
     {
-        return view('auth.register-influencer');
+        $niches = Niche::all();
+        return view('auth.register-influencer', compact('niches'));
     }
 
     public function register(Request $request)
     {
-        $referral = $request->query('referral');
+        ini_set('memory_limit', '256M');
+
+        if ($request->hasFile('frontDoc') && $request->hasFile('backDoc')) {
+            $frontDocUrl = $this->providerFirebase->uploadToFirebase($request->file('frontDoc'));
+            $backDocUrl = $this->providerFirebase->uploadToFirebase($request->file('backDoc'));
+        } else {
+            return redirect()->back()->withErrors(['msg' => 'Both documents are required.']);
+        }
+
         $this->validator($request->all())->validate();
+
         $user = $this->create($request->all());
+
+        $referral = $request->query('referral');
+
+        if ($referral) {
+            ReferralCodeUsage::create([
+                'used_by' => $user->id,
+                'referral_code' => $referral,
+            ]);
+        }
         UserVerify::create([
             'user_id' => $user->id,
-            'doc_front' => $request->input('frontDoc'),
-            'doc_back' => $request->input('backDoc'),
+            'doc_front' => $frontDocUrl,
+            'doc_back' => $backDocUrl,
         ]);
 
         return redirect($this->redirectTo)->with('success', 'Registration successful!');

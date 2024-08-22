@@ -1,19 +1,5 @@
-@php
-    $niches = [
-        'Tecnologia',
-        'Saúde',
-        'Finanças',
-        'Educação',
-        'Moda',
-        'Esportes',
-        'Entretenimento',
-        'Viagens',
-        'Alimentação',
-        'Beleza',
-    ];
-@endphp
-
-<form method="POST" action="{{ route('register-influencer-submit') }}" id="register-influencer-form">
+<form method="POST" action="{{ route('register-influencer-submit') }}" id="register-influencer-form"
+    enctype="multipart/form-data">
     @csrf
 
     @if (getSetting('social-login.facebook_client_id') ||
@@ -104,13 +90,13 @@
 
 
     <div class="form-group ">
-        <label for="niche" class=" col-form-label  required-label">{{ __('niche') }}</label>
+        <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label>
         <div class="">
             <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche" required>
                 <option value="">{{ __('Selecione um niche') }}</option>
                 @foreach ($niches as $niche)
-                    <option value="{{ $niche }}" {{ old('niche') == $niche ? 'selected' : '' }}>
-                        {{ $niche }}
+                    <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
+                        {{ $niche->name }}
                     </option>
                 @endforeach
             </select>
