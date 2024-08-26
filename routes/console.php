@@ -15,6 +15,5 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Artisan::command('inspire', function () {
-    // Obtém uma citação inspiradora e a exibe no console
     $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote'); // Descreve o que o comando faz
+})->describe('Display an inspiring quote');

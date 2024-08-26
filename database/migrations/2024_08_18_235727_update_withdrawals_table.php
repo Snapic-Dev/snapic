@@ -14,11 +14,26 @@ class UpdateWithdrawalsTable extends Migration
     public function up()
     {
         Schema::table('withdrawals', function (Blueprint $table) {
-            $table->string('e2eId')->nullable();
-            $table->string('transfer_id')->nullable();
-            $table->dropColumn('payment_method');
-            $table->dropColumn('stripe_transfer_id');
-            $table->dropColumn('stripe_payout_id');
+
+            if (!Schema::hasColumn('withdrawals', 'e2eId')) {
+                $table->string('e2eId')->nullable();
+            }
+
+
+            if (!Schema::hasColumn('withdrawals', 'transfer_id')) {
+                $table->string('transfer_id')->nullable();
+            }
+
+
+            if (Schema::hasColumn('withdrawals', 'payment_method')) {
+                $table->dropColumn('payment_method');
+            }
+            if (Schema::hasColumn('withdrawals', 'stripe_transfer_id')) {
+                $table->dropColumn('stripe_transfer_id');
+            }
+            if (Schema::hasColumn('withdrawals', 'stripe_payout_id')) {
+                $table->dropColumn('stripe_payout_id');
+            }
         });
     }
 
@@ -30,19 +45,11 @@ class UpdateWithdrawalsTable extends Migration
     public function down()
     {
         Schema::table('withdrawals', function (Blueprint $table) {
-            // Reverter as alterações feitas no método up
-
-            // Remover a nova coluna
-            $table->dropColumn('new_column');
-
-            // Restaurar a coluna modificada (se necessário)
-            $table->decimal('amount', 8, 2)->change();
-
-            // Recriar a coluna removida
-            $table->string('old_column')->nullable();
-
-            // Remover o índice
-            $table->dropIndex(['user_id']);
+            // Restaurar as colunas removidas
+            $table->string('payment_method')->nullable();
+            $table->string('stripe_transfer_id')->nullable();
+            $table->string('stripe_payout_id')->nullable();
+            $table->dropColumn(['e2eId', 'transfer_id']);
         });
     }
 }

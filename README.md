@@ -58,7 +58,7 @@ php artisan code:fix type=php/js
 _Setting up the crons_
 
 ```
-* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+* * * * * C:\Projetos\snapic && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### Ionicons usage

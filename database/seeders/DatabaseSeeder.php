@@ -12,6 +12,7 @@ use Database\Seeders\PermissionRoleTableSeeder;
 use Database\Seeders\UserRolesTableSeeder;
 use Database\Seeders\PublicPagesTableSeeder;
 use Database\Seeders\InsertCountries;
+use Database\Seeders\NichesTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserRolesTableSeeder::class);
         $this->call(InsertCountries::class);
         $this->call(PublicPagesTableSeeder::class);
+        $this->call(NichesTableSeeder::class);
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
