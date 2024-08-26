@@ -23,6 +23,7 @@ use Stripe\StripeClient;
 use Yabacon\Paystack;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Exception;
 
 class PaymentsController extends Controller
 {
@@ -69,8 +70,6 @@ class PaymentsController extends Controller
             if (!$validationAmount) {
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
             }
-
-            $transaction['amount'] = $validationAmount;
 
             if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
                 $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
@@ -124,6 +123,10 @@ class PaymentsController extends Controller
                     $transaction['recipient_user_id'] = Auth::user()->id;
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
+                        $user = User::where('id', $transaction['recipient_user_id'])->first();
+                        if (!$user->cpf) {
+                            throw new Exception("CPF não cadastrado");
+                        }
                         $res = $this->paymentHandler->generationPixPayment($transaction);
                         $transaction['status'] = 'pending';
                         $transaction->save();

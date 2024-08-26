@@ -1,9 +1,8 @@
 body {
-  font-family: "Poppins", sans-serif;
-  font-optical-sizing: auto;
-  min-height: 100% !important;
-}
-
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
+    min-height: 100% !important;
+  }
 /* Top Navbar Menu */
 .navbar {
   padding: 1rem;
@@ -58,20 +57,8 @@ body {
   width: 200px;
 }
 
-.footer-brand-logo {
-  width: 200px;
-  scale: 1.2;
-  object-fit: contain;
-}
-
-.brand-logo-form {
-  position: relative;
-  right: 35px;
-  margin-bottom: 50px;
-}
-
-.rounded-lg {
-  border-radius: 0.4rem !important;
+.rounded-lg{
+    border-radius: 0.4rem!important;
 }
 
 .hidden {
@@ -154,9 +141,8 @@ body {
 .side-menu .icon-wrapper {
   width: 2.6rem;
 }
-
-.side-menu .nav {
-  flex-wrap: nowrap;
+.side-menu .nav{
+    flex-wrap:nowrap;
 }
 
 .side-menu .nav-item i {
@@ -272,11 +258,10 @@ body {
 .pswp_video {
   position: relative !important;
 }
-
-.pswp_audio {
-  position: relative !important;
-  width: 75% !important;
-  height: 100px !important;
+.pswp_audio{
+    position: relative!important;
+    width:75%!important;
+    height:100px!important;
 }
 
 .pswp--zoom-allowed .pswp__img {
@@ -424,9 +409,8 @@ footer .copyRightInfo .nav-link:nth-child(1) {
 footer .text-lg {
   font-size: 1.1rem !important;
 }
-
-footer .ion-icon-wrapper {
-  font-size: 1.25rem !important;
+footer .ion-icon-wrapper{
+    font-size: 1.25rem!important;
 }
 
 footer .brand-logo {
@@ -445,10 +429,8 @@ footer .brand-logo {
 }
 
 .grayscale {
-  filter: gray;
-  /* IE6-9 */
-  -webkit-filter: grayscale(95%);
-  /* Chrome 19+ & Safari 6+ */
+    filter: gray; /* IE6-9 */
+    -webkit-filter: grayscale(95%); /* Chrome 19+ & Safari 6+ */
 }
 
 .grayscale:hover {
@@ -607,19 +589,19 @@ footer .brand-logo {
 }
 
 /* Laravel-Bootstrap mobile navigation hack for larger pagination numbers */
-@media screen and (max-width: 400px) {
-  li.page-item {
-    display: none;
-  }
+@media screen and ( max-width: 400px ){
+    li.page-item {
 
-  .page-item:first-child,
-  .page-item:nth-child(2),
-  .page-item:nth-last-child(2),
-  .page-item:last-child,
-  .page-item.active,
-  .page-item.disabled {
-    display: block;
-  }
+        display: none;
+    }
+    .page-item:first-child,
+    .page-item:nth-child( 2 ),
+    .page-item:nth-last-child( 2 ),
+    .page-item:last-child,
+    .page-item.active,
+    .page-item.disabled {
+        display: block;
+    }
 }
 
 .max-width-150 {
@@ -678,158 +660,160 @@ footer .brand-logo {
 /* settings-wallet-depositals */
 
 .text-opacity-field {
-    opacity: 70%;
+  opacity: 70%;
 }
 
-
 .formInputArea {
-    display: none;
-    flex-direction: column;
-    align-items: center;
+  display: none;
+  flex-direction: column;
+  align-items: center;
 }
 
 .formInputCredit {
-    border-radius: 15px;
-    background-color: #FF3CAC;
-    background-image: linear-gradient(225deg, #784BA0 0%, #784BA0 50%, #2B86C5 100%);
-    border: 1px solid rgba(184, 184, 184, 0.534);
-    height: 300px;
-    width: 23vw;
-    min-width: 300px;
-    box-shadow: rgba(0, 0, 0, 0.308) 0px 18px 50px -10px;
+  border-radius: 15px;
+  background-color: #ff3cac;
+  background-image: linear-gradient(
+    225deg,
+    #784ba0 0%,
+    #784ba0 50%,
+    #2b86c5 100%
+  );
+  border: 1px solid rgba(184, 184, 184, 0.534);
+  height: 300px;
+  width: 23vw;
+  min-width: 300px;
+  box-shadow: rgba(0, 0, 0, 0.308) 0px 18px 50px -10px;
 }
 
 .formInputCredit input::placeholder {
-    font-weight:400;
-    font-size: 14px;
+  font-weight: 400;
+  font-size: 14px;
 }
-
 
 .qrCodeArea {
-    display: flex;
-    justify-content: center;
-    padding: 50px;
+  display: flex;
+  justify-content: center;
+  padding: 50px;
 }
 
-
 .btnPix {
-    background-color:#673AB6;
-    color: white;
-    font-size: 12px;
-    width: 230px;
-    border: none;
-    border-radius:20px;
-    gap:10px
+  background-color: #673ab6;
+  color: white;
+  font-size: 12px;
+  width: 230px;
+  border: none;
+  border-radius: 20px;
+  gap: 10px;
 }
 
 .btnPix:hover {
-  background-color:#ffffff;
+  background-color: #ffffff;
   color: rgba(0, 0, 0, 0.733);
   border: 1px solid rgba(0, 0, 0, 0.13);
 }
 
 .btnQr {
-    background-color:#ffffff;
-    color: black;
-    font-size: 12px;
-    width: 200px;
-    gap:10px
+  background-color: #ffffff;
+  color: black;
+  font-size: 12px;
+  width: 200px;
+  gap: 10px;
 }
 
 .btnPix ionicon {
-    font-size:10px;
+  font-size: 10px;
 }
 
 .inputPix {
-    border: none;
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.801);
-    outline: none;
-    font-size: 38px;
-    width: 10vw;
-    min-width: 300px;
+  border: none;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.801);
+  outline: none;
+  font-size: 38px;
+  width: 10vw;
+  min-width: 300px;
 }
 
-.dateInput{
-    height: 35px;
-    width: 60px;
+.dateInput {
+  height: 35px;
+  width: 60px;
 }
 
 .deposit-continue-btn {
-    width: 400px;
+  width: 400px;
 }
 
 .creditModalTitle {
-    padding: 10px;
-    font-size: 17px;
-    font-weight: 600;
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .modalCreditCard .modal-body {
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .instructionPix {
-    display: flex;
+  display: flex;
 }
 
 .inputPixArea {
-    display: none;
+  display: none;
 }
 
 .inputPixCode {
-    width: 300px;
-    padding: 20px;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    outline:none;
-    color: rgba(0, 0, 0, 0.603);
+  width: 300px;
+  padding: 20px;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: rgba(0, 0, 0, 0.603);
 }
 .textInputArea {
-    color: rgba(0, 0, 0, 0.541);
-    font-size: 11px;
-    font-weight: bold;
+  color: rgba(0, 0, 0, 0.541);
+  font-size: 11px;
+  font-weight: bold;
 }
 .codeInput {
-    height: 35px;
-    width: 80px;
+  height: 35px;
+  width: 80px;
 }
 
 .nameInput {
-    font-size: 18px;
-    font-weight: 300;
+  font-size: 18px;
+  font-weight: 300;
 }
 
 .inputText {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 /* settings-wallet-withdrawal*/
 
 .inputText::placeholder {
-    font-size:15px;
-    color: rgba(0, 0, 0, 0.603);
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.603);
 }
 
 .alertWitdrawalMsg {
-    text-align: center;
-    color: var();
+  text-align: center;
+  color: var();
 }
 
 /*Dispatch email */
 
 .btnDispatch {
-    border: none;
-    background-color: transparent;
+  border: none;
+  background-color: transparent;
 }
 
 .custom-file {
-    width: 300px;
+  width: 300px;
 }
 
 /*payments */
@@ -839,14 +823,14 @@ footer .brand-logo {
   height: 200px;
 }
 .amountText {
-    width: 100%;
+  width: 100%;
 }
 
 .timePayment {
   width: 100%;
 }
 
-.amountText h4{
+.amountText h4 {
   font-size: 17px;
   font-weight: 500;
 }
@@ -864,21 +848,20 @@ footer .brand-logo {
   font-weight: 500;
 }
 
-.amountText h5{
+.amountText h5 {
   font-size: 17px;
-  color:#673AB6;
+  color: #673ab6;
   font-weight: 500;
 }
 
 .timePayment h5 {
   font-size: 17px;
-  color:#673AB6;
+  color: #673ab6;
   font-weight: 500;
 }
 
-
 .qrcodeLoading {
-  color:#673AB6;
+  color: #673ab6;
 }
 
 .dateFilter {
@@ -889,12 +872,15 @@ footer .brand-logo {
   display: none;
 }
 
-.btn200:hover,.btn50:hover,.btn100:hover,.btn400:hover,.btn10:hover,.btn1000:hover {
+.btn200:hover,
+.btn50:hover,
+.btn100:hover,
+.btn400:hover,
+.btn10:hover,
+.btn1000:hover {
   color: white;
-  background-color: #673AB6;
+  background-color: #673ab6;
 }
-
-
 
 .table-responsive::-webkit-scrollbar {
   width: 10px;
@@ -907,7 +893,7 @@ footer .brand-logo {
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-  background-color:#673AB6;
+  background-color: #673ab6;
   border-radius: 15px;
   height: 5px;
   width: 10px;
@@ -918,3 +904,43 @@ footer .brand-logo {
   width: 900px
 }
 
+.file-upload {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload label {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #673ab6;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.file-upload .preview {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.file-upload img {
+  max-height: 200px;
+  max-width: 100%;
+  object-fit: contain;
+  border: 1px solid #673ab6;
+  border-radius: 5px;
+  padding: 5px;
+}

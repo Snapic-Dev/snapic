@@ -18,6 +18,7 @@ RUN apt-get update \
     && apt-get -y install libldap2-dev \
     && apt-get -y install gnupg
 
+
 COPY --from=composer:2.2.0 /usr/bin/composer /usr/local/bin/composer
 
 RUN docker-php-ext-install gettext intl pdo_mysql gd zip exif bcmath \
@@ -36,11 +37,9 @@ COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 COPY --chown=www-data:www-data . /var/www/html/
 
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 WORKDIR /var/www/html
 RUN composer install
-RUN npm install
+RUN php artisan npm:install
 
 EXPOSE 80

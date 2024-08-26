@@ -12,6 +12,7 @@ use App\Providers\SettingsServiceProvider;
 use App\Providers\StripeServiceProvider;
 use App\Providers\WithdrawalsServiceProvider;
 use App\User;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -40,7 +41,7 @@ class WithdrawalsController extends Controller
     public function requestWithdrawal(CreateWithdrawalRequest $request)
     {
         try {
-            $minimal = 100;
+            $minimal = 200;
             $amount = $request->request->get('amount');
             $message = $request->request->get('message');
             $identifier = $request->request->get('identifier');
@@ -82,7 +83,19 @@ class WithdrawalsController extends Controller
 
 
                 if (floatval($minimal) > floatval($amount)) {
-                    $res =  $this->paymentHandler->makeTransfer('aaa');
+                    $res =  $this->paymentHandler->makeTransfer($amount, $identifier);
+
+                    if (!array_key_exists('STATUS', $res) || $res['STATUS'] !== 'EM_PROCESSAMENTO') {
+                        switch ($res['nome']) {
+                            case 'valor_invalido':
+                                throw new Exception("A chave Pix fornecida é inválida");
+                                break;
+                            default:
+                                throw new Exception("Erro desconhecido");
+                                break;
+                        }
+                    }
+
                     $data['status'] = Withdrawal::APPROVED_STATUS;
                     $data['e2eId'] = $res['e2eId'];
                     $data['transfer_id'] = $res['idEnvio'];
