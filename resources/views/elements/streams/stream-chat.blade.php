@@ -3,7 +3,7 @@
 
     @if($stream->canWatchStream)
         <div class="chat-content conversations-wrapper overflow-hidden pb-1 px-3 flex-fill">
-            <div class="conversation-content pt-1 pb-1 px-2 flex-fill">
+            <div class="conversation-content ml-4 p-3 flex-fill">
                 @if($stream->messages->count())
                     @foreach($stream->messages as $message)
                         @include('elements.streams.stream-chat-message',['message'=>$message, 'streamOwnerId' => $stream->user_id])
@@ -21,7 +21,7 @@
         </div>
 
         @if(!isset($streamEnded))
-            <div class="conversation-writeup pt-1 pb-1 d-flex align-items-center mb-1">
+            <div class="conversation-writeup p-5 d-flex align-items-center mb-1">
                 <form class="message-form w-100 pl-3">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="receiverID" id="receiverID" value="">
