@@ -91,152 +91,34 @@ Minify::javascript([
             <div class="pb-3">
                 <div class="giftArea d-flex mt-4">
                     <p>
-                        <button class="btn btn-primary mr-5 btn-round" type="button" data-toggle="collapse" data-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
-                            Presentear
+                        <button class="btn d-flex btn-primary btn-round align-content-center justify-content-center" type="button" data-toggle="collapse" data-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                            <div class="d-flex btnGiftInternArea">
+                                @include('elements.icon', [
+                                'icon' => 'gift',
+                                'variant' => 'medium',
+                                ])
+                                <h5>Presentear</h5>
+                            </div>
                         </button>
                     </p>
-                    <div style="min-height: 120px;">
+                    <div>
                         <div class="collapse width" id="collapseWidthExample">
                             <div class="card card-body" style="width: 620px;">
                                 <div id="giftCarousel" class="carousel slide" data-ride="carousel">
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Joinha.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Joinha</h4>
-                                                        <p class="text-muted">0,10 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Morango.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Morango</h4>
-                                                        <p class="text-muted">0,25 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Pipoca.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Pipoca</h4>
-                                                        <p class="text-muted">0,50 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="carousel-item">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Beijo.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Beijo</h4>
-                                                        <p class="text-muted">1,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Pêssego.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Pêssego</h4>
-                                                        <p class="text-muted">10,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/COIN.png') }}" alt="Descrição da Imagem">
-                                                        <h4>SuperCoin</h4>
-                                                        <p class="text-muted">20,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="carousel-item">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Leite.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Leite</h4>
-                                                        <p class="text-muted">50,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Coração.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Coração</h4>
-                                                        <p class="text-muted">2,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Baú.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Baú</h4>
-                                                        <p class="text-muted">75,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="carousel-item">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Pintinho.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Pintinho</h4>
-                                                        <p class="text-muted">100,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Diabinho.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Diabinho</h4>
-                                                        <p class="text-muted">200,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Rodquinha.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Rosquinha</h4>
-                                                        <p class="text-muted">5,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="carousel-item">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/Sapatinho.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Sapatinho</h4>
-                                                        <p class="text-muted">500,00 Snapcoins</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="giftText d-flex flex-column justify-content-center align-items-center p-4">
-                                                        <img class="giftImage" src="{{ asset('img/PedidoEspecial.png') }}" alt="Descrição da Imagem">
-                                                        <h4>Pedido Especial</h4>
-                                                        <p class="text-muted">Criador define</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="carousel-inner" id="gifts-container">
 
                                     </div>
-
-                                    <a class="carousel-control-prev carouselBtnLeft" href="#giftCarousel" role="button" data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <a class="carousel-control-prev" href="#giftCarousel" role="button" data-slide="prev">
+                                        <h2 class="carouselArrowLeft"><</h2>
                                         <span class="sr-only">Previous</span>
                                     </a>
-                                    <a class="carousel-control-next carouselBtnRight" href="#giftCarousel" role="button" data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <a class="carousel-control-next" href="#giftCarousel" role="button" data-slide="next">
+                                        <h2 class="carouselArrowRight">></h2>
                                         <span class="sr-only">Next</span>
                                     </a>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -253,3 +135,125 @@ Minify::javascript([
 @include('elements.report-user-or-post',['reportStatuses' => ListsHelper::getReportTypes()])
 
 @stop
+
+<script>
+   document.addEventListener('DOMContentLoaded', async function() {
+    try {
+
+        const fetchGifts = async () => {
+
+            const response = await fetch('/giftDates');
+
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return await response.json();
+        };
+
+        const gifts = await fetchGifts();
+        console.log(gifts);
+
+        const container = document.getElementById('gifts-container');
+        container.innerHTML = '';
+
+
+        const chunkArray = (array, size) => {
+            const result = [];
+            for (let i = 0; i < array.length; i += size) {
+                result.push(array.slice(i, i + size));
+            }
+            return result;
+        };
+
+        const giftChunks = chunkArray(gifts, 3);
+
+        giftChunks.forEach((chunk, index) => {
+            const giftElement = document.createElement('div');
+            giftElement.classList.add('carousel-item');
+            const giftAdjust = document.createElement('div');
+            giftAdjust.classList.add('giftsArea');
+            giftElement.appendChild(giftAdjust);
+
+            if (index === 0) {
+                giftElement.classList.add('active');
+            }
+
+            chunk.forEach(gift => {
+                const giftInnerElement = document.createElement('div');
+                giftInnerElement.classList.add('gift-item');
+                giftInnerElement.innerHTML = `
+                    <button class="giftText d-flex flex-column justify-content-center align-items-center p-4" onclick="giftForInfluencer(${gift.id})">
+                        <img class="giftImage" src="${gift.imagem}" alt="Descrição da Imagem">
+                        <div class="mt-2">
+                            <h4>${gift.name}</h4>
+                            <p>R$ ${gift.value}</p>
+                        </div>
+                    </button>
+                `;
+                giftAdjust.appendChild(giftInnerElement);
+            });
+
+            container.appendChild(giftElement);
+        });
+    } catch (error) {
+        console.error('Error fetching gifts:', error);
+    }
+});
+
+    const showToast = (message, isError = false) => {
+        const toastHTML = `
+                <div class="toast ${isError ? 'bg-danger text-white' : 'bg-success text-white'}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">${isError ? 'Error' : 'Success'}</strong>
+                        <small>Agora</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+
+        // Adiciona o toast ao DOM
+        const toastContainer = document.querySelector('.toast-container');
+        if (toastContainer) {
+            toastContainer.innerHTML = toastHTML;
+            const toastElement = toastContainer.querySelector('.toast');
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    };
+
+    async function giftForInfluencer(idGift) {
+        const url = '/process-gift';
+
+        const path = window.location.pathname;
+        const streamId = path.split('/')[2]
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    IdStream: streamId,
+                    giftId: idGift
+                })
+            });
+
+            const res = await response.json();
+            console.log(res);
+            if (res.status === 'success') {
+                launchToast("success", trans("Success"), res.message);
+            } else {
+                launchToast("danger", trans("Error"), res.message);
+            }
+        } catch (error) {
+            launchToast("danger", trans("Error"), res.message);
+        }
+    }
+
+</script>

@@ -185,6 +185,22 @@
     transition: transform 0.2s linear;
 }
 
+.carousel-item button {
+    background-color: transparent;
+    width: 100px;
+    height: 140px;
+    border: none;
+}
+
+.carousel-control-prev-icon {
+    background-color: #8861cc;
+    color: #673AB7;
+}
+
+.card-body {
+    border: none;
+}
+
 
 .giftImage {
     width: 40px;
@@ -193,17 +209,34 @@
 }
 
 
+.btnGiftInternArea {
+    height: 100%;
+    gap: 5px;
+}
+
+
+.btnGiftInternArea h5 {
+    font-size: 13px;
+    text-transform: none;
+    position: relative;top:4px;
+}
+
 .giftText h4{
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 13px;
     margin-top: 5px;
     text-align: center;
+}
+
+.giftsArea {
+    display: flex;
+    gap:40px;
 }
 
 .giftText p{
     font-size: 12px;
     text-align: center;
-
+    color: #673AB7;
 }
 
 .rounded-circle-stream  {
@@ -226,5 +259,14 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+    color: white;
     width: 40%;
+}
+
+.carouselArrowLeft {
+    color: #8861cc;
+}
+
+.carouselArrowRight {
+    color:#8861cc;
 }

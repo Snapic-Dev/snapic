@@ -121,7 +121,7 @@ Minify::javascript([
                     <div class="icon-wrapper d-flex justify-content-center align-items-center">
                         @include('elements.icon', [
                         'icon' => 'megaphone-outline',
-                        'variant' => 'medium',
+                        'variant' => 'large',
                         ])
                     </div>
                     <span class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Campanha') }}</span>

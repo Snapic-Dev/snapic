@@ -6,6 +6,9 @@ use App\Events\NewStreamChatMessage;
 use App\Http\Requests\SaveNewStreamRequest;
 use App\Model\Stream;
 use App\Model\StreamMessage;
+use App\Model\Wallet;
+use App\Model\Gift;
+use App\Model\Transaction;
 use App\Providers\AttachmentServiceProvider;
 use App\Providers\EmailsServiceProvider;
 use App\Providers\GenericHelperServiceProvider;
@@ -16,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use JavaScript;
@@ -528,5 +532,106 @@ class StreamsController extends Controller
             return response()->json(['success' => false, 'errors' => ['file' => $exception->getMessage()]]);
         }
         return response()->json(['success' => true, 'assetSrc' => asset(Storage::url($filePath)), 'assetPath' => $filePath]);
+    }
+
+    public function livesPayments(Request $request)
+    {
+
+        function jsonResponse($status, $message = '')
+        {
+            return response()->json([
+                'status' => $status,
+                'message' => $message,
+            ]);
+        }
+
+        try {
+            $IdStream = $request->get('IdStream');
+            $giftId = $request->get('giftId');
+            $giftValue = Gift::where('id', $giftId)->first();
+
+            $userId = Auth::id();
+            $streamUser = Stream::where('id', $IdStream)->first();
+
+            $wallet = Wallet::where('user_id', $userId)->first();
+            $forWalletUser = Wallet::where('user_id', $streamUser->user_id)->first();
+
+
+            if (!$wallet) {
+                $wallet = Wallet::create([
+                    'user_id' => $userId,
+                    'total' => 0
+                ]);
+            }
+
+            if (!$forWalletUser) {
+                $forWalletUser = Wallet::create([
+                    'user_id' =>  $streamUser->user_id,
+                    'total' => 0
+                ]);
+            }
+
+
+            if (!$giftValue) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Presente não encontrado.',
+                ]);
+            }
+
+            if ($streamUser->user_id === $userId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Transferências para sua própria conta não são permitidas.',
+                ]);
+            }
+
+            if ($wallet->total >= $giftValue->value) {
+                $wallet->total -= $giftValue->value;
+                $forWalletUser->total += $giftValue->value;
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Saldo Insuficiente.',
+                ]);
+            }
+
+            $transaction = new Transaction();
+            $transaction['sender_user_id'] = $userId;
+            $transaction['recipient_user_id'] =  $streamUser->user_id;
+            $transaction['type'] = Transaction::GIFT_TYPE;
+            $transaction['status'] = Transaction::APPROVED_STATUS;
+            $transaction['amount'] = $giftValue->value;
+            $transaction['currency'] = config('app.site.currency_code');
+            $transaction['payment_provider'] = transaction::CREDIT_PROVIDER;
+            $transaction['stream_id'] = $IdStream;
+            $transaction['gift_id'] = $giftId;
+            $errorMessage = __('Something went wrong with this transaction. Please try again');
+
+            $wallet->save();
+            $forWalletUser->save();
+            $transaction->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Presente enviado com sucesso.',
+                'data' => [
+                    'remainingBalance' => $wallet->total,
+                    'recipientNewBalance' => $forWalletUser->total,
+                ],
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erro no envio do presente.',
+            ]);
+        }
+    }
+
+    public function giftRegister()
+    {
+        $giftValue = Gift::all();
+
+        return response()->json($giftValue);
     }
 }

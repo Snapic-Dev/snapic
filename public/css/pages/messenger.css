@@ -99,15 +99,24 @@
 }
 
 .conversation-writeup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 300px;
+    width: 100%;
 }
 
 .messageBoxInput{
     min-height: 45px!important;
     max-height: 120px!important;
+    margin-left: 30px;
+    margin-right: 30px;
     overflow-y: hidden;
     word-wrap:break-word;
-    border-radius: 20px!important;
+    border-radius: 40px!important;
+}
+
+.messageBoxInput::placeholder {
 }
 
 .messenger-buttons-wrapper{}

@@ -19,16 +19,8 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        'payment/paypalStatusUpdate',
-        'payment/stripeStatusUpdate',
-        'payment/coinbaseStatusUpdate',
-        'payment/nowPaymentsStatusUpdate',
-        'payment/ccBillPaymentStatusUpdate',
-        'payment/paystackPaymentStatusUpdate',
-        'payment/mercadoPaymentStatusUpdate',
         'beacon/feed',
         'transcoding/coconut/update',
-        'payment/stripeConnectStatusUpdate',
         'payment/pix',
         'my/messenger/sendMessage',
     ];

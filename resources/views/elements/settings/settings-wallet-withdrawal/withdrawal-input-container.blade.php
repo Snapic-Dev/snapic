@@ -15,23 +15,23 @@
         </div>
     </form>
     <div class="ml-2 d-flex justify-content-center">
-        <button class="btn10 btn btn-round  border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
+        <button class="btnOne btn btn-round  border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
-        <button class="btn50 btn btn-round border ml-2" onclick="inputWithdrawalValue(50)">
-            R$50,00
+        <button class="btnTwo btn btn-round border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }},00
         </button>
-        <button class="btn100 btn btn-round border ml-2" onclick="inputWithdrawalValue(100)">
-            R$100,00
+        <button class="btnThree btn btn-round border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }},00
         </button>
-        <button class="btn200 btn btn-round border ml-2" onclick="inputWithdrawalValue(200)">
-            R$200,00
+        <button class="btnFour btn btn-round border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }},00
         </button>
-        <button class="btn400 btn btn-round border ml-2" onclick="inputWithdrawalValue(400)">
-            R$400,00
+        <button class="btnFive btn btn-round border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }},00
         </button>
-        <button class="btn1000 btn btn-round border ml-2" onclick="inputWithdrawalValue(1000)">
-            R$1000,00
+        <button class="btnSix btn btn-round border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }},00
         </button>
     </div>
     <!-- <div class="input-group-prepend">
@@ -115,12 +115,12 @@
     let withdrawalInput = document.querySelector('.withdrawalInput')
     let withdrawalContinueBtn = document.querySelector('.withdrawal-continue-btn')
 
-    let btn10 = document.querySelector('.btn10');
-    let btn50 = document.querySelector('.btn50');
-    let btn100 = document.querySelector('.btn100');
-    let btn200 = document.querySelector('.btn200');
-    let btn400 = document.querySelector('.btn400');
-    let btn1000 = document.querySelector('.btn1000');
+    let btnOne = document.querySelector('.btnOne');
+    let btnTwo = document.querySelector('.btnTwo');
+    let btnThree = document.querySelector('.btnThree');
+    let btnFour = document.querySelector('.btnFour');
+    let btnFive = document.querySelector('.btnFive');
+    let btnSix = document.querySelector('.btnSix');
 
 
     function inputWithdrawalValue(withdrawalValue) {
