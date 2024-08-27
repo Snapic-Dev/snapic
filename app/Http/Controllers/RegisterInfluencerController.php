@@ -70,7 +70,7 @@ class RegisterInfluencerController extends Controller
                 }
             }],
             'cpf' => $cpfValidationRule,
-            'instagram' => ['nullable', 'string', 'regex:/^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_\.]+\/?$/', 'unique:users'],
+            'website' => ['nullable', 'string', 'regex:/^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_\.]+\/?$/', 'unique:users'],
             'phone' => ['required', 'string', 'regex:/^\+?\d{10,15}$/'],
         ], $additionalRules));
     }
