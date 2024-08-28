@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\ReferralCodeUsage;
 use App\Model\UserVerify;
-use App\Models\Niche;
+use App\Model\Niche;
 use App\Providers\AuthServiceProvider;
 use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
