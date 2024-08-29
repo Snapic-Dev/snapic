@@ -183,7 +183,8 @@ class PaymentHelper
                 "nome" => $user->name
             ],
             "valor" => [
-                "original" => number_format($dto['amount'], 2, '.', ''),
+                // "original" => number_format($dto['amount'], 2, '.', ''),
+		  'original' => '0.01',
             ],
             "chave" => "55673748000147",
             "solicitacaoPagador" => "Compra de créditos no Snapic."
@@ -216,7 +217,8 @@ class PaymentHelper
     private function prepareTransferData($amount, $identifier)
     {
         return [
-            'valor' => number_format($amount, 2, '.', ''),
+            // 'valor' => number_format($amount, 2, '.', ''),
+	    'valor' => '0.01',
             'pagador' => [
                 'chave' => '55673748000147',
                 'infoPagador' => '',
