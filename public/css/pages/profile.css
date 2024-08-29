@@ -27,10 +27,13 @@
 
 
 /* Adicionados por mim no perfil*/
+
 .description-content {
     height: auto;
+    word-wrap: break-word;
     min-height: 50px;
 }
+
 .bioMoreContentArea {
     margin-top: 10px;
 }

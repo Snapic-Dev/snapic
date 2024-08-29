@@ -14,7 +14,7 @@
             </div>
         </div>
     </form>
-    <div class="ml-2 d-flex justify-content-center">
+    <div class="ml-2 d-flex justify-content-center mt-2">
         <button class="btnOne btn btn-round  border ml-2" onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
@@ -102,7 +102,7 @@
         </button>
     </div>
     <div class="p-3 pb-4 mt-4">
-        <p class="text-sm alertWitdrawalMsg">
+        <p class="text-xs alertWitdrawalMsg">
             <strong>Aviso Importante:</strong>
             Restrição de Idade para Saques
             Por favor, esteja ciente de que saques só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de saque por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.
@@ -134,7 +134,8 @@
         let latestWithdrawal = `{{\App\Providers\PaymentsServiceProvider::verifyDiaryWithdrawal(Auth::user()->id)}}`
 
         if (InputWithdrawalValue !== "" && latestWithdrawal) {
-            if (InputWithdrawalValue < 100 && minWithdrawalAmount < InputWithdrawalValue) {
+            console.log(InputWithdrawalValue < 100 && minWithdrawalAmount < InputWithdrawalValue)
+            if (InputWithdrawalValue < 100) {
                 withdrawalContinueBtn.disabled = true;
             } else {
                 withdrawalContinueBtn.disabled = false;

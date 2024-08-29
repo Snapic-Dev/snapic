@@ -95,7 +95,8 @@ class PaymentsServiceProvider extends ServiceProvider
             $depositMaxAmount = SettingsServiceProvider::getWebsiteFormattedAmount(getSetting('payments.deposit_max_amount'));
         }
 
-        return __('Amount') . ' (' . $depositMinAmount . ' min, ' . $depositMaxAmount . ' max)';
+        // return __('Amount') . ' (' . $depositMinAmount . ' min, ' . $depositMaxAmount . ' max)';
+        return __('Amount').' '. 'mínimo de '. $depositMinAmount.',00';
     }
 
     /**
