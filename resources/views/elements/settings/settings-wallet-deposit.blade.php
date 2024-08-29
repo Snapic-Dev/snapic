@@ -3,11 +3,11 @@
         <label class="text-sm text-bold">Valor do Depósito</label>
         <input class="form-control inputText depositInput" placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}" aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number" min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1" max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}">
         <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
-        <div class="p-1">
+        <!-- <div class="p-1">
             <label class="text-sm text-muted">Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00 para saque</label>
-        </div>
+        </div> -->
     </div>
-    <div class="ml-2 mt-3 d-flex justify-content-center">
+    <div class="ml-2 mt-5 d-flex justify-content-center">
         <button class="btn10 btn btn-round  border ml-2" onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
@@ -28,7 +28,7 @@
         </button>
     </div>
 </div>
-<div class="feedbackForUser text-sm mb-3 ml-2 text-bold"></div>
+<div class="feedbackForUser text-sm mb-2 ml-2 text-bold"></div>
 
 <div>
     <div class="payment-method p-2">
@@ -116,7 +116,7 @@
                 </div>
             </button>
             <div class="p-3 pb-4 mt-4">
-                <p class="text-sm alertWitdrawalMsg">
+                <p class="text-xs alertWitdrawalMsg">
                     <strong>Aviso Importante:</strong>
                     Restrição de Idade para Depósitos
                     Por favor, esteja ciente de que depósitos só podem ser realizados por indivíduos maiores de <strong>18 anos</strong>. Qualquer tentativa de depósito por <strong>menores de idade</strong> será rejeitada conforme nossa <strong>política de segurança</strong>.

@@ -4,7 +4,11 @@ namespace App\Providers;
 
 use App\Model\Attachment;
 use App\Model\PaymentRequest;
+use App\Model\Stream;
+use App\Model\Wallet;
 use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -75,4 +79,7 @@ class PaymentRequestServiceProvider extends ServiceProvider
             }
         }
     }
+
+
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\ReferralCodeUsage;
 use App\Model\UserVerify;
+use App\Model\Niche;
 use App\Providers\AuthServiceProvider;
 use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
@@ -31,7 +32,6 @@ class RegisterInfluencerController extends Controller
         $this->redirectTo = $redirectRoute;
         $this->middleware('guest');
     }
-
 
     protected function validator(array $data)
     {
@@ -79,6 +79,7 @@ class RegisterInfluencerController extends Controller
     {
         return AuthServiceProvider::createInfluencer($data);
     }
+
     protected function registered(Request $request, $user)
     {
         if ($request->ajax()) {
@@ -88,7 +89,8 @@ class RegisterInfluencerController extends Controller
 
     public function showRegistrationForm()
     {
-        return view('auth.register-influencer');
+        $niches = Niche::all();
+        return view('auth.register-influencer', compact('niches'));
     }
 
     public function register(Request $request)
@@ -101,18 +103,19 @@ class RegisterInfluencerController extends Controller
         } else {
             return redirect()->back()->withErrors(['msg' => 'Both documents are required.']);
         }
+
         $this->validator($request->all())->validate();
+
         $user = $this->create($request->all());
+
         $referral = $request->query('referral');
+
         if ($referral) {
             ReferralCodeUsage::create([
                 'used_by' => $user->id,
-                'referral_code' => $user->referral,
+                'referral_code' => $referral,
             ]);
         }
-
-        unset($request);
-
         UserVerify::create([
             'user_id' => $user->id,
             'doc_front' => $frontDocUrl,

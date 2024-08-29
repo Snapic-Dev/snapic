@@ -39,12 +39,12 @@
                 <form id="myForm" class="w-100">
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="formGroupExampleInput">Valor do conteúdo</label>
-                        <input type="number" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" required>
+                        <input type="number" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" min=20 required>
                         <span id="errorPrice" style="display: none;" class="text-danger mt-2">Defina um valor para o anúncio </span>
                     </div>
-                    <div class="form-group p-3 ml-4 mr-4">
+                    <!-- <div class="form-group p-3 ml-4 mr-4">
                         <label>Adicionar arquivo</label>
-                        <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb   " name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('frontPreview'))">
+                        <input id="inputFile file-upload" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb   " name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('frontPreview'))">
                         <div>
                             <span id="errorFile" style="display: none;" class="text-danger mt-2">Por favor,selecione uma imagem</span>
                         </div>
@@ -56,6 +56,25 @@
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
+                    </div> -->
+                    <div class="form-group formFile p-3 ml-4 mr-4">
+                        <label for="frontDoc" class="col-form-label required-label">Adicionar arquivo</label>
+                        <div class="file-upload">
+                            <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
+                                name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
+                                onchange="previewImage(this, document.getElementById('frontPreview'))">
+                            <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                                <ion-icon name="document-outline"></ion-icon>
+                                {{ __('Escolher arquivo') }}</label>
+                            <div class="preview">
+                                <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
+                            </div>
+                        </div>
+                        @error('frontDoc')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="exampleFormControlTextarea1">Mensagem</label>
@@ -66,15 +85,15 @@
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <label class="font-bold">Enviar campanha para</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="defaultCheck1" name="subscribers">
-                            <p class="form-check-label" for="defaultCheck1">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input mr-2" type="checkbox" value="1" id="defaultCheck1" name="subscribers">
+                            <p class="form-check-label ml-2" for="defaultCheck1">
                                 Assinantes
                             </p>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="defaultCheck2" name="followers">
-                            <p class="form-check-label" for="defaultCheck2">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input mr-2" type="checkbox" value="1" id="defaultCheck2" name="followers">
+                            <p class="form-check-label ml-2" for="defaultCheck2">
                                 Seguidores
                             </p>
                         </div>

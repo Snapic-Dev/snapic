@@ -32,7 +32,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title p-2 text-bold" id="payment-title"></h5>
+                        <h5 class="modal-title p-2" id="payment-title"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Close') }}">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -48,13 +48,13 @@
                                         <div class="ml-2">
                                             <div class="text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }} name">
                                             </div>
-                                            <a class="walletPerfil mt-1" href="/my/settings/wallet">
+                                            <a class="walletPerfil mt-1 d-flex" href="/my/settings/wallet">
                                                 <div class="d-flex justify-content-center align-items-center"">
                                                     @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
                                                 </div>
-                                                <span class=" font-weight-medium wallet-total-amount">
+                                                <span class=" font-weight-medium wallet-total-amount ml-1">
                                                     {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
-                                                    </span>
+                                                </span>
                                             </a>
                                         </div>
                                     </div>
@@ -264,7 +264,7 @@
 </div>
 <div class="modal-footer p-4">
     <button type="button" class="btn btn-round border" data-dismiss="modal">{{ __('Cancel') }}</button>
-    <button type="submit" class="btn btn-round btn-primary checkout-continue-btn">{{ __('Continue') }}
+    <button type="submit" class="btn btn-round btn-primary checkout-continue-btn">{{ __('Confirmar') }}
         <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
             <span class="sr-only">{{ __('Loading...') }}</span>
         </div>

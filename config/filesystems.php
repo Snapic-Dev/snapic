@@ -50,13 +50,13 @@ return [
 
         'tmp' => [
             'driver' => 'local',
-            'root'   => storage_path('app').'/tmp',
+            'root'   => storage_path('app') . '/tmp',
         ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => str_replace('/public', '', env('APP_URL') ? env('APP_URL') : '').'/public/storage',
+            'url' => str_replace('/public', '', env('APP_URL') ? env('APP_URL') : '') . '/public/storage',
             'visibility' => 'public',
         ],
 

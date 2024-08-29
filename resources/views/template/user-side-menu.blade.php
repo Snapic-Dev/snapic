@@ -159,9 +159,9 @@
                 {{ __('Support') }}
             </a>
             <ul class="collapse list-unstyled" id="supportSection">
-                <li>
+                <!-- <li>
                     <a class="scroll-link d-flex align-items-center" href="URL_DO_SEU_LIVE_CHAT">{{ __('Live Chat') }}</a>
-                </li>
+                </li> -->
                 <li>
                     <a class="scroll-link d-flex align-items-center" href="/contact">{{ __('Entre em contato') }}</a>
                 </li>

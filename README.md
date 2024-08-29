@@ -32,6 +32,22 @@ Baseado principalmente nas seguintes tecnologias, além de algumas outras depend
 
 ```
 
+#### PHP COMANDS
+
+```
+
+1) php artisan config:clear
+2) php artisan config:cache
+3) php artisan route:clear
+4) php artisan route:cache
+5) php artisan view:clear
+6) php artisan event:clear
+7) php artisan event:cache
+8) php artisan cache:clear
+9) php artisan optimize:clear (Executa todos os comandos a cima);
+
+```
+
 _Note\*_ If having issues with composer install, try `php -d memory_limit=1G /usr/bin/composer install`
 
 #### Saving admin state via seeds
@@ -58,7 +74,7 @@ php artisan code:fix type=php/js
 _Setting up the crons_
 
 ```
-* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+* * * * * C:\Projetos\snapic && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### Ionicons usage

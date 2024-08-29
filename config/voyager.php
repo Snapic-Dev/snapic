@@ -17,7 +17,7 @@ return [
 
 
     'models' => [
-        //'namespace' => 'App\\Models\\',
+        'namespace' => 'App\\Model\\',
     ],
 
     'storage' => [
@@ -35,19 +35,8 @@ return [
     ],
 
     'multilingual' => [
-        /*
-         * Set whether or not the multilingual is supported by the BREAD input.
-         */
         'enabled' => true,
-
-        /*
-         * Select default language
-         */
         'default' => 'pt',
-
-        /*
-         * Select languages that are supported.
-         */
         'locales' => [
             'en',
             'pt',
@@ -56,7 +45,6 @@ return [
 
 
     'dashboard' => [
-        // Add custom list items to navbar's dropdown
         'navbar_items' => [
             'voyager::generic.profile' => [
                 'route' => 'voyager.profile',
@@ -112,10 +100,9 @@ return [
     ],
 
     'settings' => [
-        // Enables Laravel cache method for
-        // storing cache values between requests
         'cache' => false,
     ],
+
     'compass_in_production' => false,
 
     'media' => [

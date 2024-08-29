@@ -19,6 +19,7 @@ class Transaction extends Model
     const POST_UNLOCK = 'post-unlock';
     const MESSAGE_UNLOCK = 'message-unlock';
     const DEPOSIT_TYPE = 'deposit';
+    const GIFT_TYPE='gift';
     const WITHDRAWAL_TYPE = 'withdrawal';
     const ONE_MONTH_SUBSCRIPTION = 'one-month-subscription';
     const THREE_MONTHS_SUBSCRIPTION = 'three-months-subscription';

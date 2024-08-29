@@ -21,7 +21,7 @@
 }
 
 .conversation-content{
-    height: 250px;
+    height: 180px;
     overflow-x: hidden;
 }
 
@@ -95,4 +95,9 @@
         }
     }
 
+}
+
+.h-pill:hover {
+    background-color: transparent;
+    color:black;
 }

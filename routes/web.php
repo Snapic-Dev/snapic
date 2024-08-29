@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\PaymentRequestServiceProvider;
 use Illuminate\Support\Facades\{
     Route,
     Auth
@@ -158,6 +159,8 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
     Route::delete('stream/comments/delete', ['uses' => 'StreamsController@deleteComment', 'as'  => 'public.stream.comment.delete']);
     Route::get('stream/archive/{streamID}/{slug}', ['uses' => 'StreamsController@getVod', 'as'  => 'public.vod.get']);
     Route::get('stream/{streamID}/{slug}', ['uses' => 'StreamsController@getStream', 'as'  => 'public.stream.get']);
+    Route::post('process-gift', ['uses'=>'StreamsController@livesPayments', 'as' => 'livesPayments']);
+    Route::get('giftDates', ['uses'=>'StreamsController@giftRegister', 'as' => ' giftRegister']);
 
     Route::post('/report/content', ['uses' => 'ListsController@postReport', 'as'   => 'report.content']);
 
