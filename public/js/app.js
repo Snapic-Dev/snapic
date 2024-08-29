@@ -9,7 +9,7 @@
 // Init
 $(function () {
 
-    log('🚀 © JustFans Loaded © 🚀');
+    log('🚀 © Snapic Loaded © 🚀');
 
     // Instantiating default actions if installed
     if(typeof app !== 'undefined'){
@@ -48,7 +48,7 @@ $(function () {
         }
 
 
-        if(app.enable_age_verification_dialog && !(app.tosPageSlug !== null && window.location.href.indexOf(app.tosPageSlug)  >= 1) && !(app.privacyPageSlug !== null && window.location.href.indexOf(app.privacyPageSlug)  >= 1)
+        if(app.enable_age_verification_dialog && !(app.tosPageSlug !== null && window.location.href.indexOf(app.tosPageSlug) >= 1) && !(app.privacyPageSlug !== null && window.location.href.indexOf(app.privacyPageSlug) >= 1)
         ){
             if(!getCookie('site_entry_approval')){
                 $('#site-entry-approval-dialog').modal('show');
