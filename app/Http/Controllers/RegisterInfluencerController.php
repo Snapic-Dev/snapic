@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\ReferralCodeUsage;
 use App\Model\UserVerify;
-use App\Models\Niche;
+use App\Model\Niche;
 use App\Providers\AuthServiceProvider;
 use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
@@ -70,7 +70,7 @@ class RegisterInfluencerController extends Controller
                 }
             }],
             'cpf' => $cpfValidationRule,
-            'instagram' => ['nullable', 'string', 'regex:/^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_\.]+\/?$/', 'unique:users'],
+            'website' => ['nullable', 'string', 'regex:/^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9_\.]+\/?$/', 'unique:users'],
             'phone' => ['required', 'string', 'regex:/^\+?\d{10,15}$/'],
         ], $additionalRules));
     }

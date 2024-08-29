@@ -26,7 +26,7 @@
                          </span>
                      </h6>
                      <small class="text-muted text-truncate overflow-hidden d-flex">
-                         <span class="text-truncate">Started streaming {{$stream->created_at->diffForHumans(null,false,true)}} @if($showUsername), by <a class="text-muted" href="{{route('profile',['username'=>$stream->user->username])}}"><span>@</span>{{$stream->user->username}}</a> @endif</span></small>
+                         <span class="text-truncate">Transmissão iniciada {{$stream->created_at->diffForHumans(null,false,true)}} @if($showUsername), por <a class="text-muted" href="{{route('profile',['username'=>$stream->user->username])}}"><span>@</span>{{$stream->user->username}}</a> @endif</span></small>
                      </div>
                  </div>
              </div>

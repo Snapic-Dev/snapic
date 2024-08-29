@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 "use strict";
 /**
  * Stackable toasts plugin
@@ -10,7 +11,7 @@
     dismissible: true,
     stackable: true,
     pauseDelayOnHover: true,
-    style: {
+    style: { 
       toast: "",
       info: "",
       success: "",

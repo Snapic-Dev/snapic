@@ -8,6 +8,7 @@
                         <option value="">Tipo</option>
                         <option value="stream-access">Stream</option>
                         <option value="post-unlock">Post</option>
+                        <option value="gift">Gift</option>
                         <option value="tip">Gorjeta</option>
                     </select>
                 </div>
@@ -155,6 +156,7 @@
                     <option value="">Tipo</option>
                     <option value="stream-access">Stream</option>
                     <option value="post-unlock">Post</option>
+                    <option value="gift">Gift</option>
                     <option value="tip">Gorjeta</option>
                 </select>
             </div>
