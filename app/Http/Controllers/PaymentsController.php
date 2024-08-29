@@ -372,101 +372,54 @@ class PaymentsController extends Controller
      * @param Request $request
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function checkAndUpdateNowPaymentsTransaction(Request $request)
+    public function handleWebhook(Request $request)
     {
-        $nowPaymentsTransactionToken = $request->get('orderId');
-        $transaction = null;
-        if ($nowPaymentsTransactionToken) {
-            $transaction = Transaction::query()->where('nowpayments_order_id', $nowPaymentsTransactionToken)->first();
-            if ($transaction) {
-                $this->paymentHandler->checkAndUpdateNowPaymentsTransaction($transaction);
-                $transaction->save();
-            }
-        }
+        $transaction = new Transaction();
 
-        return $this->paymentHandler->redirectByTransaction($transaction);
+        $transaction['sender_user_id'] = Auth::user()->id;
+        $transaction['recipient_user_id'] = 1;
+        $transaction['type'] = 'teste';
+        $transaction['status'] = Transaction::CANCELED_STATUS;
+        $transaction['amount'] = 10;
+
+        $transaction->save();
     }
 
-    /**
-     * Process NowPayments IPN hooks
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function nowPaymentsHook(Request $request)
+    public function configWebhook(Request $request)
     {
-        if (!getSetting('payments.nowpayments_ipn_secret_key')) {
-            Log::channel('payments')->info("NowPayments hook error: missing IPN secret key");
-            return response()->json([
-                'status' => 400
-            ], 400);
-        }
-
         try {
-            if (isset($_SERVER['HTTP_X_NOWPAYMENTS_SIG']) && !empty($_SERVER['HTTP_X_NOWPAYMENTS_SIG'])) {
-                $received_hmac = $_SERVER['HTTP_X_NOWPAYMENTS_SIG'];
-                $request_json = $request->getContent();
-                $payload = json_decode($request_json, true);
-                Log::channel('payments')->info("NowPayments hook received: ", [$payload]);
-                ksort($payload);
-                $sorted_request_json = json_encode($payload, JSON_UNESCAPED_SLASHES);
-                if ($request_json !== false && !empty($request_json)) {
-                    $hmac = hash_hmac("sha512", $sorted_request_json, trim(getSetting('payments.nowpayments_ipn_secret_key')));
-                    if ($hmac == $received_hmac) {
-                        Log::channel('payments')->info("NowPayments hook payload: ", [$payload]);
-                        if (isset($payload['order_id']) && isset($payload['payment_status']) && isset($payload['payment_id'])) {
-                            $transaction = Transaction::query()->where('nowpayments_order_id', $payload['order_id'])->with('receiver')->first();
-                            if ($transaction) {
-                                if (in_array($transaction->status, [Transaction::INITIATED_STATUS, Transaction::PENDING_STATUS, Transaction::PARTIALLY_PAID_STATUS])) {
-                                    // payment approved
-                                    if ($payload['payment_status'] === 'finished') {
-                                        $transaction->status = Transaction::APPROVED_STATUS;
-                                        $this->paymentHandler->creditReceiverForTransaction($transaction);
-                                        NotificationServiceProvider::createTipNotificationByTransaction($transaction);
-                                        NotificationServiceProvider::sendApprovedDepositTransactionEmailNotification($transaction);
-                                        NotificationServiceProvider::createPPVNotificationByTransaction($transaction);
-                                        // payment pending
-                                    } elseif ($transaction->status !== Transaction::PENDING_STATUS && in_array($payload['payment_status'], ['waiting', 'confirming', 'sending'])) {
-                                        $transaction->nowpayments_payment_id = $payload['payment_id'];
-                                        $transaction->status = Transaction::PENDING_STATUS;
-                                        // payment partially paid
-                                    } elseif ($payload['payment_status'] === 'partially_paid' && $transaction->status !== Transaction::PARTIALLY_PAID_STATUS) {
-                                        $transaction->status = Transaction::PARTIALLY_PAID_STATUS;
-                                        NotificationServiceProvider::sendNowPaymentsPartiallyPaidTransactionEmailNotification($transaction);
-                                        // payment expired or failed
-                                    } elseif (in_array($payload['payment_status'], ['expired', 'failed'])) {
-                                        $transaction->status = Transaction::DECLINED_STATUS;
-                                    }
-                                    $transaction->save();
-                                    // handle refund
-                                } else if ($transaction->status === Transaction::APPROVED_STATUS && $payload['payment_status'] === 'refunded') {
-                                    $this->paymentHandler->deductMoneyFromUserForRefundedTransaction($transaction);
-                                    $transaction->status = Transaction::REFUNDED_STATUS;
-                                    $transaction->save();
-                                }
-                            }
-                        }
-
-                        return response()->json([
-                            'status' => 200
-                        ], 200);
-                    } else {
-                        Log::channel('payments')->info('NowPayments HMAC signature does not match');
-                    }
-                } else {
-                    Log::channel('payments')->info('NowPayments Error reading POST data');
-                }
-            } else {
-                Log::channel('payments')->info('NowPayments No HMAC signature sent.');
-            }
-        } catch (\Exception $exception) {
-            Log::channel('payments')->info("NowPayments hook error: ", [$exception->getMessage()]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 400
-        ], 400);
     }
+    public function pixWebhook(Request $request)
+    {
+        try {
+            $transaction = new Transaction();
 
+            $transaction['sender_user_id'] = Auth::user()->id;
+            $transaction['recipient_user_id'] = 1;
+            $transaction['type'] = 'teste';
+            $transaction['status'] = Transaction::CANCELED_STATUS;
+            $transaction['amount'] = 10;
+
+            $transaction->save();
+
+            return response()->json([
+                'message' => $request,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Falha ao configurar o webhook',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse

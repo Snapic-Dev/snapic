@@ -134,7 +134,6 @@ class PaymentHelper
 
     private function getAccessToken()
     {
-        $data = ['grant_type' => 'client_credentials'];
         $auth = base64_encode('Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da:Client_Secret_7852a68ae57877666a62866fdbfea77801953657');
         try {
             $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
@@ -183,10 +182,10 @@ class PaymentHelper
                 "nome" => $user->name
             ],
             "valor" => [
-                "original" => number_format($dto['amount'], 2, '.', ''),
+                "original" => '0.01',
             ],
             "chave" => "55673748000147",
-            "solicitacaoPagador" => "Compra de créditos no Snapic."
+            "solicitacaoPagador" => "Compra de créditos no Snapic.",
         ];
     }
 
@@ -216,7 +215,8 @@ class PaymentHelper
     private function prepareTransferData($amount, $identifier)
     {
         return [
-            'valor' => number_format($amount, 2, '.', ''),
+            'valor' =>
+            '0.01',
             'pagador' => [
                 'chave' => '55673748000147',
                 'infoPagador' => '',
@@ -230,7 +230,7 @@ class PaymentHelper
     {
         try {
             $data = [
-                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.shop/snapic/webhook'), // Usa a URL do corpo se fornecida
+                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.com.br/prod/webhook'),
             ];
 
             $params = [
@@ -238,14 +238,11 @@ class PaymentHelper
             ];
 
             $options = [
-                'client_id' => env('GERENCIANET_CLIENT_ID'),
-                'client_secret' => env('GERENCIANET_CLIENT_SECRET'),
+                'client_id' => 'Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
+                'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
                 'sandbox' => env('GERENCIANET_SANDBOX', true),
-                'pix_cert' => env('GERENCIANET_PIX_CERT'),
-                'debug' => env('GERENCIANET_DEBUG', true)
+                'pix_cert' => storage_path('../public/certs/truststore.pem'),
             ];
-
-
 
             $api = new Gerencianet($options);
 
@@ -253,14 +250,14 @@ class PaymentHelper
 
             return response()->json($response, 200);
         } catch (GerencianetException $e) {
-            \Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'message' => 'Falha ao configurar o webhook',
                 'error' => $e->getMessage(),
             ], 500);
         } catch (\Exception $e) {
-            \Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
+            Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'message' => 'Falha ao configurar o webhook',

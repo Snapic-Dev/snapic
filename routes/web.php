@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentsController;
 use Illuminate\Support\Facades\{
     Route,
     Auth
@@ -73,6 +74,10 @@ Route::post('/payment/pix', [
     'uses' => 'PaymentsController@generatePix',
     'as' => 'pix',
 ]);
+
+Route::post('/payment/webhook', [PaymentsController::class, 'handleWebhook']);
+Route::get('/payment/webhook/config', [PaymentsController::class, 'configWebhook']);
+Route::post('/payment/webhook/pix', [PaymentsController::class, 'pixWebhook']);
 
 Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
     // Settings panel routes

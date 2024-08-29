@@ -31,5 +31,8 @@ class VerifyCsrfToken extends Middleware
         'payment/stripeConnectStatusUpdate',
         'payment/pix',
         'my/messenger/sendMessage',
+        'payment/webhook',
+        'payment/webhook/config',
+        'payment/webhook/pix'
     ];
 }
