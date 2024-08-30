@@ -292,136 +292,119 @@ class MessengerController extends Controller
      */
     public function sendUserMessage($options)
     {
-        try {
-            // Obtendo os valores das opções fornecidas
-            $senderID = $options['senderID'];
-            $receiverID = $options['receiverID'];
-            $messageValue = $options['messageValue'];
-            $messagePrice = $options['messagePrice'];
-            $attachments =  $options['attachments'];
-            $image =  $options['image'];
-            // Verificando se é a primeira mensagem entre os dois usuários
-            $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
-                $query->where('sender_id', $senderID)
-                    ->orWhere('sender_id', $receiverID);
+
+        $senderID = $options['senderID'];
+        $receiverID = $options['receiverID'];
+        $messageValue = $options['messageValue'];;
+        $messagePrice = $options['messagePrice'];;
+        $attachments =  $options['attachments'];
+        $image =  $options['image'];
+
+        $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
+            $query->where('sender_id', $senderID)
+                ->orWhere('sender_id', $receiverID);
+        })
+            ->where(function ($query) use ($senderID, $receiverID) {
+                $query->where('receiver_id', $senderID)
+                    ->orWhere('receiver_id', $receiverID);
             })
-                ->where(function ($query) use ($senderID, $receiverID) {
-                    $query->where('receiver_id', $senderID)
-                        ->orWhere('receiver_id', $receiverID);
-                })
-                ->count();
+            ->count();
 
-            dd([
-                'sender_id' => $senderID,
-                'receiver_id' => $receiverID,
-                'message' => $messageValue,
-                'price' => $messagePrice,
-                'attachments' => $attachments
-            ]);
-            // Criando uma nova mensagem no banco de dados
-            $message = UserMessage::create([
-                'sender_id' => $senderID,
-                'receiver_id' => $receiverID,
-                'message' => $messageValue,
-                'price' => $messagePrice,
-                'attachments' => $attachments
-            ]);
+        $message = UserMessage::create([
+            'sender_id' => $senderID,
+            'receiver_id' => $receiverID,
+            'message' => $messageValue,
+            'price' => $messagePrice
+        ]);
 
-            // Convertendo a data de criação da mensagem para um formato legível
-            $dateDiff = $message->created_at->diffForHumans(null, true, true);
-            $message = $message->toArray();
-            $message['dateAdded'] = $dateDiff;
 
-            if ($message['id']) {
-                // Processando os anexos
-                $attachments = collect($attachments)->map(function ($v, $k) {
-                    if (isset($v['attachmentIDF'])) {
-                        return $v['attachmentID'];
-                    }
-                    if (isset($v['id'])) {
-                        return $v['id'];
-                    }
-                })->toArray();
+        // Turning date into human readable format
+        $dateDiff = $message->created_at->diffForHumans(null, true, true);
+        $message = $message->toArray();
+        $message['dateAdded'] = $dateDiff;
 
-                $attachments = Attachment::whereIn('id', $attachments)->get();
-                if ($attachments) {
-                    foreach ($attachments as $attachment) {
-                        // Criando uma nova relação única entre anexo e mensagem
-                        $id = Uuid::uuid4()->getHex();
-                        $newFileName = 'messenger/images/' . $id . '.' . $attachment->type;
+        if ($message['id']) {
 
-                        // Criando novo anexo
-                        Attachment::create([
-                            'id' => $id,
-                            'user_id' => Auth::user()->id,
-                            'filename' => $newFileName,
-                            'driver' => $attachment->driver,
-                            'type' => $attachment->type,
-                            'message_id' => $message['id'],
-                        ]);
+            if ($image) {
+                $image_uploaded = $this->providerFirebase->uploadToFirebase($image);
+                $id = Uuid::uuid4()->getHex();
+                Attachment::create([
+                    'id' => $id,
+                    'user_id' => Auth::user()->id,
+                    'filename' => $image_uploaded,
+                    'driver' => 0,
+                    'type' => 'teste',
+                    'message_id' => $message['id'],
+                ]);
+            }
 
-                        // Copiando os arquivos do anexo anterior para o novo
-                        $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
-                        if ($attachment->driver != Attachment::PUSHR_DRIVER) {
-                            $storage->copy($attachment->filename, $newFileName);
-                        } else {
-                            // Lógica Pushr - Copiando alternativa, pois o S3Adapter falha em fazer operações de ->copy
-                            AttachmentServiceProvider::pushrCDNCopy($attachment, $newFileName);
-                        }
-
-                        // Se o anexo for uma imagem, copia também a miniatura
-                        if (AttachmentServiceProvider::getAttachmentType($attachment->type) == 'image') {
-                            $thumbnailDir = 'messenger/images/150X150/';
-                            $thumbnailfilePath = $thumbnailDir . '/' . $id . '.jpg';
-                            if ($attachment->driver != Attachment::PUSHR_DRIVER) {
-                                $storage->copy($thumbnailDir . '/' . $attachment->id . '.jpg', $thumbnailfilePath);
-                            } else {
-                                // Lógica Pushr - Copiando alternativa, pois o S3Adapter falha em fazer operações de ->copy
-                                AttachmentServiceProvider::pushrCDNCopy($attachment, $thumbnailfilePath);
-                            }
-                        }
-                    }
+            $attachments = collect($attachments)->map(function ($v, $k) {
+                if (isset($v['attachmentID'])) {
+                    return $v['attachmentID'];
                 }
-                if ($image) {
-                    $image_uploaded = $this->providerFirebase->uploadToFirebase($image);
+                if (isset($v['id'])) {
+                    return $v['id'];
+                }
+            })->toArray();
+            $attachments = Attachment::whereIn('id', $attachments)->get();
+
+            // Attaching the assets to the message
+            // TODO: Review if createAttachment could have been used
+            if ($attachments) {
+                foreach ($attachments as $attachment) {
+                    // Creating unique attachment-message relation, for mass-media-messages
                     $id = Uuid::uuid4()->getHex();
+                    $newFileName = 'messenger/images/' . $id . '.' . $attachment->type;
+                    // 1. Create new attachment
                     Attachment::create([
                         'id' => $id,
                         'user_id' => Auth::user()->id,
-                        'filename' => $image_uploaded,
-                        'driver' => 0,
-                        'type' => 'teste',
+                        'filename' => $newFileName,
+                        'driver' => $attachment->driver,
+                        'type' => $attachment->type,
                         'message_id' => $message['id'],
                     ]);
+                    // 2. Copy the assets of previous attachment to the new one
+                    $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
+                    if ($attachment->driver != Attachment::PUSHR_DRIVER) {
+                        $storage->copy($attachment->filename, $newFileName);
+                    } else {
+                        // Pushr logic - Copy alternative as S3Adapter fails to do ->copy operations
+                        AttachmentServiceProvider::pushrCDNCopy($attachment, $newFileName);
+                    }
+                    if (AttachmentServiceProvider::getAttachmentType($attachment->type) == 'image') {
+                        $thumbnailDir = 'messenger/images/150X150/';
+                        $thumbnailfilePath = $thumbnailDir . '/' . $id . '.jpg';
+                        if ($attachment->driver != Attachment::PUSHR_DRIVER) {
+                            $storage->copy($thumbnailDir . '/' . $attachment->id . '.jpg', $thumbnailfilePath);
+                        } else {
+                            // Pushr logic - Copy alternative as S3Adapter fails to do ->copy operations
+                            AttachmentServiceProvider::pushrCDNCopy($attachment, $thumbnailfilePath);
+                        }
+                    }
                 }
-
-                // Anexando os arquivos à mensagem
-
             }
+        }
 
-            // Buscando a mensagem completa com os anexos e remetentes
-            $message = UserMessage::with(['sender', 'receiver', 'attachments'])
-                ->where('user_messages.id', $message['id'])
-                ->leftJoin('transactions', function ($join) {
-                    $join->on('transactions.user_message_id', '=', 'user_messages.id');
-                    $join->on('transactions.sender_user_id', '=', DB::raw(Auth::user()->id));
-                })
-                ->select(['user_messages.*', DB::raw('COALESCE(transactions.id,NULL) as hasUserUnlockedMessage')])
-                ->first();
+        // Fetching serialized message object
+        $message = UserMessage::with(['sender', 'receiver', 'attachments'])->where('user_messages.id', $message['id'])
+            ->leftJoin('transactions', function ($join) {
+                $join->on('transactions.user_message_id', '=', 'user_messages.id');
+                $join->on('transactions.sender_user_id', '=', DB::raw(Auth::user()->id));
+            })
+            ->select(['user_messages.*', DB::raw('COALESCE(transactions.id,NULL) as hasUserUnlockedMessage')])
+            ->first();
+        $message->hasUserUnlockedMessage = $message->hasUserUnlockedMessage ? true : false;
+        $message->sender->profileUrl = route('profile', ['username' => $message->sender->username]);
+        $message->receiver->profileUrl = route('profile', ['username' => $message->receiver->username]);
 
-            $message->hasUserUnlockedMessage = $message->hasUserUnlockedMessage ? true : false;
-            $message->sender->profileUrl = route('profile', ['username' => $message->sender->username]);
-            $message->receiver->profileUrl = route('profile', ['username' => $message->receiver->username]);
-
-            // Enviando notificação por e-mail, se configurado
-            if (isset($message->receiver->settings['notification_email_new_message']) && $message->receiver->settings['notification_email_new_message'] == 'true') {
-                $throttleNotification = Notification::where('user_message_id', '<>', null)
-                    ->where('to_user_id', $receiverID)
-                    ->where('created_at', '>=', Carbon::now()->subHours(6))
-                    ->count();
-                if ($throttleNotification === 0) {
-                    App::setLocale($message->receiver->settings['locale']);
-                    EmailsServiceProvider::sendGenericEmail([
+        // Sending the email
+        if (isset($message->receiver->settings['notification_email_new_message']) && $message->receiver->settings['notification_email_new_message'] == 'true') {
+            $throttleNotification = Notification::where('user_message_id', '<>', null)->where('to_user_id', $receiverID)->where('created_at', '>=', Carbon::now()->subHours(6))->count();
+            if ($throttleNotification === 0) {
+                App::setLocale($message->receiver->settings['locale']);
+                EmailsServiceProvider::sendGenericEmail(
+                    [
                         'email' => $message->receiver->email,
                         'subject' => __('New message received'),
                         'title' => __('Hello, :name,', ['name' => $message->receiver->name]),
@@ -430,45 +413,37 @@ class MessengerController extends Controller
                             'text' => __('View your messages'),
                             'url' => route('my.messenger.get'),
                         ],
-                    ]);
-                    App::setLocale(Auth::user()->settings['locale']);
-                }
-            }
-
-            // Criando notificação de nova mensagem
-            NotificationServiceProvider::createNewUserMessageNotification($message);
-
-            // Limpando os dados da mensagem
-            $message = self::cleanUpMessageData($message);
-
-            // Enviando a mensagem via WebSocket para os outros usuários
-            broadcast(new NewUserMessage(json_encode($message), $senderID, $receiverID))->toOthers();
-
-            $return = [
-                'message' => $message,
-            ];
-
-            // Se for a primeira mensagem, adiciona um novo contato
-            if ($isFirstMessage === 0) {
-                $lastContact = $this->fetchContacts(1);
-                $return['contact'] = $lastContact;
-                NotificationServiceProvider::publishNotification(
-                    (object)[
-                        'message' => 'new-messenger-conversation',
-                        'type' => 'new-messenger-conversation',
-                        'fromUserID' => $senderID,
-                    ],
-                    User::where('id', $receiverID)->first(),
-                    'messenger-actions'
+                    ]
                 );
+                App::setLocale(Auth::user()->settings['locale']);
             }
-
-            return $return;
-        } catch (\Exception $exception) {
-            // Exibe a mensagem da exceção
-            echo ("Exceção capturada: " . $exception->getMessage());
-            // Exibe o traço da pilha (opcional)
         }
+        NotificationServiceProvider::createNewUserMessageNotification($message);
+
+        // Cleaning up the message
+        $message = self::cleanUpMessageData($message);
+
+        // Sending the message to the socket
+        broadcast(new NewUserMessage(json_encode($message), $senderID, $receiverID))->toOthers();
+
+        $return = [
+            'message' => $message,
+        ];
+
+        if ($isFirstMessage === 0) {
+            $lastContact = $this->fetchContacts(1);
+            $return['contact'] = $lastContact;
+            NotificationServiceProvider::publishNotification(
+                (object)[
+                    'message' => 'new-messenger-conversation',
+                    'type' => 'new-messenger-conversation',
+                    'fromUserID' => $senderID,
+                ],
+                User::where('id', $receiverID)->first(),
+                'messenger-actions'
+            );
+        }
+        return $return;
     }
 
     /**
@@ -514,7 +489,6 @@ class MessengerController extends Controller
             foreach ($receiverIDs as $receiverID) {
                 $receiverID = (int) $receiverID;
                 if (!self::checkMessengerAccess($senderID, $receiverID)) {
-                    dd(self::checkMessengerAccess($senderID, $receiverID));
                     $errors[] = __('Not authorized');
                     if (count($receiverIDs) == 1) {
                         return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
@@ -892,17 +866,5 @@ class MessengerController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
         }
-    }
-
-    /**
-     * Trigger para enviar mensagens aos seguidores e assinantes.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-
-    public function create()
-    {
-        return view('pages.campanha');
     }
 }

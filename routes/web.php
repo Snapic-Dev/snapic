@@ -124,8 +124,9 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::delete('/delete/{commentID}', [App\Http\Controllers\MessengerController::class, 'deleteMessage'])->name('delete');
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
-            Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('campanha.store');
-            Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campanha.create');
+            Route::get('/campanha', function () {
+                return view('pages.campanha');
+            })->name('campanha.create');
         });
         /*
          * (My) Bookmarks

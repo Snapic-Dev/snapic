@@ -819,12 +819,12 @@ var messenger = {
       case "jpg":
       case "jpeg":
         attachmentsHtml = `
-                    <a href="${file.path}" rel="mswp" title="">
+                    <a href="${adjustedThumbnailUrl}" rel="mswp" title="">
                         <img src="${adjustedThumbnailUrl}" class="mr-2 mt-2">
                     </a>`;
         break;
       default:
-        attachmentsHtml = ` <a href="${file.path}" rel="mswp" title="">
+        attachmentsHtml = ` <a href="${adjustedThumbnailUrl}" rel="mswp" title="">
                         <img src="${adjustedThumbnailUrl}" class="mr-2 mt-2">
                     </a>`;
         break;
@@ -891,26 +891,17 @@ var messenger = {
     });
   },
 
-    /**
-     * Toggles all contacts in new create message dialog | mass message
-     */
-    toggleAllContacts: function(){
-        if(messenger.state.newConversationSelectAllToggle === false){
-            var el = messenger.selectizeInstance[0].selectize;
-            var optKeys = Object.keys(el.options);
-            let i = 0;
-            optKeys.forEach(function (key) {
-                if(i > 50){return false;};
-                el.addItem(key);
-                i++;
-            });
-            messenger.state.newConversationSelectAllToggle = true;
-        }
-        else{
-            messenger.selectizeInstance[0].selectize.clear();
-            messenger.state.newConversationSelectAllToggle = false;
-        }
-    },
+  /**
+   * Inits the new conversation UI events
+   */
+  initNewConversationUI: function () {
+    $(".new-conversation-toggle").on("click", function () {
+      if (messenger.state.newConversationMode) {
+        messenger.closeNewConversationUI();
+      } else {
+        messenger.openNewConversationUI();
+      }
+    });
 
     $(".new-conversation-close").on("click", function () {
       messenger.closeNewConversationUI();
@@ -967,14 +958,19 @@ var messenger = {
     }
   },
 
-    /**
-     * Disabling right for posts ( if site wise setting is set to do it )
-     */
-    disableMesagesRightClick: function () {
-        $(".attachments-holder").unbind('contextmenu');
-        $(".attachments-holder").on("contextmenu",function(){
-            return false;
-        });
-    },
-
+  /**
+   * Opens up the new conversation dialog
+   * @returns {boolean}
+   */
+  openNewConversationUI: function () {
+    if (messengerVars.availableContacts.length === 0) {
+      return false;
+    }
+    messenger.hideEmptyChatElements();
+    $(".conversation-header").addClass("d-none");
+    $(".new-conversation-header").removeClass("d-none");
+    $(".conversation-content").html("");
+    messenger.state.newConversationMode = true;
+    return true;
+  },
 };
