@@ -28,7 +28,8 @@
         </div>
 
         <!-- Modal -->
-        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="true">
+        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog"
+            aria-labelledby="checkout" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -46,11 +47,15 @@
                                 <div class="d-lg-block mt-2">
                                     <div class="pl-2 d-flex justify-content-center flex-column">
                                         <div class="ml-2">
-                                            <div class="text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }} name">
+                                            <div
+                                                class="text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }} name">
                                             </div>
                                             <a class="walletPerfil mt-1 d-flex" href="/my/settings/wallet">
                                                 <div class="d-flex justify-content-center align-items-center"">
-                                                    @include('elements.icon', ['icon' => 'wallet-outline', 'variant' => 'small'])
+                                                    @include('elements.icon', [
+                                                        'icon' => 'wallet-outline',
+                                                        'variant' => 'small',
+                                                    ])
                                                 </div>
                                                 <span class=" font-weight-medium wallet-total-amount ml-1">
                                                     {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
@@ -65,13 +70,16 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="amount-label">
                                         @include('elements.icon', [
-                                        'icon' => 'cash-outline',
-                                        'variant' => 'medium',
-                                        'centered' => false,
+                                            'icon' => 'cash-outline',
+                                            'variant' => 'medium',
+                                            'centered' => false,
                                         ])
                                     </span>
                                 </div>
-                                <input class="form-control uifield-amount" placeholder="{{ __(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)', ['min' => getSetting('payments.min_tip_value'), 'max' => getSetting('payments.max_tip_value'), 'currency' => config('app.site.currency_symbol')]) }}" aria-label="Username" aria-describedby="amount-label" id="checkout-amount" type="number" min="0" step="1" max="500">
+                                <input class="form-control uifield-amount"
+                                    placeholder="{{ __(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)', ['min' => getSetting('payments.min_tip_value'), 'max' => getSetting('payments.max_tip_value'), 'currency' => config('app.site.currency_symbol')]) }}"
+                                    aria-label="Username" aria-describedby="amount-label" id="checkout-amount"
+                                    type="number" min="0" step="1" max="500">
                                 <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
                             </div>
                         </div>
@@ -164,7 +172,7 @@
                 </div>
             </div> --}}
 
-            {{-- <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <h6>{{ __('Payment summary') }}</h6>
             <div class="subtotal row">
                 <span class="col-sm left"><b>{{ __('Subtotal') }}:</b></span>
@@ -255,31 +263,34 @@
                 </div>
             </div>
         </div> --}}
-        {{-- <div class="payment-error error text-danger text-bold d-none mb-1">
+                        {{-- <div class="payment-error error text-danger text-bold d-none mb-1">
                             {{ __('Please select your payment method') }}
     </div>
     <p class="text-muted mt-1">
         {{ __('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.') }}
     </p> --}}
-</div>
-<div class="modal-footer p-4">
-    <button type="button" class="btn btn-round border" data-dismiss="modal">{{ __('Cancel') }}</button>
-    <button type="submit" class="btn btn-round btn-primary checkout-continue-btn">{{ __('Confirmar') }}
-        <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
-            <span class="sr-only">{{ __('Loading...') }}</span>
+                    </div>
+                    <div class="modal-footer p-4">
+                        <button type="button" class="btn btn-round border"
+                            data-dismiss="modal">{{ __('Cancel') }}</button>
+                        <button type="submit"
+                            class="btn btn-round btn-primary checkout-continue-btn">{{ __('Confirmar') }}
+                            <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
+                                <span class="sr-only">{{ __('Loading...') }}</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="payment-error error text-danger text-bold d-none mb-1">
+                        {{ __('Please select your payment method') }}
+                    </div>
+                    <p class="text-muted mt-1 text-sm ml-2 mr-2 pl-4 pr-4 pb-4 pt-1 text-left">
+                        <strong>{{ __('Nota:') }}</strong>
+                        {{ __('Após clicar no botão, o valor correspondente será deduzido da sua carteira e enviado diretamente para o influenciador.') }}
+                        <span
+                            class="font-weight-bold">{{ __('Todo o processo de pagamento será realizado na mesma página.') }}</span>
+                    </p>
+                </div>
+            </div>
         </div>
-    </button>
-</div>
-<div class="payment-error error text-danger text-bold d-none mb-1">
-    {{ __('Please select your payment method') }}
-</div>
-<p class="text-muted mt-1 text-sm ml-2 mr-2 pl-4 pr-4 pb-4 pt-1 text-left">
-    <strong>{{ __('Nota:') }}</strong>
-    {{ __('Após clicar no botão, o valor correspondente será deduzido da sua carteira e enviado diretamente para o influenciador.') }}
-    <span class="font-weight-bold">{{ __('Todo o processo de pagamento será realizado na mesma página.') }}</span>
-</p>
-</div>
-</div>
-</div>
-</div>
+    </div>
 </div>

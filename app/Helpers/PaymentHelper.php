@@ -1206,7 +1206,6 @@ class PaymentHelper
                         'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
                     ]);
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
-                    // Define a mensagem para gorjetas, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You successfully sent a tip of :currencySymbol:amount.'
                         : 'You successfully sent a tip of :amount:currencySymbol.';
@@ -1237,7 +1236,6 @@ class PaymentHelper
                 ->with('error', $errorMessage);
         }
     }
-
 
     /**
      * Handles redirect by transaction type

@@ -278,7 +278,6 @@ class MessengerController extends Controller
         $messageValue = $options['messageValue'];;
         $messagePrice = $options['messagePrice'];;
         $attachments =  $options['attachments'];
-        $images =  $options['images'];
 
         $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
             $query->where('sender_id', $senderID)
@@ -316,19 +315,6 @@ class MessengerController extends Controller
 
             // Attaching the assets to the message
             // TODO: Review if createAttachment could have been used
-            if ($images) {
-                foreach ($images as $image) {
-                    $id = Uuid::uuid4()->getHex();
-                    Attachment::create([
-                        'id' => $id,
-                        'user_id' => Auth::user()->id,
-                        'filename' => $image['path'],
-                        'driver' => 0,
-                        'type' => pathinfo($image['path'], PATHINFO_EXTENSION),
-                        'message_id' => $message['id'],
-                    ]);
-                }
-            }
             if ($attachments) {
                 foreach ($attachments as $attachment) {
                     // Creating unique attachment-message relation, for mass-media-messages
@@ -458,8 +444,7 @@ class MessengerController extends Controller
                 'messageValue' => $request->get('message'),
                 'messagePrice' => $request->get('price'),
                 'isFirstMessage' => $request->get('new'),
-                'attachments' => $request->get('attachments'),
-                'images' => $request->get('images')
+                'attachments' => $request->get('attachments')
             ]);
         }
         // Delete initially created attachments, after attaching them to the messages
@@ -806,17 +791,5 @@ class MessengerController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
         }
-    }
-
-    /**
-     * Trigger para enviar mensagens aos seguidores e assinantes.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-
-    public function create()
-    {
-        return view('pages.campanha');
     }
 }

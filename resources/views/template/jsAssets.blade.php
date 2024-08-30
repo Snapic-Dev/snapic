@@ -1,17 +1,17 @@
 {{-- Global JS Assets --}}
 {!!
-Minify::javascript(
-array_merge([
-'/libs/jquery/dist/jquery.min.js',
-'/libs/popper.js/dist/umd/popper.min.js',
-'/libs/bootstrap/dist/js/bootstrap.min.js',
-'/js/plugins/toasts.js',
-'/libs/cookieconsent/build/cookieconsent.min.js',
-'/libs/xss/dist/xss.min.js',
-'/js/app.js',
-],
-(isset($additionalJs) ? $additionalJs : [])
-))->withFullUrl()
+    Minify::javascript(
+        array_merge([
+        '/libs/jquery/dist/jquery.min.js',
+        '/libs/popper.js/dist/umd/popper.min.js',
+        '/libs/bootstrap/dist/js/bootstrap.min.js',
+        '/js/plugins/toasts.js',
+        '/libs/cookieconsent/build/cookieconsent.min.js',
+        '/libs/xss/dist/xss.min.js',
+        '/js/app.js',
+    ],
+    (isset($additionalJs) ? $additionalJs : [])
+    ))->withFullUrl()
 !!}
 
 {{-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries --}}
@@ -25,14 +25,9 @@ array_merge([
 
 <script type="module" src="{{asset('/libs/ionicons/dist/ionicons/ionicons.esm.js')}}"></script>
 <script nomodule src="{{asset('/libs/ionicons/dist/ionicons/ionicons.js')}}"></script>
-<!-- Start of snapic1775 Zendesk Widget script -->
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=9456cb48-6c90-4c9e-b325-595f10b9e966"> </script>
-<!-- End of snapic1775 Zendesk Widget script -->
-
-
 
 @if(getSetting('custom-code-ads.custom_js'))
-{!! getSetting('custom-code-ads.custom_js') !!}
+    {!! getSetting('custom-code-ads.custom_js') !!}
 @endif
 
 @include('elements.translations')

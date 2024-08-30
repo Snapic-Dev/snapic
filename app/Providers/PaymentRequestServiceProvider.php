@@ -31,7 +31,7 @@ class PaymentRequestServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        UserVerify::observe(UserVerifyObserver::class);
+        //        UserVerify::observe(UserVerifyObserver::class);
         Schema::defaultStringLength(191);
     }
 
@@ -39,7 +39,8 @@ class PaymentRequestServiceProvider extends ServiceProvider
      * Creates a payment request for admins by a transaction
      * @param $transaction
      */
-    public static function createDepositPaymentRequestByTransaction($transaction, $files, $description){
+    public static function createDepositPaymentRequestByTransaction($transaction, $files, $description)
+    {
         $paymentRequest = PaymentRequest::create([
             'type' => PaymentRequest::DEPOSIT_TYPE,
             'user_id' => $transaction['recipient_user_id'],
@@ -48,13 +49,13 @@ class PaymentRequestServiceProvider extends ServiceProvider
             'message' => $description
         ]);
 
-        if($paymentRequest){
-            if($files && strlen($files) > 0) {
+        if ($paymentRequest) {
+            if ($files && strlen($files) > 0) {
                 $filesArray = explode(',', $files);
-                if(count($filesArray)){
-                    foreach ($filesArray as $attachmentId){
+                if (count($filesArray)) {
+                    foreach ($filesArray as $attachmentId) {
                         $attachment = Attachment::query()->where('id', $attachmentId)->first();
-                        if($attachment!=null){
+                        if ($attachment != null) {
                             $attachment->update(['payment_request_id' => $paymentRequest['id']]);
                         }
                     }
@@ -72,14 +73,11 @@ class PaymentRequestServiceProvider extends ServiceProvider
                         'content' => __('There is a new payment request on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
                         'button' => [
                             'text' => __('Go to admin'),
-                            'url' => route('voyager.dashboard').'/payment-requests',
+                            'url' => route('voyager.dashboard') . '/payment-requests',
                         ],
                     ]
                 );
             }
         }
     }
-
-
-
 }

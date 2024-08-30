@@ -111,7 +111,7 @@ var UsersPaginator = {
         }
 
         // Init swiper for posts
-        Post.initPostsMediaModule();
+        Post.initPostsMediaModule();//TODO : Is this required here?
         if(app.feedDisableRightClickOnMedia !== null){
             Post.disablePostsRightClick();
         }

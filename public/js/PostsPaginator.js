@@ -156,6 +156,10 @@ var PostsPaginator = {
 
         // Init gallery module for each post
         PostsPaginator.initPostsGalleries(postIDs);
+
+        // Initing read more/less toggler based on clip property
+        PostsPaginator.initDescriptionTogglers();
+
     },
 
     /**
@@ -186,5 +190,17 @@ var PostsPaginator = {
         PostsPaginator.nextPageUrl = '';
         window.onscroll = function() {};
     },
+
+    /**
+     * Instantiates the JS based read more/less
+     */
+    initDescriptionTogglers: function () {
+        $('.post-box').each(function(key, element){
+            let postID = $(element).attr('data-postID');
+            if(multiLineOverflows('*[data-postID="'+postID+'"] .post-content-data')){
+                $('*[data-postID="'+postID+'"]').find('.show-more-actions').removeClass('d-none');
+            }
+        });
+    }
 
 };

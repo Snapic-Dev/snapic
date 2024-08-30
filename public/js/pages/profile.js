@@ -22,6 +22,8 @@ $(function () {
         PostsPaginator.scrollToLastPost(getCookie('app_prev_post'));
     }
     Post.initPostsMediaModule();
+    // Initing read more/less toggler based on clip property
+    PostsPaginator.initDescriptionTogglers();
     Post.initGalleryModule('.recent-media');
     if(app.feedDisableRightClickOnMedia !== null){
         Post.disablePostsRightClick();
@@ -39,6 +41,10 @@ $(function () {
             console.error('Pagination failed to initialize.');
         }
     }
+
+    // if(multiLineOverflows('.description-content')){
+    //     $('.profile-description-holder .show-more-actions').removeClass('d-none');
+    // }
 
     if(multiLineOverflows('.description-content')){
         $('.show-more-actions').removeClass('d-none');
@@ -58,7 +64,6 @@ $(window).scroll(function(){
 window.onunload = function(){
     // Reset scrolling to top
     $(".inline-border-tabs").get(0).scrollIntoView();
-
 };
 
 // eslint-disable-next-line no-unused-vars

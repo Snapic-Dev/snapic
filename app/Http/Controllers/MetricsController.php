@@ -25,11 +25,10 @@ class MetricsController extends Controller
         $query = Transaction::query()
             ->where('status', Transaction::APPROVED_STATUS)
             ->where('type', 'deposit');
-            
+
         $users = (new Trend())->get($query, $request->input('function'), $request->input('unit'), $request->input('range'), 'amount', 'created_at');
 
         return response()->json($users);
-        
     }
 
     public function newUsersPartition(Request $request)
@@ -68,5 +67,4 @@ class MetricsController extends Controller
             ->sum('amount'); // Melhorando a consulta para obter apenas a contagem
         return response()->json($transactionCount);
     }
-
 }

@@ -19,7 +19,7 @@ class Transaction extends Model
     const POST_UNLOCK = 'post-unlock';
     const MESSAGE_UNLOCK = 'message-unlock';
     const DEPOSIT_TYPE = 'deposit';
-    const GIFT_TYPE='gift';
+    const GIFT_TYPE = 'gift';
     const WITHDRAWAL_TYPE = 'withdrawal';
     const ONE_MONTH_SUBSCRIPTION = 'one-month-subscription';
     const THREE_MONTHS_SUBSCRIPTION = 'three-months-subscription';
@@ -70,10 +70,30 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'sender_user_id', 'recipient_user_id', 'subscription_id', 'stripe_transaction_id', 'paypal_payer_id', 'post_id',
-        'paypal_transaction_id', 'status', 'type', 'amount', 'payment_provider', 'paypal_transaction_token', 'currency', 'taxes',
-        'coinbase_charge_id', 'coinbase_transaction_token', 'ccbill_payment_token', 'ccbill_transaction_id', 'nowpayments_payment_id',
-        'nowpayments_order_id', 'stream_id', 'ccbill_subscription_id', 'user_message_id', 'paystack_transaction_token'
+        'sender_user_id',
+        'recipient_user_id',
+        'subscription_id',
+        'stripe_transaction_id',
+        'paypal_payer_id',
+        'post_id',
+        'paypal_transaction_id',
+        'status',
+        'type',
+        'amount',
+        'payment_provider',
+        'paypal_transaction_token',
+        'currency',
+        'taxes',
+        'coinbase_charge_id',
+        'coinbase_transaction_token',
+        'ccbill_payment_token',
+        'ccbill_transaction_id',
+        'nowpayments_payment_id',
+        'nowpayments_order_id',
+        'stream_id',
+        'ccbill_subscription_id',
+        'user_message_id',
+        'paystack_transaction_token'
     ];
 
     /**

@@ -163,7 +163,7 @@ class StreamsController extends Controller
         $requires_subscription = $request->get('requires_subscription');
         $is_public = $request->get('is_public');
         $price = $request->get('price');
-        $poster = $request->get('poster') ?? 'default_poster_value';
+        $poster = $request->get('poster');
 
         if (!GenericHelperServiceProvider::isUserVerified() && getSetting('site.enforce_user_identity_checks')) {
             return response()->json([
@@ -172,23 +172,12 @@ class StreamsController extends Controller
             ]);
         }
 
-        $streaming = StreamsServiceProvider::initiateStreamingByUser([
-            'name' => $streamName,
-            'requires_subscription' => $requires_subscription,
-            'is_public' => $is_public,
-            'price' => $price,
-            'poster' => $poster
-        ]);
-
-
+        $streaming = StreamsServiceProvider::initiateStreamingByUser(['name' => $streamName, 'requires_subscription' => $requires_subscription, 'is_public' => $is_public, 'price' => $price, 'poster' => $poster]);
         if ($streaming['success']) {
             $responseData = [
                 'success' => true,
                 'data' => $streaming['data'],
-                'html' => View::make('elements.streams.stream-element')
-                    ->with('stream', $streaming['data'])
-                    ->with('isLive', true)
-                    ->render()
+                'html' => View::make('elements.streams.stream-element')->with('stream', $streaming['data'])->with('isLive', true)->render()
             ];
 
             // Send message to followers
@@ -197,16 +186,18 @@ class StreamsController extends Controller
                 $serializedSettings = json_decode($follower['settings']);
                 if (isset($serializedSettings->notification_email_creator_went_live) && $serializedSettings->notification_email_creator_went_live == 'true') {
                     App::setLocale($serializedSettings->locale);
-                    EmailsServiceProvider::sendGenericEmail([
-                        'email' => $follower['email'],
-                        'subject' => __('New stream from :username', ['username' => Auth::user()->username]),
-                        'title' => __('Hello, :name,', ['name' => $follower['name']]),
-                        'content' => __('@:username has went live on :sitename', ['username' => Auth::user()->username, 'siteName' => getSetting('site.name')]),
-                        'button' => [
-                            'text' => __('View live session'),
-                            'url' => route('search.get', ['filter' => 'live']),
-                        ],
-                    ]);
+                    EmailsServiceProvider::sendGenericEmail(
+                        [
+                            'email' => $follower['email'],
+                            'subject' => __('New stream from :username', ['username' => Auth::user()->username]),
+                            'title' => __('Hello, :name,', ['name' => $follower['name']]),
+                            'content' => __('@:username has went live on :sitename', ['username' => Auth::user()->username, 'siteName' => getSetting('site.name')]),
+                            'button' => [
+                                'text' => __('View live session'),
+                                'url' => route('search.get', ['filter' => 'live']),
+                            ],
+                        ]
+                    );
                     App::setLocale(Auth::user()->settings['locale']);
                 }
             }
@@ -216,68 +207,8 @@ class StreamsController extends Controller
                 'message' => $streaming['message'],
             ];
         }
-
         return response()->json($responseData);
     }
-
-
-    // public function initStream(SaveNewStreamRequest $request)
-    // {
-    //     $streamName = $request->get('name');
-    //     $requires_subscription = $request->get('requires_subscription') == 'true' ? 1 : 0;
-    //     $is_public = $request->get('is_public') == 'true' ? 1 : 0;
-    //     $price = $request->get('price');
-    //     $poster = $request->get('poster') ?? 'default_poster_value';
-
-    //     if (!GenericHelperServiceProvider::isUserVerified() && getSetting('site.enforce_user_identity_checks')) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => __('Please confirm your ID first.')
-    //         ]);
-    //     }
-
-    //     $pushrStreaming = StreamsServiceProvider::createPushrStreaming([
-    //         'name' => $streamName,
-    //         'settings' => [
-    //             'encoder' => 'eu', // Pode ser 'eu', 'us', 'sg'
-    //             'dvr' => 1,
-    //             'mux' => 0,
-    //             '360p' => 0,
-    //             '480p' => 1,
-    //             '576p' => 0,
-    //             '720p' => 1,
-    //             '1080p' => 0,
-    //         ],
-    //     ]);
-
-    //     if ($pushrStreaming['status'] === 'success') {
-    //         // Criar o stream no banco de dados
-    //         $stream = Stream::create([
-    //             'user_id' => Auth::user()->id,
-    //             'status' => Stream::IN_PROGRESS_STATUS,
-    //             'name' => $streamName,
-    //             'poster' => $poster,
-    //             'slug' => Str::slug($streamName),
-    //             'price' => $price,
-    //             'requires_subscription' => $requires_subscription,
-    //             'is_public' => $is_public,
-    //             'pushr_id' => $pushrStreaming['id'],
-    //             'rtmp_key' => $pushrStreaming['rtmp_key'],
-    //             'rtmp_server' => $pushrStreaming['rtmp_server'],
-    //             'hls_link' => $pushrStreaming['hls_link'],
-    //         ]);
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'data' => $stream,
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => $pushrStreaming['message'],
-    //         ]);
-    //     }
-    // }
 
     /**
      * (Re)saves stream details when updating

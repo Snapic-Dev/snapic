@@ -216,7 +216,8 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-08-07 20:26:12',
                 'updated_at' => '2024-04-30 23:50:34',
-            ), 11 =>
+            ),
+            11 =>
             array(
                 'id' => 15,
                 'name' => 'user_bookmarks',

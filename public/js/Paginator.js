@@ -69,6 +69,8 @@ var Paginator = {
         Post.initPostsMediaModule();
         // Init gallery module for each post
         Paginator.initPostsGalleries(postIDs);
+        // Initing read more/less toggler based on clip property
+        PostsPaginator.initDescriptionTogglers();
     },
 
 };
