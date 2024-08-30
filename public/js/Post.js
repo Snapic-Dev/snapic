@@ -4,7 +4,7 @@
 "use strict";
 /* global Swiper, CommentsPaginator, PostsPaginator  */
 /* global app */
-/* global updateButtonState, redirect, trans, trans_choice, launchToast, mswpScanPage, showDialog, hideDialog, EmojiButton  */
+/* global updateButtonState, redirect, trans, trans_choice, launchToast, mswpScanPage, showDialog, hideDialog, EmojiButton, multiLineOverflows  */
 
 
 var Post = {
@@ -449,7 +449,7 @@ var Post = {
             postElement.find('.label-more').removeClass('d-none');
         }
         PostsPaginator.scrollToLastPost(postID);
-    },
+    }
 
 };
 

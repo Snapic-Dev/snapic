@@ -10,8 +10,10 @@
                         <input type="hidden" name="function" value="sum">
                         <input class="p-4 mb-3" type="hidden" name="unit" value="{{ $form['unit'] }}">
                         <select name="range" class="form-control form-control-sm card-value">
-                            @foreach($form['ranges'] as $range)
-                                <option value="{{ $range }}" @if($form['range'] == $range) selected @endif>{{ $range }} {{ $range == 1 ? $form['trans'][0] : $form['trans'][1] }}</option>
+                            @foreach ($form['ranges'] as $range)
+                                <option value="{{ $range }}" @if ($form['range'] == $range) selected @endif>
+                                    {{ $range }} {{ $range == 1 ? $form['trans'][0] : $form['trans'][1] }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -53,7 +55,7 @@
                 labels: [],
                 datasets: [{
                     label: '{{ $title }}',
-                    backgroundColor : gradient,
+                    backgroundColor: gradient,
                     borderColor: '{{ $chart['border_color'] }}',
                     data: []
                 }]
@@ -65,7 +67,8 @@
                 tooltips: {
                     callbacks: {
                         label: function(tooltipItem) {
-                            return 'R$'+ parseFloat(tooltipItem.value).format(0, 3, '{{ __('thousands_separator') }}').toString();
+                            return 'R$' + parseFloat(tooltipItem.value).format(0, 3,
+                                '{{ __('thousands_separator') }}').toString();
                         }
                     }
                 },
@@ -81,17 +84,21 @@
                 maintainAspectRatio: false,
                 layout: {
                     padding: {
-                        right:10,
-                        left:10,
-                        top:5,
-                        bottom:5,
+                        right: 10,
+                        left: 10,
+                        top: 5,
+                        bottom: 5,
                     }
                 }
             }
         });
-        getCardTrend(document.querySelector('form[name="{{ $name }}"]'), {{ $name }}, '{{ __('thousands_separator') }}', {{ $chart['total'] }});
-        document.querySelector('form[name="{{ $name }}"] select[name="range"]').addEventListener('change' , function() {
-            getCardTrend(document.querySelector('form[name="{{ $name }}"]'), {{ $name }}, '{{ __('thousands_separator') }}', {{ $chart['total'] }});
-        });
+        getCardTrend(document.querySelector('form[name="{{ $name }}"]'), {{ $name }},
+            '{{ __('thousands_separator') }}', {{ $chart['total'] }});
+        document.querySelector('form[name="{{ $name }}"] select[name="range"]').addEventListener(
+            'change',
+            function() {
+                getCardTrend(document.querySelector('form[name="{{ $name }}"]'),
+                    {{ $name }}, '{{ __('thousands_separator') }}', {{ $chart['total'] }});
+            });
     });
 </script>

@@ -659,21 +659,6 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.rewards.index',
                 'parameters' => 'null',
             ),
-            32 => array(
-                'id' => 5,
-                'menu_id' => 1,
-                'title' => "Tools",
-                'url' => '',
-                'target' => '_self',
-                'icon_class' => 'voyager-tools',
-                'color' => NULL,
-                'parent_id' => NULL,
-                'order' => 10,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'route' => 'voyager.tools.index',
-                'parameters' => 'null',
-            ),
         ));
     }
 }

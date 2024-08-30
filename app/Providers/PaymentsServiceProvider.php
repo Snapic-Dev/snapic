@@ -96,7 +96,7 @@ class PaymentsServiceProvider extends ServiceProvider
         }
 
         // return __('Amount') . ' (' . $depositMinAmount . ' min, ' . $depositMaxAmount . ' max)';
-        return __('Amount').' '. 'mínimo de '. $depositMinAmount.',00';
+        return __('Amount') . ' ' . 'mínimo de ' . $depositMinAmount . ',00';
     }
 
     /**

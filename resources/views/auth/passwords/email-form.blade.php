@@ -3,11 +3,13 @@
     <div class="form-group p-1">
         <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label>
         <div class="">
-            <input id="email" placeholder="Email" type="email" class="form-control @error('email') is-invalid @enderror " name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
+            <input id="email" placeholder="Email" type="email"
+                class="form-control @error('email') is-invalid @enderror " name="email" value="{{ old('email') }}"
+                autocomplete="email" autofocus>
             @error('email')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
             @enderror
         </div>
     </div>
@@ -24,9 +26,11 @@
     <p class="mb-4">
         {{ __("Don't have an account?") }}
         @if (isset($mode) && $mode == 'ajax')
-        <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('register')" class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
+            <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('register')"
+                class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
         @else
-        <a href="{{ route('register') }}" class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
+            <a href="{{ route('register') }}"
+                class="text-primary text-gradient font-weight-bold">{{ __('Sign up') }}</a>
         @endif
     </p>
 </div>

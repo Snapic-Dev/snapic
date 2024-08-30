@@ -89,11 +89,11 @@ class InstallerServiceProvider extends ServiceProvider
         $extensions = self::getRequiredExtensions();
         $passes = true;
         foreach ($extensions as $extension) {
-            if (!extension_loaded($extension)) {
+            if (! extension_loaded($extension)) {
                 $passes = false;
             }
         }
-        if (!(version_compare(phpversion(), '7.2.5') >= 0)) {
+        if (! (version_compare(phpversion(), '7.2.5') >= 0)) {
             $passes = false;
         }
 
@@ -167,13 +167,9 @@ class InstallerServiceProvider extends ServiceProvider
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); // Reativar verificação SSL
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE); // Reativar verificação SSL
-        curl_setopt($ch, CURLOPT_CAINFO, "/path/to/cacert.pem"); // Caminho para o arquivo de certificados CA
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Error:' . curl_error($ch);
-        }
         curl_close($ch);
         return $data;
     }

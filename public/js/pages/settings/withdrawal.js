@@ -33,7 +33,6 @@ var Wallet = {
      */
     initWithdrawal: function () {
 
-
         let submitButton = $('.withdrawal-continue-btn');
         updateButtonState('loading',submitButton, trans('Request withdrawal'),'white');
 
@@ -114,22 +113,22 @@ var Wallet = {
     getPaymentIdentifierTitle: function() {
         let title;
         switch ($('#payment-methods').find(":selected").text()) {
-            case 'Bank transfer':
-                title = 'Bank account';
-                break;
-            case 'Paypal':
-            case 'PayPal':
-                title = 'PayPal email';
-                break;
-            case 'Crypto':
-                title = 'Wallet address';
-                break;
-            case 'Other':
-                title = 'Payment account';
-                break;
-            default:
-                title = 'Payment account';
-                break;
+        case 'Bank transfer':
+            title = 'Bank account';
+            break;
+        case 'Paypal':
+        case 'PayPal':
+            title = 'PayPal email';
+            break;
+        case 'Crypto':
+            title = 'Wallet address';
+            break;
+        case 'Other':
+            title = 'Payment account';
+            break;
+        default:
+            title = 'Payment account';
+            break;
         }
         return title;
     },

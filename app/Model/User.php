@@ -22,14 +22,41 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'role_id', 'password', 'username', 'bio', 'birthdate', 'location', 'website', 'avatar', 'cover', 'postcode', 'settings',
-        'billing_address', 'first_name', 'last_name', 'profile_access_price',
-        'gender_id', 'gender_pronoun',
+        'name',
+        'email',
+        'role_id',
+        'password',
+        'username',
+        'bio',
+        'birthdate',
+        'location',
+        'website',
+        'avatar',
+        'cover',
+        'postcode',
+        'settings',
+        'billing_address',
+        'first_name',
+        'last_name',
+        'profile_access_price',
+        'gender_id',
+        'gender_pronoun',
         'profile_access_price_6_months',
         'profile_access_price_12_months',
         'profile_access_price_3_months',
-        'public_profile', 'city', 'country', 'state', 'email_verified_at', 'paid_profile',
-        'auth_provider', 'auth_provider_id', 'enable_2fa', 'enable_geoblocking', 'open_profile', 'referral_code', 'country_id'
+        'public_profile',
+        'city',
+        'country',
+        'state',
+        'email_verified_at',
+        'paid_profile',
+        'auth_provider',
+        'auth_provider_id',
+        'enable_2fa',
+        'enable_geoblocking',
+        'open_profile',
+        'referral_code',
+        'country_id'
     ];
 
     /**
@@ -38,7 +65,8 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**

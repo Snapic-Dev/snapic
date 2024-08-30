@@ -21,6 +21,8 @@ $(function () {
         PostsPaginator.scrollToLastPost(getCookie('app_prev_post'));
     }
     Post.initPostsMediaModule();
+    // Initing read more/less toggler based on clip property
+    PostsPaginator.initDescriptionTogglers();
     SuggestionsSlider.init('.suggestions-box-mobile');
     SuggestionsSlider.init('.suggestions-box');
     if(app.feedDisableRightClickOnMedia !== null){

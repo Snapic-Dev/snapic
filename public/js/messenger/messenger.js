@@ -873,7 +873,7 @@ var messenger = {
             var optKeys = Object.keys(el.options);
             let i = 0;
             optKeys.forEach(function (key) {
-                if(i > 50){return false;}
+                if(i > 50){return false;};
                 el.addItem(key);
                 i++;
             });
