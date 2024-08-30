@@ -292,20 +292,18 @@ class MessengerController extends Controller
      */
     public function sendUserMessage($options)
     {
-
-        $senderID = $options['senderID'];
-        $receiverID = $options['receiverID'];
-        $messageValue = $options['messageValue'];;
-        $messagePrice = $options['messagePrice'];;
-        $attachments =  $options['attachments'];
-
-        $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
-            $query->where('sender_id', $senderID)
-                ->orWhere('sender_id', $receiverID);
-        })
-            ->where(function ($query) use ($senderID, $receiverID) {
-                $query->where('receiver_id', $senderID)
-                    ->orWhere('receiver_id', $receiverID);
+        try {
+            // Obtendo os valores das opções fornecidas
+            $senderID = $options['senderID'];
+            $receiverID = $options['receiverID'];
+            $messageValue = $options['messageValue'];
+            $messagePrice = $options['messagePrice'];
+            $attachments =  $options['attachments'];
+            $image =  $options['image'];
+            // Verificando se é a primeira mensagem entre os dois usuários
+            $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
+                $query->where('sender_id', $senderID)
+                    ->orWhere('sender_id', $receiverID);
             })
                 ->where(function ($query) use ($senderID, $receiverID) {
                     $query->where('receiver_id', $senderID)
@@ -334,45 +332,11 @@ class MessengerController extends Controller
             $message = $message->toArray();
             $message['dateAdded'] = $dateDiff;
 
-        // Turning date into human readable format
-        $dateDiff = $message->created_at->diffForHumans(null, true, true);
-        $message = $message->toArray();
-        $message['dateAdded'] = $dateDiff;
-
-        if ($message['id']) {
-            $attachments = collect($attachments)->map(function ($v, $k) {
-                if (isset($v['attachmentID'])) {
-                    return $v['attachmentID'];
-                }
-                if (isset($v['id'])) {
-                    return $v['id'];
-                }
-            })->toArray();
-            $attachments = Attachment::whereIn('id', $attachments)->get();
-
-            // Attaching the assets to the message
-            // TODO: Review if createAttachment could have been used
-            if ($attachments) {
-                foreach ($attachments as $attachment) {
-                    // Creating unique attachment-message relation, for mass-media-messages
-                    $id = Uuid::uuid4()->getHex();
-                    $newFileName = 'messenger/images/' . $id . '.' . $attachment->type;
-                    // 1. Create new attachment
-                    Attachment::create([
-                        'id' => $id,
-                        'user_id' => Auth::user()->id,
-                        'filename' => $newFileName,
-                        'driver' => $attachment->driver,
-                        'type' => $attachment->type,
-                        'message_id' => $message['id'],
-                    ]);
-                    // 2. Copy the assets of previous attachment to the new one
-                    $storage = Storage::disk(AttachmentServiceProvider::getStorageProviderName($attachment->driver));
-                    if ($attachment->driver != Attachment::PUSHR_DRIVER) {
-                        $storage->copy($attachment->filename, $newFileName);
-                    } else {
-                        // Pushr logic - Copy alternative as S3Adapter fails to do ->copy operations
-                        AttachmentServiceProvider::pushrCDNCopy($attachment, $newFileName);
+            if ($message['id']) {
+                // Processando os anexos
+                $attachments = collect($attachments)->map(function ($v, $k) {
+                    if (isset($v['attachmentIDF'])) {
+                        return $v['attachmentID'];
                     }
                     if (isset($v['id'])) {
                         return $v['id'];
@@ -579,15 +543,6 @@ class MessengerController extends Controller
                     Attachment::where('id', $attachment['attachmentID'])->first()->delete();
                 }
             }
-<<<<<<< HEAD
-            $return[] = $this->sendUserMessage([
-                'senderID' => $senderID,
-                'receiverID' => $receiverID,
-                'messageValue' => $request->get('message'),
-                'messagePrice' => $request->get('price'),
-                'isFirstMessage' => $request->get('new'),
-                'attachments' => $request->get('attachments')
-=======
 
             if (count($receiverIDs) === 1) $return = $return[0];
             // dd($errors);
@@ -595,7 +550,6 @@ class MessengerController extends Controller
                 'status' => 'success',
                 'data' => $return,
                 'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
->>>>>>> b1f66dd9bfb2958954f09273921f4ac55628cd84
             ]);
         } catch (\Exception $exception) {
             // Exibe a mensagem da exceção
@@ -938,5 +892,17 @@ class MessengerController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
         }
+    }
+
+    /**
+     * Trigger para enviar mensagens aos seguidores e assinantes.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function create()
+    {
+        return view('pages.campanha');
     }
 }
