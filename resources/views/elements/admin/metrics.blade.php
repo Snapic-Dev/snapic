@@ -26,7 +26,9 @@
                 ],
             ])
         </div>
-        <input class="dataFilter mt-4 mb-4" type="date" />
+        <div class="mt-2 mb-2">
+            <input class="dataFilter" type="date"/>
+        </div>
         <div class="parent">
             <div class="div1">
                 <div id="metric1" class="cardMetric no-blur-effect">
@@ -99,7 +101,7 @@
                     <div class="headerCardMetric d-flex">
                         <p class="font-weight-bolder dashCardTitle"">Faturamento</p>
                         <button class=" metricsBtn" onclick=" showMetrics(metric4)">
-                            <i class=" voyager-eye"></i>
+                            <i class="voyager-eye"></i>
                         </button>
                     </div>
                     <!-- <p>{{ __('Active subscriptions') }}: {{ \App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount() }}</p>
@@ -197,6 +199,8 @@
 
         let dataFilter = document.querySelector(".dataFilter")
 
+        let dateForm=document.querySelector(".dateForm");
+
         function showMetrics(divElement) {
             divElement.classList.toggle('blur-effect');
             divElement.classList.toggle('no-blur-effect');
@@ -205,21 +209,19 @@
 
         async function sendParameter() {
             let dataFiltered = dataFilter.value;
-            console.log(dataFiltered);
 
 
             let url = `http://127.0.0.1:8000/admin?date=${encodeURIComponent(dataFiltered)}`;
-            console.log(url);
 
 
             window.location.href = url;
 
             const urlParams = new URLSearchParams(window.location.search);
             const date = urlParams.get('date');
-            console.log(date);
         }
 
-        dataFilter.addEventListener('change', sendParameter)
+
+        dataFilter.addEventListener('change',sendParameter);
 
         function getTodayDate() {
             const today = new Date();
@@ -230,16 +232,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            console.log(new Date())
-            const urlParams = new URLSearchParams(window.location.search);
-            let date = urlParams.get('date');
-            if (!date) {
-                date = getTodayDate();
-                urlParams.set('date', date);
-                window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
-            }
-            dataFilter.value = date;
+             const url = new URL(window.location.href);
 
-            console.log(date);
+                const dateValue = url.searchParams.get('date');
+                dataFilter.value=dateValue;
         });
+
+
+
+
     </script>

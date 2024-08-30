@@ -97,9 +97,8 @@ class DashboardServiceProvider extends ServiceProvider
 
         $query = Subscription::query()
             ->whereDate('created_at', $date)
-            ->where('expires_at', '>=', new \DateTime('now', new \DateTimeZone('UTC')));
-
-
+            ->whereColumn('expires_at','>','created_at')
+            ->where('status','completed');
         return $query->count();
     }
 
@@ -236,7 +235,7 @@ class DashboardServiceProvider extends ServiceProvider
         return $subscribers;
     }
 
-    public static function comissionPaid()
+    public static function comissionPaid() 
     {
         $date = request()->query('date');
 
