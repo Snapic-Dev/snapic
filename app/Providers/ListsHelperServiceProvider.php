@@ -316,13 +316,8 @@ class ListsHelperServiceProvider extends ServiceProvider
         }
     }
 
-    public static function getUserFollowers()
+    public static function getUserFollowers($userID)
     {
-
-        $request = request();
-
-        $userID = $request->query('user');
-
         $followers = UserListMember::select('user_lists.user_id', 'users.email', 'users.settings', 'users.name')
             ->join('user_lists', 'user_list_members.list_id', '=', 'user_lists.id')
             ->join('users', 'users.id', '=', 'user_lists.user_id')
