@@ -148,7 +148,6 @@ class ListsHelperServiceProvider extends ServiceProvider
         return $members;
     }
 
-
     /**
      * Creates default followers and blocked lists for an user.
      *

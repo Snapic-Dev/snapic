@@ -9,8 +9,10 @@
                     <div class="col-md-2 col-xs-12">
                         <input type="hidden" name="function" value="{{ $form['function'] }}">
                         <select name="range" class="form-control form-control-sm card-value">
-                            @foreach($form['ranges'] as $range)
-                            <option value="{{ $range }}" @if($form['range']==$range) selected @endif>{{ $range }} {{ $range == 1 ? $form['trans'][0] : $form['trans'][1] }}</option>
+                            @foreach ($form['ranges'] as $range)
+                                <option value="{{ $range }}" @if ($form['range'] == $range) selected @endif>
+                                    {{ $range }} {{ $range == 1 ? $form['trans'][0] : $form['trans'][1] }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -28,7 +30,8 @@
                                 <div class="d-flex align-items-center">
                                     <div class="icon voyager-angle-up"></div>
                                     <div class="d-flex">
-                                        <span class="chart-trend d-flex align-items-center text-success mr-2"></span> <span data-card-increase-growth></span>% {{ __('Increase') }}
+                                        <span class="chart-trend d-flex align-items-center text-success mr-2"></span>
+                                        <span data-card-increase-growth></span>% {{ __('Increase') }}
                                     </div>
                                 </div>
                             </span>
@@ -36,7 +39,8 @@
                                 <div class="d-flex align-items-center">
                                     <div class="icon voyager-angle-down"></div>
                                     <div class="d-flex">
-                                        <span class="chart-trend d-flex align-items-center text-danger mr-2"></span> <span data-card-decrease-growth></span>% {{ __('Decrease') }}
+                                        <span class="chart-trend d-flex align-items-center text-danger mr-2"></span>
+                                        <span data-card-decrease-growth></span>% {{ __('Decrease') }}
                                     </div>
                                 </div>
                             </span>
@@ -57,11 +61,15 @@
 <script>
     "use strict";
     document.addEventListener("DOMContentLoaded", function() {
-        getCardValue(document.querySelector('form[name="{{ $name }}"]'), '{{ __('
-            thousands_separator ') }}');
-        document.querySelector('form[name="{{ $name }}"] select[name="range"]').addEventListener('change', function() {
-            getCardValue(document.querySelector('form[name="{{ $name }}"]'), '{{ __('
-                thousands_separator ') }}');
-        });
+        getCardValue(document.querySelector('form[name="{{ $name }}"]'),
+            '{{ __('
+                        thousands_separator ') }}');
+        document.querySelector('form[name="{{ $name }}"] select[name="range"]').addEventListener(
+            'change',
+            function() {
+                getCardValue(document.querySelector('form[name="{{ $name }}"]'),
+                    '{{ __('
+                                    thousands_separator ') }}');
+            });
     });
 </script>

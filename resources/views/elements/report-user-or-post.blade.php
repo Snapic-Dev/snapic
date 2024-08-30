@@ -2,29 +2,30 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{__('Report user or post')}}</h5>
+                <h5 class="modal-title">{{ __('Report user or post') }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="control-group">
-                    <label for="reasonExamples">{{__('Reason')}}</label>
+                    <label for="reasonExamples">{{ __('Reason') }}</label>
                     <select id="reasonExamples" class="form-control">
-                        @foreach($reportStatuses as $status)
-                        <option value="{{$status}}">{{__($status)}}</option>
+                        @foreach ($reportStatuses as $status)
+                            <option value="{{ $status }}">{{ __($status) }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="control-group mt-2">
-                    <label for="exampleTextarea">{{__('Details')}}</label>
+                    <label for="exampleTextarea">{{ __('Details') }}</label>
                     <textarea class="form-control" id="post_report_details" rows="2"></textarea>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-round btn-warning submit-report-button">{{__('Report')}}</button>
+                <button type="button"
+                    class="btn btn-round btn-warning submit-report-button">{{ __('Report') }}</button>
             </div>
         </div>
     </div>

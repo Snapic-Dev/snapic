@@ -184,7 +184,7 @@ class PaymentHelper
             ],
             "valor" => [
                 // "original" => number_format($dto['amount'], 2, '.', ''),
-		  'original' => '0.01',
+                'original' => '0.01',
             ],
             "chave" => "55673748000147",
             "solicitacaoPagador" => "Compra de créditos no Snapic."
@@ -218,7 +218,7 @@ class PaymentHelper
     {
         return [
             // 'valor' => number_format($amount, 2, '.', ''),
-	    'valor' => '0.01',
+            'valor' => '0.01',
             'pagador' => [
                 'chave' => '55673748000147',
                 'infoPagador' => '',
@@ -1210,7 +1210,6 @@ class PaymentHelper
                         'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
                     ]);
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
-                    // Define a mensagem para gorjetas, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
                         ? 'You successfully sent a tip of :currencySymbol:amount.'
                         : 'You successfully sent a tip of :amount:currencySymbol.';
@@ -1241,7 +1240,6 @@ class PaymentHelper
                 ->with('error', $errorMessage);
         }
     }
-
 
     /**
      * Handles redirect by transaction type

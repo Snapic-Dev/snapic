@@ -2,7 +2,7 @@
 * Post view page
  */
 "use strict";
-/* global app, postVars, Post, CommentsPaginator */
+/* global app, postVars, Post, CommentsPaginator, PostsPaginator */
 
 $(function () {
     // Initing button save
@@ -16,6 +16,8 @@ $(function () {
 
     Post.setActivePage('post');
     Post.initPostsMediaModule();
+    // Initing read more/less toggler based on clip property
+    PostsPaginator.initDescriptionTogglers();
     Post.initGalleryModule('.post-box');
     Post.initGalleryModule('.recent-media');
 

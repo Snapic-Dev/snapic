@@ -1,14 +1,13 @@
 <?php
-$dateToday = date('Y-m-d');
 
 return [
 
     'user' => [
         'add_default_role_on_register' => true,
         'default_role'                 => 'user',
-        'default_cover' => '/img/default-cover.png',
-        'default_avatar' => '/img/default-avatar.jpg',
-        'redirect' => '/admin?date=' . $dateToday,
+        'default_cover'               => '/img/default-cover.png',
+        'default_avatar'               => '/img/default-avatar.jpg',
+        'redirect'                     => '/admin',
     ],
 
     'controllers' => [
@@ -29,7 +28,7 @@ return [
 
     'database' => [
         'tables' => [
-            'hidden' => ['migrations', 'data_rows', 'data_types', 'menu_items', 'password_resets', 'permission_role', 'personal_access_tokens', 'settings'],
+            'hidden' => ['migrations', 'data_rows', 'data_types', 'menu_items', 'password_resets', 'permission_role', 'settings'],
         ],
         'autoload_migrations' => true,
     ],
@@ -80,6 +79,7 @@ return [
 
     'primary_color' => '#673AB7',
     'show_dev_tips' => true,
+    // 'show_dev_tips' => env('APP_DEBUG'),
     'additional_css' => [
         'css/admin-overrides.css',
     ],
@@ -103,9 +103,11 @@ return [
         'cache' => false,
     ],
 
+    // 'compass_in_production' => true,
     'compass_in_production' => false,
 
     'media' => [
+        'allowed_mimetypes' => ["image", "audio", "video"],
         'allowed_mimetypes' => [
             'image/jpeg',
             'image/png',

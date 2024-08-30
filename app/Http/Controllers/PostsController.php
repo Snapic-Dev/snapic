@@ -56,15 +56,15 @@ class PostsController extends Controller
         }
 
         // Only allowing creators to preview non-released/non-approved/expired posts
-        if(!(Auth::check() && Auth::user()->role_id === 1)){
-            if(!Auth::check() || (Auth::check() && $post->user_id != Auth::user()->id)){
-                if($post->status !== Post::APPROVED_STATUS){
+        if (!(Auth::check() && Auth::user()->role_id === 1)) {
+            if (!Auth::check() || (Auth::check() && $post->user_id != Auth::user()->id)) {
+                if ($post->status !== Post::APPROVED_STATUS) {
                     abort(404);
                 }
-                if($post->release_date && $post->release_date >  Carbon::now()){
+                if ($post->release_date && $post->release_date >  Carbon::now()) {
                     abort(404);
                 }
-                if($post->expire_date && $post->expire_date < Carbon::now()){
+                if ($post->expire_date && $post->expire_date < Carbon::now()) {
                     abort(404);
                 }
             }
@@ -72,10 +72,12 @@ class PostsController extends Controller
 
         $post->setAttribute('isSubbed', false);
         // Checking authorization & post existence
-        if (PostsHelperServiceProvider::hasActiveSub(Auth::user()->id, $post->user->id)
+        if (
+            PostsHelperServiceProvider::hasActiveSub(Auth::user()->id, $post->user->id)
             || Auth::user()->id == $post->user->id
             || PostsHelperServiceProvider::userPaidForPost(Auth::user()->id, $post->id)
             || (!$post->user->paid_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($post->user->id))
+            || ($post->user->open_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($post->user->id))
             || Auth::user()->role_id === 1
         ) {
             $post->setAttribute('isSubbed', true);
@@ -108,8 +110,8 @@ class PostsController extends Controller
     public function create()
     {
         $canPost = true;
-        if(getSetting('site.enforce_user_identity_checks')){
-            if(!GenericHelperServiceProvider::isUserVerified()){
+        if (getSetting('site.enforce_user_identity_checks')) {
+            if (!GenericHelperServiceProvider::isUserVerified()) {
                 $canPost = false;
             }
         }
@@ -148,7 +150,7 @@ class PostsController extends Controller
                 'price' => $post->price,
             ],
             'mediaSettings' => [
-                'allowed_file_extensions' => '.'.str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('videosFallback')),
+                'allowed_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('videosFallback')),
                 'max_file_upload_size' => (int) getSetting('media.max_file_upload_size'),
                 'use_chunked_uploads' => (bool)getSetting('media.use_chunked_uploads'),
                 'upload_chunk_size' => (int)getSetting('media.upload_chunk_size'),
@@ -220,24 +222,23 @@ class PostsController extends Controller
             $message = __('Post created.');
             if ($type == 'update') {
                 $message = __('Post updated successfully.');
-            }
-            else{
+            } else {
                 $postNotifications = $request->get('postNotifications');
-                if(getSetting('profiles.enable_new_post_notification_setting') && $postNotifications == 'true'){
+                if (getSetting('profiles.enable_new_post_notification_setting') && $postNotifications == 'true') {
                     // Grabbing followers
                     $followers = ListsHelperServiceProvider::getUserFollowers(Auth::user()->id);
 
                     // Sending them email notifications, if site & user settings allows it
-                    foreach($followers as $follower){
+                    foreach ($followers as $follower) {
                         $serializedSettings = json_decode($follower['settings']);
-                        if(isset($serializedSettings->notification_email_new_post_created) && $serializedSettings->notification_email_new_post_created == 'true'){
+                        if (isset($serializedSettings->notification_email_new_post_created) && $serializedSettings->notification_email_new_post_created == 'true') {
                             App::setLocale($serializedSettings->locale);
                             EmailsServiceProvider::sendGenericEmail(
                                 [
                                     'email' => $follower['email'],
                                     'subject' => __('New content from @:username', ['username' => Auth::user()->username]),
-                                    'title' => __('Hello, :name,', ['name'=>$follower['name']]),
-                                    'content' => __('New content from people you follow is available', ['siteName'=>getSetting('site.name')]),
+                                    'title' => __('Hello, :name,', ['name' => $follower['name']]),
+                                    'content' => __('New content from people you follow is available', ['siteName' => getSetting('site.name')]),
                                     'button' => [
                                         'text' => __('View your feed'),
                                         'url' => route('feed'),
@@ -250,7 +251,7 @@ class PostsController extends Controller
                 }
 
                 // Sending approval admin email if needed
-                if(getSetting('admin.send_notifications_on_pending_posts') && $postStatus === 0){
+                if (getSetting('admin.send_notifications_on_pending_posts') && $postStatus === 0) {
                     // Sending out admin email
                     $adminEmails = User::where('role_id', 1)->select(['email', 'name'])->get();
                     foreach ($adminEmails as $user) {
@@ -262,17 +263,17 @@ class PostsController extends Controller
                                 'content' => __('There is a new post pending your approval on :siteName.', ['siteName' => getSetting('site.name')]),
                                 'button' => [
                                     'text' => __('Go to admin'),
-                                    'url' => route('voyager.dashboard').'/user-posts?key=status&filter=equals&s=0',
+                                    'url' => route('voyager.dashboard') . '/user-posts?key=status&filter=equals&s=0',
                                 ],
                             ]
                         );
                     }
                 }
-
             }
 
             return response()->json([
-                'success' => 'true', 'message' => $message,
+                'success' => 'true',
+                'message' => $message,
             ]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [$exception->getMessage()]]);
@@ -293,7 +294,7 @@ class PostsController extends Controller
             // Checking authorization & post existence
             $post = Post::with(['user'])->where('id', $postID)->first();
             if (! $post) {
-                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message'=> __('Post not found')], 404);
+                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message' => __('Post not found')], 404);
             }
 
             if ($this->validateUserAccessForPost($post)) {
@@ -329,8 +330,8 @@ class PostsController extends Controller
                 return response()->json(['success' => false, 'errors' => [__('Not found')], 'message' => __('Post not found')], 404);
             }
 
-            if(GenericHelperServiceProvider::hasUserBlocked($post->user_id, Auth::user()->id)){
-                return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message'=> __('This user has blocked you')], 403);
+            if (GenericHelperServiceProvider::hasUserBlocked($post->user_id, Auth::user()->id)) {
+                return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
             }
 
             if ($this->validateUserAccessForPost($post)) {
@@ -349,11 +350,9 @@ class PostsController extends Controller
                     'success' => true,
                     'data' => View::make('elements.feed.post-comment')->with('comment', $comment)->render(),
                 ]);
-            }
-            else{
+            } else {
                 return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
             }
-
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [$exception->getMessage()]]);
         }
@@ -411,7 +410,6 @@ class PostsController extends Controller
 
                 return response()->json(['success' => true, 'message' => $message]);
             }
-
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message' => $exception->getMessage()]);
         }
@@ -436,13 +434,17 @@ class PostsController extends Controller
             // Checking authorization & post existence
             $post = Post::where('id', $id)->first();
             if (! $post) {
-                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message'=> __('Post not found')], 404);
+                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message' => __('Post not found')], 404);
             }
 
             if (
-                PostsHelperServiceProvider::hasActiveSub(Auth::user()->id, $post->user_id)
-                || Auth::user()->id == $post->user_id ||
-                (!$post->user->paid_profile)) {
+                PostsHelperServiceProvider::hasActiveSub(Auth::user()->id, $post->user->id)
+                || Auth::user()->id == $post->user->id
+                || PostsHelperServiceProvider::userPaidForPost(Auth::user()->id, $post->id)
+                || (!$post->user->paid_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($post->user->id))
+                || ($post->user->open_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($post->user->id))
+                || Auth::user()->role_id === 1
+            ) {
                 $message = '';
                 if ($action == 'add') {
                     $message = 'Bookmark added.';
@@ -453,11 +455,9 @@ class PostsController extends Controller
                 }
 
                 return response()->json(['success' => true, 'message' => __($message)]);
+            } else {
+                return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
             }
-            else{
-                return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message'=> __('Not authorized')], 403);
-            }
-
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')]]);
         }
@@ -468,19 +468,20 @@ class PostsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updatePostPin(Request $request){
+    public function updatePostPin(Request $request)
+    {
         $postID = $request->get('id');
         $action = $request->get('action');
         try {
             // Checking authorization & post existence
             $post = Post::where('id', $postID)->where('user_id', Auth::user()->id)->first();
             if (! $post) {
-                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message'=> __('Post not found')], 404);
+                return response()->json(['success' => false, 'errors' => [__('Not found')], 'message' => __('Post not found')], 404);
             }
 
             // Delete prev pinned post
             $pinnedPost = Post::where('user_id', Auth::user()->id)->where('is_pinned', 1)->first();
-            if($pinnedPost){
+            if ($pinnedPost) {
                 $pinnedPost->is_pinned = false;
                 $pinnedPost->save();
             }
@@ -495,7 +496,6 @@ class PostsController extends Controller
             }
 
             return response()->json(['success' => true, 'message' => __($message)]);
-
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.') . $exception->getMessage()]]);
         }
@@ -512,21 +512,21 @@ class PostsController extends Controller
         $postID = $request->get('id');
 
         $userPosts = Auth::user()->posts;
-        if(getSetting('compliance.minimum_posts_deletion_limit') > 0 && count($userPosts) <= getSetting('compliance.minimum_posts_deletion_limit')) {
+        if (getSetting('compliance.minimum_posts_deletion_limit') > 0 && count($userPosts) <= getSetting('compliance.minimum_posts_deletion_limit')) {
             return response()->json(['success' => false, 'errors' => [__('You reached the minimum limit of posts')]]);
         }
 
         $post = Post::where('id', $postID)->where('user_id', Auth::user()->id)->withCount('postPurchases')->first();
 
-        if(getSetting('compliance.disable_creators_ppv_delete')){
-            if(isset($post->post_purchases_count) && $post->post_purchases_count > 0){
+        if (getSetting('compliance.disable_creators_ppv_delete')) {
+            if (isset($post->post_purchases_count) && $post->post_purchases_count > 0) {
                 return response()->json(['success' => false, 'errors' => [__('The post has been bought and can not be deleted.')]]);
             }
         }
 
         if ($post) {
             // Deleting attachments from storage
-            foreach($post->attachments as $attachment){
+            foreach ($post->attachments as $attachment) {
                 AttachmentServiceProvider::removeAttachment($attachment);
             }
             $post->delete();
@@ -541,10 +541,11 @@ class PostsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteComment(Request $request){
+    public function deleteComment(Request $request)
+    {
         $commentID = $request->get('id');
         $comment = PostComment::where('id', $commentID)->where('user_id', Auth::user()->id)->first();
-        if(!$comment){
+        if (!$comment) {
             return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Comment not found')], 403);
         }
         $comment->delete();
@@ -556,7 +557,8 @@ class PostsController extends Controller
      * @param $post
      * @return bool
      */
-    private function validateUserAccessForPost($post) {
+    private function validateUserAccessForPost($post)
+    {
         return PostsHelperServiceProvider::hasActiveSub(Auth::user()->id, $post->user_id)
             || Auth::user()->id == $post->user_id
             || (getSetting('profiles.allow_users_enabling_open_profiles') && $post->user->open_profile)

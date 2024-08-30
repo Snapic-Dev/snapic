@@ -160,7 +160,7 @@ class AttachmentController extends Controller
         $attachment = Attachment::where('id', $attachmentID)->first();
         $username = $attachment->user->username;
 
-        if (!config('broadcasting.connections.pusher.key')) {
+        if (config('broadcasting.connections.pusher.key')) {
             $options = [
                 'cluster' => config('broadcasting.connections.pusher.options.cluster'),
                 'useTLS' => true,
