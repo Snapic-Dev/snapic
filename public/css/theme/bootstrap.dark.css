@@ -11777,3 +11777,15 @@ a.text-white:hover {
 .text-link:hover {
   color: #bda7e3;
 }
+
+select {
+  background-color: transparent;
+  border: none;
+  color: white;
+  border-bottom:1px solid white;
+  outline: none;
+}
+
+option {
+  color: black;
+}

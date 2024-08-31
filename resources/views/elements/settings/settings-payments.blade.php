@@ -1,17 +1,40 @@
 @if(count($payments))
-    <div class="table-wrapper ">
+    <div class="table-wrapper p-2">
         <div class="">
             <div class="col d-flex align-items-center py-3 border-bottom text-bold">
-                <div class="col-lg-3 text-truncate">{{__('Type')}}</div>
-                <div class="col-lg-2 text-truncate">{{__('Status')}}</div>
+            <div class="col-lg-2 text-truncate">
+                <select class="typeSelect">
+                    <option value="" disabled selected>Tipo</option> <!-- Adicionei um valor vazio e selecionei para indicar que este é o texto padrão -->
+                    <option value="deposit">Deposito</option>
+                    <option value="post">Post</option>
+                    <option value="tip">Gorjeta</option>
+                    <option value="subscription">Inscrição</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 text-truncate">
+                <select class="statusSelect">
+                    <option value="" disabled selected>Status</option> <!-- Alterado para "Status" para refletir melhor as opções -->
+                    <option value="pending">Pendente</option>
+                    <option value="canceled">Cancelado</option>
+                    <option value="approved">Aprovado</option>
+                    <option value="refunded">Reembolsado</option>
+                </select>
+            </div>
                 <div class="col-lg-2 text-truncate">{{__('Amount')}}</div>
                 <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
                 <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
-                <div class="col-lg-1 text-truncate"></div>
+                <div class="col-lg-2 text-truncate">
+                    <select class="dataSelect">
+                        <option value="" disabled selected>Data</option> <!-- Alterado para "Status" para refletir melhor as opções -->
+                        <option value="asc">asc</option>
+                        <option value="desc">desc</option>
+                    </select>
+                </div>
             </div>
             @foreach($payments as $payment)
                 <div class="col d-flex align-items-center py-3 border-bottom">
-                    <div class="col-lg-3 text-truncate">
+                    <div class="col-lg-2 text-truncate">
                         @if($payment->type == 'stream-access')
                             @if($payment->stream->status == 'in-progress')
                                 <a href="{{route('public.stream.get',['streamID'=>$payment->stream->id,'slug'=>$payment->stream->slug])}}" class="text-{{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'white' : 'dark') : (Cookie::get('app_theme') == 'dark' ? 'white' : 'dark'))}}"> {{ucfirst(__($payment->type))}}</a>
@@ -47,7 +70,7 @@
                         @endif
                     </div>
 
-                    <div class="col-lg-2">
+                    <div class="col-lg-3 d-flex justify-content-start align-item-center">
                         @switch($payment->status)
                             @case('approved')
                             <span class="badge badge-success">
@@ -89,6 +112,11 @@
                             {{$payment->receiver->name}}
                         </a>
                     </div>
+                    <div class="col-lg-2 text-truncate d-none d-md-block">
+                        <a href="{{route('profile',['username'=>$payment->receiver->username])}}" class="text-dark-r">
+                            {{ \Illuminate\Support\Carbon::parse($payment->created_at)->format('d/m/Y H:i') }}
+                        </a>
+                    </div>
                     <div class="col-lg-1 d-flex justify-content-center">
                         @if($payment->invoice_id && $payment->receiver->id !== \Illuminate\Support\Facades\Auth::user()->id && $payment->status === \App\Model\Transaction::APPROVED_STATUS)
                             <div class="dropdown {{GenericHelper::getSiteDirection() == 'rtl' ? 'dropright' : 'dropleft'}}">
@@ -112,7 +140,69 @@
         {{ $payments->onEachSide(1)->links() }}
     </div>
 @else
-    <div class="p-3">
-        <p>{{__('There are no payments on this account.')}}</p>
-    </div>
+<div class="table-wrapper">
+        <div class="">
+            <div class="col d-flex align-items-center py-3 border-bottom text-bold">
+            <div class="col-lg-3 text-truncate">
+                <select class="typeSelect">
+                    <option value="" disabled selected>Tipo</option> <!-- Adicionei um valor vazio e selecionei para indicar que este é o texto padrão -->
+                    <option value="deposit">Deposito</option>
+                    <option value="post">Post</option>
+                    <option value="tip">Gorjeta</option>
+                    <option value="subscription">Assinaturas</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 text-truncate">
+                <select class="statusSelect">
+                    <option value="" disabled selected>Status</option> <!-- Alterado para "Status" para refletir melhor as opções -->
+                    <option value="pending">Pendente</option>
+                    <option value="canceled">Cancelado</option>
+                    <option value="approved">Aprovado</option>
+                    <option value="refunded">Reembolsado</option>
+                </select>
+            </div>
+                <div class="col-lg-2 text-truncate">{{__('Amount')}}</div>
+                <div class="col-lg-2 text-truncate d-none d-md-block">{{__('From')}}</div>
+                <div class="col-lg-2 text-truncate d-none d-md-block">{{__('To')}}</div>
+                <div class="col-lg-2 text-truncate">
+                    <select class="dataSelect">
+                        <option value="" disabled selected>Data</option> <!-- Alterado para "Status" para refletir melhor as opções -->
+                        <option value="asc">ASC</option>
+                        <option value="desc">DESC</option>
+                    </select>
+                </div>
+            </div>
+</div>
 @endif
+
+<script>
+    let typeSelect=document.querySelector('.typeSelect');
+    let statusSelect=document.querySelector('.statusSelect');
+    let dataSelect=document.querySelector('.dataSelect');
+
+    function generateQuery() {
+        const params = new URLSearchParams();
+
+        if(typeSelect.value!=="") {
+        params.append('type', typeSelect.value);
+        }
+
+        if(statusSelect.value!=="") {
+        params.append('status', statusSelect.value);
+        }
+
+        if(dataSelect.value!=="") {
+        params.append('dataFilter', dataSelect.value);
+        }
+
+        const queryString = params.toString();
+
+        const url = `http://localhost:8000/my/settings/payments?${queryString}`;
+        window.location.href = url;
+    }
+
+    typeSelect.addEventListener('change',generateQuery)
+    statusSelect.addEventListener('change',generateQuery)
+    dataSelect.addEventListener('change',generateQuery)
+</script>

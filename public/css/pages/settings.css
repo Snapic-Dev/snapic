@@ -1,4 +1,5 @@
 .table-wrapper {
+  width: 720px;
 }
 
 .profileAvatar-settings {
@@ -67,4 +68,12 @@
 .CodeMirror,
 .CodeMirror-scroll {
   min-height: 100px;
+}
+
+select {
+  border: none;
+  border-bottom: 1px solid rgb(33, 33, 33);
+  outline: none;
+  padding: 5px;
+  font-weight: 600;
 }
