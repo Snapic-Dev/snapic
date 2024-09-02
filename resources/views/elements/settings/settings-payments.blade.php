@@ -198,7 +198,8 @@
 
         const queryString = params.toString();
 
-        const url = `http://localhost:8000/my/settings/payments?${queryString}`;
+        const baseUrl = `${window.location.origin}/my/settings/payments`;
+        const url = `${baseUrl}?${queryString}`;
         window.location.href = url;
     }
 
