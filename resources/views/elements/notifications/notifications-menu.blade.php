@@ -1,4 +1,4 @@
-<nav class="nav nav-pills nav-justified {{$variant == 'desktop' ? 'notifications-nav' : 'notifications-nav-mobile'}}">
+<!-- <nav class="nav nav-pills nav-justified {{$variant == 'desktop' ? 'notifications-nav' : 'notifications-nav-mobile'}}">
     <a class="nav-item nav-link text-bold {{!$activeType ? 'active' : ''}}" href="{{route('my.notifications')}}">
         <div class="d-flex justify-content-center">
             @include('elements.icon',['icon'=>'list-outline','centered'=>false,'variant'=>'medium'])
@@ -29,4 +29,4 @@
             </div>
         </a>
     @endforeach
-</nav>
+</nav> -->

@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <div class="form-group">
+    <div class="form-group p-2">
         <label for="username">{{__('Password')}}</label>
         <input class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="username" name="password" type="password">
         @if($errors->has('password'))
@@ -21,7 +21,7 @@
         @endif
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-2">
         <label for="username">{{__('New password')}}</label>
         <input class="form-control {{ $errors->has('new_password') ? 'is-invalid' : '' }}" id="username" name="new_password" type="password">
         @if($errors->has('new_password'))
@@ -31,7 +31,7 @@
         @endif
     </div>
 
-    <div class="form-group">
+    <div class="form-group p-2">
         <label for="username">{{__('Confirm password')}}</label>
         <input class="form-control {{ $errors->has('confirm_password') ? 'is-invalid' : '' }}" id="username" name="confirm_password" type="password">
         @if($errors->has('confirm_password'))
@@ -40,6 +40,8 @@
             </span>
         @endif
     </div>
-    <button class="btn btn-primary btn-block rounded mr-0" type="submit">{{__('Save')}}</button>
 
+    <div class="mt-3">
+        <button class="btn btn-round border btn-primary btn-block p-3" type="submit">{{__('Save')}}</button>
+    </div>
 </form>

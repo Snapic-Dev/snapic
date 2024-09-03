@@ -199,24 +199,24 @@
 
                 <div class="d-flex flex-column flex-md-row justify-content-md-between pb-2 pl-4 pr-4 mb-3 mt-1">
 
-                    <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
+                    <!-- <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                         @include('elements.icon',['icon'=>'calendar-clear-outline','centered'=>false,'classes'=>'mr-1'])
                         <div class="text-truncate ml-1">
                             {{ucfirst($user->created_at->translatedFormat('F d'))}}
                         </div>
-                    </div>
-                    @if($user->location)
+                    </div> -->
+                    <!-- @if($user->location)
                         <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                             @include('elements.icon',['icon'=>'location-outline','centered'=>false,'classes'=>'mr-1'])
                             <div class="text-truncate ml-1">
                                 {{$user->location}}
                             </div>
                         </div>
-                    @endif
+                    @endif -->
                     @if(!getSetting('profiles.disable_website_link_on_profile'))
                         @if($user->website)
                             <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
-                                @include('elements.icon',['icon'=>'globe-outline','centered'=>false,'classes'=>'mr-1'])
+                                @include('elements.icon',['icon'=>'logo-instagram','centered'=>false,'classes'=>'mr-1'])
                                 <div class="text-truncate ml-1">
                                     <a href="{{$user->website}}" target="_blank" rel="nofollow">
                                         {{str_replace(['https://','http://','www.'],'',$user->website)}}
@@ -225,7 +225,7 @@
                             </div>
                         @endif
                     @endif
-                    @if(getSetting('profiles.allow_gender_pronouns'))
+                    <!-- @if(getSetting('profiles.allow_gender_pronouns'))
                         @if($user->gender_pronoun)
                             <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                                 @include('elements.icon',['icon'=>'male-female-outline','centered'=>false,'classes'=>'mr-1'])
@@ -234,7 +234,7 @@
                                 </div>
                             </div>
                         @endif
-                    @endif
+                    @endif -->
 
                 </div>
 

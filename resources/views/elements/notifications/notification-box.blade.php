@@ -14,18 +14,18 @@
                 @if($notification->fromUser)
                     <div class="d-flex flex-column">
                         <h6 class="text-bold  m-0 p-0 d-flex"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-dark-r">{{$notification->fromUser->name}}</a></h6>
-                        <div class="text-bold"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-muted">{{'@'}}{{$notification->fromUser->username}}</a></div>
+                        <!-- <div class="text-bold"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-muted">{{'@'}}{{$notification->fromUser->username}}</a></div> -->
                     </div>
                 @endif
                 <div class="position-absolute separator">
                 </div>
             </div>
             <div>
-                <div class="my-1 text-break pr-3 {{!$notification->read?'text-bold':''}}">
+                <div class="my-1 text-break pr-3 {{!$notification->read?'':''}}">
                     @switch($notification->type)
                         @case(\App\Model\Notification::NEW_TIP)
                             @if(isset($notification->transaction))
-                                {{$notification->transaction->sender->name}} {{__("sent you a tip of")}} {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\PaymentsServiceProvider::getTransactionAmountWithTaxesDeducted($notification->transaction))}}.
+                                {{$notification->transaction->sender->name}} {{__("sent you a tip of")}} <span class="">{{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\PaymentsServiceProvider::getTransactionAmountWithTaxesDeducted($notification->transaction))}}</span>.
                             @else
                                 {{__('No transaction data')}}
                             @endif
@@ -50,23 +50,22 @@
                                             'currencySymbol' => \App\Providers\SettingsServiceProvider::getWebsiteCurrencySymbol(),
                                             'amount' => $notification->withdrawal->amount,
                                             'status' =>  $notification->withdrawal->status,
-                                        ])
+                            ])
 
                         }}
                         @break
                         @case(\App\Model\Notification::NEW_MESSAGE)
-                        {{__("Send you a message: `:message`",['message'=>$notification->userMessage->message])}}
+                            {{__("Send you a message: `:message`",['message'=>$notification->userMessage->message])}}
                         @break
                         @case(\App\Model\Notification::EXPIRING_STREAM)
-                        {{__('Your live streaming is about to end in 30 minutes. You can start another one afterwards.')}}
+                            {{__('Your live streaming is about to end in 30 minutes. You can start another one afterwards.')}}
                         @break
                         @case(\App\Model\Notification::PPV_UNLOCK)
-                        {{__('Someone unlocked your'). ' ' . $notification->PPVUnlockType . '.'}}
+                            {{__('Someone unlocked your'). ' ' . $notification->PPVUnlockType . '.'}}
                         @break
                     @endswitch
-
                 </div>
-                <div class="d-flex text-muted">
+                <div class="d-flex text-muted mt-2">
                     <div>{{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }} </div>
                 </div>
             </div>

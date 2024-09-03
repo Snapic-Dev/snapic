@@ -20,8 +20,8 @@ class BookmarksController extends Controller
         'photos' => ['heading' => 'Photos', 'icon' => 'image'],
         'videos' => ['heading' => 'Videos', 'icon' => 'videocam'],
         'audio' => ['heading' => 'Audio', 'icon' => 'musical-notes'],
-        'other' => ['heading' => 'Other', 'icon' => 'person'],
-        'locked' => ['heading' => 'Locked', 'icon' => 'lock-closed'],
+        // 'other' => ['heading' => 'Other', 'icon' => 'person'],
+        // 'locked' => ['heading' => 'Locked', 'icon' => 'lock-closed'],
     ];
 
     /**
