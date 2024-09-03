@@ -39,14 +39,6 @@ select.form-control {
 
 // Checkboxes and radios
 
-.form-check-input {
-  &[disabled] ~ .form-check-label,
-  &:disabled ~ .form-check-label {
-    color: $text-muted-alt;
-  }
-}
-
-
 // Form validation
 
 @each $state, $data in $form-validation-states-alt {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentsController;
 use Illuminate\Support\Facades\{
     Route,
     Auth
@@ -74,6 +75,10 @@ Route::post('/payment/pix', [
     'as' => 'pix',
 ]);
 
+Route::post('/payment/webhook', [PaymentsController::class, 'handleWebhook']);
+Route::get('/payment/webhook/config', [PaymentsController::class, 'configWebhook']);
+Route::post('/payment/webhook/pix', [PaymentsController::class, 'pixWebhook']);
+
 Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
     // Settings panel routes
     Route::group(['prefix' => 'my', 'as' => 'my.'], function () {
@@ -119,8 +124,9 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::delete('/delete/{commentID}', [App\Http\Controllers\MessengerController::class, 'deleteMessage'])->name('delete');
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
-            Route::post('/trigger', [App\Http\Controllers\MessengerController::class, 'trigger'])->name('campanha.store');
-            Route::get('/campanha', [App\Http\Controllers\MessengerController::class, 'create'])->name('campanha.create');
+            Route::get('/campanha', function () {
+                return view('pages.campanha');
+            })->name('campanha.create');
         });
         /*
          * (My) Bookmarks

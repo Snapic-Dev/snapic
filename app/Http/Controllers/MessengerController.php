@@ -10,15 +10,19 @@ use App\Model\Subscription;
 use App\Model\Transaction;
 use App\Model\UserMessage;
 use App\Providers\AttachmentServiceProvider;
+use App\Providers\DashboardServiceProvider;
 use App\Providers\EmailsServiceProvider;
+use App\Providers\FirebaseProvider;
 use App\Providers\GenericHelperServiceProvider;
 use App\Providers\ListsHelperServiceProvider;
 use App\Providers\NotificationServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\User;
+use AWS\CRT\Log;
 use Carbon\Carbon;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +30,24 @@ use Illuminate\Support\Facades\Storage;
 use Javascript;
 use Pusher\Pusher;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\VarDumper\VarDumper;
 
 class MessengerController extends Controller
 {
+
+    protected $providerFirebase;
+
+    /**
+     * PaymentsController constructor.
+     * @param FirebaseProvider $providerFirebase
+     */
+
+    public function __construct(FirebaseProvider $providerFirebase)
+    {
+        $this->providerFirebase = $providerFirebase;
+    }
+
+
     /**
      * Renders the main messenger view / layout
      * Rest of the messenger elements are mostly loaded via JS.
@@ -225,6 +244,7 @@ class MessengerController extends Controller
             return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
         }
 
+
         $conversation = UserMessage::with(['sender', 'receiver', 'attachments'])->where(function ($q) use ($senderID, $receiverID) {
             $q->where('sender_id', $senderID)
                 ->where('receiver_id', $receiverID);
@@ -278,6 +298,7 @@ class MessengerController extends Controller
         $messageValue = $options['messageValue'];;
         $messagePrice = $options['messagePrice'];;
         $attachments =  $options['attachments'];
+        $image =  $options['image'];
 
         $isFirstMessage = UserMessage::where(function ($query) use ($senderID, $receiverID) {
             $query->where('sender_id', $senderID)
@@ -303,6 +324,20 @@ class MessengerController extends Controller
         $message['dateAdded'] = $dateDiff;
 
         if ($message['id']) {
+
+            if ($image) {
+                $image_uploaded = $this->providerFirebase->uploadToFirebase($image);
+                $id = Uuid::uuid4()->getHex();
+                Attachment::create([
+                    'id' => $id,
+                    'user_id' => Auth::user()->id,
+                    'filename' => $image_uploaded,
+                    'driver' => 0,
+                    'type' => 'teste',
+                    'message_id' => $message['id'],
+                ]);
+            }
+
             $attachments = collect($attachments)->map(function ($v, $k) {
                 if (isset($v['attachmentID'])) {
                     return $v['attachmentID'];
@@ -351,7 +386,7 @@ class MessengerController extends Controller
             }
         }
 
-        // Buscando a mensagem completa com os anexos e remetentes
+        // Fetching serialized message object
         $message = UserMessage::with(['sender', 'receiver', 'attachments'])->where('user_messages.id', $message['id'])
             ->leftJoin('transactions', function ($join) {
                 $join->on('transactions.user_message_id', '=', 'user_messages.id');
@@ -419,48 +454,86 @@ class MessengerController extends Controller
      */
     public function sendMessage(SaveNewMessageRequest $request)
     {
-        $receiverIDs = $request->get('receiverIDs');
-        $return = [];
-        $errors = [];
-        foreach ($receiverIDs as $receiverID) {
+
+        try {
+            $receiverIDs = $request->get('receiverIDs');
             $senderID = (int) Auth::user()->id;
-            $receiverID = (int) $receiverID;
-            // Checking access
-            if (!self::checkMessengerAccess($senderID, $receiverID)) {
-                $errors[] = __('Not authorized');
-                if (count($receiverIDs) == 1) {
-                    return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
+            $return = [];
+            $errors = [];
+
+            if ($receiverIDs === null) {
+                $receiverIDs = [];
+
+                if ($request->input('followers')) {
+                    $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
+                    foreach ($followers as $follower) {
+                        if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                            $receiverIDs[]  = $follower['user_id'];
+                        }
+                    }
+                }
+
+                if ($request->input('subscribers')) {
+                    $subscribers = Subscription::where('recipient_user_id', $senderID)
+                        ->where('expires_at', '>', Carbon::now('UTC'))
+                        ->get();
+
+                    foreach ($subscribers as $subscriber) {
+                        if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
+                            $receiverIDs[]  = $subscriber->user_id;
+                        }
+                    }
                 }
             }
-            if (GenericHelperServiceProvider::hasUserBlocked($receiverID, $senderID)) {
-                $errors[] = __('This user has blocked you');
-                if (count($receiverIDs) == 1) {
-                    return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
+
+            foreach ($receiverIDs as $receiverID) {
+                $receiverID = (int) $receiverID;
+                if (!self::checkMessengerAccess($senderID, $receiverID)) {
+                    $errors[] = __('Not authorized');
+                    if (count($receiverIDs) == 1) {
+                        return response()->json(['success' => false, 'errors' => [__('Not authorized')], 'message' => __('Not authorized')], 403);
+                    }
+                }
+                if (GenericHelperServiceProvider::hasUserBlocked($receiverID, $senderID)) {
+                    $errors[] = __('This user has blocked you');
+                    if (count($receiverIDs) == 1) {
+                        return response()->json(['success' => false, 'errors' => [__('This user has blocked you')], 'message' => __('This user has blocked you')], 403);
+                    }
+                }
+
+                $return[] = $this->sendUserMessage([
+                    'senderID' => $senderID,
+                    'receiverID' => $receiverID,
+                    'messageValue' => $request->input('message') ??  $request->get('message'),
+                    'messagePrice' => $request->input('price') ?? $request->get('price'),
+                    'isFirstMessage' => $request->get('new'),
+                    'attachments' => $request->get('attachments'),
+                    'image' => $request->file('image')
+                ]);
+            }
+
+            if ($request->get('attachments')) {
+                foreach ($request->get('attachments') as $attachment) {
+                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
                 }
             }
-            $return[] = $this->sendUserMessage([
-                'senderID' => $senderID,
-                'receiverID' => $receiverID,
-                'messageValue' => $request->get('message'),
-                'messagePrice' => $request->get('price'),
-                'isFirstMessage' => $request->get('new'),
-                'attachments' => $request->get('attachments')
+
+            if (count($receiverIDs) === 1) $return = $return[0];
+            // dd($errors);
+            return response()->json([
+                'status' => 'success',
+                'data' => $return,
+                'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
             ]);
+        } catch (\Exception $exception) {
+            // Exibe a mensagem da exceção
+            echo ("Exceção capturada: " . $exception);
+            // Exibe o traço da pilha (opcional)
+            echo "<br>Rastreamento da pilha: " . nl2br($exception);
         }
-        // Delete initially created attachments, after attaching them to the messages
-        if ($request->get('attachments')) {
-            foreach ($request->get('attachments') as $attachment) {
-                Attachment::where('id', $attachment['attachmentID'])->first()->delete();
-            }
-        }
-        // If single message, return the single message entry | keep ui as it was
-        if (count($receiverIDs) === 1) $return = $return[0];
-        return response()->json([
-            'status' => 'success',
-            'data' => $return,
-            'errors' => count($errors) ? "Some of your messages couldn't be sent." : false,
-        ]);
     }
+
+
 
     /**
      * Marks message as being seen.
@@ -749,6 +822,8 @@ class MessengerController extends Controller
         }
         return false;
     }
+
+
 
     /**
      * Method used for deleting messenger messages

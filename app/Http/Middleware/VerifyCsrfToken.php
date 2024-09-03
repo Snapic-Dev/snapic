@@ -23,5 +23,8 @@ class VerifyCsrfToken extends Middleware
         'transcoding/coconut/update',
         'payment/pix',
         'my/messenger/sendMessage',
+        'payment/webhook',
+        'payment/webhook/config',
+        'payment/webhook/pix'
     ];
 }

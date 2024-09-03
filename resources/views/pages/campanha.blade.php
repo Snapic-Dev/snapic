@@ -36,33 +36,24 @@
             </div>
             @endif
             <div class="d-flex flex-column-reverse">
-                <form id="myForm" class="w-100">
+                <form id="myForm" class="w-100" enctype="multipart/form-data">
+                    @csrf
                     <div class="form-group p-3 ml-4 mr-4">
-                        <label for="formGroupExampleInput">Valor do conteúdo</label>
-                        <input type="number" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" min=20 required>
+                        <label for="formGroupExampleInput" class="required-label">Valor do conteúdo</label>
+                        <input type="number" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" required>
                         <span id="errorPrice" style="display: none;" class="text-danger mt-2">Defina um valor para o anúncio </span>
                     </div>
-                    <!-- <div class="form-group p-3 ml-4 mr-4">
-                        <label>Adicionar arquivo</label>
-                        <input id="inputFile file-upload" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb   " name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required onchange="previewImage(this, document.getElementById('frontPreview'))">
+                    <div class="form-group p-3 ml-4 mr-4">
+                        <label for="exampleFormControlTextarea1" class="required-label">Mensagem</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message" required></textarea>
                         <div>
-                            <span id="errorFile" style="display: none;" class="text-danger mt-2">Por favor,selecione uma imagem</span>
+                            <span id="MessageError" style="display: none; " class="text-danger mt-2"></span>
                         </div>
-                        <div class="preview">
-                            <img id="frontPreview" src="#" alt="" style="display: none; max-height: 200px;">
-                        </div>
-                        @error('frontDoc')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div> -->
-                    <div class="form-group formFile p-3 ml-4 mr-4">
+                    </div>
+                    <div class="form-group" style="padding: 0 40px;">
                         <label for="frontDoc" class="col-form-label required-label">Adicionar arquivo</label>
-                        <div class="file-upload">
-                            <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
-                                name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
-                                onchange="previewImage(this, document.getElementById('frontPreview'))">
+                        <div class="file-upload ">
+                            <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb required-label" name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required>
                             <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                                 <ion-icon name="document-outline"></ion-icon>
                                 {{ __('Escolher arquivo') }}</label>
@@ -70,32 +61,62 @@
                                 <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
                             </div>
                         </div>
+
+                        <div>
+                            <span id="errorFile" style="display: none;" class="text-danger mt-2">Por favor,selecione uma imagem</span>
+                        </div>
                         @error('frontDoc')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                         @enderror
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
-                        <label for="exampleFormControlTextarea1">Mensagem</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message" required></textarea>
-                        <div>
-                            <span id="MessageError" style="display: none; " class="text-danger mt-2"></span>
+                        <div class="d-flex gap-3">
+                            <div class="checkbox-wrapper-12">
+                                <div class="cbx">
+                                    <input checked="" class="form-check-input" type="checkbox" id="cbx-12" name="subscribers">
+                                    <label for="cbx-12"></label>
+                                    <svg fill="none" viewBox="0 0 15 14" height="14" width="15">
+                                        <path d="M2 8.36364L6.23077 12L13 2"></path>
+                                    </svg>
+                                </div>
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <filter id="goo-12">
+                                            <feGaussianBlur result="blur" stdDeviation="4" in="SourceGraphic"></feGaussianBlur>
+                                            <feColorMatrix result="goo-12" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7" mode="matrix" in="blur"></feColorMatrix>
+                                            <feBlend in2="goo-12" in="SourceGraphic"></feBlend>
+                                        </filter>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="ml-2">
+                                <label for="cbx-12">Assinantes</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group p-3 ml-4 mr-4">
-                        <label class="font-bold">Enviar campanha para</label>
-                        <div class="form-check mt-3">
-                            <input class="form-check-input mr-2" type="checkbox" value="1" id="defaultCheck1" name="subscribers">
-                            <p class="form-check-label ml-2" for="defaultCheck1">
-                                Assinantes
-                            </p>
-                        </div>
-                        <div class="form-check mt-2">
-                            <input class="form-check-input mr-2" type="checkbox" value="1" id="defaultCheck2" name="followers">
-                            <p class="form-check-label ml-2" for="defaultCheck2">
-                                Seguidores
-                            </p>
+                        <div class="d-flex gap-3 mt-2">
+                            <div class="checkbox-wrapper-12">
+                                <div class="cbx">
+                                    <input checked="" class="form-check-input" type="checkbox" id="cbx-13" name="followers">
+                                    <label for="cbx-13"></label>
+                                    <svg fill="none" viewBox="0 0 15 14" height="14" width="15">
+                                        <path d="M2 8.36364L6.23077 12L13 2"></path>
+                                    </svg>
+                                </div>
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <filter id="goo-12">
+                                            <feGaussianBlur result="blur" stdDeviation="4" in="SourceGraphic"></feGaussianBlur>
+                                            <feColorMatrix result="goo-12" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7" mode="matrix" in="blur"></feColorMatrix>
+                                            <feBlend in2="goo-12" in="SourceGraphic"></feBlend>
+                                        </filter>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="ml-2">
+                                <label for="cbx-13">Seguidores</label>
+                            </div>
                         </div>
                         <div>
                             <span style="display: none;" id="errorGroup" class="text-danger">Selecione pelo menos um grupo para promover</span>
@@ -103,7 +124,7 @@
                     </div>
                     <div class="d-flex justify-content-end w-100 mb-3 mt-3">
                         <div class="form-group btn-block ml-4 mr-4 p-3">
-                            <button type="button" class="btn btn-block btn-primary btn-round post-create-button mb-0 uploadButton p-3">{{ __('Promover') }}</button>
+                            <button type="submit" class="btn btn-block btn-primary btn-round post-create-button mb-0 uploadButton p-3">{{ __('Promover') }}</button>
                         </div>
                     </div>
                 </form>
@@ -115,32 +136,27 @@
 
 
 <script type="module">
-    import {
-        initializeApp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import {
-        getStorage,
-        ref,
-        uploadBytes,
-        getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+    document.querySelector("#inputFile").addEventListener('change', function() {
+        const input = this;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyA0ztmepmqW28Lbrv1PU9E8dGnZhE0soWw",
-        authDomain: "belinho-4a703.firebaseapp.com",
-        databaseURL: "https://belinho-4a703-default-rtdb.firebaseio.com",
-        projectId: "belinho-4a703",
-        storageBucket: "belinho-4a703.appspot.com",
-        messagingSenderId: "678978718971",
-        appId: "1:678978718971:web:ba70e7d2e9031ce803745e"
-    };
+            reader.onload = function(e) {
+                const previewElement = document.querySelector('#frontPreview');
+                previewElement.src = e.target.result;
+                previewElement.style.display = 'block';
+            };
 
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            const previewElement = document.querySelector('#frontPreview');
+            previewElement.src = '#';
+            previewElement.style.display = 'none';
+        }
+    });
 
     const btn = document.querySelector('.uploadButton');
     const inputFile = document.querySelector('#inputFile');
-
 
     const showToast = (message, isError = false) => {
         const toastHTML = `
@@ -156,7 +172,6 @@
                 </div>
             `;
 
-        // Adiciona o toast ao DOM
         const toastContainer = document.querySelector('.toast-container');
         if (toastContainer) {
             toastContainer.innerHTML = toastHTML;
@@ -166,7 +181,8 @@
         }
     };
 
-    btn.addEventListener('click', async () => {
+    document.querySelector("#myForm").addEventListener('submit', async (e) => {
+        e.preventDefault();
         const valor = document.querySelector('input[name="valor"]').value;
         const followers = document.querySelector('input[name="followers"]').checked;
         const message = document.querySelector('textarea[name="message"]').value;
@@ -208,10 +224,8 @@
         let imageUrl = '';
         let file;
 
-        //ver se tem arquivo
-        if (inputFile.files && inputFile.files[0]) {
-            file = inputFile.files[0];
-        } else {
+
+        if (!inputFile.files || !inputFile.files[0]) {
             alert("Preencha todos os campos");
             return;
         }
@@ -224,48 +238,17 @@
             }
             return result.substring(0, length);
         }
-
-        const UploadImage = async (file) => {
-            try {
-                const storageRef = ref(storage, `images/${file.name}`);
-                await uploadBytes(storageRef, file);
-                const url = await getDownloadURL(storageRef);
-                return url;
-            } catch (error) {
-                throw new Error(`Erro durante o upload: ${error.message}`);
-            }
-        };
-
         try {
-
-            imageUrl = await UploadImage(file);
-        } catch (error) {
-            alert(error);
-            return;
-        }
-        try {
-            const data = {
-                price: parseFloat(valor),
-                followers,
-                message,
-                subscribers,
-                images: [{
-                    attachmentID: generateNumericID(36),
-                    path: imageUrl
-
-
-                }]
-
-            };
+            const formData = new FormData();
+            formData.append('price', valor);
+            formData.append('followers', followers);
+            formData.append('message', message);
+            formData.append('subscribers', subscribers);
+            formData.append('image', inputFile.files[0]);
 
             const response = await fetch('/my/messenger/sendMessage', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-
-
-                },
-                body: JSON.stringify(data)
+                body: formData
 
             });
 
