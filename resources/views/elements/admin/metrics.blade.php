@@ -207,12 +207,11 @@
         }
 
 
+        
         async function sendParameter() {
             let dataFiltered = dataFilter.value;
-
-
-            let url = `http://127.0.0.1:8000/admin?date=${encodeURIComponent(dataFiltered)}`;
-
+            
+            let url = `${window.location.origin}/admin?date=${encodeURIComponent(dataFiltered)}`;
 
             window.location.href = url;
 
