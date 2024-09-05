@@ -1,0 +1,189 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Snapic Documentation",
+        "description": "Swagger OpenApi description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/influencer/register": {
+            "get": {
+                "tags": [
+                    "Influencer"
+                ],
+                "summary": "Show the influencer registration form",
+                "description": "Show the influencer registration form.",
+                "operationId": "71177dc95c74faaf06ddc11a11c75142",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved registration form",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "form": {
+                                            "description": "HTML form for registration",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Influencer"
+                ],
+                "summary": "Handle the influencer registration request",
+                "description": "Handle the influencer registration request.",
+                "operationId": "5a3d3b416b94dc8708b9eebd726f5a01",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "terms",
+                                    "age"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "terms": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "age": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2005-07-16"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "redirect_to": {
+                                            "type": "string",
+                                            "example": "/feed"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration successful!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation failed."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/impersonate/{id}": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Impersonate a user",
+                "operationId": "fed0b5e72dd463ee2fa5bb103a5f6f01",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID to impersonate",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirects after impersonation"
+                    }
+                }
+            }
+        },
+        "/leave-impersonation": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Leave impersonation and return to admin",
+                "operationId": "9d3a4932f6b3b2c300bb017c9b7b05e7",
+                "responses": {
+                    "302": {
+                        "description": "Redirects after leaving impersonation"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Influencer",
+            "description": "Operations related to influencer registration"
+        },
+        {
+            "name": "User",
+            "description": "Operations related to user"
+        }
+    ]
+}

@@ -7,37 +7,64 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
+/**
+ * @OA\Tag(
+ *     name="User",
+ *     description="Operations related to user"
+ * )
+ */
 class UserController extends Controller
 {
     /**
-     * Impersonate admin as user and act like him in the website
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|string
+     * @OA\Post(
+     *     path="/impersonate/{id}",
+     *     tags={"User"},
+     *     summary="Impersonate a user",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User ID to impersonate",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=302,
+     *         description="Redirects after impersonation"
+     *     )
+     * )
      */
-    public function impersonate(Request $request){
+    public function impersonate(Request $request)
+    {
         $userId = $request->route('id');
-        try{
+        try {
             $currentUserId = Auth::user()->id;
             Auth::loginUsingId($userId);
 
             Session::push('previousUserId', $currentUserId);
-            if(!Session::get('impersonated')) {
+            if (!Session::get('impersonated')) {
                 Session::push('impersonated', true);
             }
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return Redirect::route('voyager.users.index');
         }
         return Redirect::route('feed');
     }
 
     /**
-     * Leave impersonation and return to admin user
-     * @param Request $request
-     * @return string
+     * @OA\Post(
+     *     path="/leave-impersonation",
+     *     tags={"User"},
+     *     summary="Leave impersonation and return to admin",
+     *     @OA\Response(
+     *         response=302,
+     *         description="Redirects after leaving impersonation"
+     *     )
+     * )
      */
-    public function leaveImpersonation(Request $request) {
+    public function leaveImpersonation(Request $request)
+    {
         $previousUserId = Session::get('previousUserId');
-        try{
+        try {
             Auth::loginUsingId($previousUserId);
             Session::remove('previousUserId');
             Session::remove('impersonated');
