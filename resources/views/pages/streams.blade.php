@@ -30,14 +30,14 @@
                 </div>
                 <div class="d-flex">
                     <div class="stream-on-label w-100 {{StreamsHelper::getUserInProgressStream() ? '' : 'd-none'}}">
-                        <button class="btn btn-outline-danger btn-sm px-3 mb-0 d-flex align-items-center">
+                        <button class="btn btn-round btn-outline-danger btn-sm px-3 mb-0 d-flex align-items-center">
                             <div class="mr-1">{{__("Streaming")}}</div>
                             <div><div class="blob red"></div></div>
                         </button>
                     </div>
 
                     <div class="stream-off-label w-100 {{StreamsHelper::getUserInProgressStream() ? 'd-none' : ''}}">
-                        <button class="btn btn-outline-danger btn-sm px-3 mb-0 d-flex align-items-center {{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? 'disabled' : '' }}" onclick="{{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : "Streams.showStreamEditDialog('create')" }}" data-toggle="{{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? 'none' : 'tooltip' }}" data-placement="top" title="{{__('Go live')}}">
+                        <button class="btn btn-round btn-outline-danger btn-sm px-3 mb-0 d-flex align-items-center {{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? 'disabled' : '' }}" onclick="{{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : "Streams.showStreamEditDialog('create')" }}" data-toggle="{{!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? 'none' : 'tooltip' }}" data-placement="top" title="{{__('Go live')}}">
                             <div class="mr-1">{{__("New stream")}}</div>
                             <div> @include('elements.icon',['icon'=>'ellipse','variant'=>'','classes'=>'flex-shrink-0 text-danger'])</div>
                         </button>
