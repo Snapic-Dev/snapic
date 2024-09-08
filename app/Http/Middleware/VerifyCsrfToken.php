@@ -25,6 +25,7 @@ class VerifyCsrfToken extends Middleware
         'my/messenger/sendMessage',
         'payment/webhook',
         'payment/webhook/config',
-        'payment/webhook/pix'
+        'webhook/pix',
+
     ];
 }

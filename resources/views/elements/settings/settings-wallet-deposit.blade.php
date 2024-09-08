@@ -330,24 +330,18 @@
                             }),
                         });
 
+                        const responseData = await response.json();
+
                         if (!response.ok) {
-                            launchToast("danger", trans("Error"),
-                                `Network response was not ok ${response.statusText}`);
+                            launchToast("danger", trans("Error"), responseData.message);
                             return;
                         }
 
-                        const responseData = await response.json();
-                        console.log(responseData);
                         const qrCode = await responseData.pixCopiaECola;
-                        console.log(qrCode);
-
 
                         const expiration_date = await responseData.calendario.expiracao
-                        console.log(expiration_date);
-
 
                         calculateTimeDifference(expiration_date);
-
 
                         if (responseData) {
                             document.getElementById("qrcode").innerHTML = "";

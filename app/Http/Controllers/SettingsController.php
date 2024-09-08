@@ -11,6 +11,7 @@ use App\Http\Requests\VerifyProfileAssetsRequest;
 use App\Model\Attachment;
 use App\Model\Country;
 use App\Model\CreatorOffer;
+use App\Model\Niche;
 use App\Model\ReferralCodeUsage;
 use App\Model\Subscription;
 use App\Model\Transaction;
@@ -233,10 +234,12 @@ class SettingsController extends Controller
                 ],
             ]
         );
-
+        $niches = Niche::all()->toArray();
         return view('pages.settings', array_merge(
             $data,
+            $niches,
             [
+                'niches' => $niches,
                 'availableSettings' => $this->availableSettings,
                 'currentSettingTab' => $currentSettingTab,
                 'activeSettingsTab' => $currentTab,
@@ -267,7 +270,10 @@ class SettingsController extends Controller
             'birthdate' => $request->get('birthdate'),
             'gender_id' => $request->get('gender'),
             'gender_pronoun' => $request->get('pronoun'),
-            'country_id' => $request->get('country')
+            'country_id' => $request->get('country'),
+            'cpf' => $request->get('cpf'),
+            'phone' => $request->get('phone'),
+            'niche' => $request->get('niche'),
         ]);
 
         return back()->with('success', __('Settings saved.'));
