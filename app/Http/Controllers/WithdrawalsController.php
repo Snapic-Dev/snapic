@@ -46,9 +46,10 @@ class WithdrawalsController extends Controller
             $amount = $request->request->get('amount');
             $message = $request->request->get('message');
             $identifier = $request->request->get('identifier');
+            $user = Auth::user();
 
             $data = [
-                'user_id' => Auth::user()->id,
+                'user_id' => $user->id,
                 'amount' => floatval($amount),
                 'message' => $message,
                 'payment_identifier' => $identifier,
@@ -56,7 +57,10 @@ class WithdrawalsController extends Controller
                 'e2eId' => null,
                 'transfer_id' => null
             ];
-            $user = Auth::user();
+
+            if (!$user->cpf) {
+                throw new Exception('Adicione seu CPF para prosseguir!');
+            };
 
             if ($amount != null && $user != null) {
 

@@ -149,17 +149,6 @@
             `{{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}`;
         let InputWithdrawalValue = withdrawalInput.value;
         let latestWithdrawal = `{{ \App\Providers\PaymentsServiceProvider::verifyDiaryWithdrawal(Auth::user()->id) }}`
-
-        if (InputWithdrawalValue !== "" && latestWithdrawal) {
-            console.log(InputWithdrawalValue < 100 && minWithdrawalAmount < InputWithdrawalValue)
-            if (InputWithdrawalValue < 100) {
-                withdrawalContinueBtn.disabled = true;
-            } else {
-                withdrawalContinueBtn.disabled = false;
-            }
-        } else {
-            withdrawalContinueBtn.disabled = true;
-        }
     }
 
     withdrawalInput.addEventListener('input', validateInput)

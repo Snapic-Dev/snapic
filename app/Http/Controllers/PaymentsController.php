@@ -129,7 +129,10 @@ class PaymentsController extends Controller
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
                         $user = User::where('id', $transaction['recipient_user_id'])->first();
                         if (!$user->cpf) {
-                            throw new Exception("CPF não cadastrado");
+                            return response()->json([
+                                'error' => 'CPF não cadastrado.',
+                                'message' => 'Adicione seu CPF para prosseguir!',
+                            ], 401);
                         }
                         $res = $this->paymentHandler->generationPixPayment($transaction);
                         $transaction['status'] = 'pending';
@@ -173,14 +176,7 @@ class PaymentsController extends Controller
                 'transaction' => $transaction,
                 'isValid' => $validationAmount,
             ]);
-
-
-            // Retornar resposta JSON
         } catch (\Exception $exception) {
-            // Log da exceção para depuração
-            Log::error('Error in generatePix function: ' . $exception->getMessage());
-
-            // Retornar uma resposta de erro
             return response()->json([
                 'error' => 'An error occurred while processing your request.',
                 'message' => $exception->getMessage()
