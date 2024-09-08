@@ -541,6 +541,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-06-21 16:26:04',
                 'updated_at' => '2024-05-01 00:26:33',
             ),
+            29 =>
+            array(
+                'id' => 51,
+                'name' => 'analytics',
+                'slug' => 'analytics',
+                'display_name_singular' => 'Analytcs',
+                'display_name_plural' => 'Analytcs',
+                'icon' => 'voyager-bar-chart',
+                'model_name' => 'App\Model\Analytic',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"id","order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2023-06-21 16:26:04',
+                'updated_at' => '2024-05-01 00:26:33',
+            ),
         ));
     }
 }

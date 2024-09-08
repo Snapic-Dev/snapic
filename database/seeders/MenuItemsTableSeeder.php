@@ -151,7 +151,7 @@ class MenuItemsTableSeeder extends Seeder
             array(
                 'id' => 10,
                 'menu_id' => 1,
-                'title' => 'Settings',
+                'title' => 'Configurações',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-settings',
@@ -652,11 +652,11 @@ class MenuItemsTableSeeder extends Seeder
                 'target' => '_self',
                 'icon_class' => 'voyager-group',
                 'color' => '#000000',
-                'parent_id' => 27,
-                'order' => 6,
+                'parent_id' => 29,
+                'order' => 10,
                 'created_at' => '2023-06-21 16:26:04',
                 'updated_at' => '2023-06-21 16:31:29',
-                'route' => 'voyager.rewards.index',
+                'route' => 'voyager.referral-code-usages.index',
                 'parameters' => 'null',
             ),
         ));
