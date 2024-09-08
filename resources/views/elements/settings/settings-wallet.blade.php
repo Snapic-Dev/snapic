@@ -29,39 +29,42 @@
         <p class="mb-0 text-sm">
             {{ __('Available funds. You can deposit more money or become a creator to earn more.') }}</p>
     </div>
-
     <div class="mt-3 inline-border-tabs">
         <nav class="nav nav-pills nav-justified">
             @foreach (\App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()) ? ['deposit', 'withdraw'] : ['deposit'] as $tab)
-                <a class="nav-item nav-link {{ $activeTab == $tab ? 'active' : '' }}"
-                    href="{{ route('my.settings', ['type' => 'wallet', 'active' => $tab]) }}">
+                @if(Auth::user()->role_id==2 && $tab==='withdraw')
+                    <div></div>
+                @else
+                    <a class="nav-item nav-link {{ $activeTab == $tab ? 'active' : '' }}"
+                        href="{{ route('my.settings', ['type' => 'wallet', 'active' => $tab]) }}">
 
-                    <div class="d-flex align-items-center justify-content-center">
-                        @if ($tab == 'deposit')
-                            @include('elements.icon', [
-                                'icon' => 'wallet',
-                                'variant' => 'medium',
-                                'classes' => 'mr-2',
-                            ])
-                        @elseif(\App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()))
-                            @include('elements.icon', [
-                                'icon' => 'card',
-                                'variant' => 'medium',
-                                'classes' => 'mr-2',
-                            ])
-                        @endif
-                        {{ __(ucfirst($tab)) }}
+                        <div class="d-flex align-items-center justify-content-center">
+                            @if ($tab == 'deposit')
+                                @include('elements.icon', [
+                                    'icon' => 'wallet',
+                                    'variant' => 'medium',
+                                    'classes' => 'mr-2',
+                                ])
+                            @elseif(\App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()))
+                                @include('elements.icon', [
+                                    'icon' => 'card',
+                                    'variant' => 'medium',
+                                    'classes' => 'mr-2',
+                                ])
+                            @endif
+                            {{ __(ucfirst($tab)) }}
 
-                    </div>
-                </a>
+                        </div>
+                    </a>
+                @endif
             @endforeach
         </nav>
     </div>
 
     @if (
         $activeTab != null &&
-            $activeTab === 'withdraw' &&
-            \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()))
+        $activeTab === 'withdraw' &&
+        \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()))
         @include('elements/settings/settings-wallet-withdraw')
     @else
         @include('elements/settings/settings-wallet-deposit')

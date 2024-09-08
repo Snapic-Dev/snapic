@@ -1,6 +1,6 @@
 @if(count($payments))
-    <div class="table-wrapper p-2">
-        <div class="">
+    <div class="table-wrapper paymentsTable p-2">
+        <div class="internTable">
             <div class="col d-flex align-items-center py-3 border-bottom text-bold">
             <div class="col-lg-2 text-truncate">
                 <select class="typeSelect">
@@ -12,7 +12,7 @@
                 </select>
             </div>
 
-            <div class="col-lg-3 text-truncate">
+            <div class="col-lg-3 text-truncate d-flex">
                 <select class="statusSelect">
                     <option value="" disabled selected>Status</option> <!-- Alterado para "Status" para refletir melhor as opções -->
                     <option value="pending">Pendente</option>
@@ -136,11 +136,11 @@
             @endforeach
         </div>
     </div>
-    <div class="d-flex flex-row-reverse mt-3 mr-4">
+    <div class="d-flex flex-row-reverse mt-5 mr-4 justify-content-center">
         {{ $payments->onEachSide(1)->links() }}
     </div>
 @else
-<div class="table-wrapper">
+<div class="table-wrapper paymentsTable">
         <div class="">
             <div class="col d-flex align-items-center py-3 border-bottom text-bold">
             <div class="col-lg-3 text-truncate">

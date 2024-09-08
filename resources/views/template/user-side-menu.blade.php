@@ -54,18 +54,20 @@
                     ])
                     {{ __('My profile') }}</a>
             </li>
-            @if (getSetting('streams.allow_streams'))
-                <li
-                    class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
-                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.streams.get') }}">
-                        @include('elements.icon', [
-                            'icon' => 'play-circle-outline',
-                            'variant' => 'medium',
-                            'centered' => false,
-                            'classes' => 'mr-2',
-                        ])
-                        {{ __('Streams') }}</a>
-                </li>
+            @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+                @if (getSetting('streams.allow_streams'))
+                    <li
+                        class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
+                        <a class="scroll-link d-flex align-items-center" href="{{ route('my.streams.get') }}">
+                            @include('elements.icon', [
+                                'icon' => 'play-circle-outline',
+                                'variant' => 'medium',
+                                'centered' => false,
+                                'classes' => 'mr-2',
+                            ])
+                            {{ __('Streams') }}</a>
+                    </li>
+                @endif
             @endif
             <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">
                 <a class="scroll-link d-flex align-items-center" href="{{ route('my.bookmarks') }}">
@@ -77,17 +79,19 @@
                     ])
                     {{ __('Bookmarks') }}</a>
             </li>
-            <li class="{{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }} py-2">
-                <a class="scroll-link d-flex align-items-center" href="{{ route('my.messenger.campanha.create') }}">
-                    @include('elements.icon', [
-                        'icon' => 'megaphone-outline',
-                        'variant' => 'medium',
-                        'centered' => false,
-                        'classes' => 'mr-2',
-                    ])
-                    {{ __('Campanha') }}
-                </a>
-            </li>
+            @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+                <li class="{{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }} py-2">
+                    <a class="scroll-link d-flex align-items-center" href="{{ route('my.messenger.campanha.create') }}">
+                        @include('elements.icon', [
+                            'icon' => 'megaphone-outline',
+                            'variant' => 'medium',
+                            'centered' => false,
+                            'classes' => 'mr-2',
+                        ])
+                        {{ __('Campanha') }}
+                    </a>
+                </li>
+            @endif
             <li class="{{ Route::currentRouteName() == 'my.lists.all' ? 'active' : '' }}">
                 <a class="scroll-link d-flex align-items-center" href="{{ route('my.lists.all') }}">
                     @include('elements.icon', [
@@ -118,7 +122,7 @@
                     'centered' => false,
                     'classes' => 'mr-2',
                 ])
-                {{ __('Help and support') }}</a>
+                {{ __('FAQ') }}</a>
         </li>
         @if (getSetting('site.allow_theme_switch'))
             <li>

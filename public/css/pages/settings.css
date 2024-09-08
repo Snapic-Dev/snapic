@@ -1,5 +1,10 @@
 .table-wrapper {
-  width: 720px;
+  height: 600px;
+}
+
+.paymentsTable {
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .profileAvatar-settings {
@@ -76,4 +81,27 @@ select {
   outline: none;
   padding: 5px;
   font-weight: 600;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+  background-color: #CCCCCC;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #CCCCCC;
+}
+
+.table-wrapper::-webkit-scrollbar-track-piece {
+  background: #CCCCCC;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background:#57319A;
+  border-radius: 5px;
+}
+
+.internTable {
+  width: 1000px;
 }

@@ -75,7 +75,7 @@
                 <div class="d-flex justify-content-center">
                     @include('elements.footer.dark-mode-switcher')
                     @include('elements.footer.direction-switcher')
-                    @include('elements.footer.language-switcher')
+                    <!-- @include('elements.footer.language-switcher') -->
                 </div>
             </div>
         </div>

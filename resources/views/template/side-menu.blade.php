@@ -124,22 +124,24 @@
                         </div>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('my.messenger.campanha.create') }}"
-                        class="nav-link {{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between py-2">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="icon-wrapper d-flex justify-content-center align-items-center">
-                                @include('elements.icon', [
-                                    'icon' => 'megaphone-outline',
-                                    'variant' => 'large',
-                                ])
+                @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+                    <li class="nav-item">
+                        <a href="{{ route('my.messenger.campanha.create') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between py-2">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="icon-wrapper d-flex justify-content-center align-items-center">
+                                    @include('elements.icon', [
+                                        'icon' => 'megaphone-outline',
+                                        'variant' => 'large',
+                                    ])
+                                </div>
+                                <span
+                                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Campanha') }}</span>
                             </div>
-                            <span
-                                class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Campanha') }}</span>
-                        </div>
 
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                @endif
                 @if (getSetting('streams.allow_streams'))
                     <li class="nav-item">
                         <a href="{{ route('search.get') }}?filter=live"
@@ -271,45 +273,47 @@
             </li>
 
             @if (GenericHelper::isEmailEnforcedAndValidated())
-                @if (getSetting('streams.allow_streams'))
-                    <li class="nav-item-live mt-2 mb-0">
-                        <a role="button" class="btn btn-block btn-round px-3 p-3 mt-3 border"
-                            href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}">
-                            <div
-                                class="d-none d-md-flex d-xl-flex d-lg-flex justify-content-center align-items-center ml-1 text-truncate new-post-label">
-                                <div class="d-flex justify-content-between align-items-center w-100">
-                                    <div
-                                        class="stream-on-label w-100 {{ StreamsHelper::getUserInProgressStream() ? '' : 'd-none' }}">
-                                        <div class="d-flex align-items-center w-100">
-                                            <div class="mr-4">
-                                                <div class="blob red"></div>
+                @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+                    @if (getSetting('streams.allow_streams'))
+                        <li class="nav-item-live mt-2 mb-0">
+                            <a role="button" class="btn btn-block btn-round px-3 p-3 mt-3 border"
+                                href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}">
+                                <div
+                                    class="d-none d-md-flex d-xl-flex d-lg-flex justify-content-center align-items-center ml-1 text-truncate new-post-label">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div
+                                            class="stream-on-label w-100 {{ StreamsHelper::getUserInProgressStream() ? '' : 'd-none' }}">
+                                            <div class="d-flex align-items-center w-100">
+                                                <div class="mr-4">
+                                                    <div class="blob red"></div>
+                                                </div>
+                                                <div class="">{{ __('On air') }} </div>
                                             </div>
-                                            <div class="">{{ __('On air') }} </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        class="stream-off-label w-100 {{ StreamsHelper::getUserInProgressStream() ? 'd-none' : '' }}">
-                                        <div class="d-flex  align-items-center w-100">
-                                            <div class="mr-3"> @include('elements.icon', [
-                                                'icon' => 'ellipse',
-                                                'variant' => '',
-                                                'classes' => 'flex-shrink-0 text-danger',
-                                            ])</div>
-                                            <div class="ml-4">{{ __('Go live') }} </div>
-                                        </div>
+                                        <div
+                                            class="stream-off-label w-100 {{ StreamsHelper::getUserInProgressStream() ? 'd-none' : '' }}">
+                                            <div class="d-flex  align-items-center w-100">
+                                                <div class="mr-3"> @include('elements.icon', [
+                                                    'icon' => 'ellipse',
+                                                    'variant' => '',
+                                                    'classes' => 'flex-shrink-0 text-danger',
+                                                ])</div>
+                                                <div class="ml-4">{{ __('Go live') }} </div>
+                                            </div>
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="d-block d-md-none d-flex align-items-center justify-content-center">
-                                @include('elements.icon', [
-                                    'icon' => 'add-circle-outline',
-                                    'variant' => 'medium',
-                                    'classes' => 'flex-shrink-0',
-                                ])
-                            </div>
-                        </a>
-                    </li>
+                                <div class="d-block d-md-none d-flex align-items-center justify-content-center">
+                                    @include('elements.icon', [
+                                        'icon' => 'add-circle-outline',
+                                        'variant' => 'medium',
+                                        'classes' => 'flex-shrink-0',
+                                    ])
+                                </div>
+                            </a>
+                        </li>
+                    @endif
                 @endif
             @endif
 
