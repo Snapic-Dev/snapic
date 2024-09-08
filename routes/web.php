@@ -75,6 +75,11 @@ Route::post('/payment/pix', [
     'as' => 'pix',
 ]);
 
+Route::post('/webhook/pix', [
+    'uses' => 'PaymentsController@webhook',
+    'as' => 'webhook',
+]);
+
 Route::post('/payment/webhook', [PaymentsController::class, 'handleWebhook']);
 Route::get('/payment/webhook/config', [PaymentsController::class, 'configWebhook']);
 Route::post('/payment/webhook/pix', [PaymentsController::class, 'pixWebhook']);

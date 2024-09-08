@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewUserMessage;
+use App\Events\PaymentProcessed;
 use App\Helpers\PaymentHelper;
 use App\Http\Requests\CreateTransactionRequest;
 use App\Model\Subscription;
@@ -24,6 +26,8 @@ use Yabacon\Paystack;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Pusher\Pusher;
 
 class PaymentsController extends Controller
 {
@@ -129,6 +133,7 @@ class PaymentsController extends Controller
                         }
                         $res = $this->paymentHandler->generationPixPayment($transaction);
                         $transaction['status'] = 'pending';
+                        $transaction['transfer_id'] = $res['txid'];
                         $transaction->save();
                         return response()->json($res, 201);
                     }
@@ -396,33 +401,71 @@ class PaymentsController extends Controller
             ], 500);
         }
     }
-    public function pixWebhook(Request $request)
+    public function webhook(Request $request)
     {
         try {
-            $transaction = new Transaction();
+            $pix = $request->json('pix')[0] ?? null;
+            $txid = $pix['txid'] ?? null;
+            $amount = isset($pix['valor']) ? (float) $pix['valor'] : null;
+            $e2eid = $pix['endToEndId'] ?? null;
 
-            $transaction['sender_user_id'] = Auth::user()->id;
-            $transaction['recipient_user_id'] = 1;
-            $transaction['type'] = 'teste';
-            $transaction['status'] = Transaction::CANCELED_STATUS;
-            $transaction['amount'] = 10;
+            $clientId = $request->header('clientid');
+            $clientSecret = $request->header('clientsecret');
 
-            $transaction->save();
+            $efipayClientId = env('EFIPAY_CLIENT_ID');
+            $efipayClientSecret = env('EFIPAY_CLIENT_SECRET');
 
-            return response()->json([
-                'message' => $request,
-            ], 200);
+            $isUnauthorized =
+                $clientId !== $efipayClientId ||
+                $clientSecret !== $efipayClientSecret ||
+                !$txid || !$amount || !$e2eid;
+
+            if ($isUnauthorized) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            if (!$txid) {
+                return response()->json(['message' => 'txid não encontrado no corpo da requisição'], 400);
+            }
+
+            if (!preg_match('/^[\w-]+$/', $txid)) {
+                return response()->json(['message' => 'txid inválido'], 400);
+            }
+
+            DB::table('transactions')
+                ->where('transfer_id', $txid)
+                ->update([
+                    'status' => 'approved',
+                    'e2eId' => $e2eid
+                ]);
+
+            $transaction = DB::table('transactions')
+                ->where('transfer_id', $txid)
+                ->first();
+
+            if (!$transaction) {
+                return response()->json(['message' => 'Transação não encontrada'], 404);
+            }
+
+            if ($transaction->type !== Transaction::DEPOSIT_TYPE) {
+                return response()->json(['message' => 'Transação não autorizada'], 401);
+            }
+
+            DB::table('wallets')
+                ->where('user_id', $transaction->recipient_user_id)
+                ->increment('total', $amount);
+
+
+            broadcast(new PaymentProcessed($transaction, 'u1723064135'));
+
+            return response()->json(['message' => 'Pagamento Processado'], 200);
         } catch (\Exception $e) {
-            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
+            Log::error('Erro ao processar o webhook PIX:', ['error' => $e->getMessage()]);
+
             return response()->json([
-                'message' => 'Falha ao configurar o webhook',
-                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
 }
