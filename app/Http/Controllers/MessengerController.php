@@ -326,14 +326,14 @@ class MessengerController extends Controller
         if ($message['id']) {
 
             if ($image) {
-                $image_uploaded = $this->providerFirebase->uploadToFirebase($image);
                 $id = Uuid::uuid4()->getHex();
+
                 Attachment::create([
                     'id' => $id,
                     'user_id' => Auth::user()->id,
-                    'filename' => $image_uploaded,
+                    'filename' => $image,
                     'driver' => 0,
-                    'type' => 'teste',
+                    'type' => 'any',
                     'message_id' => $message['id'],
                 ]);
             }
@@ -485,6 +485,9 @@ class MessengerController extends Controller
                     }
                 }
             }
+            if ($request->file('image')) {
+                $image_uploaded = $this->providerFirebase->uploadToFirebase($request->file('image'));
+            }
 
             foreach ($receiverIDs as $receiverID) {
                 $receiverID = (int) $receiverID;
@@ -508,7 +511,7 @@ class MessengerController extends Controller
                     'messagePrice' => $request->input('price') ?? $request->get('price'),
                     'isFirstMessage' => $request->get('new'),
                     'attachments' => $request->get('attachments'),
-                    'image' => $request->file('image')
+                    'image' => $image_uploaded,
                 ]);
             }
 
@@ -519,7 +522,6 @@ class MessengerController extends Controller
             }
 
             if (count($receiverIDs) === 1) $return = $return[0];
-            // dd($errors);
             return response()->json([
                 'status' => 'success',
                 'data' => $return,
