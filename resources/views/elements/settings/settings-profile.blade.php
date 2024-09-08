@@ -119,7 +119,7 @@
         <label for="cpf" value="{{ Auth::user()->cpf }}">CPF</label>
         <div class="input-group mb-3">
             <input type="text" class="form-control inputInstagram {{ $errors->has('cpf') ? 'is-invalid' : '' }}"
-                pattern="https://(www\.)?instagram\.com/[a-zA-Z0-9_]+" id="cpf" name="cpf" aria-describedby="emailHelp" value="{{ Auth::user()->cpf }}" title="A URL deve ser um perfil válido do Instagram">
+                id="cpf" name="cpf" aria-describedby="emailHelp" value="{{ Auth::user()->cpf }}">
         </div>
         @if ($errors->has('cpf'))
         <span class="invalid-feedback" role="alert">
@@ -127,6 +127,37 @@
         </span>
         @endif
     </div>
+    <div class="form-group p-2">
+        <label for="phone" value="{{ Auth::user()->phone }}">Telefone</label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control inputInstagram {{ $errors->has('phone') ? 'is-invalid' : '' }}"
+                id="phone" name="phone" aria-describedby="emailHelp" value="{{ Auth::user()->phone }}">
+        </div>
+        @if ($errors->has('phone'))
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('phone') }}</strong>
+        </span>
+        @endif
+    </div>
+    <div class="form-group px-2">
+        <label for="niche" class="col-form-label">{{ __('Niche') }}</label>
+        <div>
+            <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche" required>
+                <option value="">{{ Auth::user()->niche ?? "Selecione um nicho" }}</option>
+                @foreach ($niches as $niche)
+                <option value="{{ $niche['name'] }}" {{ old('niche') == $niche['name'] ? 'selected' : '' }}>
+                    {{ $niche['name'] }}
+                </option>
+                @endforeach
+            </select>
+            @error('niche')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+            @enderror
+        </div>
+    </div>
+
     <div class="d-flex flex-row p-2">
         <div class="{{ getSetting('profiles.allow_gender_pronouns') ? 'w-50' : 'w-100' }} pr-2">
             <div class="form-group">
