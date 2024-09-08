@@ -4,7 +4,7 @@
             <div class="col mb-3">
                 <label class="text-sm text-bold" for="validationTooltip01">Chave Pix</label>
                 <input type="text" class="form-control" placeholder="6d6e36e5-2c43-4c8e-823d-9e9a2d2f5b67"
-                    id="validationTooltip01" required>
+                    id="withdrawal-payment-identifier" required>
                 <div class="mt-4">
                     <label class="text-sm text-bold" for=" validationTooltip01">Valor do Saque</label>
                     <input type="number" class="form-control withdrawalInput validationTooltip01"

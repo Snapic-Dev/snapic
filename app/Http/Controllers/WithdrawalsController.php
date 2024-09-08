@@ -41,7 +41,8 @@ class WithdrawalsController extends Controller
     public function requestWithdrawal(CreateWithdrawalRequest $request)
     {
         try {
-            $minimal = 200;
+            $minimal = floatval(getSetting('payments.withdrawal_instant')) ?? 200;
+
             $amount = $request->request->get('amount');
             $message = $request->request->get('message');
             $identifier = $request->request->get('identifier');
@@ -85,7 +86,7 @@ class WithdrawalsController extends Controller
                 if (floatval($minimal) > floatval($amount)) {
                     $res =  $this->paymentHandler->makeTransfer($amount, $identifier);
 
-                    if (!array_key_exists('STATUS', $res) || $res['STATUS'] !== 'EM_PROCESSAMENTO') {
+                    if (array_key_exists('STATUS', $res) && $res['STATUS'] !== 'EM_PROCESSAMENTO' && $res['nome']) {
                         switch ($res['nome']) {
                             case 'valor_invalido':
                                 throw new Exception("A chave Pix fornecida é inválida");
