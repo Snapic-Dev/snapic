@@ -1,9 +1,9 @@
 @if (!Auth::user()->email_verified_at)
-    @include('elements.resend-verification-email-box')
+@include('elements.resend-verification-email-box')
 @endif
 
 @if (getSetting('ai.open_ai_enabled'))
-    @include('elements.suggest-description')
+@include('elements.suggest-description')
 @endif
 
 <form method="POST" action="{{ route('my.settings.profile.save', ['type' => 'profile']) }}">
@@ -54,21 +54,21 @@
         </div>
     </div>
     @if (session('success'))
-        <div class="alert alert-success text-white font-weight-bold mt-2" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-success text-white font-weight-bold mt-2" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     @endif
     <div class="form-group p-2">
         <label for="username">{{ __('Username') }}</label>
         <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" id="username" name="username"
             aria-describedby="emailHelp" value="{{ Auth::user()->username }}">
         @if ($errors->has('username'))
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $errors->first('username') }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('username') }}</strong>
+        </span>
         @endif
 
     </div>
@@ -77,9 +77,9 @@
         <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name" name="name"
             aria-describedby="emailHelp" value="{{ Auth::user()->name }}">
         @if ($errors->has('name'))
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $errors->first('name') }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('name') }}</strong>
+        </span>
         @endif
     </div>
     <div class="form-group p-2">
@@ -89,18 +89,18 @@
             </label>
             <div>
                 @if (getSetting('ai.open_ai_enabled'))
-                    <a href="javascript:void(0)" onclick="{{ 'AiSuggestions.suggestDescriptionDialog();' }}"
-                        data-toggle="tooltip" data-placement="left"
-                        title="{{ __('Use AI to generate your description.') }}">{{ trans_choice('Suggestion', 2) }}</a>
+                <a href="javascript:void(0)" onclick="{{ 'AiSuggestions.suggestDescriptionDialog();' }}"
+                    data-toggle="tooltip" data-placement="left"
+                    title="{{ __('Use AI to generate your description.') }}">{{ trans_choice('Suggestion', 2) }}</a>
                 @endif
             </div>
         </div>
         <textarea class="form-control {{ $errors->has('bio') ? 'is-invalid' : '' }}" id="bio" name="bio"
             rows="3" spellcheck="false">{{ Auth::user()->bio }}</textarea>
         @if ($errors->has('bio'))
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $errors->first('bio') }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('bio') }}</strong>
+        </span>
         @endif
     </div>
     <div class="form-group p-2">
@@ -109,12 +109,24 @@
             name="birthdate" aria-describedby="emailHelp" value="{{ Auth::user()->birthdate }}"
             max="{{ $minBirthDate }}">
         @if ($errors->has('birthdate'))
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $errors->first('birthdate') }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('birthdate') }}</strong>
+        </span>
         @endif
     </div>
 
+    <div class="form-group p-2">
+        <label for="cpf" value="{{ Auth::user()->cpf }}">CPF</label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control inputInstagram {{ $errors->has('cpf') ? 'is-invalid' : '' }}"
+                pattern="https://(www\.)?instagram\.com/[a-zA-Z0-9_]+" id="cpf" name="cpf" aria-describedby="emailHelp" value="{{ Auth::user()->cpf }}" title="A URL deve ser um perfil válido do Instagram">
+        </div>
+        @if ($errors->has('cpf'))
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('cpf') }}</strong>
+        </span>
+        @endif
+    </div>
     <div class="d-flex flex-row p-2">
         <div class="{{ getSetting('profiles.allow_gender_pronouns') ? 'w-50' : 'w-100' }} pr-2">
             <div class="form-group">
@@ -122,32 +134,33 @@
                 <select class="form-control" id="gender" name="gender">
                     <option value=""></option>
                     @foreach ($genders as $gender)
-                        <option value="{{ $gender->id }}"
-                            {{ Auth::user()->gender_id == $gender->id ? 'selected' : '' }}>
-                            {{ __($gender->gender_name) }}</option>
+                    <option value="{{ $gender->id }}"
+                        {{ Auth::user()->gender_id == $gender->id ? 'selected' : '' }}>
+                        {{ __($gender->gender_name) }}
+                    </option>
                     @endforeach
                 </select>
                 @if ($errors->has('gender'))
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $errors->first('gender') }}</strong>
-                    </span>
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('gender') }}</strong>
+                </span>
                 @endif
             </div>
         </div>
 
         @if (getSetting('profiles.allow_gender_pronouns'))
-            <div class="w-50 pl-2">
-                <div class="form-group">
-                    <label for="pronoun">{{ __('Gender pronoun') }}</label>
-                    <input class="form-control {{ $errors->has('location') ? 'is-invalid' : '' }}" id="pronoun"
-                        name="pronoun" aria-describedby="emailHelp" value="{{ Auth::user()->gender_pronoun }}">
-                    @if ($errors->has('pronoun'))
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $errors->first('pronoun') }}</strong>
-                        </span>
-                    @endif
-                </div>
+        <div class="w-50 pl-2">
+            <div class="form-group">
+                <label for="pronoun">{{ __('Gender pronoun') }}</label>
+                <input class="form-control {{ $errors->has('location') ? 'is-invalid' : '' }}" id="pronoun"
+                    name="pronoun" aria-describedby="emailHelp" value="{{ Auth::user()->gender_pronoun }}">
+                @if ($errors->has('pronoun'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('pronoun') }}</strong>
+                </span>
+                @endif
             </div>
+        </div>
         @endif
 
     </div>
@@ -158,15 +171,15 @@
             <select class="form-control" id="country" name="country">
                 <option value=""></option>
                 @foreach ($countries as $country)
-                    <option value="{{ $country->id }}"
-                        {{ Auth::user()->country_id == $country->id ? 'selected' : '' }}>{{ __($country->name) }}
-                    </option>
+                <option value="{{ $country->id }}"
+                    {{ Auth::user()->country_id == $country->id ? 'selected' : '' }}>{{ __($country->name) }}
+                </option>
                 @endforeach
             </select>
             @if ($errors->has('country'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('country') }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $errors->first('country') }}</strong>
+            </span>
             @endif
         </div>
         <div class="form-group w-50 pl-2">
@@ -174,9 +187,9 @@
             <input class="form-control {{ $errors->has('location') ? 'is-invalid' : '' }}" id="location"
                 name="location" aria-describedby="emailHelp" value="{{ Auth::user()->location }}">
             @if ($errors->has('location'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('location') }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $errors->first('location') }}</strong>
+            </span>
             @endif
         </div>
     </div>
@@ -190,12 +203,12 @@
                 </span>
             </div>
             <input type="url" class="form-control inputInstagram {{ $errors->has('website') ? 'is-invalid' : '' }}"
-            pattern="https://(www\.)?instagram\.com/[a-zA-Z0-9_]+" id="website"  name="website" aria-describedby="emailHelp" value="{{ Auth::user()->website }}" title="A URL deve ser um perfil válido do Instagram">
+                pattern="https://(www\.)?instagram\.com/[a-zA-Z0-9_]+" id="website" name="website" aria-describedby="emailHelp" value="{{ Auth::user()->website }}" title="A URL deve ser um perfil válido do Instagram">
         </div>
         @if ($errors->has('website'))
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $errors->first('website') }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('website') }}</strong>
+        </span>
         @endif
     </div>
     <div class="p-2 pb-4 pt-4">

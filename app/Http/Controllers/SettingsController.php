@@ -267,7 +267,8 @@ class SettingsController extends Controller
             'birthdate' => $request->get('birthdate'),
             'gender_id' => $request->get('gender'),
             'gender_pronoun' => $request->get('pronoun'),
-            'country_id' => $request->get('country')
+            'country_id' => $request->get('country'),
+            'cpf' => $request->get('cpf')
         ]);
 
         return back()->with('success', __('Settings saved.'));
