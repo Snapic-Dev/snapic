@@ -7,8 +7,8 @@ class FirebaseProvider
     public function uploadToFirebase($file, $folder = 'images')
     {
         $firebaseConfig = [
-            'apiKey' => "AIzaSyBCIPbd8ejdAoggzgLVJSGzPei_dKl479I",
-            'storageBucket' => "urban-vogue-br.appspot.com",
+            'apiKey' => "AIzaSyCqyMEep9-140R2oPYY7AcBw3ycryQ-TWk",
+            'storageBucket' => "snapic-e326c.appspot.com",
         ];
 
         $fileName = uniqid() . '.' . $file->getClientOriginalExtension();

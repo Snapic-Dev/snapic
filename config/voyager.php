@@ -37,7 +37,6 @@ return [
         'enabled' => true,
         'default' => 'pt',
         'locales' => [
-            'en',
             'pt',
         ],
     ],

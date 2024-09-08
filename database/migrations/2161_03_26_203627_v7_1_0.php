@@ -50,21 +50,21 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                'key' => 'payments.withdrawal_stripe_connect_webhooks_secret',
-                'display_name' => 'Stripe Connect Webhooks Secret',
+                'key' => 'payments.withdrawal_instant',
+                'display_name' => 'Retiradas instantâneas',
                 'value' => NULL,
                 'details' => '{
-                        "description": "It must be set if Stripe Connect is enabled"
-                        }',
+                    "description": "Valor para retirada instantâneas"
+                }',
                 'type' => 'text',
-                'order' => 101,
+                'order' => 91,
                 'group' => 'Payments',
             )
         );
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_ideal_provider_enabled',
                     'display_name' => 'Allow iDEAL',
                     'value' => 0,
@@ -83,7 +83,7 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_blik_provider_enabled',
                     'display_name' => 'Allow Blik',
                     'value' => 0,
@@ -102,7 +102,7 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_bancontact_provider_enabled',
                     'display_name' => 'Allow Bancontact',
                     'value' => 0,
@@ -121,7 +121,7 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_eps_provider_enabled',
                     'display_name' => 'Allow EPS',
                     'value' => 0,
@@ -140,7 +140,7 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_giropay_provider_enabled',
                     'display_name' => 'Allow Giropay',
                     'value' => 0,
@@ -159,7 +159,7 @@ class V710 extends Migration
 
         DB::table('settings')->insert(
             array(
-                array (
+                array(
                     'key' => 'payments.stripe_przelewy_provider_enabled',
                     'display_name' => 'Allow Przelewy24',
                     'value' => 0,
@@ -175,7 +175,6 @@ class V710 extends Migration
                 )
             )
         );
-
     }
 
     /**
