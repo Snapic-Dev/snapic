@@ -45,7 +45,7 @@ class SettingsController extends Controller
         'profile' => ['heading' => 'Update your bio, cover and avatar', 'icon' => 'person'],
         'account' => ['heading' => 'Manage your account settings', 'icon' => 'settings'],
         'wallet' => ['heading' => 'Your payments & wallet', 'icon' => 'wallet'],
-        'payments' => ['heading' => 'Your payments & wallet', 'icon' => 'card'],
+        'payments' => ['heading' => 'Your payments & wallet', 'icon' => 'stats-chart'],
         'rates' => ['heading' => 'Prices & Bundles', 'icon' => 'layers'],
         'subscriptions' => ['heading' => 'Your active subscriptions', 'icon' => 'people'],
         'referrals' => ['heading' => 'Invite other people to earn more', 'icon' => 'person-add'],
