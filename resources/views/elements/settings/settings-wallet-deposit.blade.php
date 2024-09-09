@@ -235,11 +235,14 @@
 
         function inputDepositValue() {
             let inputValue = depositInput.value
+            const minimumDepositAmount = parseFloat('{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}');
 
-            if (!depositInput.value == "") {
+            if (depositInput.value >= minimumDepositAmount) {
                 btnDeposit.disabled = false;
+                console.log("Farso")
             } else {
                 btnDeposit.disabled = true;
+                console.log("Verdadeiro")
             }
         }
 
