@@ -69,7 +69,7 @@
   "Full name": "Nome completo",
   "Get verified and start earning now": "Seja verificado e comece a ganhar agora",
   "Help and support": "Ajuda e suporte",
-  "FAQ":"Perguntas Frequentes",
+  "FAQ": "Perguntas Frequentes",
   "Hide bundles": "Ocultar pacotes",
   "Unfollow": "Seguindo",
   "Home": "Início",
@@ -135,7 +135,7 @@
   "Profile": "Perfil",
   "account": "conta",
   "wallet": "carteira",
-  "payments": "pagamentos",
+  "payments": "Dashboard",
   "rates": "taxas",
   "subscriptions": "assinaturas",
   "subscribers": "assinantes",
@@ -942,5 +942,6 @@
   "voyager::settings.moved_order_up": "Ordem Movida para Cima",
   "voyager::settings.delete_confirm": "Tem certeza que deseja excluir?",
   "Settings saved.": "Configurações salvas",
-  "Your post must contain more than 10 characters": "Seu post deve conter mais de 10 caracteres"
+  "Your post must contain more than 10 characters": "Seu post deve conter mais de 10 caracteres",
+  "Texto_Pix": " Use o aplicativo de seu banco para ler o QRCode ao lado, ou toque no botão PIX Copia e Cola para copiar o código e realizar a transação no aplicativo do seu banco"
 }

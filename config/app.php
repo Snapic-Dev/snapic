@@ -10,7 +10,7 @@ return [
         'favicon' => '/img/rounded-logo-gradient.svg',
         'currency_code' => 'BRL',
         'currency_symbol' => 'R$',
-        'default_site_language' => 'en',
+        'default_site_language' => 'pt',
         'allow_pwa_installs' => false,
     ],
 

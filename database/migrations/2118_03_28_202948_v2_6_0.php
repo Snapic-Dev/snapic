@@ -24,7 +24,7 @@ class V260 extends Migration
         if (Schema::hasTable('settings')) {
             DB::table('settings')->insert(
                 array(
-                    array (
+                    array(
                         'key' => 'withdrawals-deposit.withdrawal_payment_methods',
                         'display_name' => 'Withdrawal allowed payment methods',
                         'value' => 'Bank transfer, Other',
@@ -37,9 +37,10 @@ class V260 extends Migration
                     )
                 )
             );
+
             DB::table('settings')->insert(
                 array(
-                    array (
+                    array(
                         'key' => 'site.enforce_app_ssl',
                         'display_name' => 'Enforce platform SSL usage',
                         'value' => 0,
@@ -56,7 +57,6 @@ class V260 extends Migration
                 )
             );
         }
-
     }
 
     /**

@@ -56,7 +56,11 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
         'enable_geoblocking',
         'open_profile',
         'referral_code',
-        'country_id'
+        'country_id',
+        'niche',
+        'cpf',
+        'discount',
+        'phone'
     ];
 
     /**

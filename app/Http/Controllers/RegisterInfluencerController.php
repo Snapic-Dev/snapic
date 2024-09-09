@@ -11,6 +11,12 @@ use App\Rules\IsEmailDelivrable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Tag(
+ *     name="Influencer",
+ *     description="Operations related to influencer registration"
+ * )
+ */
 class RegisterInfluencerController extends Controller
 {
     protected $redirectTo;
@@ -87,12 +93,76 @@ class RegisterInfluencerController extends Controller
         }
     }
 
+    /**
+     * Show the influencer registration form.
+     *
+     * @OA\Get(
+     *     path="/influencer/register",
+     *     tags={"Influencer"},
+     *     summary="Show the influencer registration form",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully retrieved registration form",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="form", type="string", description="HTML form for registration")
+     *         )
+     *     )
+     * )
+     *
+     * @return \Illuminate\View\View
+     */
     public function showRegistrationForm()
     {
         $niches = Niche::all();
         return view('auth.register-influencer', compact('niches'));
     }
 
+    /**
+     * Handle the influencer registration request.
+     *
+     * @OA\Post(
+     *     path="/influencer/register",
+     *     tags={"Influencer"},
+     *     summary="Handle the influencer registration request",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"name", "email", "password", "password_confirmation", "terms", "age"},
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john.doe@example.com"),
+     *                 @OA\Property(property="password", type="string", example="password123"),
+     *                 @OA\Property(property="password_confirmation", type="string", example="password123"),
+     *                 @OA\Property(property="terms", type="boolean", example=true),
+     *                 @OA\Property(property="age", type="string", format="date", example="2005-07-16")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Registration successful",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="redirect_to", type="string", example="/feed"),
+     *             @OA\Property(property="message", type="string", example="Registration successful!")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Validation failed.")
+     *         )
+     *     )
+     * )
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request)
     {
         ini_set('memory_limit', '256M');
