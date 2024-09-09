@@ -11,25 +11,30 @@
             <label class="text-sm text-muted">Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00 para saque</label>
         </div> -->
     </div>
-    <div class="ml-2 mt-5 d-flex justify-content-center">
-        <button class="btn10 btn btn-round  border ml-2"
+    <div class="ml-2 d-flex justify-content-center mt-5">
+        <button class="btnOne btn btn-round  border ml-2"
             onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
-        <button class="btn50 btn btn-round border ml-2" onclick="inputDepositValueBtn(50)">
-            R$50,00
+        <button class="btnTwo btn btn-round border ml-2"
+            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }},00
         </button>
-        <button class="btn100 btn btn-round border ml-2" onclick="inputDepositValueBtn(100)">
-            R$100,00
+        <button class="btnThree btn btn-round border ml-2"
+            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }},00
         </button>
-        <button class="btn200 btn btn-round border ml-2" onclick="inputDepositValueBtn(200)">
-            R$200,00
+        <button class="btnFour btn btn-round border ml-2"
+            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }},00
         </button>
-        <button class="btn400 btn btn-round border ml-2" onclick="inputDepositValueBtn(400)">
-            R$400,00
+        <button class="btnFive btn btn-round border ml-2"
+            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }},00
         </button>
-        <button class="btn1000 btn btn-round border ml-2" onclick="inputDepositValueBtn(1000)">
-            R$1000,00
+        <button class="btnSix btn btn-round border ml-2"
+            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }}`)">
+            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }},00
         </button>
     </div>
 </div>
@@ -199,7 +204,6 @@
         let pixRadioTxt = document.querySelector(".pixRadioTxt");
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
         let modalCreditCard = document.querySelector(".modalCreditCard");
-        let depositInput = document.querySelector(".depositInput");
         let modalPix = document.querySelector("#staticBackdrop");
         let qrCodeImage = document.querySelector(".qrCodeImage");
         let amountPix = document.querySelector(".amountPix");
@@ -210,12 +214,17 @@
         let feedbackForUser = document.querySelector('.feedbackForUser');
         let dataExpiration = document.getElementById('dataExpiration');
 
-        let btn10 = document.querySelector('.btn10');
-        let btn50 = document.querySelector('.btn50');
-        let btn100 = document.querySelector('.btn100');
-        let btn200 = document.querySelector('.btn200');
-        let btn400 = document.querySelector('.btn400');
-        let btn1000 = document.querySelector('.btn1000');
+        let depositInput = document.querySelector('.depositInput')
+        let withdrawalContinueBtn = document.querySelector('.withdrawal-continue-btn')
+
+        let btnOne = document.querySelector('.btnOne');
+        let btnTwo = document.querySelector('.btnTwo');
+        let btnThree = document.querySelector('.btnThree');
+        let btnFour = document.querySelector('.btnFour');
+        let btnFive = document.querySelector('.btnFive');
+        let btnSix = document.querySelector('.btnSix');
+
+        
         let btnDeposit = document.querySelector('.btnDeposit');
 
 
@@ -420,4 +429,6 @@
             intervalId = setInterval(updateRemainingTime, 1000);
             updateRemainingTime();
         }
+
+    
     </script>
