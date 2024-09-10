@@ -983,8 +983,8 @@ class InsertDefaultAdminSettings extends Migration
                 'display_name' => 'Withdrawal request minimum amount',
                 'value' => '20',
                 'details' => '{
-"description": "Default: 20"
-}',
+                    "description": "Default: 20"
+                }',
                 'type' => 'text',
                 'order' => 91,
                 'group' => 'Withdrawals & Deposit',
@@ -996,8 +996,8 @@ class InsertDefaultAdminSettings extends Migration
                 'display_name' => 'Withdrawal request maximum amount',
                 'value' => '500',
                 'details' => '{
-"description": "Default: 500"
-}',
+                    "description": "Default: 500"
+                    }',
                 'type' => 'text',
                 'order' => 92,
                 'group' => 'Withdrawals & Deposit',
