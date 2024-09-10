@@ -86,22 +86,110 @@ select {
 .table-wrapper::-webkit-scrollbar {
   width: 10px;
   height: 6px;
-  background-color: #CCCCCC;
+  background-color: #cccccc;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-  background: #CCCCCC;
+  background: #cccccc;
 }
 
 .table-wrapper::-webkit-scrollbar-track-piece {
-  background: #CCCCCC;
+  background: #cccccc;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-  background:#57319A;
+  background: #57319a;
   border-radius: 5px;
 }
 
 .internTable {
   width: 1000px;
+}
+
+/*dashboardCSS*/
+
+.cardMetric {
+  padding: 30px;
+  height: 180px;
+  width: 300px;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+}
+
+.headerCardMetric {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerCardMetric .voyager-eye {
+  color: #8c3ba5;
+}
+
+.dashCardTitle {
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+
+.dashCardMetric {
+  font-size: 30px;
+  color: black;
+  font-weight: bold;
+  margin-top: 25px;
+  position: relative;
+  top: 16px;
+}
+
+.cardMetricTextLabel {
+  color: black;
+  font-weight: bold;
+}
+
+.dashCardLabel {
+  color: #8c3ba5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.div2 {
+  grid-area: 1 / 2 / 2 / 3;
+  margin-left: 26px;
+}
+
+.div4 {
+  grid-area: 2 / 2 / 3 / 3;
+  margin-left: 26px;
+}
+
+ion-icon {
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+}
+
+.blur-effect {
+  filter: blur(5px);
+  transition: 0.5s linear;
+}
+
+.no-blur-effect {
+  filter: blur(0px);
+  transition: 0.5s linear;
+}
+
+.metricsBtn {
+  position: absolute;
+  filter: blur(0px);
+  top: 30px;
+  right: 25px;
+  background-color: transparent;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.btnCopy ion-icon {
+  font-size: 1rem; /* Tamanho do ícone */
+  vertical-align: middle; /* Alinha o ícone verticalmente ao centro */
 }
