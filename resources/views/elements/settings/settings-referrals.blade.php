@@ -1,33 +1,3 @@
-<div class="pb-2">
-    <div class="pb-2 text-left p-4 ml-4 mr-1">
-        {{ __('Copy your referral link and invite other people to get a fee from their earnings.') }}</div>
-    <div class="pl-5 pr-5">
-        <div class="input-group p-2">
-            @php
-                // Base URL da aplicação
-                $baseUrl = url('/');
-
-                // Código de referência e nome de usuário do usuário autenticado
-                $referralCode = Auth::user()->referral_code;
-                $username = Auth::user()->username;
-
-                // Construção das URLs
-                $profileUrl = "{$baseUrl}/influencer/register?referral={$referralCode}";
-                $homeUrl = "{$baseUrl}/influencer/home?referral={$referralCode}";
-                $registerUrl = "{$baseUrl}/influencer/register?referral={$referralCode}";
-            @endphp
-            <input type="text" class="form-control text-center referralLink"
-                @switch(getSetting('referrals.referrals_default_link_page')) @case('profile') value="{{ $profileUrl }}" @break @case('home') value="{{ $homeUrl }}" @break @case('register') value="{{ $registerUrl }}" @break @endswitch
-                placeholder="{{ $profileUrl }}" id="copy-input">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-block rounded mr-0 text-truncate btnCopy" type="button"
-                    id="copy-button" data-toggle="tooltip" data-placement="bottom" onclick="copyCodePix()">
-                    {{ __('Copiar') }}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="table-wrapper p-2">
     <div class="">
         <div class="col py-3 text-bold border-bottom">
@@ -76,24 +46,3 @@
         @endif
     </div>
 </div>
-
-<script>
-    let referralLink = document.querySelector('.referralLink')
-    let btnCopy = document.querySelector('.btnCopy')
-
-    function copyCodePix() {
-        let linkRef = referralLink.value
-        navigator.clipboard.writeText(linkRef)
-            .then(() => {
-                sessionStorage.setItem('valorCopiado', linkRef);
-                btnCopy.innerText = 'Copiado';
-                setTimeout(() => {
-                    btnCopy.innerText = 'Copiar';
-                    btnCopy.setAttribute('title', 'Copiar');
-                }, 1500);
-            })
-            .catch(err => {
-                console.error('Erro ao copiar: ', err);
-            });
-    }
-</script>
