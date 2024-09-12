@@ -13,6 +13,7 @@ use Database\Seeders\UserRolesTableSeeder;
 use Database\Seeders\PublicPagesTableSeeder;
 use Database\Seeders\InsertCountries;
 use Database\Seeders\NichesTableSeeder;
+use Illuminate\Support\Facades\DB as DB;
 
 class DatabaseSeeder extends Seeder
 {

@@ -78,7 +78,7 @@ return [
 
     'primary_color' => '#673AB7',
     'show_dev_tips' => true,
-    // 'show_dev_tips' => env('APP_DEBUG'),
+    'show_dev_tips' => env('APP_DEBUG'),
     'additional_css' => [
         'css/admin-overrides.css',
     ],
@@ -121,20 +121,20 @@ return [
         'allow_delete'        => true,
         'allow_create_folder' => true,
         'allow_rename'        => true,
-        /*'watermark'           => [
+        'watermark'           => [
             'source'         => 'watermark.png',
             'position'       => 'bottom-left',
             'x'              => 0,
             'y'              => 0,
             'size'           => 15,
-       ],
-       'thumbnails'          => [
-           [
+        ],
+        'thumbnails'          => [
+            [
                 'type'  => 'fit',
                 'name'  => 'fit-500',
                 'width' => 500,
-                'height'=> 500
-           ],
-       ]*/
+                'height' => 500
+            ],
+        ]
     ],
 ];

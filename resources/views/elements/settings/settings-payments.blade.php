@@ -20,12 +20,21 @@
                         <option value="refunded">Reembolsado</option>
                     </select>
                 </div>
+                <div class="col-lg-3">
+                    <select class="form-control dataSelect">
+                        <option value="" disabled selected>Data</option>
+                        <option value="asc">asc</option>
+                        <option value="desc">desc</option>
+
+                    </select>
+                </div>
                 @php
                     $baseUrl = url('/');
-                    $urlWithdrawal="{$baseUrl}/my/settings/wallet?active=withdraw"
+                    $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
                 @endphp
                 <div class="col-lg-7 text-right mt-2">
-                    <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters" href="{{$urlWithdrawal}}">Saque</a>
+                    <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
+                        href="{{ $urlWithdrawal }}">Saque</a>
                 </div>
             </div>
 
@@ -41,7 +50,7 @@
                             $totalAssinantes++;
                         }
                     @endphp
-                    {{--  <div class="col-lg-4 mb-4">
+                    <div class="col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
                                 @if ($payment->type == 'stream-access')
@@ -128,38 +137,28 @@
                                         @break
                                     @endswitch
                                 </p>
-                                <p>
-                                    <strong>{{ __('Amount') }}:</strong>
-                                    {{ $payment->decodedTaxes && Auth::user()->id == $payment->recipient_user_id
-                                        ? \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(
-                                            $payment->amount - $payment->decodedTaxes->taxesTotalAmount,
-                                        )
-                                        : \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($payment->amount) }}
-                                </p>
-                                <p>
-                                    <strong>{{ __('From') }}:</strong>
-                                    <a href="{{ route('profile', ['username' => $payment->sender->username]) }}"
-                                        class="text-dark">
-                                        {{ $payment->sender->name }}
-                                    </a>
-                                </p>
-                                <p>
-                                    <strong>{{ __('To') }}:</strong>
-                                    <a href="{{ route('profile', ['username' => $payment->receiver->username]) }}"
-                                        class="text-dark">
-                                        {{ $payment->receiver->name }}
-                                    </a>
-                                </p>
-                                <p>
-                                    <strong>{{ __('Date') }}:</strong>
-                                    {{ \Illuminate\Support\Carbon::parse($payment->created_at)->format('d/m/Y') }}
-                                </p>
                             </div>
                         </div>
-                    </div>  --}}
+                    </div>
                 @endforeach
                 <div class="d-flex align-items-center py-3 border-bottom font-weight-bold ">
                     <div class="row mt-4">
+                        <div class="col-lg-6 mb-4">
+                            <div class="div4">
+                                <div id="metric4" class="cardMetric no-blur-effect">
+                                    <div class="headerCardMetric d-flex justify-content-between align-items-center">
+                                        <p class="font-weight-bolder dashCardTitle">Status</p>
+                                        <button class="metricsBtn" onclick="showMetrics(metric4)">
+                                            <ion-icon name="eye-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                    <p class="dashCardMetric">
+                                        {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
+                                    </p>
+                                    <p class="text-uppercase dashCardLabel">Total</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-lg-6 mb-4">
                             <div class="div4">
                                 <div id="metric4" class="cardMetric no-blur-effect">
@@ -214,16 +213,18 @@
 
 
 
-                           
+
 
                             <!-- Adiciona a margem esquerda aqui -->
                             <div class="d-flex indicationBox">
-                                <input type="text" class="form-control text-center referralLink" value="{{ $defaultUrl }}"
-                                placeholder="{{ $urls['profile'] }}" id="copy-input">
-                                    <button class="btn btn-primary btn-block rounded btnCopy" type="button" id="copy-button"
-                                        data-toggle="tooltip" data-placement="bottom" onclick="copyCode('.referralLink')">
-                                        <ion-icon name="copy-outline" style="font-size: 1rem; vertical-align: middle;"></ion-icon>
-                                    </button>
+                                <input type="text" class="form-control text-center referralLink"
+                                    value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input">
+                                <button class="btn btn-primary btn-block rounded btnCopy" type="button"
+                                    id="copy-button" data-toggle="tooltip" data-placement="bottom"
+                                    onclick="copyCode('.referralLink')">
+                                    <ion-icon name="copy-outline"
+                                        style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -239,16 +240,19 @@
 
 
 
-                           
+
 
                             <!-- Adiciona a margem esquerda aqui -->
                             <div class="d-flex indicationBox">
-                                <input type="text" class="form-control text-center referralLink disclosureInput" value="{{ $url }}"
-                                placeholder="{{ $urls['profile'] }}" id="copy-input">
-                                    <button class="btn btn-primary btn-block rounded btnCopy" type="button" id="copy-button"
-                                        data-toggle="tooltip" data-placement="bottom" onclick="copyCode('.disclosureInput')">
-                                        <ion-icon name="copy-outline" style="font-size: 1rem; vertical-align: middle;"></ion-icon>
-                                    </button>
+                                <input type="text" class="form-control text-center referralLink disclosureInput"
+                                    value="{{ $url }}" placeholder="{{ $urls['profile'] }}"
+                                    id="copy-input">
+                                <button class="btn btn-primary btn-block rounded btnCopy" type="button"
+                                    id="copy-button" data-toggle="tooltip" data-placement="bottom"
+                                    onclick="copyCode('.disclosureInput')">
+                                    <ion-icon name="copy-outline"
+                                        style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -263,7 +267,6 @@
             </div>
         </div>
     @endif
-    <br>
 </div>
 
 <script>
@@ -308,7 +311,9 @@
             params.append('status', statusSelect.value);
         }
 
-        if (dataSelect.value !== "") {}
+        if (dataSelect.value !== "") {
+            params.append('dataFilter', dataSelect.value);
+        }
 
         const queryString = params.toString();
 

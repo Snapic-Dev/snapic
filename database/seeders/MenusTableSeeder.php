@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as DB;
 
 class MenusTableSeeder extends Seeder
 {
@@ -14,20 +15,18 @@ class MenusTableSeeder extends Seeder
      */
     public function run()
     {
-        
 
-        \DB::table('menus')->delete();
-        
-        \DB::table('menus')->insert(array (
-            0 => 
-            array (
+
+        DB::table('menus')->delete();
+
+        DB::table('menus')->insert(array(
+            0 =>
+            array(
                 'id' => 1,
                 'name' => 'admin',
                 'created_at' => '2021-08-07 18:52:09',
                 'updated_at' => '2021-08-07 18:52:09',
             ),
         ));
-        
-        
     }
 }

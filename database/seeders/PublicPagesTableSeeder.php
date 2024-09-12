@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as DB;
 
 class PublicPagesTableSeeder extends Seeder
 {
@@ -14,13 +15,13 @@ class PublicPagesTableSeeder extends Seeder
      */
     public function run()
     {
-        
 
-        \DB::table('public_pages')->delete();
-        
-        \DB::table('public_pages')->insert(array (
-            0 => 
-            array (
+
+        DB::table('public_pages')->delete();
+
+        DB::table('public_pages')->insert(array(
+            0 =>
+            array(
                 'id' => 3,
                 'slug' => 'terms-and-conditions',
                 'title' => 'Terms and conditions',
@@ -107,13 +108,13 @@ class PublicPagesTableSeeder extends Seeder
                 'is_tos' => 1,
                 'is_privacy' => 0,
             ),
-            1 => 
-            array (
+            1 =>
+            array(
                 'id' => 4,
                 'slug' => 'privacy',
                 'title' => 'Privacy Policy',
                 'short_title' => 'Privacy',
-            'content' => '<p class="MsoNormal" style="margin-bottom: 0in; line-height: normal; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;"><span style="font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 16px;">This Privacy Policy describes how your personal information is collected, used, and shared when you visit or make a purchase from https://your-domain.com (the &ldquo;Site&rdquo;). Continuing using this site means you agree to all of the mentions below.</span></p>
+                'content' => '<p class="MsoNormal" style="margin-bottom: 0in; line-height: normal; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;"><span style="font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 16px;">This Privacy Policy describes how your personal information is collected, used, and shared when you visit or make a purchase from https://your-domain.com (the &ldquo;Site&rdquo;). Continuing using this site means you agree to all of the mentions below.</span></p>
 <p class="MsoNormal" style="margin-bottom: 0in; line-height: normal; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;</p>
 <h4 class="tosHeadLine" style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0.5rem; font-weight: 500; line-height: 1.2; font-size: 1.5rem; font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\';">Personal information we collect</h4>
 <p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 1rem; font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 16px;">When you visit the Site, we automatically collect certain information about your device, including information about your web browser, IP address, time zone, and some of the cookies that are installed on your device. Additionally, as you browse the Site, we collect information about the individual web pages or products that you view, what websites or search terms referred you to the Site, and information about how you interact with the Site. We refer to this automatically-collected information as &ldquo;Device Information.&rdquo;</p>
@@ -149,20 +150,20 @@ class PublicPagesTableSeeder extends Seeder
 <p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 1rem; font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 16px;">We may update this privacy policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal or regulatory reasons.</p>
 <h4 class="tosHeadLine" style="box-sizing: border-box; margin-top: 0px; margin-bottom: 0.5rem; font-weight: 500; line-height: 1.2; font-size: 1.5rem; font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\';">Contact us</h4>
 <p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 1rem; font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 16px;">For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by e-mail at contact@website.com or by sending us a&nbsp;<a style="box-sizing: border-box; text-decoration-line: none; background-color: transparent;" href="../contact">contact message</a>.</p>',
-            'created_at' => '2021-09-30 12:09:39',
-            'updated_at' => '2021-09-30 12:09:39',
-            'page_order' => 2,
-            'shown_in_footer' => 1,
-            'is_tos' => 0,
-            'is_privacy' => 1,
-        ),
-        2 => 
-        array (
-            'id' => 5,
-            'slug' => 'help',
-            'title' => 'Help & FAQ',
-            'short_title' => 'Help',
-            'content' => '<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: \'Open Sans\', Arial, sans-serif;"><strong style="box-sizing: border-box; font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;">JustFans &ndash; Premium Content Creators SaaS</strong><span style="font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;"> is a fully-featured PHP platform that allows you to start your own premium content-based social media platform in no time. It allows your users to post premium content, which can only be unlocked by other viewers when purchasing a monthly subscription. On top of that, creators can earn more money from tips and paid posts, on top of of the regular subscription content.<br></span><br style="box-sizing: border-box; font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;"><span style="font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;">The experience is powered by a mobile-first, clean and easy-to-use design, with De themes, RTL, and localization capabilities. It allows your creators to sell their premium content via monthly subscriptions, offers, bundles, tips, and pay to unlock posts.</span></p>
+                'created_at' => '2021-09-30 12:09:39',
+                'updated_at' => '2021-09-30 12:09:39',
+                'page_order' => 2,
+                'shown_in_footer' => 1,
+                'is_tos' => 0,
+                'is_privacy' => 1,
+            ),
+            2 =>
+            array(
+                'id' => 5,
+                'slug' => 'help',
+                'title' => 'Help & FAQ',
+                'short_title' => 'Help',
+                'content' => '<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: \'Open Sans\', Arial, sans-serif;"><strong style="box-sizing: border-box; font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;">JustFans &ndash; Premium Content Creators SaaS</strong><span style="font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;"> is a fully-featured PHP platform that allows you to start your own premium content-based social media platform in no time. It allows your users to post premium content, which can only be unlocked by other viewers when purchasing a monthly subscription. On top of that, creators can earn more money from tips and paid posts, on top of of the regular subscription content.<br></span><br style="box-sizing: border-box; font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;"><span style="font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px; text-align: start;">The experience is powered by a mobile-first, clean and easy-to-use design, with De themes, RTL, and localization capabilities. It allows your creators to sell their premium content via monthly subscriptions, offers, bundles, tips, and pay to unlock posts.</span></p>
 <p style="text-align: start;"><span style="font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;"><span style="font-size: 24px; letter-spacing: -0.8px;">Posting content</span></span></p>
 <p style="text-align: start;"><span style="font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 16px;">In order to be able to start posting content and earn money, you will need to create an account, deppending on the platform settings you might have to verify it, then you will be able to create posts by accessing the <a href="http://localhost/only-fuck/public/admin/custom-pages/posts/create">Create post</a> page, where you can upload any kind of media you want, by either drag and dropping your files onto the text area, or by clicking on the file icon bellow the text area.</span></p>
 <p style="text-align: start;">&nbsp;</p>
@@ -180,15 +181,13 @@ class PublicPagesTableSeeder extends Seeder
 <p><span style="font-family: Inter, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\', \'Noto Color Emoji\'; font-size: 24px; letter-spacing: -0.8px;">Got questions?</span></p>
 <p><span style="font-family: Helvetica Neue, Helvetica, Arial, sans-serif;"><span style="font-size: 16px;">If you have any questions whatsoever, do not heistate to send us a message via the <a href="http://localhost/only-fuck/public/admin/custom-pages/contact">Contact Page</a>.</span></span></p>
 <p><span style="font-family: Helvetica Neue, Helvetica, Arial, sans-serif;"><span style="font-size: 16px;">&nbsp;</span></span></p>',
-            'created_at' => '2021-09-30 12:10:09',
-            'updated_at' => '2023-11-27 23:09:52',
-            'page_order' => 1,
-            'shown_in_footer' => 1,
-            'is_tos' => 0,
-            'is_privacy' => 0,
-        ),
-    ));
-        
-        
+                'created_at' => '2021-09-30 12:10:09',
+                'updated_at' => '2023-11-27 23:09:52',
+                'page_order' => 1,
+                'shown_in_footer' => 1,
+                'is_tos' => 0,
+                'is_privacy' => 0,
+            ),
+        ));
     }
 }
