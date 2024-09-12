@@ -24,9 +24,10 @@
                             <div class="col-lg-7 col-xl-6 mx-auto">
                                 <a href="{{ action('HomeController@index') }}">
                                     <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                                        class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
+                                        class="d-inline-block align-top brand-logo-form"
                                         alt="{{ __('Site logo') }}">
                                 </a>
+                                <h1 class="text-bold mb-3 titleLogin">Cadastro</h1>
                                 @include('auth.register-form')
                                 @include('auth.social-login-box')
                             </div>

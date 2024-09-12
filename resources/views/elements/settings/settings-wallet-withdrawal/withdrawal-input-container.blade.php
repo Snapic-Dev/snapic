@@ -110,7 +110,7 @@
 
     <div class="mt-4">
         <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit"
-            disabled="true">
+            >
             {{ __('Request withdrawal') }}
         </button>
     </div>

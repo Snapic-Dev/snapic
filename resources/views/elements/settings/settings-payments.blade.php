@@ -1,7 +1,7 @@
-<div class="container mt-4">
+<div class="container mt-2">
     @if (count($payments))
         <div class="table-responsive">
-            <div class="d-flex align-items-center py-3 border-bottom font-weight-bold">
+            <div class="d-flex align-items-center border-bottom font-weight-bold">
                 <div class="col-lg-2">
                     <select class="form-control typeSelect">
                         <option value="" disabled selected>Tipo</option>
@@ -20,12 +20,16 @@
                         <option value="refunded">Reembolsado</option>
                     </select>
                 </div>
+                @php
+                    $baseUrl = url('/');
+                    $urlWithdrawal="{$baseUrl}/my/settings/wallet?active=withdraw"
+                @endphp
                 <div class="col-lg-7 text-right mt-2">
-                    <button class="btn btn-primary" id="clearFilters">Saque</button>
+                    <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters" href="{{$urlWithdrawal}}">Saque</a>
                 </div>
             </div>
 
-            <div class="row mt-4">
+            <div class="row dashboardArea">
                 @php
                     $totalFaturamento = 0;
                     $totalAssinantes = 0;
@@ -190,6 +194,65 @@
                         </div>
                     </div>
                 </div>
+                <div class="pb-2 mt-5">
+                    <div class="pl-5 pr-5 indicationBox">
+                        <p class="font-weight-bolder dashCardTitle">Link de Indicação:</p>
+                        <div class="input-group p-2 justify-content-between">
+                            @php
+                                $baseUrl = url('/');
+                                $referralCode = Auth::user()->referral_code;
+                                $username = Auth::user()->username;
+                                $urls = [
+                                    'profile' => "{$baseUrl}/influencer/register?referral={$referralCode}",
+                                    'home' => "{$baseUrl}/influencer/home?referral={$referralCode}",
+                                    'register' => "{$baseUrl}/influencer/register?referral={$referralCode}",
+                                ];
+
+                                $defaultPage = getSetting('referrals.referrals_default_link_page');
+                                $defaultUrl = $urls[$defaultPage] ?? $urls['profile'];
+                            @endphp
+
+
+
+                           
+
+                            <!-- Adiciona a margem esquerda aqui -->
+                            <div class="d-flex indicationBox">
+                                <input type="text" class="form-control text-center referralLink" value="{{ $defaultUrl }}"
+                                placeholder="{{ $urls['profile'] }}" id="copy-input">
+                                    <button class="btn btn-primary btn-block rounded btnCopy" type="button" id="copy-button"
+                                        data-toggle="tooltip" data-placement="bottom" onclick="copyCode('.referralLink')">
+                                        <ion-icon name="copy-outline" style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-5 pr-5 indicationBox mt-4">
+                        <p class="font-weight-bolder dashCardTitle">Link de Divulgação:</p>
+                        <div class="input-group p-2 justify-content-between">
+                            @php
+                                $baseUrl = url('/');
+                                $referralCode = Auth::user()->referral_code;
+                                $username = Auth::user()->username;
+                                $url = "{$baseUrl}/{$username}";
+                            @endphp
+
+
+
+                           
+
+                            <!-- Adiciona a margem esquerda aqui -->
+                            <div class="d-flex indicationBox">
+                                <input type="text" class="form-control text-center referralLink disclosureInput" value="{{ $url }}"
+                                placeholder="{{ $urls['profile'] }}" id="copy-input">
+                                    <button class="btn btn-primary btn-block rounded btnCopy" type="button" id="copy-button"
+                                        data-toggle="tooltip" data-placement="bottom" onclick="copyCode('.disclosureInput')">
+                                        <ion-icon name="copy-outline" style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     @else
@@ -201,40 +264,6 @@
         </div>
     @endif
     <br>
-
-    <div class="pb-2">
-        <div class="pl-5 pr-5">
-            <p class="font-weight-bolder dashCardTitle">Link de Indicação</p>
-            <div class="input-group p-2 justify-content-between">
-                @php
-                    $baseUrl = url('/');
-                    $referralCode = Auth::user()->referral_code;
-                    $username = Auth::user()->username;
-                    $urls = [
-                        'profile' => "{$baseUrl}/influencer/register?referral={$referralCode}",
-                        'home' => "{$baseUrl}/influencer/home?referral={$referralCode}",
-                        'register' => "{$baseUrl}/influencer/register?referral={$referralCode}",
-                    ];
-
-                    $defaultPage = getSetting('referrals.referrals_default_link_page');
-                    $defaultUrl = $urls[$defaultPage] ?? $urls['profile'];
-                @endphp
-
-
-
-                <input type="text" class="form-control text-center referralLink" value="{{ $defaultUrl }}"
-                    placeholder="{{ $urls['profile'] }}" id="copy-input">
-
-                <!-- Adiciona a margem esquerda aqui -->
-                <div class="input-group-append ml-2">
-                    <button class="btn btn-primary btn-block rounded btnCopy" type="button" id="copy-button"
-                        data-toggle="tooltip" data-placement="bottom" onclick="copyCode()">
-                        <ion-icon name="copy-outline" style="font-size: 1rem; vertical-align: middle;"></ion-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -245,12 +274,11 @@
     let dataSelect = document.querySelector('.dataSelect');
     let clearFiltersButton = document.getElementById('clearFilters');
 
-    function copyCode() {
-        let linkRef = document.querySelector('.referralLink').value;
+    function copyCode(selector) {
+        let linkRef = document.querySelector(selector).value;
         navigator.clipboard.writeText(linkRef)
             .then(() => {
                 let btnCopy = document.getElementById('copy-button');
-                btnCopy.innerHTML = 'Copiado';
                 let toast = document.getElementById('toast');
                 toast.style.display = 'block';
                 setTimeout(() => {
@@ -296,4 +324,15 @@
     clearFiltersButton.addEventListener('click', function() {
         window.location.href = `${window.location.origin}/my/settings/payments`;
     });
+
+    function generatePefilLink() {
+        const username = `Auth::user()->username`;
+        const baseUrl = `${window.location.origin}/${username}`;
+        const url = `${baseUrl}?${queryString}`;
+        window.location.href = url;
+    }
+
+    window.onload = function() {
+        generateProfileLink();
+    };
 </script>

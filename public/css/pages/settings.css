@@ -110,10 +110,10 @@ select {
 
 .cardMetric {
   padding: 30px;
-  height: 180px;
-  width: 300px;
+  height: 150px;
+  width: 320px;
   border-radius: 20px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
 }
 
 .headerCardMetric {
@@ -136,9 +136,8 @@ select {
   font-size: 30px;
   color: black;
   font-weight: bold;
-  margin-top: 25px;
   position: relative;
-  top: 16px;
+  top: 10px;
 }
 
 .cardMetricTextLabel {
@@ -147,9 +146,11 @@ select {
 }
 
 .dashCardLabel {
-  color: #8c3ba5;
-  font-size: 13px;
-  font-weight: 600;
+  color: #683ab7c2;
+  font-size: 12px;
+  font-weight: 800;
+  position: relative;
+  bottom: 15px;
 }
 
 .div2 {
@@ -163,7 +164,7 @@ select {
 }
 
 ion-icon {
-  color: rgb(0, 0, 0);
+  color:#673AB7;
   font-size: 20px;
 }
 
@@ -192,4 +193,58 @@ ion-icon {
 .btnCopy ion-icon {
   font-size: 1rem; /* Tamanho do ícone */
   vertical-align: middle; /* Alinha o ícone verticalmente ao centro */
+}
+
+.dashboardArea {
+  height: 600px;
+  overflow-x: hidden;
+}
+
+.indicationBox {
+  width:100%;
+  min-width: 300px;
+}
+
+.referralLink {
+  padding: 22px;
+  background-color: #F9F9F9;
+  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
+  border-radius: 25px;
+  min-width: 100%;
+  border: none;
+  color: #683ab7a8;
+  font-weight: 600;
+}
+
+.withdrawalBtnDash {
+  width: 130px;
+}
+
+.typeSelect,.statusSelect {
+  border-radius: 25px;
+  background-color: #F9F9F9;
+  border: none;
+  color: #673AB7;
+  font-weight: 600;
+  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
+}
+
+.btnCopy {
+  width: 100%;
+  background-color:transparent;
+  border: none;
+  box-shadow: none;
+  color: #673AB7;
+}
+
+.btnCopy:hover {
+  background-color:transparent;
+}
+
+.btnCopy::active {
+  background-color:transparent;
+}
+
+.btnCopy:target {
+  background-color:transparent;
 }

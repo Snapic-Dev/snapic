@@ -18,11 +18,11 @@
         </div>
     @endif
 
-    <div class="form-group p-1">
-        <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label>
+    <div class="form-group">
+        <!-- <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label> -->
         <div class="">
-            <input id="name" type="text" placeholder="Apelido"
-                class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
+            <input id="name" type="text" placeholder="Apelido*"
+                class="inputLogin form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
                 autocomplete="name" autofocus>
             @error('name')
                 <span class="invalid-feedback" role="alert">
@@ -32,11 +32,11 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label>
+    <div class="form-group">
+        <!-- <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label> -->
         <div class="">
-            <input id="email" type="email" placeholder="Email"
-                class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
+            <input id="email" type="email" placeholder="Email*"
+                class="inputLogin form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
                 required autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
@@ -46,11 +46,11 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="password" class=" col-form-label required-label">{{ __('Password') }}</label>
+    <div class="form-group">
+        <!-- <label for="password" class=" col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="">
-            <input id="password" type="password" placeholder="Senha"
-                class="form-control @error('password') is-invalid @enderror" required name="password"
+            <input id="password" type="password" placeholder="Senha*"
+                class="inputLogin form-control @error('password') is-invalid @enderror" required name="password"
                 autocomplete="new-password">
 
             @error('password')
@@ -61,12 +61,12 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="password-confirm" class=" col-form-label required-label">{{ __('Confirm Password') }}</label>
+    <div class="form-group">
+        <!-- <label for="password-confirm" class=" col-form-label required-label">{{ __('Confirm Password') }}</label> -->
 
         <div class="">
-            <input id="password-confirm" type="password" placeholder="Confirmar senha"
-                class="form-control @error('password_confirmation') is-invalid @enderror" required
+            <input id="password-confirm" type="password" placeholder="Confirmar senha*"
+                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror" required
                 name="password_confirmation" autocomplete="new-password">
             @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
@@ -106,7 +106,7 @@
 
     <div class="form-group row mb-0 p-1">
         <div class="col">
-            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
                 {{ __('Register') }}
             </button>
         </div>
@@ -116,7 +116,7 @@
         <div class="col">
 
 
-            <a href="{{ route('register-influencer-form') }}" class="border btn btn-grow btn-lg btn-color btn-block">
+            <a href="{{ route('register-influencer-form') }}" class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
                 {{ __('Quero ser Influencer') }}
             </a>
 

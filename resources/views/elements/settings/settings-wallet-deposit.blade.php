@@ -128,7 +128,7 @@
         <div class="mt-4">
             <button type="button" onclick="generatePix()"
                 class="modalCreditCard btnDeposit btn-block btn-round btn border btn-primary p-3"
-                data-target="#staticBackdrop" onclick="showDepositValue()" <span
+                data-target="#staticBackdrop" onclick="showDepositValue()"
                 class="spinner-border spinner-border-sm" role="status" aria-hidden="true" disabled>
                 <div class="d-flex justify-content-center">
                     <span class="spinner spinner-border spinner-border-sm mr-2" role="status"
@@ -224,8 +224,9 @@
         let btnFive = document.querySelector('.btnFive');
         let btnSix = document.querySelector('.btnSix');
 
-        
         let btnDeposit = document.querySelector('.btnDeposit');
+
+        let invalidFeedback=document.querySelector('.invalid-feedback')
 
 
         function inputDepositValueBtn(withdrawalValue) {
@@ -234,15 +235,16 @@
         }
 
         function inputDepositValue() {
+            invalidFeedback.innerText="";
+            invalidFeedback.style.cssText = ''
             let inputValue = depositInput.value
             const minimumDepositAmount = parseFloat('{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}');
 
             if (depositInput.value >= minimumDepositAmount) {
                 btnDeposit.disabled = false;
-                console.log("Farso")
             } else {
                 btnDeposit.disabled = true;
-                console.log("Verdadeiro")
+                invalidFeedback.innerText=`Adicione o valor mínimo  R$${minimumDepositAmount} para prosseguir`
             }
         }
 
@@ -313,6 +315,7 @@
 
 
         const generatePix = async () => {
+            btnDeposit.disabled = true;
             feedbackForUser.innerText = ""
             if (depositInput.value !== "" &&
                 `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`) {
@@ -376,6 +379,7 @@
             } else {
                 feedbackForUser.innerText = "Preencha o campo para prosseguir"
             }
+            depositInput.value="";
         }
 
         function copyCodePix() {

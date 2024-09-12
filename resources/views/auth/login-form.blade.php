@@ -16,10 +16,10 @@
             </p>
         </div>
     @endif
-    <div class="form-group p-1">
-        <label for="name" class="col-form-label required-label">{{ __('Name') }}</label>
+    <div class="form-group">
+        <!-- <label for="name" class="col-form-label required-label">{{ __('Name') }}</label> -->
         <div class="">
-            <input id="name" type="text" placeholder="Apelido"
+            <input class="inputLogin form-control" id="name" type="text" placeholder="Apelido*"
                 class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
                 autocomplete="name" autofocus>
             @error('name')
@@ -30,17 +30,17 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
+    <div class="form-group">
+        <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="input-group">
-            <input id="password" placeholder="Senha" type="password"
+            <input class="inputLogin form-control" id="password" placeholder="Senha*" type="password"
                 class="form-control @error('password') is-invalid @enderror" name="password"
                 autocomplete="current-password">
-            <div class="input-group-append">
+            <!-- <div class="input-group-append">
                 <span class="input-group-text" onclick="togglePasswordVisibility()">
                     <ion-icon id="togglePasswordIcon" name="eye-outline"></ion-icon>
                 </span>
-            </div>
+            </div> -->
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -49,14 +49,14 @@
         </div>
     </div>
 
-    <div class="loginHelpers form-group d-flex flex-row-reverse">
+    <div class="loginHelpers form-group d-flex justify-content-end mt-2 mb-2">
         @if (Route::has('password.request'))
             <div class="pull-right p-1">
                 @if (isset($mode) && $mode == 'ajax')
-                    <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('forgot')" class=""
+                    <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('forgot')" class="text-sm"
                         id="forgotPass-label">{{ __('Forgot Your Password?') }}</a>
                 @else
-                    <a href="{{ route('password.request') }}" class="text-bold"
+                    <a href="{{ route('password.request') }}" class="text-bold text-sm"
                         id="forgotPass-label">{{ __('Forgot Your Password?') }}</a>
                 @endif
             </div>
@@ -64,9 +64,9 @@
     </div>
 
     <div class="clearfix"></div>
-    <div class="form-group row mb-0 mt-4 p-1">
+    <div class="form-group row mb-0 mt-4">
         <div class="col">
-            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
                 {{ __('Login') }}
             </button>
         </div>

@@ -142,7 +142,7 @@
     <div class="form-group px-2">
         <label for="niche" class="col-form-label">{{ __('Niche') }}</label>
         <div>
-            <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche" required>
+            <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche">
                 <option value="">{{ Auth::user()->niche ?? "Selecione um nicho" }}</option>
                 @foreach ($niches as $niche)
                 <option value="{{ $niche['name'] }}" {{ old('niche') == $niche['name'] ? 'selected' : '' }}>

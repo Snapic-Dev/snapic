@@ -19,11 +19,11 @@
         </div>
     @endif
 
-    <div class="form-group p-1">
-        <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label>
+    <div class="form-group">
+        <!-- <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label> -->
         <div class="">
-            <input id="name" placeholder="Apelido" type="text"
-                class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
+            <input id="name" placeholder="Apelido*" type="text"
+                class="inputLogin form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
                 autocomplete="name" autofocus>
             @error('name')
                 <span class="invalid-feedback" role="alert">
@@ -33,11 +33,11 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="email" class="col-form-label required-label">{{ __('E-Mail Address') }}</label>
+    <div class="form-group">
+        <!-- <label for="email" class="col-form-label required-label">{{ __('E-Mail Address') }}</label> -->
         <div class="">
-            <input id="email" placeholder="Email" type="email"
-                class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
+            <input id="email" placeholder="Email*" type="email"
+                class="inputLogin form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
                 required autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
@@ -47,11 +47,11 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="cpf" class="col-form-label required-label">{{ __('CPF') }}</label>
+    <div class="form-group">
+        <!-- <label for="cpf" class="col-form-label required-label">{{ __('CPF') }}</label> -->
         <div class="">
-            <input id="cpf" placeholder="CPF" type="text"
-                class="form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}"
+            <input id="cpf" placeholder="CPF*" type="text"
+                class="inputLogin form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}"
                 required autocomplete="cpf">
             @error('cpf')
                 <span class="invalid-feedback" role="alert">
@@ -61,11 +61,10 @@
         </div>
     </div>
 
-    <div class="form-group p-1">
-        <label for="birthdate" placeholder="Idade"
-            class="col-form-label required-label">{{ __('Data Nascimento') }}</label>
+    <div class="form-group">
+        <!-- <label for="birthdate" placeholder="Idade" class="col-form-label required-label">{{ __('Data Nascimento') }}</label> -->
         <div class="">
-            <input id="birthdate" type="date" class="form-control @error('birthdate') is-invalid @enderror"
+            <input id="birthdate" type="date" class="inputLogin form-control @error('birthdate') is-invalid @enderror"
                 name="birthdate" value="{{ old('birthdate') }}" required autocomplete="date">
             @error('birthdate')
                 <span class="invalid-feedback" role="alert">
@@ -76,9 +75,9 @@
     </div>
 
     <div class="form-group">
-        <label for="phone" class="col-form-label required-label">{{ __('telefone') }}</label>
+        <!-- <label for="phone" class="col-form-label required-label">{{ __('telefone') }}</label> -->
         <div class="">
-            <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror"
+            <input id="phone" placeholder="Telefone*" type="tel" class="inputLogin form-control @error('phone') is-invalid @enderror"
                 name="phone" value="{{ old('phone') }}" required autocomplete="text">
             @error('phone')
                 <span class="invalid-feedback" role="alert">
@@ -89,11 +88,11 @@
     </div>
 
 
-    <div class="form-group ">
-        <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label>
+    <div class="form-group">
+        <!-- <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label> -->
         <div class="">
-            <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche" required>
-                <option value="">{{ __('Selecione um niche') }}</option>
+            <select id="niche" class="inputLogin form-control @error('niche') is-invalid @enderror" name="niche" required>
+                <option class="selectOption" value="">{{ __('Niche*') }}</option>
                 @foreach ($niches as $niche)
                     <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
                         {{ $niche->name }}
@@ -109,9 +108,9 @@
     </div>
 
     <div class="form-group">
-        <label for="instagram" class="col-form-label">instagram</label>
+        <!-- <label for="instagram" class="col-form-label">instagram</label> -->
         <div class="">
-            <input id="instagram" type="tel" class="form-control @error('instagram') is-invalid @enderror"
+            <input id="instagram" placeholder="Instagram*" type="tel" class="inputLogin form-control @error('instagram') is-invalid @enderror"
                 name="instagram" value="{{ old('instagram') }}" autocomplete="text">
             @error('instagram')
                 <span class="invalid-feedback" role="alert">
@@ -123,9 +122,9 @@
 
 
     <div class="form-group">
-        <label for="password" class="col-form-label required-label">{{ __('Password') }}</label>
+        <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="">
-            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+            <input id="password"  placeholder="Senha*" type="password" class="inputLogin form-control @error('password') is-invalid @enderror"
                 name="password" required autocomplete="new-password">
             @error('password')
                 <span class="invalid-feedback" role="alert">
@@ -136,10 +135,10 @@
     </div>
 
     <div class="form-group">
-        <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label>
+        <!-- <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label> -->
         <div class="">
             <input id="password-confirm" type="password"
-                class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation"
+                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"  placeholder="Confirmar Senha*" name="password_confirmation"
                 required autocomplete="new-password">
             @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
@@ -149,15 +148,15 @@
         </div>
     </div>
 
-    <div class="form-group p-1 ">
-        <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label>
+    <div class="form-group">
+        <!-- <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label> -->
         <div class="file-upload ">
             <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
                 name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
                 onchange="previewImage(this, document.getElementById('frontPreview'))">
             <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                 <ion-icon name="document-outline"></ion-icon>
-                {{ __('Escolher arquivo') }}</label>
+                {{ __('RG ou CNH Frente') }}</label>
             <div class="preview">
                 <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
             </div>
@@ -169,15 +168,15 @@
         @enderror
     </div>
 
-    <div class="form-group p-1 ">
-        <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label>
-        <div class="file-upload ">
+    <div class="form-group">
+        <!-- <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label> -->
+        <div class="file-upload">
             <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
                 class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
                 onchange="previewImage(this, document.getElementById('backPreview'))">
             <label for="backDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
                 <ion-icon name="document-outline"></ion-icon>
-                {{ __('Escolher arquivo') }}</label>
+                {{ __('RG ou CNH Verso') }}</label>
             <div class="preview">
                 <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none;">
             </div>
@@ -223,9 +222,9 @@
         </div>
     @endif
 
-    <div class="form-group row mb-0 p-2">
+    <div class="form-group row mb-0">
         <div class="col">
-            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
                 {{ __('Register') }}
             </button>
         </div>
@@ -234,7 +233,7 @@
         <div class="col">
 
 
-            <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block">
+            <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
                 {{ __('Quero ser Assinante') }}
             </a>
 

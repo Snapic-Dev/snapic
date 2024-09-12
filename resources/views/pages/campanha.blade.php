@@ -40,7 +40,7 @@
                     @csrf
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="formGroupExampleInput" class="required-label">Valor do conteúdo</label>
-                        <input type="number" class="form-control" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" required>
+                        <input type="number" class="form-control valueCampaign" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" min="1" required>
                         <span id="errorPrice" style="display: none;" class="text-danger mt-2">Defina um valor para o anúncio </span>
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
@@ -52,11 +52,12 @@
                     </div>
                     <div class="form-group" style="padding: 0 40px;">
                         <label for="frontDoc" class="col-form-label required-label">Adicionar arquivo</label>
-                        <div class="file-upload ">
+                        <div class="file-uploadCampaign">
                             <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb required-label" name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required>
-                            <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
-                                <ion-icon name="document-outline"></ion-icon>
-                                {{ __('Escolher arquivo') }}</label>
+                            <button for="frontDoc" class="">
+                            <ion-icon name="folder-open-outline"></ion-icon>
+                                <span>{{ __('Escolher arquivo') }}</span>
+                            </button>
                             <div class="preview">
                                 <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
                             </div>
@@ -124,7 +125,12 @@
                     </div>
                     <div class="d-flex justify-content-end w-100 mb-3 mt-3">
                         <div class="form-group btn-block ml-4 mr-4 p-3">
-                            <button type="submit" class="btn btn-block btn-primary btn-round post-create-button mb-0 uploadButton p-3">{{ __('Promover') }}</button>
+                            <button type="submit" class="btn btn-block btn-primary btn-round campaignBtn post-create-button mb-0 uploadButton p-3">
+                                <div class="d-flex justify-content-center spinnerArea">
+                                    <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span class="textLoadingBtn">{{ __('Promover') }}</span>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -136,6 +142,7 @@
 
 
 <script type="module">
+
     document.querySelector("#inputFile").addEventListener('change', function() {
         const input = this;
         if (input.files && input.files[0]) {
@@ -231,6 +238,17 @@
         }
 
 
+        function showSpinner() {
+            spinner.style.display = 'flex';
+        }
+
+        function hideSpinner() {
+            spinner.style.display = 'none';
+        }
+    
+        const spinner =document.querySelector('.spinner')
+        const uploadButton=document.querySelector('.uploadButton')
+
         function generateNumericID(length) {
             let result = '';
             while (result.length < length) {
@@ -239,6 +257,8 @@
             return result.substring(0, length);
         }
         try {
+            uploadButton.disabled=true;
+            showSpinner();
             const formData = new FormData();
             formData.append('price', valor);
             formData.append('followers', followers);
@@ -252,18 +272,23 @@
 
             });
 
+
             if (response.ok) {
                 const result = await response.json();
-                console.log(result);
                 launchToast("success", trans("Success"), `Campanha realizada com Sucesso`);
+                spinner.style.display = 'none';
+                uploadButton.disabled=false;
             } else {
-
                 console.error('Erro ao enviar dados:', response.statusText);
                 launchToast("danger", trans("Error"), `Erro ao realizar campanha. Tente novamente.`);
+                spinner.style.display = 'none';
+                uploadButton.disabled=false;
             }
         } catch (error) {
             console.error(error);
             launchToast("danger", trans("Error"), `Erro durante o upload ou envio. Tente novamente.`);
+            spinner.style.display = 'none';
+            uploadButton.disabled=false;
         }
 
         // Limpar campos
@@ -271,9 +296,19 @@
         document.querySelector('input[name="valor"]').value = '';
         document.querySelector('input[name="followers"]').checked = false;
         document.querySelector('textarea[name="message"]').value = '';
+        document.querySelector('textarea[name="message"]').value = '';
         document.querySelector('input[name="subscribers"]').checked = false;
         document.querySelector('#MessageError').style.display = 'none';
         document.querySelector('#errorPrice').style.display = 'none';
         document.querySelector('#errorGroup').style.display = 'none';
+
+        const frontPreview = document.querySelector('#frontPreview');
+        frontPreview.style.display = 'none';
+
+
     });
+
+
+
+
 </script>

@@ -878,6 +878,9 @@ footer .brand-logo {
   color: white;
   background-color: #673ab6;
 }
+.table-responsive {
+  overflow-x: hidden;
+}
 
 .table-responsive::-webkit-scrollbar {
   width: 10px;
@@ -920,12 +923,13 @@ footer .brand-logo {
 
 .file-upload label {
   display: block;
-  width: 100%;
+  width: 22vw;
+  min-width: 320px;
   padding: 10px;
   border: 2px solid #673ab6;
   text-align: center;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 15px;
 }
 
 .file-upload .preview {
@@ -1074,4 +1078,120 @@ footer .brand-logo {
     background: #673ab6;
     box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent, 32px 16px 0 -10px transparent, 0 36px 0 -10px transparent, -32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
   }
+}
+
+.brand-logo-form {
+  height: 150px;
+  width: 150px;
+}
+
+.inputLogin {
+  background-color: #F9F9F9;
+  width: 22vw;
+  min-width: 320px;
+  height: 50px;
+  padding-left: 10px;
+  border-radius: 15px;
+  border: none;
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.inputLogin::placeholder {
+  color:#784ba092;
+  font-weight: 600;
+}
+
+.btnLogin {
+  border-radius: 15px;
+  width: 22vw;
+  min-width: 320px;
+}
+
+.btnToSwitchRegister {
+  border-radius: 15px;
+  width: 22vw;
+  min-width: 320px;
+} 
+
+.BannerLogin {
+  position: relative;
+  left:45px;
+}
+
+.titleLogin {
+  color: rgb(47, 47, 47);
+}
+
+.selectOption {
+  color: #784ba0;
+}
+
+
+/*Campanha */
+
+.file-uploadCampaign {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-uploadCampaign input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 170px;
+  height: 170px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-uploadCampaign button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  width: 170px;
+  border-radius: 0px;
+  height: 170px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px dashed #57319A;
+}
+
+.file-uploadCampaign ion-icon {
+  font-size: 60px;
+  color: #57319a;
+}
+
+.file-uploadCampaign span {
+  color: #57319A;
+  font-size: 12px;
+}
+
+.file-uploadCampaign .preview {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.file-uploadCampaign img {
+  max-height: 200px;
+  max-width: 170px;
+  object-fit: contain;
+  border: 1px dashed #57319A;
+  padding: 5px;
+}
+
+.spinnerArea {
+  gap: 5px;
+}
+
+.spinner {
+  display: none;
 }

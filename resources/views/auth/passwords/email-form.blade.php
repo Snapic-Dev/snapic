@@ -1,10 +1,10 @@
 <form method="POST" action="{{ route('password.email') }}">
     @csrf
-    <div class="form-group p-1">
-        <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label>
+    <div class="form-group">
+        <!-- <label for="email" class=" col-form-label required-label">{{ __('E-Mail Address') }}</label> -->
         <div class="">
-            <input id="email" placeholder="Email" type="email"
-                class="form-control @error('email') is-invalid @enderror " name="email" value="{{ old('email') }}"
+            <input id="email" placeholder="Email*" type="email"
+                class="inputLogin form-control @error('email') is-invalid @enderror " name="email" value="{{ old('email') }}"
                 autocomplete="email" autofocus>
             @error('email')
                 <span class="invalid-feedback" role="alert">
@@ -13,16 +13,16 @@
             @enderror
         </div>
     </div>
-    <div class="form-group row mb-0 p-1">
-        <div class="col">
-            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
-                {{ __('Send Password Reset Link') }}
+    <div class="form-group row mb-0">
+        <div class="col mt-3">
+            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
+                {{ __('Redefinir Senha') }}
             </button>
         </div>
     </div>
 </form>
 <hr>
-<div class=" text-center p-2">
+<div class="text-center p-2">
     <p class="mb-4">
         {{ __("Don't have an account?") }}
         @if (isset($mode) && $mode == 'ajax')
