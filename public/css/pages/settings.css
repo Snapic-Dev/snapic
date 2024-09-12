@@ -164,7 +164,7 @@ select {
 }
 
 ion-icon {
-  color:#673AB7;
+  color: #673ab7;
   font-size: 20px;
 }
 
@@ -201,13 +201,13 @@ ion-icon {
 }
 
 .indicationBox {
-  width:100%;
+  width: 100%;
   min-width: 300px;
 }
 
 .referralLink {
   padding: 22px;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
   box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
   border-radius: 25px;
   min-width: 100%;
@@ -220,31 +220,33 @@ ion-icon {
   width: 130px;
 }
 
-.typeSelect,.statusSelect {
+.typeSelect,
+.statusSelect,
+.dataSelect {
   border-radius: 25px;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
   border: none;
-  color: #673AB7;
+  color: #673ab7;
   font-weight: 600;
   box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
 }
 
 .btnCopy {
   width: 100%;
-  background-color:transparent;
+  background-color: transparent;
   border: none;
   box-shadow: none;
-  color: #673AB7;
+  color: #673ab7;
 }
 
 .btnCopy:hover {
-  background-color:transparent;
+  background-color: transparent;
 }
 
 .btnCopy::active {
-  background-color:transparent;
+  background-color: transparent;
 }
 
 .btnCopy:target {
-  background-color:transparent;
+  background-color: transparent;
 }

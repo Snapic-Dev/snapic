@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as DB;
 
 class DataRowsTableSeeder extends Seeder
 {
@@ -16,9 +17,9 @@ class DataRowsTableSeeder extends Seeder
     {
 
 
-        \DB::table('data_rows')->delete();
+        DB::table('data_rows')->delete();
 
-        \DB::table('data_rows')->insert(array(
+        DB::table('data_rows')->insert(array(
             0 =>
             array(
                 'id' => 1,
@@ -5445,7 +5446,7 @@ class DataRowsTableSeeder extends Seeder
             ),
             339 =>
             array(
-                'id' => 412,
+                'id' => 413,
                 'data_type_id' => 52,
                 'field' => 'updated_at',
                 'type' => 'timestamp',
@@ -5525,7 +5526,7 @@ class DataRowsTableSeeder extends Seeder
             ),
             344 =>
             array(
-                'id' => 412,
+                'id' => 418,
                 'data_type_id' => 53,
                 'field' => 'created_at',
                 'type' => 'timestamp',
@@ -5541,7 +5542,7 @@ class DataRowsTableSeeder extends Seeder
             ),
             345 =>
             array(
-                'id' => 412,
+                'id' => 419,
                 'data_type_id' => 53,
                 'field' => 'updated_at',
                 'type' => 'timestamp',
