@@ -929,7 +929,7 @@ footer .brand-logo {
   border: 2px solid #673ab6;
   text-align: center;
   cursor: pointer;
-  border-radius: 15px;
+  border-radius: 25px;
 }
 
 .file-upload .preview {
@@ -1091,7 +1091,7 @@ footer .brand-logo {
   min-width: 320px;
   height: 50px;
   padding-left: 10px;
-  border-radius: 15px;
+  border-radius: 25px;
   border: none;
   outline: none;
   box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
@@ -1105,13 +1105,13 @@ footer .brand-logo {
 }
 
 .btnLogin {
-  border-radius: 15px;
+  border-radius: 25px;
   width: 22vw;
   min-width: 320px;
 }
 
 .btnToSwitchRegister {
-  border-radius: 15px;
+  border-radius: 25px;
   width: 22vw;
   min-width: 320px;
 } 
