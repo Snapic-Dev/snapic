@@ -70,7 +70,6 @@ class PaymentHelper
     private $certificado;
     private $credentials;
     private $gateway_url;
-    private $data_credentials;
     private $client;
 
     public function __construct()
@@ -82,8 +81,7 @@ class PaymentHelper
 
     private function initializeCertificado()
     {
-        $this->certificado = Storage::disk('local')->get('certs/cert-production.p12');
-
+        $this->certificado = Storage::disk('local')->get('certs/producao-594018-producao-snapic.p12');
         if ($this->certificado === false) {
             throw new \Exception('Erro ao carregar o certificado.');
         }
@@ -92,31 +90,23 @@ class PaymentHelper
     private function initializeCredentials()
     {
         $this->credentials = [
-            'client_id' => ' Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
-            'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
+            'client_id' => env('EFIPAY_CLIENT_ID'),
+            'client_secret' => env('EFIPAY_CLIENT_SECRET'),
+            'client_identifier' => env('EFIPAY_IDENTIFIER')
         ];
 
         $this->gateway_url = 'https://pix.api.efipay.com.br';
-        $this->data_credentials = $this->credentials['client_id'] . ':' . $this->credentials['client_secret'];
     }
 
     private function initializeClient()
     {
-        $agent = new \GuzzleHttp\Client([
+        $this->client = new \GuzzleHttp\Client([
             'base_uri' => $this->gateway_url,
             'http_errors' => false,
             'verify' => false,
-            'cert' => [
-                'certs/cert-production.p12',
-                ''
-            ],
-            'ssl_key' => [
-                'certs/cert-production.p12',
-                ''
-            ]
+            'cert' => ['certs/producao-594018-producao-snapic.p12', ''],
+            'ssl_key' => ['certs/producao-594018-producao-snapic.p12', '']
         ]);
-
-        $this->client = $agent;
     }
 
     private function getGuzzleConfig($auth, $data, $path, $put = false)
@@ -134,7 +124,7 @@ class PaymentHelper
 
     private function getAccessToken()
     {
-        $auth = base64_encode('Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da:Client_Secret_7852a68ae57877666a62866fdbfea77801953657');
+        $auth = base64_encode($this->credentials['client_id'] . ':' . $this->credentials['client_secret']);
         try {
             $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
 
@@ -146,8 +136,25 @@ class PaymentHelper
             $body = json_decode($response->getBody(), true);
             return $body['access_token'];
         } catch (RequestException $e) {
-            dd('' . $e->getMessage());
+            throw new \Exception('Erro ao obter o token de acesso: ' . $e->getMessage());
         }
+    }
+
+    private function preparePaymentData($dto)
+    {
+        $user = User::find($dto['recipient_user_id']);
+        return [
+            "calendario" => ["expiracao" => 3600],
+            "devedor" => [
+                "cpf" => $user->cpf,
+                "nome" => $user->name
+            ],
+
+            "valor" => ['original' => '0.01'], // Valor de exemplo
+            // "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
+            "chave" => $this->credentials['client_identifier'],
+            "solicitacaoPagador" => "Compra de créditos no Snapic.",
+        ];
     }
 
     public function generationPixPayment($dto)
@@ -155,50 +162,35 @@ class PaymentHelper
         try {
             $data = $this->preparePaymentData($dto);
             $accessToken = $this->getAccessToken();
-
             $config = $this->getGuzzleConfig("Bearer $accessToken", $data, '/v2/cob');
 
             $response = $this->client->request($config['method'], $config['url'], [
                 'headers' => $config['headers'],
                 'body' => $config['body']
             ]);
-            $responseBody = $response->getBody()->getContents();
-            $responseData = json_decode($responseBody, true);
 
-            return $responseData;
+            return json_decode($response->getBody(), true);
         } catch (RequestException $e) {
-            return $e->getMessage();
+            return 'Erro ao gerar pagamento Pix: ' . $e->getMessage();
         }
     }
-    private function preparePaymentData($dto)
+
+    private function prepareTransferData($amount, $identifier)
     {
-        $user = User::where('id', $dto['recipient_user_id'])->first();
         return [
-            "calendario" => [
-                "expiracao" => 3600
-            ],
-            "devedor" => [
-                "cpf" => $user->cpf,
-                "nome" => $user->name
-            ],
-            "valor" => [
-                // "original" => number_format($dto['amount'], 2, '.', ''),
-                'original' => '0.01',
-            ],
-            "chave" => "55673748000147",
-            "solicitacaoPagador" => "Compra de créditos no Snapic.",
+            // 'valor' => number_format($amount, 2, '.', ''),
+            'valor' => '0.01', // Valor de exemplo
+            'pagador' => ['chave' => $this->credentials['client_identifier'], 'infoPagador' => ''],
+            'favorecido' => ['chave' => $identifier],
         ];
     }
 
     public function makeTransfer($amount, $identifier)
     {
         try {
-
             $data = $this->prepareTransferData($amount, $identifier);
             $accessToken = $this->getAccessToken();
-
             $randomId = rand(100, 9999999);
-
             $config = $this->getGuzzleConfig("Bearer $accessToken", $data, "/v2/gn/pix/$randomId", true);
 
             $response = $this->client->request($config['method'], $config['url'], [
@@ -210,23 +202,83 @@ class PaymentHelper
 
             return $responseData;
         } catch (\Exception $e) {
-            echo ($e->getMessage());
+            throw new \Exception('Erro na transferência: ' . $e->getMessage());
         }
     }
 
-    private function prepareTransferData($amount, $identifier)
+    public function generationCardPayment($dto)
     {
-        return [
-            // 'valor' => number_format($amount, 2, '.', ''),
-            'valor' => '0.01',
-            'pagador' => [
-                'chave' => '55673748000147',
-                'infoPagador' => '',
-            ],
-            'favorecido' => [
-                'chave' => $identifier,
-            ],
-        ];
+        try {
+            $access_token = $this->getAuthorizationToken();
+
+            $response = $this->client->post(
+                'https://cobrancas.api.efipay.com.br/v1/charge/one-step',
+                [
+                    'json' => [
+                        'items' => [
+                            [
+                                'name' => 'Meu Produto 2',
+                                'value' => 300,
+                                'amount' => 1,
+                            ],
+                        ],
+                        'payment' => [
+                            'credit_card' => [
+                                'customer' => [
+                                    'name' => 'Fernando Esdras da Silva',
+                                    'cpf' => '42895230803',
+                                    'email' => 'contatoesdrasoficial@gmail.com',
+                                    'birth' => '1990-08-29',
+                                    'phone_number' => '11953439141',
+                                ],
+                                'installments' => 1,
+                                'payment_token' => '9683d5a0794b422cae4fb67618fa2a9bfb353822',
+                                'billing_address' => [
+                                    'street' => 'Avenida Juscelino Kubitschek',
+                                    'number' => '909',
+                                    'neighborhood' => 'Bauxita',
+                                    'zipcode' => '35400000',
+                                    'city' => 'Ouro Preto',
+                                    'complement' => '',
+                                    'state' => 'MG',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $access_token,
+                        'Content-Type' => 'application/json',
+                    ],
+                ]
+            );
+
+            return json_decode($response->getBody(), true);
+        } catch (RequestException $e) {
+            throw new \Exception('Erro no pagamento com cartão: ' . $e->getMessage());
+        }
+    }
+
+    public function getAuthorizationToken()
+    {
+        try {
+            $data = json_encode(['grant_type' => 'client_credentials']);
+            $auth = base64_encode($this->credentials['client_id'] . ':' . $this->credentials['client_secret']);
+
+            $response = $this->client->post(
+                'https://cobrancas.api.efipay.com.br/v1/authorize',
+                [
+                    'headers' => [
+                        'Authorization' => 'Basic ' . $auth,
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body' => $data,
+                ]
+            );
+
+            return json_decode($response->getBody(), true)['access_token'];
+        } catch (RequestException $e) {
+            throw new \Exception('Erro ao obter o token de autorização: ' . $e->getMessage());
+        }
     }
     public function configureWebhook(Request $request)
     {
@@ -236,7 +288,7 @@ class PaymentHelper
             ];
 
             $params = [
-                'chave' => $request->input('chave', '55673748000147'),
+                'chave' => $request->input('chave', $this->credentials['client_identifier']),
             ];
 
             $options = [
@@ -1937,41 +1989,6 @@ class PaymentHelper
         }
 
         return $cancelSubscription;
-    }
-
-    /**
-     * Generate Mercado transaction
-     * @param $transaction
-     * @return string|void
-     */
-    public function generateMercadoTransaction($transaction)
-    {
-        try {
-            $this->initiateMercadoPagoSdk();
-            $reference = self::generateMercadoUniqueTransactionToken($transaction);
-
-            $preference = new Preference();
-            $preference->external_reference = $reference;
-            $preference->notification_url = route('mercado.payment.update');
-
-            $item = new \MercadoPago\Item();
-            $item->title = self::getPaymentDescriptionByTransaction($transaction);
-            $item->quantity = 1;
-            $item->unit_price = $transaction->amount;
-
-            $preference->items = array($item);
-
-            $preference->back_urls = array(
-                "success" => route('payment.checkMercadoPaymentStatus')
-            );
-            $preference->auto_return = "approved";
-
-            $preference->save();
-
-            return $preference->init_point;
-        } catch (\Exception $exception) {
-            $this->redirectByTransaction($transaction);
-        }
     }
 
     /**

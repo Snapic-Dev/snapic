@@ -15,6 +15,7 @@ use App\Providers\GenericHelperServiceProvider;
 use App\Providers\ListsHelperServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
 use App\Providers\StreamsServiceProvider;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -467,7 +468,6 @@ class StreamsController extends Controller
 
     public function livesPayments(Request $request)
     {
-
         function jsonResponse($status, $message = '')
         {
             return response()->json([
@@ -487,7 +487,6 @@ class StreamsController extends Controller
             $wallet = Wallet::where('user_id', $userId)->first();
             $forWalletUser = Wallet::where('user_id', $streamUser->user_id)->first();
 
-
             if (!$wallet) {
                 $wallet = Wallet::create([
                     'user_id' => $userId,
@@ -501,7 +500,6 @@ class StreamsController extends Controller
                     'total' => 0
                 ]);
             }
-
 
             if (!$giftValue) {
                 return response()->json([
@@ -537,11 +535,12 @@ class StreamsController extends Controller
             $transaction['payment_provider'] = transaction::CREDIT_PROVIDER;
             $transaction['stream_id'] = $IdStream;
             $transaction['gift_id'] = $giftId;
-            $errorMessage = __('Something went wrong with this transaction. Please try again');
 
             $wallet->save();
             $forWalletUser->save();
             $transaction->save();
+
+            $this->sendGiftMessage($IdStream, $giftValue, $userId, $streamUser->user_id);
 
             return response()->json([
                 'status' => 'success',
@@ -557,6 +556,27 @@ class StreamsController extends Controller
                 'message' => 'Erro no envio do presente.',
             ]);
         }
+    }
+
+    protected function sendGiftMessage($streamId, $giftValue, $senderUserId, $recipientUserId)
+    {
+        $sender = User::find($senderUserId);
+        $recipient = User::find($recipientUserId);
+
+        $messageText = "<span class='chat-message-content'><i style='color: #673ab6;'>enviou 1x </i><img <i style='width: 20px; height: 20px; margin-left: 7px' src='{$giftValue->imagem}'/></span>";
+
+        $message = StreamMessage::create([
+            'message' => $messageText,
+            'stream_id' => $streamId,
+            'user_id' => $senderUserId
+        ]);
+
+        $renderedMessage = View::make('elements.streams.stream-chat-message')
+            ->with('message', $message)
+            ->with('streamOwnerId', $recipientUserId)
+            ->render();
+
+        broadcast(new NewStreamChatMessage($streamId, $renderedMessage, $senderUserId))->toOthers();
     }
 
     public function giftRegister()

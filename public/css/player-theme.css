@@ -161,6 +161,13 @@
   width: 150px;
   height: 150px;
   flex-direction: column;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+}
+
+.giftText:hover {
+transform: scale(115%);
 }
 
 .giftArea {
@@ -169,7 +176,13 @@
   flex-direction: column;
   align-items: center;
 }
+.swiper-slide{
+  max-width: 100px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+}
 #giftCarousel {
   width: 100%;
 }
@@ -203,13 +216,44 @@
 }
 
 .card-body {
-  border: none;
+  border: none !important;
+  padding: 0 !important;
 }
 
+.swiper-container{
+  display: flex;
+  justify-content: center;
+  overflow: hidden !important;
+  position: relative;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.swiper-button-next::after{
+  content: '' !important;
+}
+
+.swiper-button-prev::after {
+  content: '' !important;
+}
+
+.swiper-button-next > i{
+  color:#673ab7
+}
+
+.swiper-button-prev > i{
+  color:#673ab7
+}
+
+
+#gifts-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .giftImage {
-  width: 40px;
-  height: auto;
-  object-fit: cover;
+  width: 35px;
+  height: 35px;
 }
 
 .btnGiftInternArea {
@@ -225,10 +269,16 @@
 }
 
 .giftText h4 {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 13px;
-  margin-top: 5px;
   text-align: center;
+  margin-top: 6px;
+}
+
+.giftText > div {
+  display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 .giftsArea {
@@ -239,6 +289,7 @@
 .giftText p {
   font-size: 12px;
   text-align: center;
+  font-weight: 600;
   color: #673ab7;
 }
 
