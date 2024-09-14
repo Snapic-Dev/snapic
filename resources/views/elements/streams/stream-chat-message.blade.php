@@ -7,6 +7,6 @@
     <div>
         <span class="{{$streamOwnerId == $message->user->id ? 'text-success text-bold' : 'text-orange'}} chat-message-user"><a href="{{route('profile',['username'=>$message->user->username])}}">{{isset($message) ? $message->user->username : ''}}</a></span>
         <span class="mr-1">:</span>
-        <span class="chat-message-content">{{isset($message) ? $message->message : ''}}</span>
+        <span class="chat-message-content">{!! isset($message) ? $message->message : '' !!}</span>
     </div>
 </div>

@@ -21,7 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'beacon/feed',
         'transcoding/coconut/update',
-        'payment/pix',
+        'payment/deposit',
         'my/messenger/sendMessage',
         'payment/webhook',
         'payment/webhook/config',
