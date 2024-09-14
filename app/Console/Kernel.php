@@ -44,6 +44,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cron:end_streams')->everyFiveMinutes();
         $schedule->command('generateSitemap')->daily();
         $schedule->command('job:schedule-query')->daily();
+        $schedule->job(new InsertIntoAnalyticsJob)->daily();
     }
 
     /**
