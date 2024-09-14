@@ -11,20 +11,20 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <ul class="d-flex flex-row nav mb-0 footer-social-links">
-                            @if(getSetting('social-links.facebook_url'))
+                            <!-- @if(getSetting('social-links.facebook_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.facebook_url')}}" target="_blank">
                                         @include('elements.icon',['icon'=>'logo-facebook','variant'=>'medium','classes' => 'text-lg opacity-8'])
                                     </a>
                                 </li>
-                            @endif
-                            @if(getSetting('social-links.twitter_url'))
+                            @endif -->
+                            <!-- @if(getSetting('social-links.twitter_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.twitter_url')}}" target="_blank">
                                         @include('elements.icon',['icon'=>'logo-twitter','variant'=>'medium','classes' => 'text-lg opacity-8'])
                                     </a>
                                 </li>
-                            @endif
+                            @endif -->
                             @if(getSetting('social-links.instagram_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.instagram_url')}}" target="_blank">
@@ -32,13 +32,13 @@
                                     </a>
                                 </li>
                             @endif
-                            @if(getSetting('social-links.whatsapp_url'))
+                            <!-- @if(getSetting('social-links.whatsapp_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.whatsapp_url')}}" target="_blank">
                                         @include('elements.icon',['icon'=>'logo-whatsapp','variant'=>'medium','classes' => 'text-lg opacity-8'])
                                     </a>
                                 </li>
-                            @endif
+                            @endif -->
                             @if(getSetting('social-links.tiktok_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.tiktok_url')}}" target="_blank">
@@ -46,13 +46,13 @@
                                     </a>
                                 </li>
                             @endif
-                            @if(getSetting('social-links.youtube_url'))
+                            <!-- @if(getSetting('social-links.youtube_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.youtube_url')}}" target="_blank">
                                         @include('elements.icon',['icon'=>'logo-youtube','variant'=>'medium','classes' => 'text-lg opacity-8'])
                                     </a>
                                 </li>
-                            @endif
+                            @endif -->
                             @if(getSetting('social-links.telegram_link'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.telegram_link')}}" target="_blank">

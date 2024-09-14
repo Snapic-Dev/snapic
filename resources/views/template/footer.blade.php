@@ -14,46 +14,46 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-md-center align-items-center mt-4 mt-md-0 footer-social-links">
-                        @if(getSetting('social-links.facebook_url'))
+                        <!-- @if(getSetting('social-links.facebook_url'))
                             <a class="m-2" href="{{getSetting('social-links.facebook_url')}}" target="_blank" alt="{{__("Facebook")}}" title="{{__("Facebook")}}">
                                 @include('elements.icon',['icon'=>'logo-facebook','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
-                        @endif
-                        @if(getSetting('social-links.twitter_url'))
+                        @endif -->
+                        <!-- @if(getSetting('social-links.twitter_url'))
                             <a class="m-2" href="{{getSetting('social-links.twitter_url')}}" target="_blank" alt="{{__("Twitter")}}" title="{{__("Twitter")}}">
                                 @include('elements.icon',['icon'=>'logo-twitter','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
-                        @endif
+                        @endif -->
                         @if(getSetting('social-links.instagram_url'))
                             <a class="m-2" href="{{getSetting('social-links.instagram_url')}}" target="_blank" alt="{{__("Instagram")}}" title="{{__("Instagram")}}">
                                 @include('elements.icon',['icon'=>'logo-instagram','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
                         @endif
-                        @if(getSetting('social-links.whatsapp_url'))
+                        <!-- @if(getSetting('social-links.whatsapp_url'))
                             <a class="m-2" href="{{getSetting('social-links.whatsapp_url')}}" target="_blank" alt="{{__("Whatsapp")}}" title="{{__("Whatsapp")}}">
                                 @include('elements.icon',['icon'=>'logo-whatsapp','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
-                        @endif
+                        @endif -->
                         @if(getSetting('social-links.tiktok_url'))
                             <a class="m-2" href="{{getSetting('social-links.tiktok_url')}}" target="_blank" alt="{{__("Tiktok")}}" title="{{__("Tiktok")}}">
                                 @include('elements.icon',['icon'=>'logo-tiktok','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
                         @endif
-                        @if(getSetting('social-links.youtube_url'))
+                        <!-- @if(getSetting('social-links.youtube_url'))
                             <a class="m-2" href="{{getSetting('social-links.youtube_url')}}" target="_blank" alt="{{__("Youtube")}}" title="{{__("Youtube")}}">
                                 @include('elements.icon',['icon'=>'logo-youtube','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
-                        @endif
+                        @endif -->
                         @if(getSetting('social-links.telegram_link'))
                             <a class="m-2" href="{{getSetting('social-links.telegram_link')}}" target="_blank" alt="{{__("Telegram")}}" title="{{__("Telegram")}}">
                                 @include('elements.icon',['icon'=>'paper-plane','variant'=>'medium','classes' => 'text-lg opacity-8'])
                             </a>
                         @endif
-                        @if(getSetting('social-links.reddit_url'))
+                        <!-- @if(getSetting('social-links.reddit_url'))
                             <a class="m-2" href="{{getSetting('social-links.reddit_url')}}" target="_blank" alt="{{__("Reddit")}}" title="{{__("Reddit")}}">
                                 @include('elements.icon',['icon'=>'logo-reddit','variant'=>'medium','classes' => 'text-lg opacity-8'])
                             </a>
-                        @endif
+                        @endif -->
                     </div>
                 </div>
 

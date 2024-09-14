@@ -27,7 +27,7 @@
                 @if ($offer)
                     <div class="input-group-append">
                         <span class="input-group-text">{{ __('Old') }}:
-                            {{ $offer->old_profile_access_price }}</span>
+                        R${{ $offer->old_profile_access_price }}</span>
                     </div>
                 @endif
             </div>
@@ -46,7 +46,7 @@
                 @if ($offer)
                     <div class="input-group-append">
                         <span class="input-group-text">{{ __('Old') }}:
-                            {{ $offer->old_profile_access_price_3_months }}</span>
+                        R${{ $offer->old_profile_access_price_3_months }}</span>
                     </div>
                 @endif
             </div>
@@ -65,7 +65,7 @@
                 @if ($offer)
                     <div class="input-group-append">
                         <span class="input-group-text">{{ __('Old') }}:
-                            {{ $offer->old_profile_access_price_6_months }}</span>
+                         R${{ $offer->old_profile_access_price_6_months }}</span>
                     </div>
                 @endif
             </div>
@@ -84,7 +84,7 @@
                 @if ($offer)
                     <div class="input-group-append">
                         <span class="input-group-text">{{ __('Old') }}:
-                            {{ $offer->old_profile_access_price_12_months }}</span>
+                        R${{ $offer->old_profile_access_price_12_months }}</span>
                     </div>
                 @endif
             </div>
