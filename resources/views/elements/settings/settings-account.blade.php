@@ -31,7 +31,7 @@
         @endif
     </div>
 
-    <div class="form-group p-2">
+    <div class="form-group p-2 mb-5">
         <label for="username">{{__('Confirm password')}}</label>
         <input class="form-control {{ $errors->has('confirm_password') ? 'is-invalid' : '' }}" id="username" name="confirm_password" type="password">
         @if($errors->has('confirm_password'))

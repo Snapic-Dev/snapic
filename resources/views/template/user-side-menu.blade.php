@@ -114,7 +114,7 @@
             </li>
             <div class="menu-divider"></div>
         @endif
-        <li>
+        <!-- <li>
             <a class="scroll-link d-flex align-items-center" href="{{ route('pages.get', ['slug' => 'help']) }}">
                 @include('elements.icon', [
                     'icon' => 'help-circle-outline',
@@ -123,7 +123,7 @@
                     'classes' => 'mr-2',
                 ])
                 {{ __('FAQ') }}</a>
-        </li>
+        </li> -->
         @if (getSetting('site.allow_theme_switch'))
             <li>
                 <a class="scroll-link d-flex align-items-center dark-mode-switcher" href="#">
@@ -171,7 +171,7 @@
                     <a class="scroll-link d-flex align-items-center" href="URL_DO_SEU_LIVE_CHAT">{{ __('Live Chat') }}</a>
                 </li> -->
                 <li>
-                    <a class="scroll-link d-flex align-items-center" href="/contact">{{ __('Entre em contato') }}</a>
+                    <a class="scroll-link d-flex align-items-center" href="/contact">{{ __('Fale Conosco') }}</a>
                 </li>
             </ul>
         </li>

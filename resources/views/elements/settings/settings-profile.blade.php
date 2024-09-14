@@ -95,8 +95,8 @@
                 @endif
             </div>
         </div>
-        <textarea class="form-control {{ $errors->has('bio') ? 'is-invalid' : '' }}" id="bio" name="bio"
-            rows="3" spellcheck="false">{{ Auth::user()->bio }}</textarea>
+        <textarea style="resize:none;" maxlength="500" class="form-control {{ $errors->has('bio') ? 'is-invalid' : '' }}" id="bio" name="bio"
+            rows="4" spellcheck="false">{{ Auth::user()->bio }}</textarea>
         @if ($errors->has('bio'))
         <span class="invalid-feedback" role="alert">
             <strong>{{ $errors->first('bio') }}</strong>
@@ -119,7 +119,7 @@
         <label for="cpf" value="{{ Auth::user()->cpf }}">CPF</label>
         <div class="input-group mb-3">
             <input type="text" class="form-control inputInstagram {{ $errors->has('cpf') ? 'is-invalid' : '' }}"
-                id="cpf" name="cpf" aria-describedby="emailHelp" value="{{ Auth::user()->cpf }}">
+                pattern="^(?:\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11})$" id="cpf" name="cpf" aria-describedby="emailHelp" value="{{ Auth::user()->cpf }}" title="Adicione um CPF válido">
         </div>
         @if ($errors->has('cpf'))
         <span class="invalid-feedback" role="alert">
@@ -131,7 +131,8 @@
         <label for="phone" value="{{ Auth::user()->phone }}">Telefone</label>
         <div class="input-group mb-3">
             <input type="text" class="form-control inputInstagram {{ $errors->has('phone') ? 'is-invalid' : '' }}"
-                id="phone" name="phone" aria-describedby="emailHelp" value="{{ Auth::user()->phone }}">
+            pattern="\d{2} \d{5}-\d{4}|\d{11}" 
+            id="phone" name="phone" aria-describedby="emailHelp" value="{{ Auth::user()->phone }}" title="Adicione um número com ddd">
         </div>
         @if ($errors->has('phone'))
         <span class="invalid-feedback" role="alert">
@@ -139,7 +140,7 @@
         </span>
         @endif
     </div>
-    <div class="form-group px-2">
+    <div class="form-group p-2">
         <label for="niche" class="col-form-label">{{ __('Niche') }}</label>
         <div>
             <select id="niche" class="form-control @error('niche') is-invalid @enderror" name="niche">
@@ -243,6 +244,6 @@
         @endif
     </div>
     <div class="p-2 pb-4 pt-4">
-        <button class="btn btn-round btn-primary btn-block mr-0" type="submit">{{ __('Save') }}</button>
+        <button class="p-3 btn btn-round btn-primary btn-block mr-0" type="submit">{{ __('Save') }}</button>
     </div>
 </form>

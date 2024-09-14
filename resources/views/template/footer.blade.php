@@ -7,7 +7,9 @@
                         <!-- About -->
                         <div class="headline d-flex">
                             <a href="{{route('home')}}">
-                                <img class="brand-logo d-inline-block align-top" src="{{asset( (Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo')) : (Cookie::get('app_theme') == 'dark' ? getSetting('site.dark_logo') : getSetting('site.light_logo'))) )}}" alt="{{__("Site logo")}}">
+                            <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+                                        class="d-inline-block align-top mb-1 brand-logo-form"
+                                        alt="{{ __('Site logo') }}">
                             </a>
                         </div>
                     </div>
@@ -55,14 +57,14 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column flex-md-row mt-3 mt-md-4">
+                <!-- <div class="d-flex flex-column flex-md-row mt-3 mt-md-4">
                     <a href="{{route('contact')}}" class="text-dark-r mr-2 mt-0 mt-md-2 mb-2 ml-2 ml-md-0">
                         {{__('Contact page')}}
                     </a>
                     @foreach(GenericHelper::getFooterPublicPages() as $page)
                         <a href="{{route('pages.get',['slug' => $page->slug])}}" target="" class="text-dark-r m-2">{{__($page->title)}}</a>
                     @endforeach
-                </div>
+                </div> -->
                 <hr>
             </div>
         </div>

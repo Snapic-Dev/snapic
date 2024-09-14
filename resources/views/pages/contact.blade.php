@@ -24,7 +24,7 @@
                         <div class="col">
                             <h2 class="h1s text-bold mb-3 p-2">{{ __('Contact us') }}</h2>
                             <p class="mb-4 p-2">
-                                {{ __("Don't hesitate to contact us for any matter. We will get back to you asap.") }}</p>
+                                {{ __("Dúvidas ou precisa de ajuda? Contate-nos a qualquer momento. Responderemos rapidamente para garantir a melhor experiência.") }}</p>
 
                             @csrf
                             @if (session('success'))
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="form-group p-2">
-                                <textarea class="form-control {{ $errors->has('message') ? 'is-invalid' : '' }}" name="message"
+                                <textarea style="resize:none;" maxlength="500" rows="5" class="form-control {{ $errors->has('message') ? 'is-invalid' : '' }}" name="message"
                                     placeholder="{{ __('Message') }}" rows="4">{{ old('message') }}</textarea>
                                 @if ($errors->has('message'))
                                     <span class="invalid-feedback" role="alert">
@@ -83,7 +83,7 @@
                             @endif
 
                             <div class="form-group p-2">
-                                <button class="btn-round  btn-block btn btn-primary "
+                                <button class="p-3 btn-round  btn-block btn btn-primary "
                                     type="submit">{{ __('Submit') }}</button>
                             </div>
 

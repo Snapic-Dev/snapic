@@ -1,4 +1,4 @@
-<div class="notifications-wrapper pt-4">
+<div class="notifications-wrapper pt-2">
     @if(count($notifications))
     @foreach($notifications as $notification)
             @include('elements.notifications.notification-box', ['notification' => $notification])

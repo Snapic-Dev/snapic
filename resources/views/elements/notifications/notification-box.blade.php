@@ -1,5 +1,5 @@
 <div class="py-2 notification-box  pl-3 pl-md-4 {{!$notification->read?'unread':''}}">
-    <div class="d-flex flex-row-no-rtl my-1">
+    <div class="d-flex flex-row-no-rtl my-1 p-2">
         @if($notification->fromUser)
             <div class="">
                 <img class="rounded-circle avatar" src="{{$notification->fromUser->avatar}}" alt="{{$notification->fromUser->username}}">

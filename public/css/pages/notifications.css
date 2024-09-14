@@ -21,6 +21,10 @@
     width: 150px;
 }
 
+.notification-box {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.105);
+}
+
 .notification-box .avatar{
     overflow: hidden;
     outline-offset: -2px;

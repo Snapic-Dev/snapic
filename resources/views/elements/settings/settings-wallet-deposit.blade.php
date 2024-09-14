@@ -48,12 +48,12 @@
             <label class="pixRadioTxt custom-control-label stepTooltip text-bold" for="pixRadio"
                 title="">Pix</label>
         </div>
-        <div class="custom-control custom-radio mb-1">
+        <!-- <div class="custom-control custom-radio mb-1">
             <input type="radio" id="boletoRadio" name="payment-radio-option" class="custom-control-input"
                 value="payment-oxxo">
             <label class="custom-control-label stepTooltip text-opacity-field" for=""
                 title="">Boleto</label>
-        </div>
+        </div> -->
         <div class="custom-control custom-radio mb-1">
             <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input"
                 value="payment-oxxo">

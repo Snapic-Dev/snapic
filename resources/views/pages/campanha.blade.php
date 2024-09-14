@@ -40,21 +40,21 @@
                     @csrf
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="formGroupExampleInput" class="required-label">Valor do conteúdo</label>
-                        <input type="number" class="form-control valueCampaign" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" min="1" required>
+                        <input type="number" class="form-control valueCampaign" name="valor" id="formGroupExampleInput" placeholder="Definir valor da campanha" min="10" max="1000" required>
                         <span id="errorPrice" style="display: none;" class="text-danger mt-2">Defina um valor para o anúncio </span>
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="exampleFormControlTextarea1" class="required-label">Mensagem</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Mensagem de campanha" name="message" required></textarea>
+                        <textarea style="resize:none;" class="form-control" id="exampleFormControlTextarea1" maxlength="500" rows="5" placeholder="Mensagem de campanha" name="message" required></textarea>
                         <div>
                             <span id="MessageError" style="display: none; " class="text-danger mt-2"></span>
                         </div>
                     </div>
                     <div class="form-group" style="padding: 0 40px;">
                         <label for="frontDoc" class="col-form-label required-label">Adicionar arquivo</label>
-                        <div class="file-uploadCampaign">
-                            <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb required-label" name="frontDoc" accept=".jpg, .jpeg, .png, .webp" required>
-                            <button for="frontDoc" class="">
+                        <div class="file-uploadCampaign d-flex">
+                            <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb required-label" name="frontDoc" accept=".jpg, .jpeg, .png, .webp" title="Adicione um arquivo para prosseguir" required>
+                            <button type="button" for="frontDoc" class="">
                             <ion-icon name="folder-open-outline"></ion-icon>
                                 <span>{{ __('Escolher arquivo') }}</span>
                             </button>
@@ -66,6 +66,7 @@
                         <div>
                             <span id="errorFile" style="display: none;" class="text-danger mt-2">Por favor,selecione uma imagem</span>
                         </div>
+                
                         @error('frontDoc')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -74,6 +75,7 @@
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <div class="d-flex gap-3">
+                            
                             <div class="checkbox-wrapper-12">
                                 <div class="cbx">
                                     <input checked="" class="form-check-input" type="checkbox" id="cbx-12" name="subscribers">
@@ -120,7 +122,7 @@
                             </div>
                         </div>
                         <div>
-                            <span style="display: none;" id="errorGroup" class="text-danger">Selecione pelo menos um grupo para promover</span>
+                            <span style="display: none;" id="errorGroup" class="text-danger mt-3">Selecione pelo menos um grupo para promover</span>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end w-100 mb-3 mt-3">

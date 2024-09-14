@@ -122,8 +122,8 @@
                 @endif
             </div>
         @endif
-        <div class="p-2 pb-4 pt-4">
-            <button class="btn btn-round btn-primary btn-block mr-0" type="submit">{{ __('Save') }}</button>
+        <div class="p-3 pb-4 pt-4">
+            <button class="p-3 btn btn-round btn-primary btn-block mr-0" type="submit">{{ __('Save') }}</button>
         </div>
     </div>
 </form>

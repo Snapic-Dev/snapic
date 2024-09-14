@@ -29,7 +29,7 @@
             )
             <div class="d-flex justify-content-between pt-4 pb-3 px-3 border-bottom">
                 <h5
-                    class="text-truncate text-bold  {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
+                    class="p-2 text-truncate text-bold  {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">
                     {{ Route::currentRouteName() == 'posts.create' ? __('New post') : __('Edit post') }}</h5>
             </div>
             @if (!PostsHelper::getDefaultPostStatus(Auth::user()->id))
@@ -48,8 +48,8 @@
                     </div>
                 @endif
                 <div class="d-flex flex-column-reverse">
-                    <div class="w-100">
-                        <textarea id="dropzone-uploader" name="input-text" class="form-control border dropzone w-100" rows="3"
+                    <div class="w-100 p-2">
+                        <textarea style="resize:none;" maxlength="500" rows="8" id="dropzone-uploader" name="input-text" class="form-control border dropzone w-100" rows="3"
                             spellcheck="false" placeholder="{{ __('Write a new post, drag and drop files to add attachments.') }}"
                             value="{{ isset($post) ? $post->text : '' }}"></textarea>
                         <span class="invalid-feedback" role="alert">

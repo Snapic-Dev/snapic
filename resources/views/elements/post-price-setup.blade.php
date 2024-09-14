@@ -2,14 +2,16 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{__('Set post price')}}</h5>
+                <h5 class="modal-title p-2">{{__('Set post price')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>{{__('Paid posts are locked for subscribers as well.')}}</p>
-                <div class="input-group">
+                <div class="p-2">
+                    <p>{{__('Paid posts are locked for subscribers as well.')}}</p>
+                </div>
+                <div class="input-group p-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="amount-label">@include('elements.icon',['icon'=>'cash-outline','variant'=>'medium'])</span>
                     </div>
@@ -21,8 +23,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white"   onclick="PostCreate.clearPostPrice()">{{__('Clear')}}</button>
-                <button type="button" class="btn btn-primary" onclick="PostCreate.savePostPrice()">{{__('Save')}}</button>
+                <button type="button" class="border btn-round btn btn-white"   onclick="PostCreate.clearPostPrice()">{{__('Cancel')}}</button>
+                <button type="button" class="btn-round btn btn-primary" onclick="PostCreate.savePostPrice()">{{__('Save')}}</button>
             </div>
         </div>
     </div>

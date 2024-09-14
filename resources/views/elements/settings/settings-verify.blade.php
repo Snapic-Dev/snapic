@@ -102,7 +102,7 @@
             {{ str_replace(',', ', ', AttachmentHelper::filterExtensions('manualPayments')) }}. {{ __('Max size') }}: 4
             {{ __('MB') }}.</small>
         <div class="d-flex flex-row-reverse p-2">
-            <button class="btn btn-round btn-primary btn-block mt-2">{{ __('Submit') }}</button>
+            <button class="p-3 btn btn-round btn-primary btn-block mt-2">{{ __('Submit') }}</button>
         </div>
     @endif
     @if (Auth::user()->email_verified_at &&

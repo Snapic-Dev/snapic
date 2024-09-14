@@ -26,7 +26,7 @@
         <div class="col-12">
             <div class="pt-4 d-flex justify-content-between align-items-center px-3 pb-3 border-bottom">
                 <div>
-                    <h5 class="text-truncate text-bold mb-0 {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}}">{{__('Streams')}}</h5>
+                    <h5 class="p-2 text-truncate text-bold mb-0 {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}}">{{__('Streams')}}</h5>
                 </div>
                 <div class="d-flex">
                     <div class="stream-on-label w-100 {{StreamsHelper::getUserInProgressStream() ? '' : 'd-none'}}">
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="px-3 pt-3">
+            <div class="px-4 pt-3">
                 @if(!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks'))
                     <div class="alert alert-warning text-white font-weight-bold mt-2 mb-4" role="alert">
                         {{__("Before being able to start a new stream, you need to complete your")}} <a class="text-white" href="{{route('my.settings',['type'=>'verify'])}}">{{__("profile verification")}}</a>
