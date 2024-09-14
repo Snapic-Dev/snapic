@@ -75,6 +75,11 @@ Route::post('/payment/pix', [
     'as' => 'pix',
 ]);
 
+Route::post('/payment/deposit', [
+    'uses' => 'PaymentsController@initiatePayment',
+    'as' => 'generate.deposit',
+]);
+
 Route::post('/webhook/pix', [
     'uses' => 'PaymentsController@webhook',
     'as' => 'webhook',
