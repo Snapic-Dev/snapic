@@ -9,12 +9,9 @@
   height: 75vh;
 }
 
-.conversation-header {
-}
-
 .conversation-header .details-holder,
 .new-conversation-header .details-holder {
-  padding: 30px 15px 15px;
+  padding: 15px;
 }
 
 .conversation-header .details-holder img {
@@ -87,6 +84,46 @@
   }
 }
 
+@media (max-width: 767px) {
+  .conversations-wrapper {
+    padding: 5px;
+    max-width: 40px !important;
+  }
+  .conversation-wrapper {
+    min-width: calc(100% - 40px);
+  }
+  .skeleton-messenger-aba {
+    max-height: 35px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+  .conversation-content {
+    padding-left: 0 !important;
+    padding-right: 5px !important;
+  }
+  .contact-avatar.rounded-circle {
+    width: 25px !important;
+    height: 25px !important;
+  }
+  .column-messenger {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: calc(100vh) !important;
+    max-height: calc(100vh) !important;
+    padding-bottom: 70px !important;
+  }
+
+  .icon-edit-new {
+    margin-left: 5px !important;
+  }
+}
+
+.column-messenger {
+  min-height: 100vh;
+  max-height: 100vh;
+}
+
 .message-bubble a:hover {
   color: #c7c7c7 !important;
 }
@@ -135,6 +172,9 @@
   .container.messenger {
     height: initial !important;
     min-height: initial !important;
+  }
+  .message-bubble {
+    font-size: 14px !important;
   }
 }
 

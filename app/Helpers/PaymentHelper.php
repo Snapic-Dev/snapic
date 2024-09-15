@@ -81,7 +81,7 @@ class PaymentHelper
 
     private function initializeCertificado()
     {
-        $this->certificado = Storage::disk('local')->get('certs/producao-594018-producao-snapic.p12');
+        $this->certificado = Storage::disk('local')->get('certs/cert-production.p12');
         if ($this->certificado === false) {
             throw new \Exception('Erro ao carregar o certificado.');
         }
@@ -104,8 +104,8 @@ class PaymentHelper
             'base_uri' => $this->gateway_url,
             'http_errors' => false,
             'verify' => false,
-            'cert' => ['certs/producao-594018-producao-snapic.p12', ''],
-            'ssl_key' => ['certs/producao-594018-producao-snapic.p12', '']
+            'cert' => ['certs/cert-production.p12', ''],
+            'ssl_key' => ['certs/cert-production.p12', '']
         ]);
     }
 
@@ -206,9 +206,11 @@ class PaymentHelper
         }
     }
 
-    public function generationCardPayment($dto)
+    public function generationCardPayment($value, $token)
     {
         try {
+            $user = Auth::user();
+
             $access_token = $this->getAuthorizationToken();
 
             $response = $this->client->post(
@@ -217,7 +219,7 @@ class PaymentHelper
                     'json' => [
                         'items' => [
                             [
-                                'name' => 'Meu Produto 2',
+                                'name' => 'Deposit',
                                 'value' => 300,
                                 'amount' => 1,
                             ],
@@ -225,22 +227,22 @@ class PaymentHelper
                         'payment' => [
                             'credit_card' => [
                                 'customer' => [
-                                    'name' => 'Fernando Esdras da Silva',
-                                    'cpf' => '42895230803',
-                                    'email' => 'contatoesdrasoficial@gmail.com',
-                                    'birth' => '1990-08-29',
-                                    'phone_number' => '11953439141',
+                                    'name' => 'Aparecida Souza',
+                                    'cpf' => $user->cpf,
+                                    'email' => $user->email,
+                                    'birth' => $user->birthdate ?? '',
+                                    'phone_number' => $user->phone,
                                 ],
                                 'installments' => 1,
-                                'payment_token' => '9683d5a0794b422cae4fb67618fa2a9bfb353822',
+                                'payment_token' => $token,
                                 'billing_address' => [
-                                    'street' => 'Avenida Juscelino Kubitschek',
-                                    'number' => '909',
-                                    'neighborhood' => 'Bauxita',
-                                    'zipcode' => '35400000',
-                                    'city' => 'Ouro Preto',
-                                    'complement' => '',
-                                    'state' => 'MG',
+                                    'street' => $user->location,
+                                    'number' => '1',
+                                    'neighborhood' => '1',
+                                    'zipcode' => '00000000',
+                                    'city' => '1',
+                                    'complement' => '1',
+                                    'state' => 'SP',
                                 ],
                             ],
                         ],

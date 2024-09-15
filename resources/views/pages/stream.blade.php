@@ -152,7 +152,7 @@ Minify::javascript([
 
             const swiper = new Swiper('.swiper-container', {
                 slidesPerView: 10,
-                spaceBetween: 70,
+                spaceBetween: 85,
                 loop: true,
                 autoplay: {
                     delay: 2500,

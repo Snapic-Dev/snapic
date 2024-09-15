@@ -141,7 +141,6 @@ class PaymentsController extends Controller
                             $errorMessage = __('You already paid access for this message')
                         );
                     }
-
                     $this->paymentHandler->generateOneTimeCreditTransaction($transaction);
 
                     break;
@@ -149,6 +148,7 @@ class PaymentsController extends Controller
                     $transaction['recipient_user_id'] = Auth::user()->id;
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
+
                         $user = User::where('id', $transaction['recipient_user_id'])->first();
                         if (!$user->cpf) {
                             return response()->json([
@@ -171,9 +171,33 @@ class PaymentsController extends Controller
                                 'message' => 'Adicione seu CPF para prosseguir!',
                             ], 401);
                         }
+                        $res = $this->paymentHandler->generationCardPayment($request->amount, $request->cardToken);
 
+                        if (isset($res['error_description']['property'])) {
+                            switch ($res['error_description']['property']) {
+                                case '/payment/credit_card/customer/name':
+                                    throw new \Exception("Nome incorreto");
+                                case '/payment/credit_card/customer/birth':
+                                    throw new \Exception("Aniversário incorreto");
+                                case '/payment/credit_card/customer/phone_number':
+                                    throw new \Exception("Número de telefone incorreto");
+                                default:
+                                    throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
+                            }
+                        }
 
-                        $this->paymentHandler->generationCardPayment($transaction);
+                        if (isset($res['error_description'])) {
+                            switch ($res['error_description']) {
+                                case "Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.":
+                                    throw new \Exception("Limite de emissões idênticas excedido.");
+                                case "CPF inválido.":
+                                    throw new \Exception("CPF inválido.");
+                                case '/payment/credit_card/customer/phone_number':
+                                    throw new \Exception("Número de telefone incorreto");
+                                default:
+                                    throw new \Exception("Mensagem de erro desconhecida: " . $res['error_description']);
+                            }
+                        }
                     }
                     break;
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
@@ -232,8 +256,10 @@ class PaymentsController extends Controller
             Log::channel('payments')->error("Payment failed -> error message: " . $exception->getMessage());
             Log::channel('payments')->error("Payment failed", [$exception->getTraceAsString()]);
 
-            return Redirect::route('feed')
-                ->with('error', __('Payment failed.'));
+            return response()->json([
+                'error' => 'An error occurred while processing your request.',
+                'message' => $exception->getMessage()
+            ], 500);
         }
 
         // Url generated successfully

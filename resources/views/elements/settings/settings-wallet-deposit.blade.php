@@ -12,40 +12,37 @@
         </div> -->
     </div>
     <div class="ml-2 d-flex justify-content-center mt-5">
-        <button class="btnOne btn btn-round  border ml-2"
+        <button class="btnOne btn btn-round border ml-2"
             onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
-        <button class="btnTwo btn btn-round border ml-2"
-            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }}`)">
-            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 100 }},00
+        @php
+        $minAmount = \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount();
+        $increments = [2, 5, 10, 20, 50]; // Fatores de incremento progressivo
+        $depositValues = [];
+
+        $baseAmount = ceil($minAmount / 10) * 10;
+
+        foreach ($increments as $increment) {
+        $nextValue = $baseAmount + ($increment * 10);
+        $depositValues[] = $nextValue;
+        }
+        @endphp
+
+        @foreach ($depositValues as $value)
+        <button class="btn btn-round border ml-2"
+            onclick="inputDepositValueBtn('{{ $value }}')">
+            R${{ $value }},00
         </button>
-        <button class="btnThree btn btn-round border ml-2"
-            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }}`)">
-            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 300 }},00
-        </button>
-        <button class="btnFour btn btn-round border ml-2"
-            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }}`)">
-            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 500 }},00
-        </button>
-        <button class="btnFive btn btn-round border ml-2"
-            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }}`)">
-            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 800 }},00
-        </button>
-        <button class="btnSix btn btn-round border ml-2"
-            onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }}`)">
-            R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() + 1000 }},00
-        </button>
+        @endforeach
     </div>
 </div>
-<div class="feedbackForUser text-sm mb-2 ml-2 text-bold"></div>
-
 <div>
     <div class="payment-method p-2">
         <div class="custom-control custom-radio mb-1">
             <input type="radio" id="pixRadio" name="payment-radio-option" class="custom-control-input"
-                value="payment-oxxo" checked>
-            <label class="pixRadioTxt custom-control-label stepTooltip text-bold" for="pixRadio"
+                value="pix">
+            <label class="custom-control-label stepTooltip text-bold" for="pixRadio"
                 title="">Pix</label>
         </div>
         <!-- <div class="custom-control custom-radio mb-1">
@@ -56,8 +53,8 @@
         </div> -->
         <div class="custom-control custom-radio mb-1">
             <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input"
-                value="payment-oxxo">
-            <label class="creditRadioTxt custom-control-label stepTooltip" for="creditRadio"
+                value="card">
+            <label class="custom-control-label text-bold stepTooltip" for="creditRadio"
                 title="">Cartão</label>
         </div>
 
@@ -80,7 +77,7 @@
                                     <!-- <input class="p-4 inputPix text-bold text-center" disabled></input> -->
                                     <div class="amountText d-flex justify-content-between p-2">
                                         <h4>Pagamento Total</h4>
-                                        <h5 class="amountPix"></h5>
+                                        <h5 id="amountPix"></h5>
                                     </div>
                                     <div class="line"></div>
                                     <div class="timePayment d-flex justify-content-between p-2">
@@ -107,8 +104,8 @@
                                     <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="copyCodePix()">
                                         <div class="ml-4">
                                             @include('elements.icon', [
-                                                'icon' => 'cash-outline',
-                                                'variant' => 'small',
+                                            'icon' => 'cash-outline',
+                                            'variant' => 'small',
                                             ])
                                         </div>
                                         Copiar código PIX
@@ -126,7 +123,7 @@
         </div>
 
         <div class="mt-4">
-            <button type="button" onclick="generatePix()"
+            <button type="button" onclick="deposit()"
                 class="modalCreditCard btnDeposit btn-block btn-round btn border btn-primary p-3"
                 data-target="#staticBackdrop" onclick="showDepositValue()"
                 class="spinner-border spinner-border-sm" role="status" aria-hidden="true" disabled>
@@ -158,26 +155,20 @@
                         </div>
                         <div class="modal-body">
                             <form>
-                                <!-- <div class="form-row p-4">
-                                    <div class="col mt-2">
-                                        <label class="text-sm text-bold">Nome Cartão</label>
-                                        <input type="text" class="form-control cardName" placeholder="Nome Cartão">
-                                    </div>
-                                </div> -->
                                 <div class="form-row p-4">
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Validade</label>
-                                        <input type="month" class="form-control cardDateValidate" id="data" name="data"  placeholder="MM/YY">
+                                        <input type="month" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YY">
                                     </div>
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">CVV</label>
-                                        <input type="number" min="100" maxlength="999" class="form-control cardCVV" placeholder="CVV">
+                                        <input type="number" class="form-control cardCVV" placeholder="CVV">
                                     </div>
                                 </div>
                                 <div class="form-row p-4">
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Número Cartão</label>
-                                        <input maxlength="16" class="form-control cardNumber" placeholder="0000 0000 0000 0000">
+                                        <input maxlength="19" class="form-control cardNumber" placeholder="0000 0000 0000 0000">
                                     </div>
                                 </div>
                             </form>
@@ -185,8 +176,15 @@
                                 Seus dados de cartão estão seguros conosco. Preencha os campos com confiança para
                                 concluir sua transação com segurança.
                             </p>
-                            <button type="submit" class="p-3 pl-2 pr-2 mt-3 mb-3 btn btn-round btn-primary border btn-block btnCardDeposit" onclick="paymentCard()">
-                                Depositar
+                            <button type="button" onclick="deposit()"
+                                class="modalCreditCard btnDeposit btn-block btn-round btn border btn-primary p-3"
+                                data-target="#staticBackdrop2"
+                                class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                                <div class="d-flex justify-content-center">
+                                    <span class="spinner spinner-border spinner-border-sm mr-2" role="status"
+                                        aria-hidden="true"></span>
+                                    <span class="textLoadingBtn">Depositar</span>
+                                </div>
                             </button>
                         </div>
                         <!-- <div class="modal-footer">
@@ -204,42 +202,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
     <script>
-        let pixRadioTxt = document.querySelector(".pixRadioTxt");
-        let creditRadioTxt = document.querySelector(".creditRadioTxt");
+        let pixRadio = document.querySelector("#pixRadio");
         let modalCreditCard = document.querySelector(".modalCreditCard");
         let modalPix = document.querySelector("#staticBackdrop");
-        let qrCodeImage = document.querySelector(".qrCodeImage");
-        let amountPix = document.querySelector(".amountPix");
-        let btnPix = document.querySelector(".btnPix");
-        let qrcodeLoading = document.querySelector(".qrcodeLoading");
         let textLoadingBtn = document.querySelector(".textLoadingBtn");
         let spinner = document.querySelector('.spinner')
-        let feedbackForUser = document.querySelector('.feedbackForUser');
         let dataExpiration = document.getElementById('dataExpiration');
-
         let depositInput = document.querySelector('.depositInput')
-        let withdrawalContinueBtn = document.querySelector('.withdrawal-continue-btn')
-
-        let btnOne = document.querySelector('.btnOne');
-        let btnTwo = document.querySelector('.btnTwo');
-        let btnThree = document.querySelector('.btnThree');
-        let btnFour = document.querySelector('.btnFour');
-        let btnFive = document.querySelector('.btnFive');
-        let btnSix = document.querySelector('.btnSix');
-
-
         let btnDeposit = document.querySelector('.btnDeposit');
-        let btnCardDeposit=document.querySelector('.btnCardDeposit');
+        let cardNumber = document.querySelector('.cardNumber')
+        let cardDateValidate = document.querySelector('.cardDateValidate')
+        let cardCVV = document.querySelector('.cardCVV')
 
-        let cardName= document.querySelector('.cardName')
-        let cardNumber= document.querySelector('.cardNumber')
-        let cardDateValidate= document.querySelector('.cardDateValidate')
-        let cardCVV= document.querySelector('.cardCVV')
+        document.addEventListener("DOMContentLoaded", function() {
+            if (pixRadio) {
+                pixRadio.checked = true;
+            }
+            showCreditInput();
+        });
 
-        function inputDepositValueBtn(withdrawalValue) {
-            depositInput.value = withdrawalValue;
+        let pixCopiaECola;
+
+        function inputDepositValueBtn(depositValue) {
+            depositInput.value = depositValue;
             inputDepositValue();
-        }
+        };
 
         function inputDepositValue() {
             let inputValue = depositInput.value
@@ -250,31 +237,24 @@
             } else {
                 btnDeposit.disabled = true;
             }
-        }
+        };
 
         depositInput.addEventListener('input', inputDepositValue)
 
-
-        function showCreditInput() {
+        function toggleButtonSubmit() {
             if (pixRadio.checked) {
-                textLoadingBtn.innerText="Depositar",
-                btnDeposit.onclick=generatePix;
+                textLoadingBtn.innerText = "Depositar";
+                btnDeposit.onclick = deposit;
                 modalCreditCard.setAttribute("data-target", "#staticBackdrop");
-                pixRadioTxt.style.fontWeight = "bold";
-                creditRadioTxt.style.fontWeight = "normal";
-            } else {
-                modalCreditCard.setAttribute("data-target", "#staticBackdrop2");
-                btnDeposit.onclick=openCreditModal;
-                textLoadingBtn.innerText="Processar",
-                creditRadioTxt.style.fontWeight = "bold";
-                pixRadioTxt.style.fontWeight = "normal";
+            } else if (creditRadio.checked) {
+                creditRadio.setAttribute("data-target", "#staticBackdrop2");
+                btnDeposit.onclick = openCreditModal;
+                textLoadingBtn.innerText = "Processar";
             }
         }
 
-        creditRadio.addEventListener("change", showCreditInput);
-        pixRadio.addEventListener("change", showCreditInput);
-
-        let pixCode;
+        creditRadio.addEventListener("change", toggleButtonSubmit);
+        pixRadio.addEventListener("change", toggleButtonSubmit);
 
         function showDepositValue() {
             let valueDeposit = depositInput.value;
@@ -285,207 +265,150 @@
             inputPix.value = "R$" + formattedDeposit;
         }
 
-        const hostname = window.location.origin;
-        const showToast = (message, isError = false) => {
-            const toastHTML = `
-                <div class="toast ${isError ? 'bg-danger text-white' : 'bg-success text-white'}" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header">
-                        <strong class="me-auto">${isError ? 'Error' : 'Success'}</strong>
-                        <small>Agora</small>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                </div>
-            `;
-
-            // Adiciona o toast ao DOM
-            const toastContainer = document.querySelector('.toast-container');
-            if (toastContainer) {
-                toastContainer.innerHTML = toastHTML;
-                const toastElement = toastContainer.querySelector('.toast');
-                const toast = new bootstrap.Toast(toastElement);
-                toast.show();
+        function loading(show) {
+            if (show) {
+                btnDeposit.disabled = true;
+                spinner.style.display = 'flex';
+            } else {
+                btnDeposit.disabled = false;
+                spinner.style.display = 'none';
             }
-        };
-
-        function showSpinner() {
-            spinner.style.display = 'flex';
         }
 
-        function hideSpinner() {
-            spinner.style.display = 'none';
+        function copyCodePix() {
+            navigator.clipboard.writeText(pixCopiaECola)
+                .then(() => {
+                    launchToast("success", trans("Success"), "Pix copiado para area de transferencia");
+                })
+                .catch(err => {
+                    launchToast("danger", trans("Error"), "Erro ao copiar pix");
+                });
         }
 
-
-        const generatePix = async () => {
+        const deposit = async () => {
+            const hostname = window.location.origin;
             const url = `${hostname}/payment/deposit`;
 
-            feedbackForUser.innerText = ""
-            if (depositInput.value !== "" &&
-                `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`) {
-                if (modalCreditCard.getAttribute("data-target") === "#staticBackdrop") {
-                    amountPix.innerText = ""
-                    showSpinner();
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                username: "example",
-                                transaction_type: "deposit",
-                                provider: "pix",
-                                amount: depositInput.value
-                            }),
-                        });
+            try {
+                loading(true);
 
-                        const responseData = await response.json();
-
-                        if (!response.ok) {
-                            launchToast("danger", trans("Error"), responseData.message);
-                            return;
-                        }
-
-                        const qrCode = await responseData.pixCopiaECola;
-
-                        const expiration_date = await responseData.calendario.expiracao
-
-                        calculateTimeDifference(expiration_date);
-
-                        if (responseData) {
-                            document.getElementById("qrcode").innerHTML = "";
-                            var qrcode = new QRCode(document.getElementById("qrcode"), {
-                                text: responseData.pixCopiaECola,
-                                width: 200,
-                                height: 200,
-                                colorDark: "#000000",
-                                colorLight: "#ffffff",
-                                correctLevel: QRCode.CorrectLevel.H
-                            })
-                            amountPix.innerText = "R$" + depositInput.value;
-                            $('#staticBackdrop').modal('show')
-                            launchToast("success",
-                                trans("Success"), "Pix gerado com sucesso");
-                        }
-
-                        pixCode = responseData.pixCopiaECola;
-                    } catch (error) {
-                        console.log(error);
-                        launchToast("danger", trans("Error"), "Erro inesperado");
-                    } finally {
-                        hideSpinner();
-                    }
-                } else {
-                    showSpinner();
-                    $('#staticBackdrop2').modal('show')
+                if (Number(depositInput.value) < Number(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)) {
+                    throw new Error(`O valor minimo para deposito e de ${`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`}`)
                 }
-            } else {
-                feedbackForUser.innerText = "Preencha o campo para prosseguir"
+
+                let data = {
+                    transaction_type: "deposit",
+                    provider: pixRadio.checked ? "pix" : "card",
+                    amount: depositInput.value
+                }
+
+
+                if (creditRadio.checked) {
+                    $('#staticBackdrop2').modal('hide');
+                    const cardToken = await generateCardToken()
+                    data.cardToken = cardToken;
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.message);
+                }
+
+                if (!responseData) {
+                    throw new Error("Ocorreu um erro interno.");
+                }
+
+                if (data.provider === "card") {
+                    return launchToast("success", trans("Success"), "Pagamento bem sucedido");
+                }
+
+                if (data.provider === "pix") {
+                    document.getElementById("qrcode").innerHTML = "";
+                    document.getElementById("amountPix").innerHTML = "";
+                    pixCopiaECola = await responseData.pixCopiaECola;
+
+                    var qrcode = new QRCode(document.getElementById("qrcode"), {
+                        text: pixCopiaECola,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    })
+
+                    const expiration_date = await responseData.calendario.expiracao
+
+                    calculateTimeDifference(expiration_date);
+
+                    amountPix.innerText = "R$ " + responseData.valor.original;
+
+                    $('#staticBackdrop').modal('show');
+
+                    launchToast("success", trans("Success"), "Pix gerado com sucesso");
+                }
+
+            } catch (error) {
+                launchToast("danger", trans("Error"), error.message);
+            } finally {
+                loading(false);
             }
         }
 
-        const openCreditModal=()=> {
+        const openCreditModal = () => {
             $('#staticBackdrop2').modal('show');
         }
 
         const generateCardToken = async () => {
-            const year = cardDateValidate.value.substring(0, 4);
-            const month = cardDateValidate.value.substring(5, 7);
-            const creditCardNumber=cardNumber.value;
-
             try {
                 if (typeof EfiPay === 'undefined') {
-                    console.error('O script da Efipay não foi carregado.');
+                    throw new Error('O script da Efipay não foi carregado.');
                     return;
                 }
 
                 const efiPay = EfiPay.CreditCard.setAccount("ac82fa088699e475f01e8703227a7da4")
                     .setEnvironment("production");
 
-                console.log(`${month}`)
-                console.log(`${year}`)
-                console.log(`${cardCVV.value}`)
-                console.log( `${parseInt(creditCardNumber.trim())}`)
+                const brand = await EfiPay.CreditCard
+                    .setCardNumber(cardNumber.value.split(" ").join(""))
+                    .verifyCardBrand();
 
                 const cardData = {
-                    brand: "visa",
-                    number: `${parseInt(creditCardNumber.trim())}`,
+                    brand: brand,
+                    number: cardNumber.value.split(" ").join(""),
                     cvv: cardCVV.value,
-                    expirationMonth: `${month}`,
-                    expirationYear: `${year}`,
+                    expirationMonth: cardDateValidate.value.split("/")[0],
+                    expirationYear: cardDateValidate.value.split("/")[1],
                     reuse: true,
                 };
 
                 const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
 
-                const {
-                    payment_token,
-                    card_mask
-                } = result;
-
-                console.log("Payment Token:", payment_token);
-                console.log("Card Mask:", card_mask);
-
-                return result;
+                return result.payment_token;
             } catch (error) {
-                console.error("Código:", error.code);
-                console.error("Nome:", error.error);
-                console.error("Mensagem:", error.error_description);
+                let errorMessage = "Tente novamente mais tarde"
+
+                switch (error.error) {
+                    case 'erro_gn_fingerprint':
+                        errorMessage = "Desative seu AdBlock"
+                        break
+                    case 'invalid_data':
+                        errorMessage = error.error_description
+                        break
+                    default:
+                        errorMessage = error.message
+                        break
+                }
+                throw new Error(errorMessage)
             }
-        }
-
-        const paymentCard = async () => {
-            const cardToken = await generateCardToken()
-            const url = `${hostname}/payment/deposit`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: "example",
-                    transaction_type: "deposit",
-                    provider: "card",
-                    amount: 3,
-                    cardToken: cardToken
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                launchToast("danger", trans("Error"), responseData.message);
-                return;
-            }
-        }
-
-        function copyCodePix() {
-            navigator.clipboard.writeText(pixCode)
-                .then(() => {
-                    sessionStorage.setItem('valorCopiado', pixCode);
-                    btnPix.innerHTML = `<div class="ml-4">
-                                            @include('elements.icon', [
-                                                'icon' => 'cash-outline',
-                                                'variant' => 'small',
-                                            ])
-                                        </div>
-                                        Código copiado`;
-                    setTimeout(() => {
-                        btnPix.innerHTML = `<div class="ml-4">
-                                            @include('elements.icon', [
-                                                'icon' => 'cash-outline',
-                                                'variant' => 'small',
-                                            ])
-                                        </div>
-                                         Copiar código PIX`;
-                    }, 1500);
-                })
-                .catch(err => {
-                    console.error('Erro ao copiar: ', err);
-                });
         }
 
         function calculateTimeDifference() {
@@ -516,4 +439,51 @@
             intervalId = setInterval(updateRemainingTime, 1000);
             updateRemainingTime();
         }
+
+        cardDateValidate.addEventListener('input', (event) => {
+            const currentYear = new Date().getFullYear();
+
+            let value = event.target.value.replace(/\D/g, '');
+
+            if (value.length >= 2) {
+                let month = value.substring(0, 2);
+
+                if (Number(month) > 12 || Number(month) < 1) {
+                    launchToast("danger", trans("Error"), "Mês inválido. O mês deve estar entre 01 e 12.");
+                    event.target.value = '';
+                    return;
+                }
+
+                if (value.length > 2) {
+                    let year = value.substring(2, 6);
+
+                    if (year.length === 4 && Number(year) < currentYear || year.length === 4 && Number(year) > currentYear + 10) {
+                        launchToast("danger", trans("Error"), `Ano inválido. O ano deve estar entre ${currentYear} e ${currentYear + 10}.`);
+                        event.target.value = '';
+                        return;
+                    }
+
+                    value = `${month}/${year}`;
+                } else {
+                    value = month;
+                }
+            }
+
+            event.target.value = value;
+        });
+
+        cardCVV.addEventListener('input', (event) => {
+            let value = event.target.value.replace(/\D/g, '');
+            if (value.length > 3) {
+                launchToast("danger", trans("Error"), "O código CVV deve conter 3 dígitos.");
+                value = ''
+            }
+            event.target.value = value;
+        })
+
+        cardNumber.addEventListener('input', (event) => {
+            let value = event.target.value.replace(/\D/g, '');
+            value = value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+            event.target.value = value;
+        });
     </script>

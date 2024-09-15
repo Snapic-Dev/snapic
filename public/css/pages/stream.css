@@ -3,7 +3,6 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-
 .conversation-wrapper {
   height: 250px;
 }
@@ -83,6 +82,31 @@
 .stream-details .avatar {
   width: 64px;
   height: 64px;
+}
+@media (max-width: 767px) {
+  .stream-chat > div > div {
+    margin-left: 0 !important;
+    margin-top: 12px !important;
+    padding: 0 !important;
+  }
+  .swiper-button-next {
+    display: none;
+  }
+  .swiper-button-prev {
+    display: none;
+  }
+  .swiper-slide {
+    margin-right: 30px !important;
+  }
+  .giftText {
+    max-height: 120px !important;
+  }
+  .stream-submit {
+    margin-bottom: 24px !important;
+  }
+  .stream-submit button {
+    margin-left: 0 !important;
+  }
 }
 
 @media (min-width: 767px) {

@@ -158,16 +158,17 @@
 .giftText {
   justify-content: center;
   align-items: center;
-  width: 150px;
-  height: 150px;
+  width: fit-content;
+  height: fit-content;
   flex-direction: column;
   transition: 0.2s ease-in-out;
   cursor: pointer;
   font-family: "Open Sans", sans-serif;
+  margin-top: 20px;
 }
 
 .giftText:hover {
-transform: scale(115%);
+  transform: scale(115%);
 }
 
 .giftArea {
@@ -176,12 +177,11 @@ transform: scale(115%);
   flex-direction: column;
   align-items: center;
 }
-.swiper-slide{
-  max-width: 100px !important;
+.swiper-slide {
+  max-width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 #giftCarousel {
   width: 100%;
@@ -220,7 +220,7 @@ transform: scale(115%);
   padding: 0 !important;
 }
 
-.swiper-container{
+.swiper-container {
   display: flex;
   justify-content: center;
   overflow: hidden !important;
@@ -229,24 +229,23 @@ transform: scale(115%);
   margin: 0 auto;
 }
 
-.swiper-button-next::after{
-  content: '' !important;
+.swiper-button-next::after {
+  content: "" !important;
 }
 
 .swiper-button-prev::after {
-  content: '' !important;
+  content: "" !important;
 }
 
-.swiper-button-next > i{
-  color:#673ab7
+.swiper-button-next > i {
+  color: #673ab7;
 }
 
-.swiper-button-prev > i{
-  color:#673ab7
+.swiper-button-prev > i {
+  color: #673ab7;
 }
 
-
-#gifts-container{
+#gifts-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -277,8 +276,8 @@ transform: scale(115%);
 
 .giftText > div {
   display: flex;
-flex-direction: column;
-align-items: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .giftsArea {
@@ -291,6 +290,8 @@ align-items: center;
   text-align: center;
   font-weight: 600;
   color: #673ab7;
+  margin-bottom: 0 !important;
+  min-width: 60px;
 }
 
 .rounded-circle-stream {

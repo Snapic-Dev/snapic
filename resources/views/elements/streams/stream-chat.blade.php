@@ -3,7 +3,7 @@
 
     @if ($stream->canWatchStream)
     <div class="chat-content conversations-wrapper overflow-hidden pb-1 flex-fill">
-        <div class="conversation-content ml-4 p-3 flex-fill">
+        <div class="conversation-content stream-chat ml-4 p-3 mt-4 flex-fill">
             @if ($stream->messages->count())
             @foreach ($stream->messages as $message)
             @include('elements.streams.stream-chat-message', [
@@ -34,7 +34,7 @@
             <textarea name="message" class="form-control messageBoxInput" placeholder="{{ __('Write a message..') }}"
                 onkeyup="textAreaAdjust(this)"></textarea>
         </form>
-        <div class="messenger-buttons-wrapper d-flex">
+        <div class="messenger-buttons-wrapper stream-submit d-flex">
             <button
                 class="btn btn-outline-primary btn-rounded-icon messenger-button send-message ml-3 mr-4 to-tooltip"
                 onClick="Stream.sendMessage({{ $stream->id }})" data-placement="top"
