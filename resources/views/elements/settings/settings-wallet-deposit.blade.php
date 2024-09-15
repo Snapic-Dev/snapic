@@ -150,7 +150,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title creditModalTitle" id="staticBackdropLabel">Adicione cartão de
+                            <h5 class="modal-title p-2" id="staticBackdropLabel">Adicione cartão de
                                 crédito ou débito</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -158,33 +158,35 @@
                         </div>
                         <div class="modal-body">
                             <form>
-                                <div class="form-row p-4">
-                                    <div class="col-7 mt-2">
+                                <!-- <div class="form-row p-4">
+                                    <div class="col mt-2">
                                         <label class="text-sm text-bold">Nome Cartão</label>
-                                        <input type="text" class="form-control" placeholder="Nome Cartão">
+                                        <input type="text" class="form-control cardName" placeholder="Nome Cartão">
                                     </div>
+                                </div> -->
+                                <div class="form-row p-4">
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Validade</label>
-                                        <input type="text" class="form-control" placeholder="MM/YY">
+                                        <input type="month" class="form-control cardDateValidate" id="data" name="data"  placeholder="MM/YY">
                                     </div>
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">CVV</label>
-                                        <input type="text" class="form-control" placeholder="CVV">
+                                        <input type="number" min="100" maxlength="999" class="form-control cardCVV" placeholder="CVV">
                                     </div>
                                 </div>
                                 <div class="form-row p-4">
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Número Cartão</label>
-                                        <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+                                        <input maxlength="16" class="form-control cardNumber" placeholder="0000 0000 0000 0000">
                                     </div>
                                 </div>
                             </form>
-                            <p class="p-2 text-sm text-muted ml-3">
+                            <p class="p-2 text-sm text-muted ml-3 mt-2 mb-4">
                                 Seus dados de cartão estão seguros conosco. Preencha os campos com confiança para
                                 concluir sua transação com segurança.
                             </p>
-                            <button class="p-3 pl-2 pr-2 mt-3 mb-3 btn btn-round btn-primary border btn-block">
-                                Confirmar
+                            <button type="submit" class="p-3 pl-2 pr-2 mt-3 mb-3 btn btn-round btn-primary border btn-block btnCardDeposit" onclick="paymentCard()">
+                                Depositar
                             </button>
                         </div>
                         <!-- <div class="modal-footer">
@@ -200,6 +202,7 @@
     @include('elements.uploaded-file-preview-template')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
     <script>
         let pixRadioTxt = document.querySelector(".pixRadioTxt");
         let creditRadioTxt = document.querySelector(".creditRadioTxt");
@@ -224,10 +227,14 @@
         let btnFive = document.querySelector('.btnFive');
         let btnSix = document.querySelector('.btnSix');
 
+
         let btnDeposit = document.querySelector('.btnDeposit');
+        let btnCardDeposit=document.querySelector('.btnCardDeposit');
 
-        let invalidFeedback=document.querySelector('.invalid-feedback')
-
+        let cardName= document.querySelector('.cardName')
+        let cardNumber= document.querySelector('.cardNumber')
+        let cardDateValidate= document.querySelector('.cardDateValidate')
+        let cardCVV= document.querySelector('.cardCVV')
 
         function inputDepositValueBtn(withdrawalValue) {
             depositInput.value = withdrawalValue;
@@ -235,8 +242,6 @@
         }
 
         function inputDepositValue() {
-            invalidFeedback.innerText="";
-            invalidFeedback.style.cssText = ''
             let inputValue = depositInput.value
             const minimumDepositAmount = parseFloat('{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}');
 
@@ -244,7 +249,6 @@
                 btnDeposit.disabled = false;
             } else {
                 btnDeposit.disabled = true;
-                invalidFeedback.innerText=`Adicione o valor mínimo  R$${minimumDepositAmount} para prosseguir`
             }
         }
 
@@ -253,11 +257,15 @@
 
         function showCreditInput() {
             if (pixRadio.checked) {
+                textLoadingBtn.innerText="Depositar",
+                btnDeposit.onclick=generatePix;
                 modalCreditCard.setAttribute("data-target", "#staticBackdrop");
                 pixRadioTxt.style.fontWeight = "bold";
                 creditRadioTxt.style.fontWeight = "normal";
             } else {
                 modalCreditCard.setAttribute("data-target", "#staticBackdrop2");
+                btnDeposit.onclick=openCreditModal;
+                textLoadingBtn.innerText="Processar",
                 creditRadioTxt.style.fontWeight = "bold";
                 pixRadioTxt.style.fontWeight = "normal";
             }
@@ -278,8 +286,6 @@
         }
 
         const hostname = window.location.origin;
-        const url = `${hostname}/payment/pix`;
-
         const showToast = (message, isError = false) => {
             const toastHTML = `
                 <div class="toast ${isError ? 'bg-danger text-white' : 'bg-success text-white'}" role="alert" aria-live="assertive" aria-atomic="true">
@@ -306,7 +312,6 @@
 
         function showSpinner() {
             spinner.style.display = 'flex';
-            console.log('spinner')
         }
 
         function hideSpinner() {
@@ -315,7 +320,8 @@
 
 
         const generatePix = async () => {
-            btnDeposit.disabled = true;
+            const url = `${hostname}/payment/deposit`;
+
             feedbackForUser.innerText = ""
             if (depositInput.value !== "" &&
                 `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`) {
@@ -379,7 +385,81 @@
             } else {
                 feedbackForUser.innerText = "Preencha o campo para prosseguir"
             }
-            depositInput.value="";
+        }
+
+        const openCreditModal=()=> {
+            $('#staticBackdrop2').modal('show');
+        }
+
+        const generateCardToken = async () => {
+            const year = cardDateValidate.value.substring(0, 4);
+            const month = cardDateValidate.value.substring(5, 7);
+            const creditCardNumber=cardNumber.value;
+
+            try {
+                if (typeof EfiPay === 'undefined') {
+                    console.error('O script da Efipay não foi carregado.');
+                    return;
+                }
+
+                const efiPay = EfiPay.CreditCard.setAccount("ac82fa088699e475f01e8703227a7da4")
+                    .setEnvironment("production");
+
+                console.log(`${month}`)
+                console.log(`${year}`)
+                console.log(`${cardCVV.value}`)
+                console.log( `${parseInt(creditCardNumber.trim())}`)
+
+                const cardData = {
+                    brand: "visa",
+                    number: `${parseInt(creditCardNumber.trim())}`,
+                    cvv: cardCVV.value,
+                    expirationMonth: `${month}`,
+                    expirationYear: `${year}`,
+                    reuse: true,
+                };
+
+                const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
+
+                const {
+                    payment_token,
+                    card_mask
+                } = result;
+
+                console.log("Payment Token:", payment_token);
+                console.log("Card Mask:", card_mask);
+
+                return result;
+            } catch (error) {
+                console.error("Código:", error.code);
+                console.error("Nome:", error.error);
+                console.error("Mensagem:", error.error_description);
+            }
+        }
+
+        const paymentCard = async () => {
+            const cardToken = await generateCardToken()
+            const url = `${hostname}/payment/deposit`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: "example",
+                    transaction_type: "deposit",
+                    provider: "card",
+                    amount: 3,
+                    cardToken: cardToken
+                }),
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                launchToast("danger", trans("Error"), responseData.message);
+                return;
+            }
         }
 
         function copyCodePix() {
@@ -436,6 +516,4 @@
             intervalId = setInterval(updateRemainingTime, 1000);
             updateRemainingTime();
         }
-
-    
     </script>
