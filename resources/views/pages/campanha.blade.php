@@ -54,8 +54,8 @@
                         <label for="frontDoc" class="col-form-label required-label">Adicionar arquivo</label>
                         <div class="file-uploadCampaign d-flex">
                             <input id="inputFile" type="file" class="form-control @error('frontDoc') is-invalid @enderror uploadFb required-label" name="frontDoc" accept=".jpg, .jpeg, .png, .webp" title="Adicione um arquivo para prosseguir" required>
-                            <button type="button" for="frontDoc" class="">
-                            <ion-icon name="folder-open-outline"></ion-icon>
+                            <button type="button" for="frontDoc" class="preview-img">
+                                <ion-icon name="folder-open-outline"></ion-icon>
                                 <span>{{ __('Escolher arquivo') }}</span>
                             </button>
                             <div class="preview">
@@ -66,7 +66,7 @@
                         <div>
                             <span id="errorFile" style="display: none;" class="text-danger mt-2">Por favor,selecione uma imagem</span>
                         </div>
-                
+
                         @error('frontDoc')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -75,7 +75,7 @@
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <div class="d-flex gap-3">
-                            
+
                             <div class="checkbox-wrapper-12">
                                 <div class="cbx">
                                     <input checked="" class="form-check-input" type="checkbox" id="cbx-12" name="subscribers">
@@ -144,23 +144,17 @@
 
 
 <script type="module">
-
     document.querySelector("#inputFile").addEventListener('change', function() {
         const input = this;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
 
             reader.onload = function(e) {
-                const previewElement = document.querySelector('#frontPreview');
-                previewElement.src = e.target.result;
-                previewElement.style.display = 'block';
+                const bg = document.querySelector('.preview-img')
+                bg.style.background = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${e.target.result}) no-repeat center center/cover`;
             };
 
             reader.readAsDataURL(input.files[0]);
-        } else {
-            const previewElement = document.querySelector('#frontPreview');
-            previewElement.src = '#';
-            previewElement.style.display = 'none';
         }
     });
 
@@ -247,9 +241,9 @@
         function hideSpinner() {
             spinner.style.display = 'none';
         }
-    
-        const spinner =document.querySelector('.spinner')
-        const uploadButton=document.querySelector('.uploadButton')
+
+        const spinner = document.querySelector('.spinner')
+        const uploadButton = document.querySelector('.uploadButton')
 
         function generateNumericID(length) {
             let result = '';
@@ -259,7 +253,7 @@
             return result.substring(0, length);
         }
         try {
-            uploadButton.disabled=true;
+            uploadButton.disabled = true;
             showSpinner();
             const formData = new FormData();
             formData.append('price', valor);
@@ -279,18 +273,18 @@
                 const result = await response.json();
                 launchToast("success", trans("Success"), `Campanha realizada com Sucesso`);
                 spinner.style.display = 'none';
-                uploadButton.disabled=false;
+                uploadButton.disabled = false;
             } else {
                 console.error('Erro ao enviar dados:', response.statusText);
                 launchToast("danger", trans("Error"), `Erro ao realizar campanha. Tente novamente.`);
                 spinner.style.display = 'none';
-                uploadButton.disabled=false;
+                uploadButton.disabled = false;
             }
         } catch (error) {
             console.error(error);
             launchToast("danger", trans("Error"), `Erro durante o upload ou envio. Tente novamente.`);
             spinner.style.display = 'none';
-            uploadButton.disabled=false;
+            uploadButton.disabled = false;
         }
 
         // Limpar campos
@@ -309,8 +303,4 @@
 
 
     });
-
-
-
-
 </script>
