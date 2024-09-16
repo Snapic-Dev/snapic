@@ -42,10 +42,16 @@ class StreamsController extends Controller
         if (!getSetting('streams.allow_streams')) {
             abort(404);
         }
+
         if ($request->get('action')) {
             $action = $request->get('action');
         }
         $currentStream = StreamsServiceProvider::getUserInProgressStream();
+
+        if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+            abort(code: 404);
+        }
+
         JavaScript::put([
             'openCreateDialog' => $action == 'create' ? true : false,
             'openEditDialog' => $action == 'edit' ? true : false,
