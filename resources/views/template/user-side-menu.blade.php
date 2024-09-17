@@ -54,8 +54,6 @@
                 ])
                 {{ __('My profile') }}</a>
         </li>
-        @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
-        @if (getSetting('streams.allow_streams'))
         <li
             class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center 2" href="{{ route('search.get') }}?filter=live">
@@ -67,8 +65,6 @@
                 ])
                 {{ __('Streams') }}</a>
         </li>
-        @endif
-        @endif
         <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center" href="{{ route('my.bookmarks') }}">
                 @include('elements.icon', [

@@ -1,9 +1,9 @@
 <div class="user-search-box-item mb-4">
     <div class="row px-4">
         <div class="col-auto pr-0">
-            <img src="{{$user->avatar}}" class="avatar rounded-circle shadow"/>
+            <img src="{{$user->avatar}}" class="avatar rounded-circle shadow" />
         </div>
-        <div class="col">
+        <div class="col w-75">
             <div class="d-flex justify-content-between">
                 <div class="text-truncate user-search-box-info">
                     <div class="m-0 h6 text-truncate d-flex align-items-center">
@@ -11,9 +11,9 @@
                             {{$user->name}}
                         </a>
                         @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
-                            <span class="" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                        @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1 text-primary'])
-                    </span>
+                        <span class="" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
+                            @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1 text-primary'])
+                        </span>
                         @endif
                     </div>
                     <div class="m-0 text-truncate small"><a href="{{route('profile',['username'=>$user->username])}}" class="text-muted">&commat;{{$user->username}}</a></div>
@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="mt-1">
+            <div class="mt-1 text-truncate">
                 {{$user->bio ? $user->bio : __('No description available.')}}
             </div>
 
