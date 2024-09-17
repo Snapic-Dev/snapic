@@ -1205,6 +1205,10 @@ footer .brand-logo {
   font-weight: 600;
 }
 
+.modal {
+  padding-right: 0 !important;
+}
+
 .file-uploadCampaign .preview {
   text-align: center;
 }
