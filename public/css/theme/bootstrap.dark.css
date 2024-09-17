@@ -13,6 +13,8 @@ html * {
 body {
   line-height: 1.6;
 }
+
+
 .h1,
 h1 {
   line-height: 1.25;
@@ -11788,4 +11790,17 @@ select {
 
 option {
   color: black;
+}
+
+.titleLogin {
+  color: white !important;
+}
+
+.inputLogin::placeholder {
+  color: white !important;
+  opacity: 0.3;
+}
+
+.notification-box {
+  border-bottom: 1px solid #495057 !important;
 }

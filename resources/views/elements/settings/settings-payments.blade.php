@@ -1,56 +1,67 @@
 <div class="container mt-2">
     @if (count($payments))
-        <div class="table-responsive">
-            <div class="d-flex align-items-center border-bottom font-weight-bold">
-                <div class="col-lg-2">
-                    <select class="form-control typeSelect">
-                        <option value="" disabled selected>Tipo</option>
-                        <option value="deposit">Deposito</option>
-                        <option value="post">Post</option>
-                        <option value="tip">Gorjeta</option>
-                        <option value="subscription">Inscrição</option>
-                    </select>
-                </div>
-                <div class="col-lg-3">
-                    <select class="form-control statusSelect">
-                        <option value="" disabled selected>Status</option>
-                        <option value="pending">Pendente</option>
-                        <option value="canceled">Cancelado</option>
-                        <option value="approved">Aprovado</option>
-                        <option value="refunded">Reembolsado</option>
-                    </select>
-                </div>
-                <div class="col-lg-3">
-                    <select class="form-control dataSelect">
-                        <option value="" disabled selected>Data</option>
-                        <option value="asc">asc</option>
-                        <option value="desc">desc</option>
-
-                    </select>
-                </div>
-                @php
-                    $baseUrl = url('/');
-                    $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
-                @endphp
-                <div class="col-lg-7 text-right mt-2">
-                    <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
-                        href="{{ $urlWithdrawal }}">Saque</a>
+    <div class="table-responsive">
+        <div class="p-2 align-items-center border-bottom font-weight-bold">
+            <button class="" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <div class="d-flex justify-content-center align-items-center">
+                    <ion-icon name="options-outline"></ion-icon>
+                    Filtrar
+                <div>
+            </button>
+            <div class="collapse p-3" id="collapseExample">
+                <div class="card card-body">
+                    <div class="col-lg-2">
+                        <select class="form-control typeSelect">
+                            <option value="" disabled selected>Tipo</option>
+                            <option value="deposit">Deposito</option>
+                            <option value="post">Post</option>
+                            <option value="tip">Gorjeta</option>
+                            <option value="subscription">Inscrição</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control statusSelect">
+                            <option value="" disabled selected>Status</option>
+                            <option value="pending">Pendente</option>
+                            <option value="canceled">Cancelado</option>
+                            <option value="approved">Aprovado</option>
+                            <option value="refunded">Reembolsado</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-5 d-flex">
+                        <input type="date" class="mr-2" />
+                        -
+                        <input type="date" class="ml-2" />
+                    </div>
+                    <div class="col-lg-5 d-flex">
+                        <button>Limpar Filtro</button>
+                        <button>Filtrar</button>
+                    </div>
                 </div>
             </div>
+            <!-- @php
+            $baseUrl = url('/');
+            $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+            @endphp
+            <div class="col-lg-7 text-right mt-2">
+                <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
+                    href="{{ $urlWithdrawal }}">Saque</a>
+            </div> -->
+        </div>
 
-            <div class="row dashboardArea">
-                @php
-                    $totalFaturamento = 0;
-                    $totalAssinantes = 0;
-                @endphp
-                @foreach ($payments as $payment)
-                    @php
-                        $totalFaturamento += $payment->amount;
-                        if ($payment->type == 'subscription' && $payment->status == 'approved') {
-                            $totalAssinantes++;
-                        }
-                    @endphp
-                    <div class="col-lg-4 mb-4">
+        <div class="row dashboardArea">
+            @php
+            $totalFaturamento = 0;
+            $totalAssinantes = 0;
+            @endphp
+            @foreach ($payments as $payment)
+            @php
+            $totalFaturamento += $payment->amount;
+            if ($payment->type == 'subscription' && $payment->status == 'approved') {
+            $totalAssinantes++;
+            }
+            @endphp
+            <!-- <div class="col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
                                 @if ($payment->type == 'stream-access')
@@ -139,61 +150,59 @@
                                 </p>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-                <div class="d-flex align-items-center py-3 border-bottom font-weight-bold ">
-                    <div class="row mt-4">
-                        <div class="col-lg-6 mb-4">
-                            <div class="div4">
-                                <div id="metric4" class="cardMetric no-blur-effect">
-                                    <div class="headerCardMetric d-flex justify-content-between align-items-center">
-                                        <p class="font-weight-bolder dashCardTitle">Status</p>
-                                        <button class="metricsBtn" onclick="showMetrics(metric4)">
-                                            <ion-icon name="eye-outline"></ion-icon>
-                                        </button>
-                                    </div>
-                                    <p class="dashCardMetric">
-                                        {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
-                                    </p>
-                                    <p class="text-uppercase dashCardLabel">Total</p>
-                                </div>
+                    </div> -->
+            @endforeach
+            <div class="d-flex dashboardInfluencerArea align-items-center py-3 font-weight-bold">
+                <div class="row mt-4">
+                    <div class="dashboardInfluencer d-flex">
+                        <div class="card1 no-blur-effect">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="font-weight-bolder dashCardTitle mt-4">Faturamento</p>
+                                <ion-icon class="ml-2" name="receipt-outline"></ion-icon>
                             </div>
+                            <p class="dashCardMetric">
+                                {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
+                            </p>
+                            <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
+                                @switch($payment->status)
+                                @case('approved')
+                                <span class="badge bg-success">{{ ucfirst(__($payment->status)) }}</span>
+                                @break
+
+                                @case('initiated')
+                                @case('pending')
+                                <span class="badge bg-info">{{ ucfirst(__($payment->status)) }}</span>
+                                @break
+
+                                @case('canceled')
+                                @case('refunded')
+                                <span class="badge bg-warning">{{ ucfirst(__($payment->status)) }}</span>
+                                @break
+
+                                @case('partially-paid')
+                                <span class="badge bg-primary">{{ ucfirst(__($payment->status)) }}</span>
+                                @break
+
+                                @case('declined')
+                                <span class="badge bg-danger">{{ ucfirst(__($payment->status)) }}</span>
+                                @break
+                                @endswitch
+                            </p>
                         </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="div4">
-                                <div id="metric4" class="cardMetric no-blur-effect">
-                                    <div class="headerCardMetric d-flex justify-content-between align-items-center">
-                                        <p class="font-weight-bolder dashCardTitle">Faturamento</p>
-                                        <button class="metricsBtn" onclick="showMetrics(metric4)">
-                                            <ion-icon name="eye-outline"></ion-icon>
-                                        </button>
-                                    </div>
-                                    <p class="dashCardMetric">
-                                        {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
-                                    </p>
-                                    <p class="text-uppercase dashCardLabel">Total</p>
-                                </div>
+                        <div class="card2 no-blur-effect">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="font-weight-bolder dashCardTitle mt-4">Assinantes</p>
+                                <ion-icon class="ml-2" name="person-add-outline"></ion-icon>
                             </div>
-                        </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="div2">
-                                <div id="metric2" class="cardMetric no-blur-effect">
-                                    <div class="headerCardMetric d-flex justify-content-between align-items-center">
-                                        <p class="font-weight-bolder dashCardTitle">Assinantes</p>
-                                        <button class="metricsBtn" onclick="showMetrics(metric2)">
-                                            <ion-icon name="eye-outline"></ion-icon>
-                                        </button>
-                                    </div>
-                                    <p class="dashCardMetric">
-                                        {{ $totalAssinantes }}
-                                    </p>
-                                    <p class="text-uppercase dashCardLabel">Assinantes</p>
-                                </div>
-                            </div>
+                            <p class="dashCardMetric">
+                                {{ $totalAssinantes }}
+                            </p>
+                            <p class="text-uppercase dashCardLabel mt-4">Total</p>
                         </div>
                     </div>
                 </div>
-                <div class="pb-2 mt-5">
+            </div>
+            <!-- <div class="pb-2 mt-5">
                     <div class="pl-5 pr-5 indicationBox">
                         <p class="font-weight-bolder dashCardTitle">Link de Indicação:</p>
                         <div class="input-group p-2 justify-content-between">
@@ -214,8 +223,6 @@
 
 
 
-
-                            <!-- Adiciona a margem esquerda aqui -->
                             <div class="d-flex indicationBox">
                                 <input type="text" class="form-control text-center referralLink"
                                     value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input">
@@ -242,7 +249,6 @@
 
 
 
-                            <!-- Adiciona a margem esquerda aqui -->
                             <div class="d-flex indicationBox">
                                 <input type="text" class="form-control text-center referralLink disclosureInput"
                                     value="{{ $url }}" placeholder="{{ $urls['profile'] }}"
@@ -256,16 +262,16 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> -->
         </div>
+    </div>
     @else
-        <div class="row">
-            <div class="col text-center py-3">
-                <p>{{ __('No payments found') }}</p>
-                <button class="btn btn-primary" id="clearFilters">{{ __('Clear Filters') }}</button>
-            </div>
+    <div class="row">
+        <div class="col text-center py-3">
+            <p>{{ __('No payments found') }}</p>
+            <button class="btn btn-primary" id="clearFilters">{{ __('Clear Filters') }}</button>
         </div>
+    </div>
     @endif
 </div>
 

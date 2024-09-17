@@ -19,7 +19,7 @@
             </div>
         </div>
     </form>
-    <div class="ml-2 d-flex justify-content-center mt-2">
+    <div class="ml-2 justify-content-center mt-2 walletCarousel">
         <button class="btnOne btn btn-round  border ml-2"
             onclick="inputWithdrawalValue(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00

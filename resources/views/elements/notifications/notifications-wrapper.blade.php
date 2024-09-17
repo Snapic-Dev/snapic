@@ -2,9 +2,9 @@
     @if(count($notifications))
     @foreach($notifications as $notification)
             @include('elements.notifications.notification-box', ['notification' => $notification])
-            @if(!$loop->last)
+            <!-- @if(!$loop->last)
                 <hr class="my-2 ">
-            @endif
+            @endif -->
         @endforeach
         <div class="d-flex flex-row-reverse mt-1 mb-1 mr-4">
             {{ $notifications->onEachSide(1)->links() }}

@@ -11,7 +11,7 @@
             <label class="text-sm text-muted">Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00 para saque</label>
         </div> -->
     </div>
-    <div class="ml-2 d-flex justify-content-center mt-5">
+    <div class="ml-2 justify-content-center mt-5 walletCarousel">
         <button class="btnOne btn btn-round  border ml-2"
             onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
@@ -148,7 +148,7 @@
             <div class="modal fade" id="staticBackdrop2" data-backdrop="static" data-keyboard="false"
                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content mt-5">
                         <div class="modal-header">
                             <h5 class="modal-title p-2" id="staticBackdropLabel">Adicione cartão de
                                 crédito ou débito</h5>
