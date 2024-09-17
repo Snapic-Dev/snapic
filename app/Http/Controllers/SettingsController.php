@@ -130,6 +130,10 @@ class SettingsController extends Controller
 
                 break;
             case 'subscribers':
+                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                    abort(code: 404);
+                }
+
                 $subscribers = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->paginate(2);
                 $data['subscribers'] = $subscribers;
                 break;
@@ -165,6 +169,10 @@ class SettingsController extends Controller
                 $ordination = $request->input('dataFilter');
                 $sortOrder = $ordination ?: 'desc';
 
+                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                    abort(code: 404);
+                }
+
                 $payments = Transaction::with(['receiver', 'sender'])
                     ->where(function ($query) use ($userID) {
                         $query->where('sender_user_id', $userID)
@@ -196,6 +204,10 @@ class SettingsController extends Controller
                 $data['countries'] = Country::query()->where('name', '!=', 'All')->get();
                 break;
             case 'referrals':
+                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                    abort(code: 404);
+                }
+
                 if (getSetting('referrals.enabled')) {
                     if (empty($user->referral_code)) {
                         $user->referral_code = AuthServiceProvider::generateReferralCode(8);
@@ -205,6 +217,7 @@ class SettingsController extends Controller
                 }
                 break;
             case 'rates':
+
                 $data['offer'] = $user->offer;
                 break;
         }

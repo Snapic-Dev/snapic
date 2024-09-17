@@ -1,4 +1,4 @@
-<div class="ph-item border-0 conversation-loading-box d-none">
+<div class="ph-item border-0 conversation-loading-box m-3 d-none">
     <div class="ph-col-12">
         <div class="ph-row">
             <div class="ph-col-6 big"></div>

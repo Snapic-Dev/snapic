@@ -1,4 +1,4 @@
-<div class="ph-item border-top-0 border-right-0 border-left-0 mb-0 d-none conversation-header-loading-box">
+<div class="ph-item m-3 border-top-0 border-right-0 border-left-0 mb-0 d-none conversation-header-loading-box">
     <div class="ph-col-2">
         <div class="ph-avatar"></div>
     </div>

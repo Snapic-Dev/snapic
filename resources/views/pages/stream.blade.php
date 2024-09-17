@@ -89,7 +89,7 @@ Minify::javascript([
                     @endif
                 </div>
             </div>
-
+            @if($stream->user->id !== Auth::user()->id)
             <div>
                 <div class="giftArea d-flex mt-1">
                     <div style="width: 100%;">
@@ -105,7 +105,7 @@ Minify::javascript([
                     </div>
                 </div>
             </div>
-
+            @endif
             <div class="">
                 @include('elements.streams.stream-chat')
             </div>
@@ -152,7 +152,7 @@ Minify::javascript([
 
             const swiper = new Swiper('.swiper-container', {
                 slidesPerView: 10,
-                spaceBetween: 70,
+                spaceBetween: 85,
                 loop: true,
                 autoplay: {
                     delay: 2500,
@@ -215,7 +215,6 @@ Minify::javascript([
             });
 
             const res = await response.json();
-            console.log(res);
             if (res.status === 'success') {
                 launchToast("success", trans("Success"), res.message);
             } else {
