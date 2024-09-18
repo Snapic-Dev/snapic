@@ -523,11 +523,14 @@ class StreamsController extends Controller
 
             if ($wallet->total >= $giftValue->value) {
                 $wallet->total -= $giftValue->value;
+
                 $forWalletUser->total += $giftValue->value;
+                $wallet->save();
+                $forWalletUser->save();
             } else {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Saldo Insuficiente.',
+                    'message' => 'Saldo insuficiente.',
                 ]);
             }
 
@@ -546,16 +549,9 @@ class StreamsController extends Controller
             $forWalletUser->save();
             $transaction->save();
 
-            $this->sendGiftMessage($IdStream, $giftValue, $userId, $streamUser->user_id);
+            $res = $this->sendGiftMessage($IdStream, $giftValue, $userId, $streamUser->user_id);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Presente enviado com sucesso.',
-                'data' => [
-                    'remainingBalance' => $wallet->total,
-                    'recipientNewBalance' => $forWalletUser->total,
-                ],
-            ]);
+            return $res;
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',
@@ -566,9 +562,6 @@ class StreamsController extends Controller
 
     protected function sendGiftMessage($streamId, $giftValue, $senderUserId, $recipientUserId)
     {
-        $sender = User::find($senderUserId);
-        $recipient = User::find($recipientUserId);
-
         $messageText = "<span class='chat-message-content'><i style='color: #673ab6;'>enviou 1x </i><img <i style='width: 20px; height: 20px; margin-left: 7px' src='{$giftValue->imagem}'/></span>";
 
         $message = StreamMessage::create([
@@ -583,6 +576,14 @@ class StreamsController extends Controller
             ->render();
 
         broadcast(new NewStreamChatMessage($streamId, $renderedMessage, $senderUserId))->toOthers();
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Presente enviado com sucesso.',
+            'value' => $giftValue->value,
+            'dataHtml' => $renderedMessage
+        ]);
     }
 
     public function giftRegister()

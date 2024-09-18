@@ -121,6 +121,7 @@ Minify::javascript([
 <script>
     document.addEventListener('DOMContentLoaded', async function() {
         try {
+            Stream.TesteLog();
             const fetchGifts = async () => {
                 const response = await fetch('/giftDates');
                 if (!response.ok) {
@@ -217,6 +218,19 @@ Minify::javascript([
             const res = await response.json();
             if (res.status === 'success') {
                 launchToast("success", trans("Success"), res.message);
+                Stream.appendCommentToStreamChat(res.dataHtml);
+                Stream.updateChatNoCommentsLabel();
+                Stream.resetTextAreaHeight();
+
+                // const wallets = document.querySelectorAll('.wallet-total-amount');
+
+                // wallets.forEach(wallet => {
+                //     let creditText = wallet.innerHTML.split("$")[1];
+                //     let credit = parseFloat(creditText);
+                //     let value = parseFloat(res.value)
+                //     wallet.innerHTML = `R$${(credit - value).toFixed(2)}`;
+                // });
+
             } else {
                 launchToast("danger", trans("Error"), res.message);
             }
