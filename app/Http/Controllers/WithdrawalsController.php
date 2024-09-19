@@ -81,6 +81,18 @@ class WithdrawalsController extends Controller
                     return response()->json(['success' => false, 'message' => __('Você não pode sacar esse valor, tente um valor menor')]);
                 }
 
+
+                $todayWithdrawal = Withdrawal::where('user_id', $user->id)
+                    ->whereDate('created_at', now()->toDateString())
+                    ->exists();
+
+                if ($todayWithdrawal) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => __('Você só pode realizar um saque por dia.')
+                    ], 400);
+                }
+
                 $fee = 0;
                 if (getSetting('payments.withdrawal_allow_fees') && floatval(getSetting('payments.withdrawal_default_fee_percentage')) > 0) {
                     $fee = (floatval(getSetting('payments.withdrawal_default_fee_percentage')) / 100) * floatval($amount);
