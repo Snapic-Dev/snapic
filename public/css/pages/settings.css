@@ -154,7 +154,14 @@ select {
 .dashCardTitle {
   font-size: 16px;
   color: black;
-  font-weight: bold;
+  font-weight: lighter;
+}
+
+.nothingData {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .dashCardMetric {
@@ -222,36 +229,60 @@ ion-icon {
 
 
 .indicationBox {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  min-width: 300px;
+}
+
+.referralArea {
+  width: 100%;
 }
 
 .referralLink {
   padding: 22px;
-  background-color: #f9f9f9;
-  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
   border-radius: 25px;
-  min-width: 100%;
-  border: none;
-  color: #683ab7a8;
+  font-size: 14px;
+  border: 1px solid #673ab7;
   font-weight: 600;
+  color: #683ab7;
 }
 
-.withdrawalBtnDash {
-  width: 130px;
+.referralLink[readonly] {
+  background-color: transparent; /* Define o fundo como branco */
 }
+
+
+.withdrawalBtnDash {
+  background-color: #683ab7;
+  color: white;
+  height: 40px;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 15px;
+  border-radius:25px;
+}
+
+.withdrawalBtnDash:hover {
+  color: white;
+}
+
 
 .typeSelect,
 .statusSelect {
-  width: 200px;
+  width: 100%;
+  font-size: 15px;
 }
 
 .btnCopy {
-  width: 100%;
+  position: absolute;
+  right: 40px; /* Distância do botão em relação ao input */
+  top: 50%; /* Centraliza verticalmente */
+  transform: translateY(-50%); /* Ajusta o alinhamento vertical */
   background-color: transparent;
   border: none;
   box-shadow: none;
   color: #673ab7;
+  cursor: pointer; /* Altera o cursor para indicar que é clicável */
 }
 
 .btnCopy:hover {
@@ -275,17 +306,6 @@ ion-icon {
   border-radius: 25px;
 }
 
-.btnFilter {
-  background-color: #673ab7;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  height: 40.39px;
-  width: 100px;
-  font-weight: 600;
-  padding: 8px;
-  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
-}
 
 .btnAcordion {
   background-color: transparent;
@@ -299,42 +319,55 @@ ion-icon {
 .dashboardInfluencerArea {
   display: flex;
   justify-content: center;
+  height: 480px; 
   width: 100vw;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.148);
+  flex-direction: column;
 }
+
 .dashboardInfluencer {
-  background-color: green;
-  width: 550px;
+  width: 100%;
+  height: 200px;
+  gap: 5px;
 }
 
 .card1 {
-  width: 50%;
-  background-color:#673AB7;
+  width: 100%;
+  height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-left: 2px solid #683ab7;
+  background-color: #683ab70a;
 }
 
 .card1 p {
-  color: white;
+    color:#683ab7;
 }
 
 .card1 ion-icon {
-  color: white;
+    color: #683ab7;
 }
 
 .card2 {
-  width: 50%;
-  background-color:rgb(253, 253, 253);
+  width: 100%;
+  height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  border-left: 2px solid #683ab7;
+  margin-left: 40px;
+  margin-right: 40px;
+  background-color: #683ab70a;
 }
 
 .card2 p {
-  color: #673AB7;
+  color: #683ab7;
 }
 
 
@@ -345,5 +378,136 @@ ion-icon {
 }
 
 .collapse {
-  width: 400px;
+  width: 100%
+}
+
+.filterBar {
+  display: flex;
+  gap:10px;
+  height: 40px;
+  width: 25vw;
+}
+
+.filterArea {
+  height: 40px;
+  width: 100%;
+  gap: 40px;
+}
+
+.badge {
+  border-radius: 25px;
+  font-size: 8px;
+}
+
+.badgeFilterStatus,
+.badgeFilterType {
+  padding: 5px;
+  width: 130px;
+  color: white;
+  border-radius: 20px;
+  height: 40px;
+  display: none;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;;
+}
+
+.badgeFilterType {
+  border: 1px solid #673ab7;
+  color: #673ab7;
+}
+
+.badgeFilterData {
+  padding: 5px;
+  width: 170px;
+  color: #673ab7;
+  border-radius: 20px;
+  height: 40px;
+  display: none;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #673ab7;
+}
+
+.filterBtn {
+  padding: 10px;
+  background-color:#673ab7;
+  border: none;
+  border-radius: 20px;
+}
+
+.filterBtn ion-icon {
+  color: white;
+}
+
+.cardFilter {
+  display: flex;
+}
+
+.btnCleanFilter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px;
+  height:40px;
+  width:40px;
+  background-color: transparent;
+  border:1px solid #673ab7;
+}
+
+.btnFilterArea {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: end;
+}
+
+
+.typeArea {
+  width: 100%;
+}
+
+.dateArea {
+  width: 100%;
+  display: flex;
+  gap:15px
+}
+
+.statusArea {
+  width: 100%;
+}
+
+.btnFilter {
+  border-radius:25px;
+  font-size: 14px;
+  width: 100px;
+  border: none;
+  background-color: #673ab7;
+  color: white;
+}
+
+
+.filterInput {
+  width: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.186);
+  color: rgba(0, 0, 0, 0.847);
+  padding: 5px;
+  font-weight: 300;
+  border-radius: 5px;
+}
+
+.icon-white {
+  color: white; 
+  font-size: 20px;
+}
+
+.headerCard {
+  width: 100%;
+  align-items: center;
+}
+
+.withdrawalIcon {
+  color: white;
+  font-size: 16px;
 }

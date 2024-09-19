@@ -1,17 +1,53 @@
+<?php
+
+use App\Model\ReferralCodeUsage;
+use App\Model\UserList;
+use App\Model\Reward;
+use App\Model\Subscription;
+
+?>
+
+
+@php
+    $initialDate = request()->input('initialDate');
+    $endDate = request()->input('endDate');
+@endphp
+
+
 <div class="container mt-2">
     @if (count($payments))
     <div class="table-responsive">
-        <div class="p-2 align-items-center border-bottom font-weight-bold">
-            <button class="" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                <div class="d-flex justify-content-center align-items-center">
-                    <ion-icon name="options-outline"></ion-icon>
-                    Filtrar
-                <div>
-            </button>
+        <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
+            <div class="filterArea d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="d-flex justify-content-center align-items-center">
+                        <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
+                        <div>
+                    </button>
+                    <div class="d-flex filterBar ml-4">
+                        <p class="badgeFilterStatus justify-content-center">Pendente</p>
+                        <p class="badgeFilterType justify-content-center">Gift</p>
+                        <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
+                    </div>
+                </div>
+                @php
+                    $baseUrl = url('/');
+                    $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+                @endphp
+                <div class="mt-2 d-flex align-items-center">
+                    <a class="withdrawalBtnDash d-flex justify-content-center align-items-center"
+                        href="{{ $urlWithdrawal }}">
+                        Sacar
+                        <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
+                    </a>
+                </div>
+            </div>
             <div class="collapse p-3" id="collapseExample">
-                <div class="card card-body">
-                    <div class="col-lg-2">
-                        <select class="form-control typeSelect">
+                <form class="card card-body cardFilter">
+                    @csrf
+                    <div class="typeArea">
+                        <select class="form-control typeSelect" name="type">
                             <option value="" disabled selected>Tipo</option>
                             <option value="deposit">Deposito</option>
                             <option value="post">Post</option>
@@ -19,25 +55,27 @@
                             <option value="subscription">Inscrição</option>
                         </select>
                     </div>
-                    <div class="col-lg-3">
-                        <select class="form-control statusSelect">
+                    <!-- <div class="statusArea">
+                        <select class="form-control statusSelect" name="status">
                             <option value="" disabled selected>Status</option>
                             <option value="pending">Pendente</option>
                             <option value="canceled">Cancelado</option>
                             <option value="approved">Aprovado</option>
                             <option value="refunded">Reembolsado</option>
                         </select>
+                    </div> -->
+                    <div class="dateArea d-flex">
+                        <input class="filterInput" type="date" class="mr-2" name="initialDate"/>
+                    
+                        <input class="filterInput"type="date" class="ml-2" name="endDate"/>
                     </div>
-                    <div class="col-lg-5 d-flex">
-                        <input type="date" class="mr-2" />
-                        -
-                        <input type="date" class="ml-2" />
+                    <div class="d-flex btnFilterArea">
+                        <button class="btnCleanFilter">
+                            <ion-icon name="trash-bin-outline"></ion-icon>
+                        </button>
+                        <button class="btnFilter" type="submit "onclick="generateQuery()">Filtrar</button>
                     </div>
-                    <div class="col-lg-5 d-flex">
-                        <button>Limpar Filtro</button>
-                        <button>Filtrar</button>
-                    </div>
-                </div>
+                </form>
             </div>
             <!-- @php
             $baseUrl = url('/');
@@ -153,17 +191,17 @@
                     </div> -->
             @endforeach
             <div class="d-flex dashboardInfluencerArea align-items-center py-3 font-weight-bold">
-                <div class="row mt-4">
-                    <div class="dashboardInfluencer d-flex">
+                <div class="row mt-4 w-100">
+                    <div class="dashboardInfluencer mt-4 d-flex">
                         <div class="card1 no-blur-effect">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="font-weight-bolder dashCardTitle mt-4">Faturamento</p>
+                            <div class="d-flex headerCard">
+                                <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Faturamento</p>
                                 <ion-icon class="ml-2" name="receipt-outline"></ion-icon>
                             </div>
                             <p class="dashCardMetric">
                                 {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
                             </p>
-                            <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
+                            <!-- <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
                                 @switch($payment->status)
                                 @case('approved')
                                 <span class="badge bg-success">{{ ucfirst(__($payment->status)) }}</span>
@@ -187,24 +225,89 @@
                                 <span class="badge bg-danger">{{ ucfirst(__($payment->status)) }}</span>
                                 @break
                                 @endswitch
-                            </p>
+                            </p> -->
                         </div>
                         <div class="card2 no-blur-effect">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="font-weight-bolder dashCardTitle mt-4">Assinantes</p>
-                                <ion-icon class="ml-2" name="person-add-outline"></ion-icon>
+                                <div class="d-flex headerCard">
+                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Indicações</p>
+                                    <ion-icon class="ml-2" name="rocket-outline"></ion-icon>
+                                </div>
+                                @php
+                                    $userId = Auth::user()->id; 
+
+                                    $totalIndications=0;
+                                    $totalIndicationsAmount=0;
+
+                                    if($initialDate && $endDate) {
+                                        $totalIndicationsAmount = Reward::where('to_user_id', $userId)
+                                        ->whereDate('created_at', '>=', $initialDate)
+                                        ->whereDate('created_at', '<=', $endDate)
+                                        ->sum('amount');    
+
+                                        $totalIndications = ReferralCodeUsage::where('used_by', $userId)
+                                        ->whereDate('created_at', '>=', $initialDate)
+                                        ->whereDate('created_at', '<=', $endDate)
+                                        ->count();
+                                    }     
+                                @endphp
+                                 <p class="dashCardMetric">
+                                    {{ $totalIndicationsAmount }}
+                                </p>
+                                <p class="">
+                                    QTD: {{ $totalIndications }}
+                                </p>
                             </div>
-                            <p class="dashCardMetric">
-                                {{ $totalAssinantes }}
-                            </p>
-                            <p class="text-uppercase dashCardLabel mt-4">Total</p>
-                        </div>
                     </div>
                 </div>
+                    <div class="row w-100">
+                        <div class="dashboardInfluencer mt-4 d-flex">
+                            <div class="card2 no-blur-effect">
+                                <div class="d-flex headerCard">
+                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Assinantes</p>
+                                    <ion-icon class="ml-2" name="person-add-outline"></ion-icon>
+                                </div>
+                                @php
+                                   $userId = Auth::user()->id; 
+                                   $totalSubscription=0;
+
+                                   if($initialDate && $endDate) {
+                                    $totalSubscription = Subscription::where('recipient_user_id', $userId)
+                                        ->where('status','completed')
+                                        ->whereBetween('expires_at',[$initialDate,$endDate])
+                                        ->count();
+                                    }
+                                @endphp
+                                <p class="dashCardMetric">
+                                    {{ $totalSubscription }}
+                                </p>
+                            </div>
+                            <div class="card2 no-blur-effect">
+                                <div class="d-flex headerCard">
+                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Seguidores</p>
+                                    <ion-icon class="ml-2" name="people-outline"></ion-icon>
+                                </div>
+                                @php
+                                   $userId = Auth::user()->id; 
+                                   $totalFollowers=0;
+
+                                   if($initialDate && $endDate) {
+                                        $totalFollowers= UserList::where('user_id', $userId)
+                                        ->where('name', "Following")
+                                        ->whereDate('created_at', '>=', $initialDate)
+                                        ->whereDate('created_at', '<=', $endDate)
+                                        ->count();
+                                    }
+                                @endphp
+                                <p class="dashCardMetric">
+                                    {{ $totalFollowers }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
             </div>
-            <!-- <div class="pb-2 mt-5">
+            <div class="pb-2 mt-5 referralArea">
                     <div class="pl-5 pr-5 indicationBox">
-                        <p class="font-weight-bolder dashCardTitle">Link de Indicação:</p>
+                        <p class="dashCardTitle">Link de Indicação:</p>
                         <div class="input-group p-2 justify-content-between">
                             @php
                                 $baseUrl = url('/');
@@ -225,8 +328,8 @@
 
                             <div class="d-flex indicationBox">
                                 <input type="text" class="form-control text-center referralLink"
-                                    value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input">
-                                <button class="btn btn-primary btn-block rounded btnCopy" type="button"
+                                    value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input" readonly>
+                                <button class=" btnCopy" type="button"
                                     id="copy-button" data-toggle="tooltip" data-placement="bottom"
                                     onclick="copyCode('.referralLink')">
                                     <ion-icon name="copy-outline"
@@ -236,7 +339,7 @@
                         </div>
                     </div>
                     <div class="pl-5 pr-5 indicationBox mt-4">
-                        <p class="font-weight-bolder dashCardTitle">Link de Divulgação:</p>
+                        <p class="dashCardTitle">Link de Divulgação:</p>
                         <div class="input-group p-2 justify-content-between">
                             @php
                                 $baseUrl = url('/');
@@ -252,8 +355,8 @@
                             <div class="d-flex indicationBox">
                                 <input type="text" class="form-control text-center referralLink disclosureInput"
                                     value="{{ $url }}" placeholder="{{ $urls['profile'] }}"
-                                    id="copy-input">
-                                <button class="btn btn-primary btn-block rounded btnCopy" type="button"
+                                    id="copy-input" readonly>
+                                <button class="btnCopy" type="button"
                                     id="copy-button" data-toggle="tooltip" data-placement="bottom"
                                     onclick="copyCode('.disclosureInput')">
                                     <ion-icon name="copy-outline"
@@ -262,14 +365,71 @@
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
         </div>
     </div>
     @else
+    <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
+            <div class="filterArea d-flex align-items-center">
+                <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <ion-icon name="options-outline"></ion-icon>
+                    <div>
+                </button>
+                <div class="d-flex filterBar">
+                    <p class="badgeFilterStatus justify-content-center">Pendente</p>
+                    <p class="badgeFilterType justify-content-center">Gift</p>
+                    <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
+                </div>
+            </div>
+            <div class="collapse p-3" id="collapseExample">
+                <div class="card card-body cardFilter">
+                    <div class="typeArea">
+                        <select class="form-control typeSelect">
+                            <option value="" disabled selected>Tipo</option>
+                            <option value="deposit">Deposito</option>
+                            <option value="post">Post</option>
+                            <option value="tip">Gorjeta</option>
+                            <option value="subscription">Inscrição</option>
+                        </select>
+                    </div>
+                    <div class="statusArea">
+                        <select class="form-control statusSelect">
+                            <option value="" disabled selected>Status</option>
+                            <option value="pending">Pendente</option>
+                            <option value="canceled">Cancelado</option>
+                            <option value="approved">Aprovado</option>
+                            <option value="refunded">Reembolsado</option>
+                        </select>
+                    </div>
+                    <div class="dateArea d-flex">
+                        <input class="filterInput" type="date" class="mr-2" />
+                    
+                        <input class="filterInput"type="date" class="ml-2" />
+                    </div>
+                    <div class="d-flex btnFilterArea">
+                        <button class="btnCleanFilter">
+                            <ion-icon name="trash-bin-outline"></ion-icon>
+                        </button>
+                        <button class="btnFilter" onclick="generateQuery()">Filtrar</button>
+                    </div>
+                </div>
+            </div>
+            <!-- @php
+            $baseUrl = url('/');
+            $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+            @endphp
+            <div class="col-lg-7 text-right mt-2">
+                <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
+                    href="{{ $urlWithdrawal }}">Saque</a>
+            </div> -->
+    </div>
     <div class="row">
-        <div class="col text-center py-3">
-            <p>{{ __('No payments found') }}</p>
-            <button class="btn btn-primary" id="clearFilters">{{ __('Clear Filters') }}</button>
+        <div class="col text-center py-3 mt-5 nothingData">
+            <p>{{ __('Nenhum dado encontrado') }}</p>
+            <button class="btnCleanFilter" onclick="cleanFilter()">
+                <ion-icon name="trash-bin-outline"></ion-icon>
+            </button>
         </div>
     </div>
     @endif
@@ -282,6 +442,9 @@
     let statusSelect = document.querySelector('.statusSelect');
     let dataSelect = document.querySelector('.dataSelect');
     let clearFiltersButton = document.getElementById('clearFilters');
+
+    let badgeFilterType= document.querySelector('.badgeFilterType');
+    let badgeFilterStatus= document.querySelector('.badgeFilterStatus');
 
     function copyCode(selector) {
         let linkRef = document.querySelector(selector).value;
@@ -317,9 +480,9 @@
             params.append('status', statusSelect.value);
         }
 
-        if (dataSelect.value !== "") {
-            params.append('dataFilter', dataSelect.value);
-        }
+        // if (dataSelect.value !== "") {
+        //     params.append('dataFilter', dataSelect.value);
+        // }
 
         const queryString = params.toString();
 
@@ -328,22 +491,84 @@
         window.location.href = url;
     }
 
-    typeSelect.addEventListener('change', generateQuery);
-    statusSelect.addEventListener('change', generateQuery);
-    dataSelect.addEventListener('change', generateQuery);
+    function updateBadgesFromQuery() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
 
-    clearFiltersButton.addEventListener('click', function() {
-        window.location.href = `${window.location.origin}/my/settings/payments`;
-    });
+            let type = urlParams.get('type');
+            switch (type) {
+                case "deposit":
+                    type = "Deposito"
+                break;
+                case "tip":
+                    type="Gorjeta"
+                break;
+                case "subscription":
+                    type="Inscrições"
+                break;
+                case "post":
+                    type="Post"
+                break;
+            }
 
-    function generatePefilLink() {
-        const username = `Auth::user()->username`;
-        const baseUrl = `${window.location.origin}/${username}`;
-        const url = `${baseUrl}?${queryString}`;
-        window.location.href = url;
+            let status = urlParams.get('status');
+            switch (status) {
+                case "pending":
+                    status = "Pendente"
+                    badgeFilterStatus.style.backgroundColor="#17C1E8"
+                break;
+                case "canceled":
+                    status ="Cancelado"
+                     badgeFilterStatus.style.backgroundColor="#EA0606";
+                break;
+                case "approved":
+                    status ="Aprovado"
+                     badgeFilterStatus.style.backgroundColor="#82D616"; 
+                break;
+                case "refunded":
+                    status ="Reembolsado"
+                     badgeFilterStatus.style.backgroundColor="#ffc107";
+                break;
+            }
+
+            if (type !== null && type !== "") {
+                badgeFilterType.innerText = type;
+                badgeFilterType.style.display = "flex";
+            } else {
+                badgeFilterType.style.display = "none";
+            }
+
+            if (status !== null && status !== "") {
+                badgeFilterStatus.innerText = status;
+                badgeFilterStatus.style.display = "flex";
+            } else {
+                badgeFilterStatus.style.display = "none"; 
+            }
     }
 
-    window.onload = function() {
-        generateProfileLink();
+    window.onload = updateBadgesFromQuery;
+
+    // typeSelect.addEventListener('change', generateQuery);
+    // statusSelect.addEventListener('change', generateQuery);
+    // dataSelect.addEventListener('change', generateQuery);
+
+    let btnCleanFilter=document.querySelector('.btnCleanFilter');
+
+    function cleanFilter() {
+        window.location.href = `${window.location.origin}/my/settings/payments`;
+        badgeFilterType.style.display = "none";
+        badgeFilterStatus.style.display = "none";
     };
+
+    btnCleanFilter.addEventListener('click',cleanFilter);
+    // function generatePefilLink() {
+    //     const username = `Auth::user()->username`;
+    //     const baseUrl = `${window.location.origin}/${username}`;
+    //     const url = `${baseUrl}?${queryString}`;
+    //     window.location.href = url;
+    // }
+
+    // window.onload = function() {
+    //     generateProfileLink();
+    // };
 </script>
