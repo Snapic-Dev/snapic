@@ -2,28 +2,28 @@
     <div class="metrics-container">
         <div class="chartGraphic row mt-3">
             @include('elements.admin.trend_card', [
-                'name' => 'newUsersTrend',
-                'chart' => [
-                    'size' => 100,
-                    'color_start' => '#8B3BA460',
-                    'color_stop' => '#8B3BA460',
-                    'border_color' => '#8B3BA4',
-                    'point_radius' => 10,
-                    'total' => false,
-                ],
-                'route' => 'admin.metrics.new.users.trend', // Alteração aqui
-                'size' => 'col-12 col-lg-12 mb-4',
-                'title' => '',
-                'form' => [
-                    'trans' => [
-                        ucfirst(trim(str_replace('1 ', '', trans_choice('day', 1, ['number' => 1])))),
-                        ucfirst(trim(str_replace('2 ', '', trans_choice('days', 2, ['number' => 2])))),
-                    ],
-                    'function' => 'count',
-                    'unit' => 'day',
-                    'ranges' => [7, 14, 30, 90, 180],
-                    'range' => 7,
-                ],
+            'name' => 'newUsersTrend',
+            'chart' => [
+            'size' => 100,
+            'color_start' => '#8B3BA460',
+            'color_stop' => '#8B3BA460',
+            'border_color' => '#8B3BA4',
+            'point_radius' => 10,
+            'total' => false,
+            ],
+            'route' => 'admin.metrics.new.users.trend', // Alteração aqui
+            'size' => 'col-12 col-lg-12 mb-4',
+            'title' => '',
+            'form' => [
+            'trans' => [
+            ucfirst(trim(str_replace('1 ', '', trans_choice('day', 1, ['number' => 1])))),
+            ucfirst(trim(str_replace('2 ', '', trans_choice('days', 2, ['number' => 2])))),
+            ],
+            'function' => 'count',
+            'unit' => 'day',
+            'ranges' => [7, 14, 30, 90, 180],
+            'range' => 7,
+            ],
             ])
         </div>
         <div class="mt-2 mb-2">
@@ -39,7 +39,8 @@
                         </button>
                     </div>
                     <p class="dashCardMetric">
-                        {{ \App\Providers\DashboardServiceProvider::getLast24HoursRegisteredUsersCount() }}</p>
+                        {{ \App\Providers\DashboardServiceProvider::getLast24HoursRegisteredUsersCount() }}
+                    </p>
                     <p class="text-uppercase dashCardLabel">Usuários</p>
                 </div>
             </div>
@@ -52,7 +53,8 @@
                         </button>
                     </div>
                     <p class="dashCardMetric">
-                        {{ \App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount() }}</p>
+                        {{ \App\Providers\DashboardServiceProvider::getActiveSubscriptionsCount() }}
+                    </p>
                     <p class="text-uppercase dashCardLabel">Assinantes</p>
                 </div>
             </div>
@@ -95,7 +97,9 @@
                             <i class=" voyager-eye"></i>
                         </button>
                     </div>
-                    <p class="dashCardMetric">{{ \App\Providers\DashboardServiceProvider::comissionPaid() }}</p>
+                    <p class="dashCardMetric">
+                        {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(\App\Providers\DashboardServiceProvider::comissionPaid()) }}
+                    </p>
                     <p class="text-uppercase dashCardLabel">Total</p>
                     <!-- <p>{{ __('Post attachments') }}: {{ \App\Providers\DashboardServiceProvider::getPostAttachmentsCount() }}</p>
                         <p>{{ __('Post comments') }}: {{ \App\Providers\DashboardServiceProvider::getPostCommentsCount() }}</p>
@@ -138,18 +142,19 @@
                     </thead>
                     <tbody>
                         @php
-                            $topInfluencers = \App\Providers\DashboardServiceProvider::topInfluencerList();
+                        $topInfluencers = \App\Providers\DashboardServiceProvider::topInfluencerList();
                         @endphp
                         @foreach ($topInfluencers as $index => $influencer)
-                            <tr>
-                                <td class="rankingNumber">{{ $index + 1 }}</td>
-                                <td class="col-name">{{ $influencer->name }}</td>
-                                <td class="col-transaction">
-                                    {{ \App\Providers\DashboardServiceProvider::getSubscriberRank($influencer->id) }}
-                                </td>
-                                <td class="col-totalEarned">R$
-                                    {{ number_format($influencer->total_earned, 2, ',', '.') }}</td>
-                            </tr>
+                        <tr>
+                            <td class="rankingNumber">{{ $index + 1 }}</td>
+                            <td class="col-name">{{ $influencer->name }}</td>
+                            <td class="col-transaction">
+                                {{ \App\Providers\DashboardServiceProvider::getSubscriberRank($influencer->id) }}
+                            </td>
+                            <td class="col-totalEarned">R$
+                                {{ number_format($influencer->total_earned, 2, ',', '.') }}
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>

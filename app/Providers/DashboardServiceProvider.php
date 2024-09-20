@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-
+use App\Model\Agreement;
 use App\Model\Attachment;
 use App\Model\Post;
 use App\Model\PostComment;
 use App\Model\Reaction;
+use App\Model\Reward;
 use App\Model\Subscription;
 use App\Model\Transaction;
 use App\Model\Wallet;
@@ -44,14 +45,12 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getPostsCount() /*dash*/
     {
-
         $date = request()->query('date');
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
+        $query = Post::when($date, function ($query, $date) {
+            return $query->whereDate('created_at', $date);
+        });
 
-        $query = Post::whereDate('created_at', $date);
         return $query->count();
     }
 
@@ -91,14 +90,12 @@ class DashboardServiceProvider extends ServiceProvider
     {
         $date = request()->query('date');
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
-
         $query = Subscription::query()
-            ->whereDate('created_at', $date)
-            ->whereColumn('expires_at','>','created_at')
-            ->where('status','completed');
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('expires_at', '>=', $date)->whereDate('created_at', '<=', $date);
+            })
+            ->whereColumn('expires_at', '>', 'created_at')
+            ->where('status', 'completed');
         return $query->count();
     }
 
@@ -118,16 +115,12 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getLast24HoursRegisteredUsersCount() /*dash*/
     {
-
         $date = request()->query('date');
+        $query = User::when($date, function ($query, $date) {
+            return $query->whereDate('created_at', $date);
+        })->count();
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
-
-        $query = User::whereDate('created_at', $date);
-
-        return $query->count();
+        return $query;
     }
 
     /**
@@ -184,41 +177,46 @@ class DashboardServiceProvider extends ServiceProvider
     {
 
         $date = request()->query('date');
+        $query = Transaction::where('status', Transaction::APPROVED_STATUS)
+            ->where('type', '!=', Transaction::DEPOSIT_TYPE)
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('created_at', $date);
+            })
+            ->sum('amount');
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
-
-        $query = Transaction::query()
-            ->where('status', '=', Transaction::APPROVED_STATUS)
-            ->where('type', '=', Transaction::DEPOSIT_TYPE)
-            ->whereDate('created_at', $date);
-
-
-        return $query->sum('amount');
+        return
+            number_format($query, 2, ',', '.');
     }
 
     public static function influencerAmount() /*dash*/
     {
-
         $date = request()->query('date');
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
-
         return User::query()
-            ->where('paid_profile', 1)
-            ->whereDate('created_at', $date)
+            ->where('role_id', 3)
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('created_at', $date);
+            })
             ->count();
     }
 
     public static function topInfluencerList()
     {
-        $topInfluencers = User::where('paid_profile', 1)
-            ->select('users.*', DB::raw('COALESCE(SUM(CASE WHEN transactions.status = \'approved\' THEN transactions.amount ELSE 0 END), 0) as total_earned'))
-            ->leftJoin('transactions', 'users.id', '=', 'transactions.recipient_user_id')
-            ->groupBy('users.id')
+        $topInfluencers = User::where('role_id', 3)
+            ->leftJoin(DB::raw('
+        (SELECT recipient_user_id, SUM(CASE 
+            WHEN status = "approved" AND type != "deposit" 
+            THEN amount ELSE 0 END) as total_transactions 
+        FROM transactions 
+        GROUP BY recipient_user_id) as t'), 'users.id', '=', 't.recipient_user_id')
+            ->leftJoin(DB::raw('
+        (SELECT to_user_id, SUM(amount) as total_rewards 
+        FROM rewards 
+        GROUP BY to_user_id) as r'), 'users.id', '=', 'r.to_user_id')
+            ->select('users.id', 'users.name', 'users.email', DB::raw('
+        COALESCE(t.total_transactions, 0) + COALESCE(r.total_rewards, 0) as total_earned
+    '))
+            ->groupBy('users.id', 'users.name', 'users.email', 't.total_transactions', 'r.total_rewards')
             ->orderByDesc('total_earned')
             ->limit(10)
             ->get();
@@ -235,25 +233,20 @@ class DashboardServiceProvider extends ServiceProvider
         return $subscribers;
     }
 
-    public static function comissionPaid() 
+    public static function comissionPaid()
     {
         $date = request()->query('date');
 
-        if ($date == "") {
-            $date = date('Y-m-d');
-        }
-
-        // Cria a consulta para calcular o total dos valores retirados
-        $totalAmount = Withdrawal::whereIn('user_id', function ($query) use ($date) {
-            $query->select('id')
-                ->from('users')
-                ->where('paid_profile', true)
-                ->where('status', 'approved')
-                ->whereDate('created_at', $date);
-        })
+        $rewards = Reward::sum('amount');
+        $agreements = Agreement::sum('amount');
+        $transactions = Transaction::where('status', Transaction::APPROVED_STATUS)
+            ->where('type', '!=', Transaction::DEPOSIT_TYPE)
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('created_at', $date);
+            })
             ->sum('amount');
 
-        return $totalAmount;
+        return number_format((float) $rewards + (float) $transactions - $agreements, 2, ',', '.');
     }
 
     public function getMetrics(Request $request)
