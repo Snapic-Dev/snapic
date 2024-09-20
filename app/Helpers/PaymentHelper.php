@@ -81,7 +81,7 @@ class PaymentHelper
 
     private function initializeCertificado()
     {
-        $this->certificado = Storage::disk('local')->get('certs/cert-production.p12');
+        $this->certificado = Storage::disk('local')->get('certs/producao-594018-producao-snapic.p12');
         if ($this->certificado === false) {
             throw new \Exception('Erro ao carregar o certificado.');
         }
@@ -104,8 +104,8 @@ class PaymentHelper
             'base_uri' => $this->gateway_url,
             'http_errors' => false,
             'verify' => false,
-            'cert' => ['certs/cert-production.p12', ''],
-            'ssl_key' => ['certs/cert-production.p12', '']
+            'cert' => ['certs/producao-594018-producao-snapic.p12', ''],
+            'ssl_key' => ['certs/producao-594018-producao-snapic.p12', '']
         ]);
     }
 
@@ -150,8 +150,8 @@ class PaymentHelper
                 "nome" => $user->name
             ],
 
-            "valor" => ['original' => '0.01'], // Valor de exemplo
-            // "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
+            //"valor" => ['original' => '0.01'], // Valor de exemplo
+            "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
             "chave" => $this->credentials['client_identifier'],
             "solicitacaoPagador" => "Compra de créditos no Snapic.",
         ];
@@ -178,8 +178,8 @@ class PaymentHelper
     private function prepareTransferData($amount, $identifier)
     {
         return [
-            // 'valor' => number_format($amount, 2, '.', ''),
-            'valor' => '0.01', // Valor de exemplo
+            'valor' => number_format($amount, 2, '.', ''),
+            //'valor' => '0.01', // Valor de exemplo
             'pagador' => ['chave' => $this->credentials['client_identifier'], 'infoPagador' => ''],
             'favorecido' => ['chave' => $identifier],
         ];
@@ -227,7 +227,7 @@ class PaymentHelper
                         'payment' => [
                             'credit_card' => [
                                 'customer' => [
-                                    'name' => 'Aparecida Souza',
+                                    'name' => $user->name,
                                     'cpf' => $user->cpf,
                                     'email' => $user->email,
                                     'birth' => $user->birthdate ?? '',

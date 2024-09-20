@@ -177,10 +177,14 @@ class SettingsController extends Controller
 
                 $initialDate = request()->input('initialDate');
                 $endDate = request()->input('endDate');
+                $type = $request->input('type');
 
                 $transactions = Transaction::where('recipient_user_id', Auth::user()->id)
                     ->where('status', Transaction::APPROVED_STATUS)
                     ->where('type', '!=', 'deposit')
+                    ->when(!empty($type), function ($query) use ($type) {
+                        return $query->where('type', $type);
+                    })
                     ->when($initialDate, function ($query) use ($initialDate) {
                         return $query->whereDate('created_at', '>=', $initialDate);
                     })
