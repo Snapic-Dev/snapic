@@ -256,11 +256,13 @@ ion-icon {
 .withdrawalBtnDash {
   background-color: #683ab7;
   color: white;
+  display: flex;
   height: 40px;
   font-size: 12px;
   font-weight: 400;
   padding: 15px;
   border-radius:25px;
+  cursor: pointer;
 }
 
 .withdrawalBtnDash:hover {
@@ -342,8 +344,8 @@ ion-icon {
   flex-direction: column;
   margin-left: 40px;
   margin-right: 40px;
-  border-left: 2px solid #683ab7;
-  background-color: #683ab70a;
+  border-left: 4px solid #683ab7;
+  background-color: #683ab60a;
 }
 
 .card1 p {
@@ -361,10 +363,10 @@ ion-icon {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-left: 2px solid #683ab7;
+  border-left:  4px solid #683ab7;
   margin-left: 40px;
   margin-right: 40px;
-  background-color: #683ab70a;
+  background-color: #683ab60a;
 }
 
 .card2 p {
@@ -411,12 +413,15 @@ ion-icon {
   display: none;
   align-items: center;
   font-weight: 500;
-  font-size: 14px;;
+  font-size: 13px;
 }
 
 .badgeFilterType {
   border: 1px solid #673ab7;
   color: #673ab7;
+  min-width: 80px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 .badgeFilterDate {
@@ -546,7 +551,14 @@ ion-icon {
     .referralLink {
       padding-right: 65px;
     }
-    
+
+    .withdrawalBtnDash {
+      display: none;
+    }
+
+    .dateArea {
+      gap:3px
+    }
 }
 
 /* Tablets (de 576px a 767px) */
@@ -575,7 +587,12 @@ ion-icon {
     .referralLink {
       padding-right: 65px;
     }
+
+    .withdrawalBtnDash {
+      display: none;
+    }
 }
+
 
 /* Desktops pequenos (de 768px a 991px) */
 @media (min-width: 768px) and (max-width: 991.98px) {

@@ -38,7 +38,7 @@ $type=request()->input('type');
                 $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
                 @endphp
                 <div class="mt-2 d-flex align-items-center">
-                    <a class="withdrawalBtnDash d-flex justify-content-center align-items-center"
+                    <a class="withdrawalBtnDash justify-content-center align-items-center"
                         href="{{ $urlWithdrawal }}">
                         Sacar
                         <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
@@ -51,10 +51,17 @@ $type=request()->input('type');
                     <div class="typeArea">
                         <select class="form-control typeSelect" name="type">
                             <option value="" disabled selected>Tipo</option>
-                            <option value="post">Post</option>
-                            <option value="tip">Gorjeta</option>
-                            <option value="subscription">Inscrição</option>
-                            <option value="gift">Gift</option>
+                            <option value="gift">Presentes</option>
+                            <option value="post">Posts</option>
+                            <option value="tip">Gorjetas</option>
+                            <option value="one-month-subscription">Assinatura 1 mês</option>
+                            <option value="three-months-subscription">Assinatura 3 meses</option>
+                            <option value="six-months-subscription">Assinatura 6 meses</option>
+                            <option value="yearly-subscription">Assinatura 1 ano</option>
+                            <option value="subscription-renewal">Renovações</option>
+                            <option value="chat-tip">Incentivo</option>
+                            <option value="stream-access">Streams</option>
+                            <option value="message-unlock">Mensagens</option>
                         </select>
                     </div>
                     <!-- <div class="statusArea">
@@ -197,7 +204,7 @@ $type=request()->input('type');
                     <div class="dashboardInfluencer mt-4 d-flex">
                         <div class="card1 no-blur-effect">
                             <div class="d-flex headerCard">
-                                <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Faturamento</p>
+                                <p class="font-weight-bolder dashCardTitle dashCardTitleAmount mt-3 ml-4">Total</p>
                                 <ion-icon class="ml-2" name="receipt-outline"></ion-icon>
                             </div>
                             <p class="dashCardMetric">
@@ -416,7 +423,7 @@ $type=request()->input('type');
                 $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
                 @endphp
                 <div class="mt-2 d-flex align-items-center">
-                    <a class="withdrawalBtnDash d-flex justify-content-center align-items-center"
+                    <a class="withdrawalBtnDash justify-content-center align-items-center"
                         href="{{ $urlWithdrawal }}">
                         Sacar
                         <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
@@ -429,10 +436,17 @@ $type=request()->input('type');
                     <div class="typeArea">
                         <select class="form-control typeSelect" name="type">
                             <option value="" disabled selected>Tipo</option>
-                            <option value="post">Post</option>
-                            <option value="tip">Gorjeta</option>
-                            <option value="subscription">Inscrição</option>
-                            <option value="gift">Gift</option>
+                            <option value="gift">Presentes</option>
+                            <option value="post">Posts</option>
+                            <option value="tip">Gorjetas</option>
+                            <option value="one-month-subscription">Assinatura 1 mês</option>
+                            <option value="three-months-subscription">Assinatura 3 meses</option>
+                            <option value="six-months-subscription">Assinatura 6 meses</option>
+                            <option value="yearly-subscription">Assinatura 1 ano</option>
+                            <option value="subscription-renewal">Renovações</option>
+                            <option value="chat-tip">Incentivo</option>
+                            <option value="stream-access">Streams</option>
+                            <option value="message-unlock">Mensagens</option>
                         </select>
                     </div>
                     <!-- <div class="statusArea">
@@ -489,6 +503,8 @@ $type=request()->input('type');
     let badgeFilterStatus = document.querySelector('.badgeFilterStatus');
     let badgeFilterDate= document.querySelector('.badgeFilterDate');
 
+    let dashCardTitleAmount= document.querySelector('.dashCardTitleAmount');
+
     function copyCode(selector) {
         let linkRef = document.querySelector(selector).value;
         navigator.clipboard.writeText(linkRef)
@@ -538,21 +554,93 @@ $type=request()->input('type');
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
 
+
+        //                     <option value="gift">Presentes</option>
+        //                     <option value="post">Posts</option>
+        //                     <option value="tip">Gorjetas</option>
+        //                     <option value="one-month-subscription">Assinatura 1 mês</option>
+        //                     <option value="three-months-subscription">Assinatura 3 meses</option>
+        //                     <option value="six-months-subscription">Assinatura 6 meses</option>
+        //                     <option value="yearly-subscription">Assinatura 1 ano</option>
+        //                     <option value="subscription-renewal">Renovação de assinatura</option>
+        //                     <option value="chat-tip">Gorjetas por chat</option>
+        //                     <option value="stream-access">Acessos a live</option>
+        //                     <option value="message-unlock">Desbloqueios de mensagem</option>
+
         let type = urlParams.get('type');
+
+        if(dashCardTitleAmount) {
+
+        }
+
         switch (type) {
             case "gift":
-                type = "Gift";
+                type = "Presentes";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Presentes";
+                }
                 break;
             case "tip":
-                type = "Gorjeta"
+                type = "Gorjetas";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Gorjetas";
+                }
                 break;
-            case "subscription":
-                type = "Inscrições"
+            case "one-month-subscription":
+                type = "A/S 1 mês";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "1 mês Assinatura";
+                }
+                break;
+            case "three-months-subscription":
+                type = "A/S 3 mês";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "3 meses Assinatura";
+                }
+                break;
+            case "six-months-subscription":
+                type = "A/S 6 mês";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "6 meses Assinatura";
+                }
+                break;
+            case "yearly-subscription":
+                type = "A/S 1 ano";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "1 ano Assinatura";
+                }
+                break;
+            case "chat-tip":
+                type = "Incentivo";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Incentivo";
+                }
+                break;
+            case "stream-access":
+                type = "Streams";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Streams";
+                }
+                break;
+            case "subscription-renewal":
+                type = "Renovações";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Renovações";
+                }
+                break;
+            case "message-unlock":
+                type = "Mensagens";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Mensagens";
+                }
                 break;
             case "post":
-                type = "Post"
-                break;
-        }
+                type = "Post";
+                if (dashCardTitleAmount) {
+                    dashCardTitleAmount.innerText = "Post"; // Corrigido para "Post"
+                }
+        break;
+        }       
 
         // let status = urlParams.get('status');
         // switch (status) {

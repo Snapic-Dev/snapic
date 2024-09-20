@@ -91,7 +91,7 @@
     <div class="form-group">
         <!-- <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label> -->
         <div class="">
-            <select id="niche" class="inputLogin form-control @error('niche') is-invalid @enderror" name="niche" required>
+            <select id="niche" class="inputLogin nicheSelect form-control @error('niche') is-invalid @enderror" name="niche" required>
                 <option class="selectOption" value="">{{ __('Niche*') }}</option>
                 @foreach ($niches as $niche)
                     <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
@@ -155,7 +155,7 @@
                 <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
                     name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
                     onchange="previewImage(this, document.getElementById('frontPreview'))">
-                <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                <label for="frontDoc" class="btn btn-lg btn-primary bg-gradient-primary btn-block">
                     <ion-icon name="document-outline"></ion-icon>
                     {{ __('RG ou CNH Frente') }}</label>
                 <div class="preview">
@@ -175,7 +175,7 @@
                 <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
                     class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
                     onchange="previewImage(this, document.getElementById('backPreview'))">
-                <label for="backDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                <label for="backDoc" class="btn btn-lg btn-primary bg-gradient-primary btn-block">
                     <ion-icon name="document-outline"></ion-icon>
                     {{ __('RG ou CNH Verso') }}</label>
                 <div class="preview">
@@ -223,24 +223,24 @@
             @enderror
         </div>
     @endif
-
-    <div class="form-group row mb-0">
-        <div class="col">
-            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
-                {{ __('Register') }}
-            </button>
+    
+        <div class="form-group row mb-0">
+            <div class="col">
+                <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
+                    {{ __('Register') }}
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="form-group row mb-0">
-        <div class="col">
+        <div class="form-group row mb-0">
+            <div class="col">
 
 
-            <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
-                {{ __('Quero ser Assinante') }}
-            </a>
+                <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
+                    {{ __('Quero ser Assinante') }}
+                </a>
 
+            </div>
         </div>
-    </div>
 
 </form>
 @if (

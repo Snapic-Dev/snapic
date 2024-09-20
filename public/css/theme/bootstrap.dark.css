@@ -11853,3 +11853,15 @@ option {
 .btnCleanFilter ion-icon {
   color: white !important;
 }
+
+.dashboardInfluencerArea {
+  border-bottom: 1px solid #495057 !important;
+}
+
+.nicheSelect {
+  color:#707070 !important;
+}
+
+.inputRegisterDate {
+  color:#707070 !important;
+}

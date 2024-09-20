@@ -2,7 +2,8 @@
 @if($subscribersCount)
     <div class="mt-0 mt-md-3 mb-1 inline-border-tabs">
         <nav class="nav nav-pills nav-justified">
-            @foreach(['subscriptions', 'subscribers'] as $tab)
+
+            @foreach (Auth::user()->role_id == 3 && Auth::user()->identity_verified_at ? ['subscriptions', 'subscribers']: ['subscriptions'] as $tab)
                 <a class="nav-item nav-link {{$activeSubsTab == $tab ? 'active' : ''}}" href="{{route('my.settings',['type' => 'subscriptions', 'active' => $tab])}}">
 
                     <div class="d-flex align-items-center justify-content-center">
@@ -19,7 +20,7 @@
     </div>
 @endif
 
-@if(count($subscriptions))
+@if(count($subscriptions) && Auth::user()->role_id == 3 && Auth::user()->identity_verified_at)
     <div class="table-wrapper">
         @include('elements/message-alert', ['classes' =>'p-2'])
         <div class="">
