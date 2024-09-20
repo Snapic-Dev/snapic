@@ -1110,22 +1110,25 @@ footer .brand-logo {
 }
 
 .inputLogin {
-  background-color: #f9f9f9;
-  width: 22vw;
-  min-width: 320px;
+  background-color: #683ab617;
   height: 50px;
   padding-left: 10px;
   border-radius: 25px;
   border: none;
   outline: none;
-  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
   margin-top: 3px;
+  font-size: 16px;
   margin-bottom: 3px;
 }
 
-.inputLogin::placeholder {
+.inputRegisterDate {
+  font-weight: 200;
   color: #784ba092;
-  font-weight: 600;
+}
+
+.inputLogin::placeholder {
+  color: #784ba0a1;
+  font-weight: 500;
 }
 
 .btnLogin {
@@ -1147,10 +1150,12 @@ footer .brand-logo {
 .BannerLogin {
   position: relative;
   left: 45px;
+  object-fit: cover;
 }
 
 .titleLogin {
   color: rgb(47, 47, 47);
+  font-size: max(2vw,30px);
 }
 
 .selectOption {
@@ -1232,6 +1237,7 @@ footer .brand-logo {
   display: none;
 }
 
+
 @media (max-width: 575px) {
   .walletCarousel {
     display: none;
@@ -1255,3 +1261,4 @@ footer .brand-logo {
     display: flex;
   }
 }
+

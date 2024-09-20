@@ -12,6 +12,7 @@ use Carbon\Carbon;
 @php
 $initialDate = request()->input('initialDate');
 $endDate = request()->input('endDate');
+$type=request()->input('type');
 @endphp
 
 
@@ -29,7 +30,7 @@ $endDate = request()->input('endDate');
                     <div class="d-flex filterBar ml-4">
                         <p class="badgeFilterStatus justify-content-center">Pendente</p>
                         <p class="badgeFilterType justify-content-center">Gift</p>
-                        <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
+                        <p class="badgeFilterDate justify-content-center">16/09/24 - 19/09/24</p>
                     </div>
                 </div>
                 @php
@@ -50,10 +51,10 @@ $endDate = request()->input('endDate');
                     <div class="typeArea">
                         <select class="form-control typeSelect" name="type">
                             <option value="" disabled selected>Tipo</option>
-                            <option value="deposit">Deposito</option>
                             <option value="post">Post</option>
                             <option value="tip">Gorjeta</option>
                             <option value="subscription">Inscrição</option>
+                            <option value="gift">Gift</option>
                         </select>
                     </div>
                     <!-- <div class="statusArea">
@@ -66,9 +67,9 @@ $endDate = request()->input('endDate');
                         </select>
                     </div> -->
                     <div class="dateArea d-flex">
-                        <input class="filterInput" type="date" class="mr-2" name="initialDate" />
+                        <input class="filterInput initialDate" type="date" class="mr-2" name="initialDate" />
 
-                        <input class="filterInput" type="date" class="ml-2" name="endDate" />
+                        <input class="filterInput endDate" type="date" class="ml-2" name="endDate" />
                     </div>
                     <div class="d-flex btnFilterArea">
                         <button class="btnCleanFilter">
@@ -192,7 +193,7 @@ $endDate = request()->input('endDate');
                     </div> -->
             @endforeach
             <div class="d-flex dashboardInfluencerArea align-items-center py-3 font-weight-bold">
-                <div class="row mt-4 w-100">
+                <div class="row dashRow mt-4 w-100">
                     <div class="dashboardInfluencer mt-4 d-flex">
                         <div class="card1 no-blur-effect">
                             <div class="d-flex headerCard">
@@ -202,7 +203,7 @@ $endDate = request()->input('endDate');
                             <p class="dashCardMetric">
                                 {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalAmount) }}
                             </p>
-                            <p>
+                            <p class="subText">
                                 QTD: {{ $totalCount  }}
                             </p>
                             <!-- <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
@@ -265,7 +266,7 @@ $endDate = request()->input('endDate');
                                     <p class="dashCardMetric">
                                         {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalIndicationsAmount) }}
                                     </p>
-                                    <p class="">
+                                    <p class="subText">
                                         QTD: {{ $totalIndications }}
                                     </p>
                         </div>
@@ -295,6 +296,9 @@ $endDate = request()->input('endDate');
                                 <p class="dashCardMetric">
                                     {{ $totalSubscription }}
                                 </p>
+                                <p class="subText">
+                                    Total
+                                </p>
                         </div>
                         <div class="card2 no-blur-effect">
                             <div class="d-flex headerCard">
@@ -322,6 +326,9 @@ $endDate = request()->input('endDate');
                                 <p class="dashCardMetric">
                                     {{ $totalFollowers }}
                                 </p>
+                                <p class="subText">
+                                    Total
+                                </p>
                         </div>
                     </div>
                 </div>
@@ -348,7 +355,7 @@ $endDate = request()->input('endDate');
 
 
                         <div class="d-flex indicationBox">
-                            <input type="text" class="form-control text-center referralLink"
+                            <input type="text" class="form-control text-center referralLink referralLinkIndication"
                                 value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input" readonly>
                             <button class=" btnCopy" type="button"
                                 id="copy-button" data-toggle="tooltip" data-placement="bottom"
@@ -391,52 +398,66 @@ $endDate = request()->input('endDate');
     </div>
     @else
     <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
-        <div class="filterArea d-flex align-items-center">
-            <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                <div class="d-flex justify-content-center align-items-center">
-                    <ion-icon name="options-outline"></ion-icon>
-                    <div>
-            </button>
-            <div class="d-flex filterBar">
-                <p class="badgeFilterStatus justify-content-center">Pendente</p>
-                <p class="badgeFilterType justify-content-center">Gift</p>
-                <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
-            </div>
-        </div>
-        <div class="collapse p-3" id="collapseExample">
-            <div class="card card-body cardFilter">
-                <div class="typeArea">
-                    <select class="form-control typeSelect">
-                        <option value="" disabled selected>Tipo</option>
-                        <option value="deposit">Deposito</option>
-                        <option value="post">Post</option>
-                        <option value="tip">Gorjeta</option>
-                        <option value="subscription">Inscrição</option>
-                    </select>
-                </div>
-                <div class="statusArea">
-                    <select class="form-control statusSelect">
-                        <option value="" disabled selected>Status</option>
-                        <option value="pending">Pendente</option>
-                        <option value="canceled">Cancelado</option>
-                        <option value="approved">Aprovado</option>
-                        <option value="refunded">Reembolsado</option>
-                    </select>
-                </div>
-                <div class="dateArea d-flex">
-                    <input class="filterInput" type="date" class="mr-2" />
-
-                    <input class="filterInput" type="date" class="ml-2" />
-                </div>
-                <div class="d-flex btnFilterArea">
-                    <button class="btnCleanFilter">
-                        <ion-icon name="trash-bin-outline"></ion-icon>
+            <div class="filterArea d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
+                            <div>
                     </button>
-                    <button class="btnFilter" onclick="generateQuery()">Filtrar</button>
+                    <div class="d-flex filterBar ml-4">
+                        <p class="badgeFilterStatus justify-content-center">Pendente</p>
+                        <p class="badgeFilterType justify-content-center">Gift</p>
+                        <p class="badgeFilterDate justify-content-center">16/09/24 - 19/09/24</p>
+                    </div>
+                </div>
+                @php
+                $baseUrl = url('/');
+                $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+                @endphp
+                <div class="mt-2 d-flex align-items-center">
+                    <a class="withdrawalBtnDash d-flex justify-content-center align-items-center"
+                        href="{{ $urlWithdrawal }}">
+                        Sacar
+                        <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- @php
+            <div class="collapse p-3" id="collapseExample">
+                <form class="card card-body cardFilter">
+                    @csrf
+                    <div class="typeArea">
+                        <select class="form-control typeSelect" name="type">
+                            <option value="" disabled selected>Tipo</option>
+                            <option value="post">Post</option>
+                            <option value="tip">Gorjeta</option>
+                            <option value="subscription">Inscrição</option>
+                            <option value="gift">Gift</option>
+                        </select>
+                    </div>
+                    <!-- <div class="statusArea">
+                        <select class="form-control statusSelect" name="status">
+                            <option value="" disabled selected>Status</option>
+                            <option value="pending">Pendente</option>
+                            <option value="canceled">Cancelado</option>
+                            <option value="approved">Aprovado</option>
+                            <option value="refunded">Reembolsado</option>
+                        </select>
+                    </div> -->
+                    <div class="dateArea d-flex">
+                        <input class="filterInput" type="date" class="mr-2" name="initialDate" />
+
+                        <input class="filterInput" type="date" class="ml-2" name="endDate" />
+                    </div>
+                    <div class="d-flex btnFilterArea">
+                        <button class="btnCleanFilter">
+                            <ion-icon name="trash-bin-outline"></ion-icon>
+                        </button>
+                        <button class="btnFilter" type="submit " onclick="generateQuery()">Filtrar</button>
+                    </div>
+                </form>
+            </div>
+            <!-- @php
             $baseUrl = url('/');
             $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
             @endphp
@@ -444,7 +465,7 @@ $endDate = request()->input('endDate');
                 <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
                     href="{{ $urlWithdrawal }}">Saque</a>
             </div> -->
-    </div>
+        </div>
     <div class="row">
         <div class="col text-center py-3 mt-5 nothingData">
             <p>{{ __('Nenhum dado encontrado') }}</p>
@@ -466,6 +487,7 @@ $endDate = request()->input('endDate');
 
     let badgeFilterType = document.querySelector('.badgeFilterType');
     let badgeFilterStatus = document.querySelector('.badgeFilterStatus');
+    let badgeFilterDate= document.querySelector('.badgeFilterDate');
 
     function copyCode(selector) {
         let linkRef = document.querySelector(selector).value;
@@ -497,9 +519,9 @@ $endDate = request()->input('endDate');
             params.append('type', typeSelect.value);
         }
 
-        if (statusSelect.value !== "") {
-            params.append('status', statusSelect.value);
-        }
+        // if (statusSelect.value !== "") {
+        //     params.append('status', statusSelect.value);
+        // }
 
         // if (dataSelect.value !== "") {
         //     params.append('dataFilter', dataSelect.value);
@@ -518,8 +540,8 @@ $endDate = request()->input('endDate');
 
         let type = urlParams.get('type');
         switch (type) {
-            case "deposit":
-                type = "Deposito"
+            case "gift":
+                type = "Gift";
                 break;
             case "tip":
                 type = "Gorjeta"
@@ -532,25 +554,25 @@ $endDate = request()->input('endDate');
                 break;
         }
 
-        let status = urlParams.get('status');
-        switch (status) {
-            case "pending":
-                status = "Pendente"
-                badgeFilterStatus.style.backgroundColor = "#17C1E8"
-                break;
-            case "canceled":
-                status = "Cancelado"
-                badgeFilterStatus.style.backgroundColor = "#EA0606";
-                break;
-            case "approved":
-                status = "Aprovado"
-                badgeFilterStatus.style.backgroundColor = "#82D616";
-                break;
-            case "refunded":
-                status = "Reembolsado"
-                badgeFilterStatus.style.backgroundColor = "#ffc107";
-                break;
-        }
+        // let status = urlParams.get('status');
+        // switch (status) {
+        //     case "pending":
+        //         status = "Pendente"
+        //         badgeFilterStatus.style.backgroundColor = "#17C1E8"
+        //         break;
+        //     case "canceled":
+        //         status = "Cancelado"
+        //         badgeFilterStatus.style.backgroundColor = "#EA0606";
+        //         break;
+        //     case "approved":
+        //         status = "Aprovado"
+        //         badgeFilterStatus.style.backgroundColor = "#82D616";
+        //         break;
+        //     case "refunded":
+        //         status = "Reembolsado"
+        //         badgeFilterStatus.style.backgroundColor = "#ffc107";
+        //         break;
+        // }
 
         if (type !== null && type !== "") {
             badgeFilterType.innerText = type;
@@ -559,11 +581,21 @@ $endDate = request()->input('endDate');
             badgeFilterType.style.display = "none";
         }
 
-        if (status !== null && status !== "") {
-            badgeFilterStatus.innerText = status;
-            badgeFilterStatus.style.display = "flex";
+        // if (status !== null && status !== "") {
+        //     badgeFilterStatus.innerText = status;
+        //     badgeFilterStatus.style.display = "flex";
+        // } else {
+        //     badgeFilterStatus.style.display = "none";
+        // }
+
+        let initialDateQuery = urlParams.get('initialDate');
+        let endDateQuery = urlParams.get('endDate');
+        
+    if (initialDateQuery !== null && initialDateQuery !== "" && endDateQuery !== null && endDateQuery !== "") {
+            badgeFilterDate.innerText = `${initialDateQuery} - ${endDateQuery}`
+            badgeFilterDate.style.display = "flex";
         } else {
-            badgeFilterStatus.style.display = "none";
+            badgeFilterDate.style.display = "none";
         }
     }
 
@@ -579,6 +611,7 @@ $endDate = request()->input('endDate');
         window.location.href = `${window.location.origin}/my/settings/payments`;
         badgeFilterType.style.display = "none";
         badgeFilterStatus.style.display = "none";
+        badgeFilterDate.style.display = "none";
     };
 
     btnCleanFilter.addEventListener('click', cleanFilter);

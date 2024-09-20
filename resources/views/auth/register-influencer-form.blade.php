@@ -64,7 +64,7 @@
     <div class="form-group">
         <!-- <label for="birthdate" placeholder="Idade" class="col-form-label required-label">{{ __('Data Nascimento') }}</label> -->
         <div class="">
-            <input id="birthdate" type="date" class="inputLogin form-control @error('birthdate') is-invalid @enderror"
+            <input id="birthdate" type="date" class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror"
                 name="birthdate" value="{{ old('birthdate') }}" required autocomplete="date">
             @error('birthdate')
                 <span class="invalid-feedback" role="alert">
@@ -148,44 +148,46 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <!-- <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label> -->
-        <div class="file-upload ">
-            <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
-                name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
-                onchange="previewImage(this, document.getElementById('frontPreview'))">
-            <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
-                <ion-icon name="document-outline"></ion-icon>
-                {{ __('RG ou CNH Frente') }}</label>
-            <div class="preview">
-                <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
+    <div class="">
+        <div class="form-group">
+            <!-- <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label> -->
+            <div class="file-upload ">
+                <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
+                    name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
+                    onchange="previewImage(this, document.getElementById('frontPreview'))">
+                <label for="frontDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                    <ion-icon name="document-outline"></ion-icon>
+                    {{ __('RG ou CNH Frente') }}</label>
+                <div class="preview">
+                    <img id="frontPreview" src="#" alt="Preview da CNH - Frente" style="display: none;">
+                </div>
             </div>
+            @error('frontDoc')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
-        @error('frontDoc')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
 
-    <div class="form-group">
-        <!-- <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label> -->
-        <div class="file-upload">
-            <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
-                class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
-                onchange="previewImage(this, document.getElementById('backPreview'))">
-            <label for="backDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
-                <ion-icon name="document-outline"></ion-icon>
-                {{ __('RG ou CNH Verso') }}</label>
-            <div class="preview">
-                <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none;">
+        <div class="form-group">
+            <!-- <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label> -->
+            <div class="file-upload">
+                <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
+                    class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
+                    onchange="previewImage(this, document.getElementById('backPreview'))">
+                <label for="backDoc" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block">
+                    <ion-icon name="document-outline"></ion-icon>
+                    {{ __('RG ou CNH Verso') }}</label>
+                <div class="preview">
+                    <img id="backPreview" src="#" alt="Preview da CNH - Verso" style="display: none;">
+                </div>
             </div>
+            @error('backDoc')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
         </div>
-        @error('backDoc')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
     </div>
 
 

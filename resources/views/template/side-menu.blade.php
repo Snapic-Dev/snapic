@@ -206,7 +206,7 @@
                                 ])
                             </div>
                             <span
-                                class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Inscrições') }}</span>
+                                class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Assinaturas') }}</span>
                         </div>
                     </a>
                 </li>

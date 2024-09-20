@@ -86,7 +86,7 @@
             {{ $subscriptions->withQueryString()->onEachSide(1)->links() }}
         </div>
         @else
-            <div class="p-3">
+            <div class="p-4">
                 <p>{{__('There are no active or cancelled subscriptions at the moment.')}}</p>
             </div>
 @endif
