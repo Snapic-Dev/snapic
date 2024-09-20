@@ -8,11 +8,13 @@ use App\Http\Requests\UpdateUserProfileSettingsRequest;
 use App\Http\Requests\UpdateUserRatesSettingsRequest;
 use App\Http\Requests\UpdateUserSettingsRequest;
 use App\Http\Requests\VerifyProfileAssetsRequest;
+use App\Model\Agreement;
 use App\Model\Attachment;
 use App\Model\Country;
 use App\Model\CreatorOffer;
 use App\Model\Niche;
 use App\Model\ReferralCodeUsage;
+use App\Model\Reward;
 use App\Model\Subscription;
 use App\Model\Transaction;
 use App\Model\UserDevice;
@@ -173,6 +175,28 @@ class SettingsController extends Controller
                     abort(code: 404);
                 }
 
+                $initialDate = request()->input('initialDate');
+                $endDate = request()->input('endDate');
+
+                $transactions = Transaction::where('recipient_user_id', Auth::user()->id)
+                    ->where('status', Transaction::APPROVED_STATUS)
+                    ->where('type', '!=', 'deposit')
+                    ->when($initialDate, function ($query) use ($initialDate) {
+                        return $query->whereDate('created_at', '>=', $initialDate);
+                    })
+                    ->when($endDate, function ($query) use ($endDate) {
+                        return $query->whereDate('created_at', '<=', $endDate);
+                    })
+                    ->get();
+
+                $transactionIds = $transactions->pluck('id');
+
+                $agreements = Agreement::whereIn('transaction_id', $transactionIds)->get();
+
+                $totalAmount = $transactions->sum('amount') -  $agreements->sum('amount');
+
+                $totalCount = $transactions->count();
+
                 $payments = Transaction::with(['receiver', 'sender'])
                     ->where(function ($query) use ($userID) {
                         $query->where('sender_user_id', $userID)
@@ -188,8 +212,10 @@ class SettingsController extends Controller
                     })
 
                     ->orderBy('created_at', $sortOrder)
-                    ->paginate(8);
+                    ->paginate(perPage: 8);
                 $data['payments'] = $payments;
+                $data['totalCount'] = $totalCount;
+                $data['totalAmount'] = number_format($totalAmount, 2, ',', '.');
                 break;
             case null:
             case 'profile':

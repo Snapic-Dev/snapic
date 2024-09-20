@@ -2,15 +2,16 @@
 
 use App\Model\ReferralCodeUsage;
 use App\Model\UserList;
+use App\Model\UserListMember;
 use App\Model\Reward;
 use App\Model\Subscription;
-
+use Carbon\Carbon;
 ?>
 
 
 @php
-    $initialDate = request()->input('initialDate');
-    $endDate = request()->input('endDate');
+$initialDate = request()->input('initialDate');
+$endDate = request()->input('endDate');
 @endphp
 
 
@@ -22,8 +23,8 @@ use App\Model\Subscription;
                 <div class="d-flex align-items-center">
                     <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                         <div class="d-flex justify-content-center align-items-center">
-                        <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
-                        <div>
+                            <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
+                            <div>
                     </button>
                     <div class="d-flex filterBar ml-4">
                         <p class="badgeFilterStatus justify-content-center">Pendente</p>
@@ -32,8 +33,8 @@ use App\Model\Subscription;
                     </div>
                 </div>
                 @php
-                    $baseUrl = url('/');
-                    $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+                $baseUrl = url('/');
+                $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
                 @endphp
                 <div class="mt-2 d-flex align-items-center">
                     <a class="withdrawalBtnDash d-flex justify-content-center align-items-center"
@@ -65,15 +66,15 @@ use App\Model\Subscription;
                         </select>
                     </div> -->
                     <div class="dateArea d-flex">
-                        <input class="filterInput" type="date" class="mr-2" name="initialDate"/>
-                    
-                        <input class="filterInput"type="date" class="ml-2" name="endDate"/>
+                        <input class="filterInput" type="date" class="mr-2" name="initialDate" />
+
+                        <input class="filterInput" type="date" class="ml-2" name="endDate" />
                     </div>
                     <div class="d-flex btnFilterArea">
                         <button class="btnCleanFilter">
                             <ion-icon name="trash-bin-outline"></ion-icon>
                         </button>
-                        <button class="btnFilter" type="submit "onclick="generateQuery()">Filtrar</button>
+                        <button class="btnFilter" type="submit " onclick="generateQuery()">Filtrar</button>
                     </div>
                 </form>
             </div>
@@ -199,7 +200,10 @@ use App\Model\Subscription;
                                 <ion-icon class="ml-2" name="receipt-outline"></ion-icon>
                             </div>
                             <p class="dashCardMetric">
-                                {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalFaturamento) }}
+                                {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalAmount) }}
+                            </p>
+                            <p>
+                                QTD: {{ $totalCount  }}
                             </p>
                             <!-- <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
                                 @switch($payment->status)
@@ -228,194 +232,211 @@ use App\Model\Subscription;
                             </p> -->
                         </div>
                         <div class="card2 no-blur-effect">
-                                <div class="d-flex headerCard">
-                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Indicações</p>
-                                    <ion-icon class="ml-2" name="rocket-outline"></ion-icon>
-                                </div>
-                                @php
-                                    $userId = Auth::user()->id; 
-
-                                    $totalIndications=0;
-                                    $totalIndicationsAmount=0;
-
-                                    if($initialDate && $endDate) {
-                                        $totalIndicationsAmount = Reward::where('to_user_id', $userId)
-                                        ->whereDate('created_at', '>=', $initialDate)
-                                        ->whereDate('created_at', '<=', $endDate)
-                                        ->sum('amount');    
-
-                                        $totalIndications = ReferralCodeUsage::where('used_by', $userId)
-                                        ->whereDate('created_at', '>=', $initialDate)
-                                        ->whereDate('created_at', '<=', $endDate)
-                                        ->count();
-                                    }     
-                                @endphp
-                                 <p class="dashCardMetric">
-                                    {{ $totalIndicationsAmount }}
-                                </p>
-                                <p class="">
-                                    QTD: {{ $totalIndications }}
-                                </p>
+                            <div class="d-flex headerCard">
+                                <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Indicações</p>
+                                <ion-icon class="ml-2" name="rocket-outline"></ion-icon>
                             </div>
+                            @php
+                            $userId = Auth::user()->id;
+
+                            $totalIndications=0;
+                            $totalIndicationsAmount=0;
+
+                            $totalIndicationsAmount = Reward::where('to_user_id', $userId)
+                            ->when($initialDate, function ($query) use ($initialDate) {
+                            return $query->whereDate('created_at', '>=', $initialDate);
+                            })
+                            ->when($endDate, function ($query) use ($endDate) {
+                            return $query->whereDate('created_at', '<=', $endDate);
+                                })
+                                ->sum('amount');
+
+                                $totalIndications = ReferralCodeUsage::where('used_by', $userId)
+                                ->when($initialDate, function ($query) use ($initialDate) {
+                                return $query->whereDate('created_at', '>=', $initialDate);
+                                })
+                                ->when($endDate, function ($query) use ($endDate) {
+                                return $query->whereDate('created_at', '<=', $endDate);
+                                    })
+                                    ->count();
+
+                                    $totalIndicationsAmount = number_format($totalIndicationsAmount, 2, ',', '.');
+                                    @endphp
+                                    <p class="dashCardMetric">
+                                        {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($totalIndicationsAmount) }}
+                                    </p>
+                                    <p class="">
+                                        QTD: {{ $totalIndications }}
+                                    </p>
+                        </div>
                     </div>
                 </div>
-                    <div class="row w-100">
-                        <div class="dashboardInfluencer mt-4 d-flex">
-                            <div class="card2 no-blur-effect">
-                                <div class="d-flex headerCard">
-                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Assinantes</p>
-                                    <ion-icon class="ml-2" name="person-add-outline"></ion-icon>
-                                </div>
-                                @php
-                                   $userId = Auth::user()->id; 
-                                   $totalSubscription=0;
+                <div class="row w-100">
+                    <div class="dashboardInfluencer mt-4 d-flex">
+                        <div class="card2 no-blur-effect">
+                            <div class="d-flex headerCard">
+                                <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Assinantes</p>
+                                <ion-icon class="ml-2" name="person-add-outline"></ion-icon>
+                            </div>
+                            @php
+                            $userId = Auth::user()->id;
+                            $totalSubscription = 0;
 
-                                   if($initialDate && $endDate) {
-                                    $totalSubscription = Subscription::where('recipient_user_id', $userId)
-                                        ->where('status','completed')
-                                        ->whereBetween('expires_at',[$initialDate,$endDate])
-                                        ->count();
-                                    }
+                            $totalSubscription = Subscription::where('recipient_user_id', $userId)
+                            ->where('status', 'completed')
+                            ->when($initialDate, function ($query, $initialDate) {
+                            return $query->whereDate('created_at', '>=', $initialDate);
+                            })
+                            ->when($endDate, function ($query, $endDate) {
+                            return $query->whereDate('created_at', '<=', $endDate);
+                                })
+                                ->count();
                                 @endphp
                                 <p class="dashCardMetric">
                                     {{ $totalSubscription }}
                                 </p>
+                        </div>
+                        <div class="card2 no-blur-effect">
+                            <div class="d-flex headerCard">
+                                <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Seguidores</p>
+                                <ion-icon class="ml-2" name="people-outline"></ion-icon>
                             </div>
-                            <div class="card2 no-blur-effect">
-                                <div class="d-flex headerCard">
-                                    <p class="font-weight-bolder dashCardTitle mt-3 ml-4">Seguidores</p>
-                                    <ion-icon class="ml-2" name="people-outline"></ion-icon>
-                                </div>
-                                @php
-                                   $userId = Auth::user()->id; 
-                                   $totalFollowers=0;
+                            @php
+                            $userId = Auth::user()->id;
+                            $totalFollowers=0;
 
-                                   if($initialDate && $endDate) {
-                                        $totalFollowers= UserList::where('user_id', $userId)
-                                        ->where('name', "Following")
-                                        ->whereDate('created_at', '>=', $initialDate)
-                                        ->whereDate('created_at', '<=', $endDate)
-                                        ->count();
-                                    }
+                            $listIds = UserListMember::where('user_id', $userId)
+                            ->when($initialDate, function ($query, $initialDate) {
+                            return $query->whereDate('created_at', '>=', $initialDate);
+                            })
+                            ->when($endDate, function ($query, $endDate) {
+                            return $query->whereDate('created_at', '<=', $endDate);
+                                })
+                                ->pluck('list_id');
+                                $totalFollowers=UserList::whereIn('id', $listIds)
+                                ->where('type', 'following')
+
+                                ->count();
+
                                 @endphp
                                 <p class="dashCardMetric">
                                     {{ $totalFollowers }}
                                 </p>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="pb-2 mt-5 referralArea">
-                    <div class="pl-5 pr-5 indicationBox">
-                        <p class="dashCardTitle">Link de Indicação:</p>
-                        <div class="input-group p-2 justify-content-between">
-                            @php
-                                $baseUrl = url('/');
-                                $referralCode = Auth::user()->referral_code;
-                                $username = Auth::user()->username;
-                                $urls = [
-                                    'profile' => "{$baseUrl}/influencer/register?referral={$referralCode}",
-                                    'home' => "{$baseUrl}/influencer/home?referral={$referralCode}",
-                                    'register' => "{$baseUrl}/influencer/register?referral={$referralCode}",
-                                ];
-
-                                $defaultPage = getSetting('referrals.referrals_default_link_page');
-                                $defaultUrl = $urls[$defaultPage] ?? $urls['profile'];
-                            @endphp
-
-
-
-
-                            <div class="d-flex indicationBox">
-                                <input type="text" class="form-control text-center referralLink"
-                                    value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input" readonly>
-                                <button class=" btnCopy" type="button"
-                                    id="copy-button" data-toggle="tooltip" data-placement="bottom"
-                                    onclick="copyCode('.referralLink')">
-                                    <ion-icon name="copy-outline"
-                                        style="font-size: 1rem; vertical-align: middle;"></ion-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pl-5 pr-5 indicationBox mt-4">
-                        <p class="dashCardTitle">Link de Divulgação:</p>
-                        <div class="input-group p-2 justify-content-between">
-                            @php
-                                $baseUrl = url('/');
-                                $referralCode = Auth::user()->referral_code;
-                                $username = Auth::user()->username;
-                                $url = "{$baseUrl}/{$username}";
-                            @endphp
-
-
-
-
-
-                            <div class="d-flex indicationBox">
-                                <input type="text" class="form-control text-center referralLink disclosureInput"
-                                    value="{{ $url }}" placeholder="{{ $urls['profile'] }}"
-                                    id="copy-input" readonly>
-                                <button class="btnCopy" type="button"
-                                    id="copy-button" data-toggle="tooltip" data-placement="bottom"
-                                    onclick="copyCode('.disclosureInput')">
-                                    <ion-icon name="copy-outline"
-                                        style="font-size: 1rem; vertical-align: middle;"></ion-icon>
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="pb-2 mt-5 referralArea">
+                <div class="pl-5 pr-5 indicationBox">
+                    <p class="dashCardTitle">Link de Indicação:</p>
+                    <div class="input-group p-2 justify-content-between">
+                        @php
+                        $baseUrl = url('/');
+                        $referralCode = Auth::user()->referral_code;
+                        $username = Auth::user()->username;
+                        $urls = [
+                        'profile' => "{$baseUrl}/influencer/register?referral={$referralCode}",
+                        'home' => "{$baseUrl}/influencer/home?referral={$referralCode}",
+                        'register' => "{$baseUrl}/influencer/register?referral={$referralCode}",
+                        ];
+
+                        $defaultPage = getSetting('referrals.referrals_default_link_page');
+                        $defaultUrl = $urls[$defaultPage] ?? $urls['profile'];
+                        @endphp
+
+
+
+
+                        <div class="d-flex indicationBox">
+                            <input type="text" class="form-control text-center referralLink"
+                                value="{{ $defaultUrl }}" placeholder="{{ $urls['profile'] }}" id="copy-input" readonly>
+                            <button class=" btnCopy" type="button"
+                                id="copy-button" data-toggle="tooltip" data-placement="bottom"
+                                onclick="copyCode('.referralLink')">
+                                <ion-icon name="copy-outline"
+                                    style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="pl-5 pr-5 indicationBox mt-4">
+                    <p class="dashCardTitle">Link de Divulgação:</p>
+                    <div class="input-group p-2 justify-content-between">
+                        @php
+                        $baseUrl = url('/');
+                        $referralCode = Auth::user()->referral_code;
+                        $username = Auth::user()->username;
+                        $url = "{$baseUrl}/{$username}";
+                        @endphp
+
+
+
+
+
+                        <div class="d-flex indicationBox">
+                            <input type="text" class="form-control text-center referralLink disclosureInput"
+                                value="{{ $url }}" placeholder="{{ $urls['profile'] }}"
+                                id="copy-input" readonly>
+                            <button class="btnCopy" type="button"
+                                id="copy-button" data-toggle="tooltip" data-placement="bottom"
+                                onclick="copyCode('.disclosureInput')">
+                                <ion-icon name="copy-outline"
+                                    style="font-size: 1rem; vertical-align: middle;"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     @else
     <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
-            <div class="filterArea d-flex align-items-center">
-                <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <ion-icon name="options-outline"></ion-icon>
+        <div class="filterArea d-flex align-items-center">
+            <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <div class="d-flex justify-content-center align-items-center">
+                    <ion-icon name="options-outline"></ion-icon>
                     <div>
-                </button>
-                <div class="d-flex filterBar">
-                    <p class="badgeFilterStatus justify-content-center">Pendente</p>
-                    <p class="badgeFilterType justify-content-center">Gift</p>
-                    <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
+            </button>
+            <div class="d-flex filterBar">
+                <p class="badgeFilterStatus justify-content-center">Pendente</p>
+                <p class="badgeFilterType justify-content-center">Gift</p>
+                <p class="badgeFilterData justify-content-center">16/09/24 - 19/09/24</p>
+            </div>
+        </div>
+        <div class="collapse p-3" id="collapseExample">
+            <div class="card card-body cardFilter">
+                <div class="typeArea">
+                    <select class="form-control typeSelect">
+                        <option value="" disabled selected>Tipo</option>
+                        <option value="deposit">Deposito</option>
+                        <option value="post">Post</option>
+                        <option value="tip">Gorjeta</option>
+                        <option value="subscription">Inscrição</option>
+                    </select>
+                </div>
+                <div class="statusArea">
+                    <select class="form-control statusSelect">
+                        <option value="" disabled selected>Status</option>
+                        <option value="pending">Pendente</option>
+                        <option value="canceled">Cancelado</option>
+                        <option value="approved">Aprovado</option>
+                        <option value="refunded">Reembolsado</option>
+                    </select>
+                </div>
+                <div class="dateArea d-flex">
+                    <input class="filterInput" type="date" class="mr-2" />
+
+                    <input class="filterInput" type="date" class="ml-2" />
+                </div>
+                <div class="d-flex btnFilterArea">
+                    <button class="btnCleanFilter">
+                        <ion-icon name="trash-bin-outline"></ion-icon>
+                    </button>
+                    <button class="btnFilter" onclick="generateQuery()">Filtrar</button>
                 </div>
             </div>
-            <div class="collapse p-3" id="collapseExample">
-                <div class="card card-body cardFilter">
-                    <div class="typeArea">
-                        <select class="form-control typeSelect">
-                            <option value="" disabled selected>Tipo</option>
-                            <option value="deposit">Deposito</option>
-                            <option value="post">Post</option>
-                            <option value="tip">Gorjeta</option>
-                            <option value="subscription">Inscrição</option>
-                        </select>
-                    </div>
-                    <div class="statusArea">
-                        <select class="form-control statusSelect">
-                            <option value="" disabled selected>Status</option>
-                            <option value="pending">Pendente</option>
-                            <option value="canceled">Cancelado</option>
-                            <option value="approved">Aprovado</option>
-                            <option value="refunded">Reembolsado</option>
-                        </select>
-                    </div>
-                    <div class="dateArea d-flex">
-                        <input class="filterInput" type="date" class="mr-2" />
-                    
-                        <input class="filterInput"type="date" class="ml-2" />
-                    </div>
-                    <div class="d-flex btnFilterArea">
-                        <button class="btnCleanFilter">
-                            <ion-icon name="trash-bin-outline"></ion-icon>
-                        </button>
-                        <button class="btnFilter" onclick="generateQuery()">Filtrar</button>
-                    </div>
-                </div>
-            </div>
-            <!-- @php
+        </div>
+        <!-- @php
             $baseUrl = url('/');
             $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
             @endphp
@@ -443,8 +464,8 @@ use App\Model\Subscription;
     let dataSelect = document.querySelector('.dataSelect');
     let clearFiltersButton = document.getElementById('clearFilters');
 
-    let badgeFilterType= document.querySelector('.badgeFilterType');
-    let badgeFilterStatus= document.querySelector('.badgeFilterStatus');
+    let badgeFilterType = document.querySelector('.badgeFilterType');
+    let badgeFilterStatus = document.querySelector('.badgeFilterStatus');
 
     function copyCode(selector) {
         let linkRef = document.querySelector(selector).value;
@@ -492,58 +513,58 @@ use App\Model\Subscription;
     }
 
     function updateBadgesFromQuery() {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
 
-            let type = urlParams.get('type');
-            switch (type) {
-                case "deposit":
-                    type = "Deposito"
+        let type = urlParams.get('type');
+        switch (type) {
+            case "deposit":
+                type = "Deposito"
                 break;
-                case "tip":
-                    type="Gorjeta"
+            case "tip":
+                type = "Gorjeta"
                 break;
-                case "subscription":
-                    type="Inscrições"
+            case "subscription":
+                type = "Inscrições"
                 break;
-                case "post":
-                    type="Post"
+            case "post":
+                type = "Post"
                 break;
-            }
+        }
 
-            let status = urlParams.get('status');
-            switch (status) {
-                case "pending":
-                    status = "Pendente"
-                    badgeFilterStatus.style.backgroundColor="#17C1E8"
+        let status = urlParams.get('status');
+        switch (status) {
+            case "pending":
+                status = "Pendente"
+                badgeFilterStatus.style.backgroundColor = "#17C1E8"
                 break;
-                case "canceled":
-                    status ="Cancelado"
-                     badgeFilterStatus.style.backgroundColor="#EA0606";
+            case "canceled":
+                status = "Cancelado"
+                badgeFilterStatus.style.backgroundColor = "#EA0606";
                 break;
-                case "approved":
-                    status ="Aprovado"
-                     badgeFilterStatus.style.backgroundColor="#82D616"; 
+            case "approved":
+                status = "Aprovado"
+                badgeFilterStatus.style.backgroundColor = "#82D616";
                 break;
-                case "refunded":
-                    status ="Reembolsado"
-                     badgeFilterStatus.style.backgroundColor="#ffc107";
+            case "refunded":
+                status = "Reembolsado"
+                badgeFilterStatus.style.backgroundColor = "#ffc107";
                 break;
-            }
+        }
 
-            if (type !== null && type !== "") {
-                badgeFilterType.innerText = type;
-                badgeFilterType.style.display = "flex";
-            } else {
-                badgeFilterType.style.display = "none";
-            }
+        if (type !== null && type !== "") {
+            badgeFilterType.innerText = type;
+            badgeFilterType.style.display = "flex";
+        } else {
+            badgeFilterType.style.display = "none";
+        }
 
-            if (status !== null && status !== "") {
-                badgeFilterStatus.innerText = status;
-                badgeFilterStatus.style.display = "flex";
-            } else {
-                badgeFilterStatus.style.display = "none"; 
-            }
+        if (status !== null && status !== "") {
+            badgeFilterStatus.innerText = status;
+            badgeFilterStatus.style.display = "flex";
+        } else {
+            badgeFilterStatus.style.display = "none";
+        }
     }
 
     window.onload = updateBadgesFromQuery;
@@ -552,7 +573,7 @@ use App\Model\Subscription;
     // statusSelect.addEventListener('change', generateQuery);
     // dataSelect.addEventListener('change', generateQuery);
 
-    let btnCleanFilter=document.querySelector('.btnCleanFilter');
+    let btnCleanFilter = document.querySelector('.btnCleanFilter');
 
     function cleanFilter() {
         window.location.href = `${window.location.origin}/my/settings/payments`;
@@ -560,7 +581,7 @@ use App\Model\Subscription;
         badgeFilterStatus.style.display = "none";
     };
 
-    btnCleanFilter.addEventListener('click',cleanFilter);
+    btnCleanFilter.addEventListener('click', cleanFilter);
     // function generatePefilLink() {
     //     const username = `Auth::user()->username`;
     //     const baseUrl = `${window.location.origin}/${username}`;
