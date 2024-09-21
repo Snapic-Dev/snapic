@@ -1168,6 +1168,11 @@ footer .brand-logo {
   height: 50%;
   flex-wrap: wrap;
 }
+@media (max-width: 800px) {
+  .conversations-list div.d-flex.mt-3.mt-md-2.pl-3.pl-md-0.mb-3.pl-md-0 > span {
+    display: none;
+  }
+}
 
 .file-uploadCampaign input[type="file"] {
   position: absolute;
