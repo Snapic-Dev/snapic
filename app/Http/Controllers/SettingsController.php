@@ -132,7 +132,7 @@ class SettingsController extends Controller
 
                 break;
             case 'subscribers':
-                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
                     abort(code: 404);
                 }
 
@@ -171,7 +171,7 @@ class SettingsController extends Controller
                 $ordination = $request->input('dataFilter');
                 $sortOrder = $ordination ?: 'desc';
 
-                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
                     abort(code: 404);
                 }
 
@@ -234,7 +234,7 @@ class SettingsController extends Controller
                 $data['countries'] = Country::query()->where('name', '!=', 'All')->get();
                 break;
             case 'referrals':
-                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
                     abort(code: 404);
                 }
 
@@ -247,7 +247,9 @@ class SettingsController extends Controller
                 }
                 break;
             case 'rates':
-
+                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
+                    abort(code: 404);
+                }
                 $data['offer'] = $user->offer;
                 break;
         }
