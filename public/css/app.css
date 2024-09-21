@@ -1172,6 +1172,12 @@ footer .brand-logo {
   .conversations-list div.d-flex.mt-3.mt-md-2.pl-3.pl-md-0.mb-3.pl-md-0 > span {
     display: none;
   }
+  .navbar-toggler {
+    display: none;
+  }
+  .error-container > div > img {
+    margin: 0 40px;
+  }
 }
 
 .file-uploadCampaign input[type="file"] {
