@@ -11804,3 +11804,64 @@ option {
 .notification-box {
   border-bottom: 1px solid #495057 !important;
 }
+
+.dashCardTitle {
+  color: white !important;
+}
+
+.headerCard ion-icon {
+  color: white !important;
+}
+
+.dashCardMetric {
+  color: white !important;
+}
+
+.subText {
+  color: white !important;
+}
+
+.referralLink {
+  color: white !important;
+}
+.referralLink[readonly] {
+  background-color: #252328  !important; /* Define o fundo como branco */
+}
+
+.btnCopy ion-icon {
+  color: white;
+}
+
+.typeSelect {
+  color: white !important;;
+}
+
+.typeSelect option {
+  color: white !important;
+}
+
+.filterInput {
+  background-color: #3B3B3B !important;
+  color: white !important;
+}
+
+.btnCleanFilter {
+  border: 1.5px solid white !important;
+  background-color: #252328 !important;
+}
+
+.btnCleanFilter ion-icon {
+  color: white !important;
+}
+
+.dashboardInfluencerArea {
+  border-bottom: 1px solid #495057 !important;
+}
+
+.nicheSelect {
+  color:#707070 !important;
+}
+
+.inputRegisterDate {
+  color:#707070 !important;
+}

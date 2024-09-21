@@ -54,9 +54,9 @@
                             <a class="dropdown-item" href="{{route('my.settings',['type'=>'subscriptions'])}}">
                                 {{__('Subscriptions')}}
                             </a>
-                            <a class="dropdown-item" href="{{route('my.settings',['type'=>'payments'])}}">
+                            <!-- <a class="dropdown-item" href="{{route('my.settings',['type'=>'payments'])}}">
                                 {{__('Payments')}}
-                            </a>
+                            </a> -->
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

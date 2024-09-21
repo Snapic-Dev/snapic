@@ -165,7 +165,7 @@ select {
 }
 
 .dashCardMetric {
-  font-size: 35px;
+  font-size:max(2vw,27px);
   color: black;
   font-weight: bold;
   position: relative;
@@ -245,6 +245,7 @@ ion-icon {
   border: 1px solid #673ab7;
   font-weight: 600;
   color: #683ab7;
+  overflow: hidden;
 }
 
 .referralLink[readonly] {
@@ -255,11 +256,13 @@ ion-icon {
 .withdrawalBtnDash {
   background-color: #683ab7;
   color: white;
+  display: flex;
   height: 40px;
   font-size: 12px;
   font-weight: 400;
   padding: 15px;
   border-radius:25px;
+  cursor: pointer;
 }
 
 .withdrawalBtnDash:hover {
@@ -334,15 +337,15 @@ ion-icon {
 
 .card1 {
   width: 100%;
-  height: 150px;
+  height: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   margin-left: 40px;
   margin-right: 40px;
-  border-left: 2px solid #683ab7;
-  background-color: #683ab70a;
+  border-left: 4px solid #683ab7;
+  background-color: #683ab60a;
 }
 
 .card1 p {
@@ -355,15 +358,15 @@ ion-icon {
 
 .card2 {
   width: 100%;
-  height: 150px;
+  height: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-left: 2px solid #683ab7;
+  border-left:  4px solid #683ab7;
   margin-left: 40px;
   margin-right: 40px;
-  background-color: #683ab70a;
+  background-color: #683ab60a;
 }
 
 .card2 p {
@@ -391,6 +394,7 @@ ion-icon {
 .filterArea {
   height: 40px;
   width: 100%;
+  justify-content: space-between;
   gap: 40px;
 }
 
@@ -400,7 +404,7 @@ ion-icon {
 }
 
 .badgeFilterStatus,
-.badgeFilterType {
+.badgeFilterType,.badgeFilterDate {
   padding: 5px;
   width: 130px;
   color: white;
@@ -409,22 +413,28 @@ ion-icon {
   display: none;
   align-items: center;
   font-weight: 500;
-  font-size: 14px;;
+  font-size: 13px;
 }
 
 .badgeFilterType {
   border: 1px solid #673ab7;
   color: #673ab7;
+  min-width: 80px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
-.badgeFilterData {
+.badgeFilterDate {
   padding: 5px;
-  width: 170px;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-width: 190px;
   color: #673ab7;
   border-radius: 20px;
   height: 40px;
   display: none;
   align-items: center;
+  justify-content: center;
   font-weight: 500;
   font-size: 14px;
   border: 1px solid #673ab7;
@@ -495,6 +505,7 @@ ion-icon {
   padding: 5px;
   font-weight: 300;
   border-radius: 5px;
+  outline: none;
 }
 
 .icon-white {
@@ -510,4 +521,110 @@ ion-icon {
 .withdrawalIcon {
   color: white;
   font-size: 16px;
+}
+
+
+/* Dispositivos móveis (até 575px) */
+@media (max-width: 575.98px) {
+
+  .dashboardInfluencerArea {
+    height: 950px;
+  }
+    .dashboardInfluencer {
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+    }
+
+    .card1,.card2 {
+      margin-left: 100px;
+      margin-right: 100px;
+      width: 300px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dashRow {
+      margin-top: 10px;
+    }
+
+    .referralLink {
+      padding-right: 65px;
+    }
+
+    .withdrawalBtnDash {
+      display: none;
+    }
+
+    .dateArea {
+      gap:3px
+    }
+}
+
+/* Tablets (de 576px a 767px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .dashboardInfluencerArea {
+    height: 950px;
+  }
+    .dashboardInfluencer {
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+    }
+
+    .card1,.card2 {
+      margin-left: 100px;
+      margin-right: 100px;
+      width: 300px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dashRow {
+      margin-top: 10px;
+    }
+
+    .referralLink {
+      padding-right: 65px;
+    }
+
+    .withdrawalBtnDash {
+      display: none;
+    }
+}
+
+
+/* Desktops pequenos (de 768px a 991px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .dashboardInfluencerArea {
+    height: 950px;
+  }
+    .dashboardInfluencer {
+      flex-direction: column;
+      height: 100%;
+      align-items: center;
+    }
+
+    .card1,.card2 {
+      margin-left: 100px;
+      margin-right: 100px;
+      width: 300px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      right: 20px;
+    }
+
+    .dashRow {
+      margin-top: 10px;
+    }
+
+    .referralLink {
+      padding-right: 65px;
+    }
+}
+
+/* Desktops grandes (acima de 992px) */
+@media (min-width: 992px) {
+  
 }

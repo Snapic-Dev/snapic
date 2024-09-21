@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-md-row">
+<div class="d-flex">
 
     <div class="mt-1">
         <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Add files') }}."

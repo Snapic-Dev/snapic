@@ -56,6 +56,10 @@ body {
   background-position: center center;
 }
 
+.influencerBgArea {
+  height: 1000px;
+}
+
 .brand-logo {
   width: 200px;
 }
@@ -916,23 +920,22 @@ footer .brand-logo {
   position: relative;
   overflow: hidden;
   display: inline-block;
-  width: 100%;
 }
 
 .file-upload input[type="file"] {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
   height: 100%;
   opacity: 0;
   cursor: pointer;
 }
 
+
 .file-upload label {
   display: block;
-  width: 22vw;
-  min-width: 320px;
+  width: 22.5vw;
+  min-width: 327px;
   padding: 10px;
   border: 2px solid #673ab6;
   text-align: center;
@@ -1110,28 +1113,36 @@ footer .brand-logo {
 }
 
 .inputLogin {
-  background-color: #f9f9f9;
-  width: 22vw;
-  min-width: 320px;
+  background-color: #683ab617;
   height: 50px;
   padding-left: 10px;
   border-radius: 25px;
   border: none;
   outline: none;
-  box-shadow: rgba(0, 0, 0, 0.154) 0px 5px 10px;
   margin-top: 3px;
+  font-size: 15px;
   margin-bottom: 3px;
 }
 
-.inputLogin::placeholder {
+.inputRegisterDate {
+  font-weight: 200;
   color: #784ba092;
-  font-weight: 600;
+}
+
+.inputLogin::placeholder {
+  color: #784ba0a1;
+  font-weight: 500;
 }
 
 .btnLogin {
   border-radius: 25px;
-  width: 22vw;
-  min-width: 320px;
+}
+
+.BannerLoginInfluencer {
+  position: relative;
+  left: 45px;
+  height: auto;
+  object-fit: cover;
 }
 
 .preview-img {
@@ -1140,17 +1151,17 @@ footer .brand-logo {
 }
 .btnToSwitchRegister {
   border-radius: 25px;
-  width: 22vw;
-  min-width: 320px;
 }
 
 .BannerLogin {
   position: relative;
   left: 45px;
+  object-fit: cover;
 }
 
 .titleLogin {
   color: rgb(47, 47, 47);
+  font-size: max(2vw,30px);
 }
 
 .selectOption {
@@ -1243,6 +1254,13 @@ footer .brand-logo {
   display: none;
 }
 
+.nicheSelect {
+  color: #784ba0a1;
+  font-weight: 500;
+}
+
+
+
 @media (max-width: 575px) {
   .walletCarousel {
     display: none;
@@ -1253,12 +1271,24 @@ footer .brand-logo {
   .walletCarousel {
     display: none;
   }
+
+  .file-upload label {
+    min-width: 380px;
+  }
+
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
+
+
   .walletCarousel {
     display: none;
   }
+
+  .file-upload label {
+    min-width: 385px;
+  }
+
 }
 
 @media (min-width: 1200px) {
@@ -1266,3 +1296,4 @@ footer .brand-logo {
     display: flex;
   }
 }
+
