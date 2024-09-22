@@ -64,8 +64,15 @@
     <div class="form-group">
         <!-- <label for="birthdate" placeholder="Idade" class="col-form-label required-label">{{ __('Data Nascimento') }}</label> -->
         <div class="">
-            <input id="birthdate" type="date" class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror"
-                name="birthdate" value="{{ old('birthdate') }}" required autocomplete="date">
+            <input id="birthdate" type="text" class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror"
+                name="birthdate" 
+                value="{{ old('birthdate') }}" 
+                required 
+                autocomplete="date"
+                placeholder="Data Nascimento"
+                onfocus="this.type='date'"
+                onblur="this.type='text'"
+                >
             @error('birthdate')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -92,7 +99,7 @@
         <!-- <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label> -->
         <div class="">
             <select id="niche" class="inputLogin nicheSelect form-control @error('niche') is-invalid @enderror" name="niche" required>
-                <option class="selectOption" value="">{{ __('Niche*') }}</option>
+                <option class="selectOption" value="">{{ __('Nicho*') }}</option>
                 @foreach ($niches as $niche)
                     <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
                         {{ $niche->name }}
@@ -151,7 +158,7 @@
     <div class="">
         <div class="form-group">
             <!-- <label for="frontDoc" class="col-form-label required-label">{{ __('RG ou CNH- Frente') }}</label> -->
-            <div class="file-upload ">
+            <div class="file-upload w-100">
                 <input id="frontDoc" type="file" class="form-control @error('frontDoc') is-invalid @enderror"
                     name="frontDoc" accept=".jpg, .jpeg, .png, .webp"
                     onchange="previewImage(this, document.getElementById('frontPreview'))">
@@ -171,7 +178,7 @@
 
         <div class="form-group">
             <!-- <label for="backDoc" class="col-form-label required-label">{{ __('RG ou CNH- Verso') }}</label> -->
-            <div class="file-upload">
+            <div class="file-upload w-100">
                 <input id="backDoc" type="file" class="form-control @error('backDoc') is-invalid  @enderror"
                     class="" name="backDoc" accept=".jpg, .jpeg, .png, .webp"
                     onchange="previewImage(this, document.getElementById('backPreview'))">

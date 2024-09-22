@@ -926,6 +926,7 @@ footer .brand-logo {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   height: 100%;
   opacity: 0;
   cursor: pointer;
@@ -934,9 +935,9 @@ footer .brand-logo {
 
 .file-upload label {
   display: block;
-  width: 22.5vw;
-  min-width: 327px;
-  padding: 10px;
+  height: 55px;
+  font-size: 12px;
+  min-width: 100%;
   border: 2px solid #673ab6;
   text-align: center;
   cursor: pointer;
@@ -1108,8 +1109,8 @@ footer .brand-logo {
 }
 
 .brand-logo-form {
-  height: 150px;
-  width: 150px;
+  height: 200px;
+  width: 200px;
 }
 
 .inputLogin {
@@ -1139,10 +1140,12 @@ footer .brand-logo {
 }
 
 .BannerLoginInfluencer {
-  position: relative;
-  left: 45px;
-  height: auto;
-  object-fit: cover;
+  width: 100vw;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  background-position: center;
+  background-size: cover;
+  background-image: url('/img/BannerInfluencer.png');
 }
 
 .preview-img {
@@ -1154,9 +1157,13 @@ footer .brand-logo {
 }
 
 .BannerLogin {
-  position: relative;
-  left: 45px;
-  object-fit: cover;
+  width: 100vw;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  background-size: cover; /* O usa 'contain' según necesites */
+  background-repeat: no-repeat; /* Evita que se repita */
+  background-position: center; /* Centra la imagen */
+  background-image: url('/img/Banner.png');
 }
 
 .titleLogin {

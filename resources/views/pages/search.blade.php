@@ -72,7 +72,7 @@
                     @endif
                     <div class="inline-border-tabs mt-3">
                         <nav class="nav nav-pills nav-justified bookmarks-nav">
-                            @foreach($availableFilters as $filter)
+                            <!-- @foreach($availableFilters as $filter)
                                 <a class="nav-item nav-link {{$filter == $activeFilter ? 'active' : ''}}" href="{{route('search.get',array_merge(['query'=>isset($searchTerm) && $searchTerm ? $searchTerm : ''],['filter'=>$filter]))}}">
                                     <div class="d-flex justify-content-center text-bold">
                                         <span class="d-md-none">
@@ -101,7 +101,18 @@
                                         <span class="d-none d-md-block ml-2">{{ucfirst(trim( (in_array($filter,['videos','people']) ? trans_choice($filter,2,['number'=>'']) : __(ucfirst($filter))) )) }}</span>
                                     </div>
                                 </a>
-                            @endforeach
+                            @endforeach -->
+                            @if(in_array('live', $availableFilters))
+                                    <a class="nav-item nav-link {{$activeFilter == 'live' ? 'active' : ''}}" href="{{route('search.get', array_merge(['query' => $searchTerm ?? ''], ['filter' => 'live']))}}">
+                                        <div class="d-flex justify-content-center text-bold">
+                                            <span class="d-md-none">
+                                                @include('elements.icon', ['icon' => 'play-outline', 'centered' => false, 'variant' => 'medium'])
+                                            </span>
+                                            @if($activeFilter == 'live') <div class="blob red d-none d-md-block"></div> @endif
+                                            <span class="d-none d-md-block ml-2">{{__('Live')}}</span>
+                                        </div>
+                                    </a>
+                            @endif
                         </nav>
                     </div>
                 </div>
