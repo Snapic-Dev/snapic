@@ -75,7 +75,10 @@
                 ])
                 {{ __('Bookmarks') }}</a>
         </li>
-        @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+        @if(
+        Auth::user()->role_id === 1 ||
+        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+        )
         <li class="{{ Route::currentRouteName() == 'my.messenger.campanha.create' ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center" href="{{ route('my.messenger.campanha.create') }}">
                 @include('elements.icon', [

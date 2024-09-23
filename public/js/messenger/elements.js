@@ -210,5 +210,7 @@ function noMessagesLabel() {
 
 // eslint-disable-next-line no-unused-vars
 function noContactsLabel() {
-    return `<div class="d-flex mt-3 mt-md-2 pl-3 pl-md-0 mb-3 pl-md-0"><span>${trans("Click the text bubble to send a new message.")}</span></div>`;
+  return `<div class="d-flex mt-3 mt-md-2 pl-3 pl-md-0 mb-3 pl-md-0"><span>${trans(
+    "Go to a user's profile and start an interaction. 🤭"
+  )}</span></div>`;
 }

@@ -1,6 +1,6 @@
 @extends('layouts.no-nav')
 @section('meta')
-    <meta name="robots" content="noindex">
+<meta name="robots" content="noindex">
 @stop
 
 @section('content')
@@ -11,23 +11,23 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
-                            <a href="{{ action('HomeController@index') }}" class="d-flex align-items-center linkAreaLoginLogo">
-                                    <picture class="logoArea">
-                                            <source media="(max-width: 600px)" 
-                                                srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                            <a href="{{ action('HomeController@index') }}">
+                                <picture class="logoArea">
+                                                <source media="(max-width: 600px)" 
+                                                    srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                                                    class="brand-logo-form"
+                                                    >
+                                                <img
+                                                src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.png' : '/img/snapic-black.png')) }}"
+                                                alt="Descrição"
                                                 class="brand-logo-form"
-                                                >
-                                            <img
-                                            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.png' : '/img/snapic-black.png')) }}"
-                                            alt="Descrição"
-                                            class="brand-logo-form"
-                                            > 
-                                    </picture>  
+                                                > 
+                                </picture>  
                             </a>
                             @if (session('status'))
-                                <div class="alert alert-success text-white" role="alert">
-                                    {{ session('status') }}
-                                </div>
+                            <div class="alert alert-success text-white" role="alert">
+                                {{ session('status') }}
+                            </div>
                             @endif
                             @include('auth.passwords.email-form')
                         </div>

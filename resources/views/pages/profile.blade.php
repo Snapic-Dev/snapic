@@ -202,7 +202,7 @@
                     <!-- <div class="d-flex align-items-center mr-2 text-truncate mb-0 mb-md-0">
                         @include('elements.icon',['icon'=>'calendar-clear-outline','centered'=>false,'classes'=>'mr-1'])
                         <div class="text-truncate ml-1">
-                            {{ucfirst($user->created_at->translatedFormat('F d'))}}
+                         
                         </div>
                     </div> -->
                     <!-- @if($user->location)

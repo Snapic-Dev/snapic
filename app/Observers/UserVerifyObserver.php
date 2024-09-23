@@ -20,15 +20,19 @@ class UserVerifyObserver
     public function saving(UserVerify $userVerify)
     {
         if ($userVerify->getOriginal('status') == 'pending' && $userVerify->status != 'pending') {
+
             if ($userVerify->status == 'rejected') {
                 // Reject
                 $emailSubject = __('Your identity check failed.');
                 $button = [
                     'text' => __('Try again'),
-                    'url' => route('my.settings', ['type'=>'verify']),
+                    'url' => route('my.settings', ['type' => 'verify']),
                 ];
             } elseif ($userVerify->status = 'verified') {
-                // Check ok
+                $user = User::find($userVerify->user_id);
+                $user->identity_verified_at = $userVerify->updated_at;
+                $user->save();
+
                 $emailSubject = __('Your identity check passed.');
                 $button = [
                     'text' => __('Create a post'),
@@ -38,18 +42,17 @@ class UserVerifyObserver
 
             // Sending out the user notification
             $user = User::find($userVerify->user_id);
-            try{
+            try {
                 App::setLocale($user->settings['locale']);
-            }
-            catch (\Exception $e){
+            } catch (\Exception $e) {
                 App::setLocale('en');
             }
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name'=>$user->name]),
-                    'content' => __('Email identity checked', ['siteName'=>getSetting('site.name'), 'status'=>__($userVerify->status)]),
+                    'title' => __('Hello, :name,', ['name' => $user->name]),
+                    'content' => __('Email identity checked', ['siteName' => getSetting('site.name'), 'status' => __($userVerify->status)]),
                     'button' => $button,
                 ]
             );

@@ -53,13 +53,13 @@ class SettingsController extends Controller
         'referrals' => ['heading' => 'Invite other people to earn more', 'icon' => 'person-add'],
         'notifications' => ['heading' => 'Your email notifications settings', 'icon' => 'notifications'],
         'privacy' => ['heading' => 'Your privacy and safety', 'icon' => 'shield'],
-        'verify' => ['heading' => 'Get verified and start earning now', 'icon' => 'checkmark'],
+        'producer' => ['heading' => 'Get verified and start earning now', 'icon' => 'cash'],
     ];
 
     public function __construct()
     {
         if (getSetting('site.hide_identity_checks')) {
-            unset($this->availableSettings['verify']);
+            unset($this->availableSettings['producer']);
         }
     }
 
@@ -132,8 +132,8 @@ class SettingsController extends Controller
 
                 break;
             case 'subscribers':
-                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
-                    abort(code: 404);
+                if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+                    abort(404);
                 }
 
                 $subscribers = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->paginate(2);
@@ -171,8 +171,8 @@ class SettingsController extends Controller
                 $ordination = $request->input('dataFilter');
                 $sortOrder = $ordination ?: 'desc';
 
-                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
-                    abort(code: 404);
+                if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+                    abort(404);
                 }
 
                 $initialDate = request()->input('initialDate');
@@ -234,8 +234,8 @@ class SettingsController extends Controller
                 $data['countries'] = Country::query()->where('name', '!=', 'All')->get();
                 break;
             case 'referrals':
-                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
-                    abort(code: 404);
+                if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+                    abort(404);
                 }
 
                 if (getSetting('referrals.enabled')) {
@@ -247,9 +247,10 @@ class SettingsController extends Controller
                 }
                 break;
             case 'rates':
-                if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at) {
-                    abort(code: 404);
+                if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+                    abort(404);
                 }
+
                 $data['offer'] = $user->offer;
                 break;
         }
@@ -505,7 +506,7 @@ class SettingsController extends Controller
             case 'subscriptions':
                 $additionalAssets['js'][] = '/js/pages/settings/subscriptions.js';
                 break;
-            case 'verify':
+            case 'producer':
                 $additionalAssets['css'][] = '/libs/dropzone/dist/dropzone.css';
                 $additionalAssets['js'][] = '/libs/dropzone/dist/dropzone.js';
                 $additionalAssets['js'][] = '/js/pages/settings/verify.js';

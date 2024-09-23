@@ -1,7 +1,8 @@
 <div class="mt-3 inline-border-tabs text-bold">
     <nav class="nav nav-pills nav-justified">
         @foreach($availableSettings as $route => $setting)
-        @if(!Auth::user()->identity_verified_at || Auth::user()->role_id !== 3 && ($route==="rates" || $route==="payments"))
+        @if(Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) && ($route==="rates" || $route==="payments"))
+
         <div></div>
         @else
         <a class="nav-item nav-link {{$activeSettingsTab == $route ? 'active' : ''}}" href="{{route('my.settings',['type'=>$route])}}">
