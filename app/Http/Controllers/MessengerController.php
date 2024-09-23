@@ -460,6 +460,7 @@ class MessengerController extends Controller
             $senderID = (int) Auth::user()->id;
             $return = [];
             $errors = [];
+            $image_uploaded = '';
 
             if ($receiverIDs === null) {
                 $receiverIDs = [];
