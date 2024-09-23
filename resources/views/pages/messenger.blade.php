@@ -57,7 +57,10 @@
                             @if (!count($availableContacts)) data-original-title="{{ trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.', ['user' => 0]) }}"
                             @else
                             data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}" @endif>
-                            @if(Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) )
+                            @if(
+                            Auth::user()->role_id === 1 ||
+                            (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+                            )
                             <a title="" class="pointer-cursor new-conversation-toggle"
                                 data-original-title="{{ trans_choice('Send a new message', ['user' => 0]) }}">
                                 <div class="mt-0 h5 icon-edit-new">@include('elements.icon', [
