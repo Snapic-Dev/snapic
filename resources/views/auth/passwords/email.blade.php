@@ -1,6 +1,6 @@
 @extends('layouts.no-nav')
 @section('meta')
-    <meta name="robots" content="noindex">
+<meta name="robots" content="noindex">
 @stop
 
 @section('content')
@@ -11,13 +11,18 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
-                            <a href="{{action('HomeController@index')}}">
-                                <img class="d-inline-block align-top mb-1 brand-logo-form" src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+                            <a href="{{ action('HomeController@index') }}">
+                                <img class="d-inline-block align-top mb-1 brand-logo-form"
+                                    src="{{ asset(Cookie::get('app_theme') == null ? 
+             (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : 
+             (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+                                    alt="Logo">
                             </a>
+
                             @if (session('status'))
-                                <div class="alert alert-success text-white" role="alert">
-                                    {{ session('status') }}
-                                </div>
+                            <div class="alert alert-success text-white" role="alert">
+                                {{ session('status') }}
+                            </div>
                             @endif
                             @include('auth.passwords.email-form')
                         </div>
