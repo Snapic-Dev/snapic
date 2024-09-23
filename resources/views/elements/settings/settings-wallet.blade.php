@@ -62,7 +62,8 @@
     @if (
     $activeTab != null &&
     $activeTab === 'withdraw' &&
-    \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()) && Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) )
+    \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()) && Auth::user()->role_id === 1 ||
+    (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at))
     @include('elements/settings/settings-wallet-withdraw')
     @else
     @include('elements/settings/settings-wallet-deposit')
