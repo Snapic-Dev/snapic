@@ -121,7 +121,6 @@ Minify::javascript([
 <script>
     document.addEventListener('DOMContentLoaded', async function() {
         try {
-            Stream.TesteLog();
             const fetchGifts = async () => {
                 const response = await fetch('/giftDates');
                 if (!response.ok) {
