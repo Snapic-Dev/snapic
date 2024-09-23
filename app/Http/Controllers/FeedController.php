@@ -41,14 +41,14 @@ class FeedController extends Controller
             ],
             'initialPostIDs' => $posts->pluck('id')->toArray(),
             'sliderConfig' => [
-              'autoslide'=> getSetting('feed.feed_suggestions_autoplay') ? true : false,
+                'autoslide' => getSetting('feed.feed_suggestions_autoplay') ? true : false,
             ],
             'user' => [
                 'username' => Auth::user()->username,
                 'user_id' => Auth::user()->id,
                 'lists' => [
-                    'blocked'=>Auth::user()->lists->firstWhere('type', 'blocked')->id,
-                    'following'=>Auth::user()->lists->firstWhere('type', 'following')->id,
+                    'blocked' => Auth::user()->lists->firstWhere('type', 'blocked')->id,
+                    'following' => Auth::user()->lists->firstWhere('type', 'following')->id,
                 ],
             ],
 
@@ -68,7 +68,7 @@ class FeedController extends Controller
      */
     public function getFeedPosts(Request $request)
     {
-        return response()->json(['success'=>true, 'data'=>PostsHelperServiceProvider::getFeedPosts(Auth::user()->id, true)]);
+        return response()->json(['success' => true, 'data' => PostsHelperServiceProvider::getFeedPosts(Auth::user()->id, true)]);
     }
 
     /**
@@ -79,6 +79,7 @@ class FeedController extends Controller
      */
     public function filterSuggestedMembers(Request $request)
     {
-        return response()->json(['success'=>true, 'data'=>MembersHelperServiceProvider::getSuggestedMembers(true, $request->get('filters'))]);
+        return response()->json(['success' => true, 'data' => MembersHelperServiceProvider::getSuggestedMembers(true)]);
+        // return response()->json(['success'=>true, 'data'=>MembersHelperServiceProvider::getSuggestedMembers(true, $request->get('filters'))]);
     }
 }
