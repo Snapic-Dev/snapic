@@ -5,11 +5,11 @@
             <div class="d-flex">
             </div>
             <div class="d-flex">
-                <span class="mr-2 mr-xl-3 pointer-cursor" data-toggle="tooltip" data-placement="top" title="{{__('Free account only')}}" onclick="SuggestionsSlider.loadSuggestions({'free':true {{isset($isMobile) ? ", 'isMobile': true" : ''}}});">
+                <!-- <span class="mr-2 mr-xl-3 pointer-cursor" data-toggle="tooltip" data-placement="top" title="{{__('Free account only')}}" onclick="SuggestionsSlider.loadSuggestions({'free':true {{isset($isMobile) ? ", 'isMobile': true" : ''}}});">
                     @include('elements.icon',['icon'=>'pricetag-outline','variant'=>'medium','centered'=>false])
-                </span>
+                </span> -->
                 <span class="mr-2 mr-xl-3 pointer-cursor" data-toggle="tooltip" data-placement="top" title="{{__('Refresh suggestions')}}" onclick="SuggestionsSlider.loadSuggestions({{isset($isMobile) ? "{'isMobile': true}" : ""}})">
-                   @include('elements.icon',['icon'=>'refresh','variant'=>'medium','centered'=>false])
+                    @include('elements.icon',['icon'=>'refresh','variant'=>'medium','centered'=>false])
                 </span>
             </div>
         </div>
