@@ -135,7 +135,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
             Route::get('/campanha', function () {
-                if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at) {
+                if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
                     abort(404);
                 }
                 return view('pages.campanha');

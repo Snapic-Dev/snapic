@@ -34,7 +34,7 @@
         <nav class="nav nav-pills nav-justified">
             @foreach (\App\Providers\SettingsServiceProvider::allowWithdrawals(
             Auth::user()
-            ) && Auth::user()->role_id == 3 && Auth::user()->identity_verified_at ? ['deposit', 'withdraw'] : ['deposit'] as $tab)
+            ) && Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) ? ['deposit'] : ['deposit', 'withdraw'] as $tab)
             <a class="nav-item nav-link {{ $activeTab == $tab ? 'active' : '' }}"
                 href="{{ route('my.settings', ['type' => 'wallet', 'active' => $tab]) }}">
 
@@ -62,7 +62,7 @@
     @if (
     $activeTab != null &&
     $activeTab === 'withdraw' &&
-    \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()) && Auth::user()->role_id == 3 && Auth::user()->identity_verified_at)
+    \App\Providers\SettingsServiceProvider::allowWithdrawals(Auth::user()) && Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) )
     @include('elements/settings/settings-wallet-withdraw')
     @else
     @include('elements/settings/settings-wallet-deposit')
