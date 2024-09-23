@@ -1109,8 +1109,9 @@ footer .brand-logo {
 }
 
 .brand-logo-form {
-  height: 200px;
+  height: 130px;
   width: 200px;
+  object-fit: contain;
 }
 
 .inputLogin {
@@ -1255,12 +1256,39 @@ footer .brand-logo {
   font-weight: 500;
 }
 
+.logoArea {
+  height: 100%;
+}
+
 
 
 @media (max-width: 575px) {
   .walletCarousel {
     display: none;
   }
+
+  .linkAreaLoginLogo {
+    justify-content: center;
+  }
+
+  .logoArea {
+    display: flex;
+    justify-content: center;
+    width: 100px;
+    height: 200px;
+    margin-top: 50px;
+  }
+
+  .titleLogin {
+    display: none;
+  }
+
+  .brand-logo-form {
+    height: 120px;
+    width: 270px;
+  }
+
+
 }
 
 @media (min-width: 576px) and (max-width: 991px) {

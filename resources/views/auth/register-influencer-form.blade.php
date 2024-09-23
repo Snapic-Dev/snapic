@@ -117,7 +117,7 @@
     <div class="form-group">
         <!-- <label for="instagram" class="col-form-label">instagram</label> -->
         <div class="">
-            <input id="instagram" placeholder="Instagram*" type="tel" class="inputLogin form-control @error('instagram') is-invalid @enderror"
+            <input id="instagram" placeholder="Instagram" type="tel" class="inputLogin form-control @error('instagram') is-invalid @enderror"
                 name="instagram" value="{{ old('instagram') }}" autocomplete="text">
             @error('instagram')
                 <span class="invalid-feedback" role="alert">

@@ -15,7 +15,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="amount-label">@include('elements.icon',['icon'=>'cash-outline','variant'=>'medium'])</span>
                     </div>
-                    <input id="post-price" type="number" class="form-control" name="text" required  placeholder="{{__('Post price')}}" value="{{$postPrice}}">
+                    <input id="post-price" type="number" class="form-control" name="text" required  placeholder="{{__('Post price')}}" value="{{$postPrice}}" min="1">
                     <span class="invalid-feedback" role="alert">
                         <strong class="post-price-error min-error d-none">{{__('The price must be between :min and :max.',['min' => getSetting('payments.min_ppv_post_price') ?? 1, 'max' => getSetting('payments.max_ppv_post_price') ?? 500])}}</strong>
                         <strong class="post-price-error ppv-error d-none">{{__('Posts having an expire date can not be price locked.')}}</strong>

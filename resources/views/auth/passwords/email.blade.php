@@ -11,8 +11,18 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
-                            <a href="{{action('HomeController@index')}}">
-                                <img class="d-inline-block align-top mb-1 brand-logo-form" src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+                            <a href="{{ action('HomeController@index') }}" class="d-flex align-items-center linkAreaLoginLogo">
+                                    <picture class="logoArea">
+                                            <source media="(max-width: 600px)" 
+                                                srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                                                class="brand-logo-form"
+                                                >
+                                            <img
+                                            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.png' : '/img/snapic-black.png')) }}"
+                                            alt="Descrição"
+                                            class="brand-logo-form"
+                                            > 
+                                    </picture>  
                             </a>
                             @if (session('status'))
                                 <div class="alert alert-success text-white" role="alert">
@@ -26,9 +36,7 @@
             </div>
         </div>
         <div class="col-md-6 d-none d-md-flex bg-image p-0 m-0">
-            <div class="d-flex m-0 p-0 bg-gradient-primary w-100 h-100">
-                <img src="{{asset('/img/pattern-lines.svg')}}" alt="pattern-lines" class="img-fluid opacity-6">
-            </div>
+                <div class="d-flex m-0 p-0 w-100 h-100 BannerLogin"></div>
         </div>
     </div>
 </div>

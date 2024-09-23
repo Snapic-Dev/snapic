@@ -16,10 +16,18 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
-                            <a href="{{action('HomeController@index')}}">
-                                <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
-                                    class="d-inline-block align-top mr-1 ml-3 brand-logo-form"
-                                    alt="{{__("Site logo")}}">
+                            <a href="{{ action('HomeController@index') }}" class="d-flex align-items-center linkAreaLoginLogo">
+                                    <picture class="logoArea">
+                                            <source media="(max-width: 600px)" 
+                                                srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                                                class="brand-logo-form"
+                                                >
+                                            <img
+                                            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.png' : '/img/snapic-black.png')) }}"
+                                            alt="Descrição"
+                                            class="brand-logo-form"
+                                            > 
+                                    </picture>
                             </a>
                             @include('auth.login-form')
                             @include('auth.social-login-box')
