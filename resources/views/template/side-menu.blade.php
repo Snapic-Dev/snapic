@@ -343,6 +343,20 @@
         </li>
         @endif
         @endif
+        @else
+        <li class="nav-item mt-4">
+            <a role="button" class="btn btn-round border btn-primary btn-block p-3"
+                href="/my/settings/producer">
+                <span
+                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('Become a producer') }}</span>
+                <span
+                    class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
+                    'icon' => 'add-circle-outline',
+                    'variant' => 'medium',
+                    'classes' => 'flex-shrink-0',
+                    ])</span>
+            </a>
+        </li>
         @endif
     </ul>
 </div>
