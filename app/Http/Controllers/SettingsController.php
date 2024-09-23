@@ -53,13 +53,13 @@ class SettingsController extends Controller
         'referrals' => ['heading' => 'Invite other people to earn more', 'icon' => 'person-add'],
         'notifications' => ['heading' => 'Your email notifications settings', 'icon' => 'notifications'],
         'privacy' => ['heading' => 'Your privacy and safety', 'icon' => 'shield'],
-        'verify' => ['heading' => 'Get verified and start earning now', 'icon' => 'checkmark'],
+        'producer' => ['heading' => 'Get verified and start earning now', 'icon' => 'cash'],
     ];
 
     public function __construct()
     {
         if (getSetting('site.hide_identity_checks')) {
-            unset($this->availableSettings['verify']);
+            unset($this->availableSettings['producer']);
         }
     }
 
@@ -506,7 +506,7 @@ class SettingsController extends Controller
             case 'subscriptions':
                 $additionalAssets['js'][] = '/js/pages/settings/subscriptions.js';
                 break;
-            case 'verify':
+            case 'producer':
                 $additionalAssets['css'][] = '/libs/dropzone/dist/dropzone.css';
                 $additionalAssets['js'][] = '/libs/dropzone/dist/dropzone.js';
                 $additionalAssets['js'][] = '/js/pages/settings/verify.js';
