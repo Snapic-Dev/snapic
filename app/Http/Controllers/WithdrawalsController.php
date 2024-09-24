@@ -102,7 +102,7 @@ class WithdrawalsController extends Controller
                 if (floatval($minimal) > floatval($amount)) {
                     $res =  $this->paymentHandler->makeTransfer($amount, $identifier);
 
-                    if (!array_key_exists('STATUS', $res) || $res['STATUS'] !== 'EM_PROCESSAMENTO' && $res['nome']) {
+                     if (array_key_exists('nome', $res)) {
                         switch ($res['nome']) {
                             case 'valor_invalido':
                                 throw new Exception("A chave Pix fornecida é inválida");
