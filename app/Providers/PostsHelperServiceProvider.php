@@ -326,93 +326,107 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param bool $mediaType
      * @return mixed
      */
-    public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
+      public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
     {
-        if ($filterType == 'following' || $filterType == 'all') {
-            // Followers only
-            $posts->join('user_list_members as following', function ($join) use ($userID) {
-                $join->on('following.user_id', '=', 'posts.user_id');
-                $join->on('following.list_id', '=', DB::raw(Auth::user()->lists->firstWhere('type', 'following')->id));
-            });
-        }
+        // Filtro para seguidores ou todos os posts
+        // if ($filterType == 'following' || $filterType == 'all') {
+        //     // Exibe posts apenas dos usuários que o usuário atual segue
+        //     $posts->join('user_list_members as following', function ($join) use ($userID) {
+        //         $join->on('following.user_id', '=', 'posts.user_id'); // Une a tabela de membros com os posts
+        //         $join->on('following.list_id', '=', DB::raw(Auth::user()->lists->firstWhere('type', 'following')->id)); // Verifica se o usuário atual está seguindo
+        //     });
+        // }
 
+        // Filtro para bloquear usuários ou exibir todos os posts
         if ($filterType == 'blocked' || $filterType == 'all') {
-            // Blocked users
+            // Exclui os posts de usuários bloqueados
             $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
-            $posts->whereNotIn('posts.user_id', $blockedUsers);
+            $posts->whereNotIn('posts.user_id', $blockedUsers); // Exclui usuários bloqueados dos resultados
         }
 
+        // Filtro para exibir posts de assinaturas ou todos os posts
         if ($filterType == 'subs' || $filterType == 'all') {
             if ($filterType == 'all') {
-                $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
-                $posts->whereIn('posts.user_id', $userIds);
+                // Exibe posts de assinantes ativos e perfis seguidos gratuitamente
+                // $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
+                $posts->where('posts.user_id', '!=', $userID);
             } else {
-                // Subs only
+                // Exibe apenas posts de assinantes ativos
                 $activeSubs = self::getUserActiveSubs($userID);
                 $posts->whereIn('posts.user_id', $activeSubs);
             }
         }
 
+        // Filtro para exibir posts salvos nos favoritos
         if ($filterType == 'bookmarks') {
             $posts->join('user_bookmarks', function ($join) use ($userID) {
-                $join->on('user_bookmarks.post_id', '=', 'posts.id');
-                $join->on('user_bookmarks.user_id', '=', DB::raw($userID));
+                $join->on('user_bookmarks.post_id', '=', 'posts.id'); // Une com a tabela de favoritos do usuário
+                $join->on('user_bookmarks.user_id', '=', DB::raw($userID)); // Verifica se o post está nos favoritos do usuário atual
             });
-            // Filtering allowed userIDs only for active bookmarks
+            // Exibe apenas posts permitidos para usuários com assinaturas ativas ou perfis seguidos gratuitamente
             $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
             $posts->whereIn('posts.user_id', $userIds);
         }
 
+        // Filtro para exibir posts de tipos de mídia específicos
         if ($filterType == 'media') {
-            // This guy is not really that optimal but neither bookmarks is heavy accessed
-            $mediaTypes = AttachmentServiceProvider::getTypeByExtension($mediaType);
+            $mediaTypes = AttachmentServiceProvider::getTypeByExtension($mediaType); // Obtém o tipo de mídia pela extensão
             $posts->whereHas('attachments', function ($query) use ($mediaTypes) {
-                $query->whereIn('type', $mediaTypes);
+                $query->whereIn('type', $mediaTypes); // Filtra posts que contenham o tipo de mídia especificado
             });
         }
 
+        // Filtro para realizar buscas nos posts
         if ($filterType == 'search') {
             $posts->where(
                 function ($query) use ($searchTerm) {
+                    // Pesquisa nos textos dos posts e nomes de usuários
                     $query->where('text', 'like', '%' . $searchTerm . '%')
                         ->orWhereHas('user', function ($q) use ($searchTerm) {
                             $q->where('username', 'like', '%' . $searchTerm . '%');
-                            $q->orWhere('name', 'like', '%' . $searchTerm . '%');
+                            $q->orWhere('name', 'like', '%' . $searchTerm . '%'); // Também busca no nome real do usuário
                         });
                 }
             );
         }
 
+        // Filtro para exibir posts fixados
         if ($filterType == 'pinned') {
-            $posts->orderBy('is_pinned', 'DESC');
+            $posts->orderBy('is_pinned', 'DESC'); // Ordena para exibir posts fixados primeiro
         }
 
+        // Filtro para ordenar os posts
         if ($filterType == 'order') {
             if ($sortOrder) {
+                // Ordenação por "top" com base nas contagens de reações e comentários
                 if ($sortOrder == 'top') {
                     $relationsCount = ['reactions', 'comments'];
                     $posts->withCount($relationsCount);
                     $posts->orderBy('comments_count', 'DESC');
                     $posts->orderBy('reactions_count', 'DESC');
                 } elseif ($sortOrder == 'latest') {
+                    // Ordena por mais recente
                     $posts->orderBy('created_at', 'DESC');
                 }
             } else {
+                // Ordena por data de criação (mais recente primeiro) caso nenhum outro parâmetro seja fornecido
                 $posts->orderBy('created_at', 'DESC');
             }
         }
 
+        // Filtro para exibir apenas posts agendados e não expirados
         if ($filterType == 'scheduled') {
-            $posts->notExpiredAndReleased();
+            $posts->notExpiredAndReleased(); // Filtra posts que ainda não expiraram e já foram liberados
         }
 
+        // Filtro para exibir apenas posts aprovados
         if ($filterType == 'approvedPostsOnly') {
-            if (!(Auth::check() && (Auth::user()->role_id === 1))) { // Admin can preview all  types of posts
-                $posts->where('status', Post::APPROVED_STATUS);
+            if (!(Auth::check() && (Auth::user()->role_id === 1))) { // Admin pode visualizar todos os tipos de posts
+                $posts->where('status', Post::APPROVED_STATUS); // Exibe apenas posts com status aprovado
             }
         }
 
-        return $posts;
+        return $posts; // Retorna a coleção de posts filtrada
     }
 
     /**
