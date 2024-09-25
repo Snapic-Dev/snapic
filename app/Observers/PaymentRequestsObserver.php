@@ -34,20 +34,20 @@ class PaymentRequestsObserver
                 $emailSubject = __('Your payment request has been denied.');
                 $button = [
                     'text' => __('Try again'),
-                    'url' => route('my.settings', ['type'=>'wallet']),
+                    'url' => route('my.settings', ['type' => 'wallet']),
                 ];
                 $transaction = Transaction::query()->where('id', $paymentRequest->transaction_id)->first();
-                if($transaction){
+                if ($transaction) {
                     $transaction->update(['status' => Transaction::DECLINED_STATUS]);
                 }
             } elseif ($paymentRequest->status = 'approved') {
                 $emailSubject = __('Your payment request has been approved.');
                 $button = [
                     'text' => __('My payments'),
-                    'url' => route('my.settings', ['type'=>'payments']),
+                    'url' => route('my.settings', ['type' => 'payments']),
                 ];
                 $transaction = Transaction::query()->where('id', $paymentRequest->transaction_id)->first();
-                if($transaction){
+                if ($transaction) {
                     $transaction->update(['status' => Transaction::APPROVED_STATUS]);
                     $this->paymentHelper->creditReceiverForTransaction($transaction);
                 }
@@ -55,52 +55,51 @@ class PaymentRequestsObserver
 
             // Sending out the user notification
             $user = User::find($paymentRequest->user_id);
-            try{
+            try {
                 App::setLocale($user->settings['locale']);
-            }
-            catch (\Exception $e){
-                App::setLocale('en');
+            } catch (\Exception $e) {
+                App::setLocale('pt');
             }
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name'=>$user->name]),
+                    'title' => __('Hello, :name,', ['name' => $user->name]),
                     'content' => __('Email payment request processed', [
                         'siteName' => getSetting('site.name'),
                         'status' => __($paymentRequest->status),
-                    ]).($paymentRequest->status == 'approved' ? ' $'.$paymentRequest->amount.' '.__('have been credited to your account.') : ''),
+                    ]) . ($paymentRequest->status == 'approved' ? ' $' . $paymentRequest->amount . ' ' . __('have been credited to your account.') : ''),
                     'button' => $button,
                 ]
             );
         }
     }
 
-    public function deleting(PaymentRequest $paymentRequest){
-        if($paymentRequest->status === 'pending') {
+    public function deleting(PaymentRequest $paymentRequest)
+    {
+        if ($paymentRequest->status === 'pending') {
             $emailSubject = __('Your payment request has been denied.');
             $button = [
                 'text' => __('Try again'),
-                'url' => route('my.settings', ['type'=>'wallet']),
+                'url' => route('my.settings', ['type' => 'wallet']),
             ];
             $transaction = Transaction::query()->where('id', $paymentRequest->transaction_id)->first();
-            if($transaction){
+            if ($transaction) {
                 $transaction->update(['status' => Transaction::DECLINED_STATUS]);
             }
 
             // Sending out the user notification
             $user = User::find($paymentRequest->user_id);
-            try{
+            try {
                 App::setLocale($user->settings['locale']);
-            }
-            catch (\Exception $e){
-                App::setLocale('en');
+            } catch (\Exception $e) {
+                App::setLocale('pt');
             }
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $paymentRequest->user()->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name'=>$user->name]),
+                    'title' => __('Hello, :name,', ['name' => $user->name]),
                     'content' => __('Email payment request processed', [
                         'siteName' => getSetting('site.name'),
                         'status' => __('rejected'),

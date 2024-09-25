@@ -21,11 +21,10 @@ use App\Providers\SettingsServiceProvider;
 use App\User;
 use AWS\CRT\Log;
 use Carbon\Carbon;
-use DB;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Javascript;
 use Pusher\Pusher;
@@ -188,7 +187,6 @@ class MessengerController extends Controller
         });
         $contacts = array_values($contacts);
 
-        // Additional (proper) messenger acccess check function, applied to contacts as well
         $contacts = array_filter($contacts, function ($contact) {
             if (self::checkMessengerAccess($contact->senderID, $contact->receiverID) || self::checkMessengerAccess($contact->receiverID, $contact->senderID)) {
                 return $contact;
@@ -196,8 +194,6 @@ class MessengerController extends Controller
         });
         $contacts = array_values($contacts);
 
-        // Filtering unique contactIDs
-        // TODO: This could have been done within the initial query - can be inspected for later on, was causing dupe on mass messages
         $filteredContacts = [];
         $uniqueContacts = array_unique(array_map(function ($v) {
             return $v->contactID;
@@ -486,8 +482,11 @@ class MessengerController extends Controller
                     }
                 }
             }
+
             if ($request->file('image')) {
-                $image_uploaded = $this->providerFirebase->uploadToFirebase($request->file('image'));
+                $file_campaign = $request->file('image');
+                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->put('campaign/' . $file_campaign->getClientOriginalName(), file_get_contents($file_campaign));
+                $image_uploaded = asset('storage/' . $campaignPath);
             }
 
             foreach ($receiverIDs as $receiverID) {

@@ -45,7 +45,7 @@ class UserVerifyObserver
             try {
                 App::setLocale($user->settings['locale']);
             } catch (\Exception $e) {
-                App::setLocale('en');
+                App::setLocale('pt');
             }
             EmailsServiceProvider::sendGenericEmail(
                 [
