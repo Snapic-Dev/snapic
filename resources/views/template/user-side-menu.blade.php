@@ -24,7 +24,7 @@
                 @if (Auth::check())
                 <div class="ml-2">
                     <span
-                        class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}
+                        class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->username }}
                     </span>
                 </div>
                 <a class="walletPerfil mt-1 d-flex flex-row" href="/my/settings/wallet">
