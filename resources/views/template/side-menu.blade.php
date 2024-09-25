@@ -51,7 +51,7 @@
             <div class="pl-2 d-flex justify-content-center flex-column overflow-hidden">
                 <div class="ml-2 d-flex flex-column overflow-hidden">
                     <span
-                        class="text-bold text-truncate mt-1 ml-2 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}
+                        class="text-bold text-truncate mt-1 ml-2 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->username }}
                     </span>
                     <a class="walletPerfil d-flex flex-row" href="/my/settings/wallet">
                         <div class="d-flex justify-content-center align-items-center ml-2">
