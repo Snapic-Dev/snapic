@@ -9,6 +9,7 @@ use App\Providers\AuthServiceProvider;
 use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -167,14 +168,19 @@ class RegisterInfluencerController extends Controller
     {
         ini_set('memory_limit', '256M');
 
+        $this->validator($request->all())->validate();
+
         if ($request->hasFile('frontDoc') && $request->hasFile('backDoc')) {
-            $frontDocUrl = $this->providerFirebase->uploadToFirebase($request->file('frontDoc'));
-            $backDocUrl = $this->providerFirebase->uploadToFirebase($request->file('backDoc'));
+            $frontDoc = $request->file('frontDoc');
+            $frontDocPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->put('documents/' . $frontDoc->getClientOriginalName(), file_get_contents($frontDoc));
+            $frontDocUrl = asset('storage/' . $frontDocPath);
+
+            $backDoc = $request->file('backDoc');
+            $backDocPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->put('documents/' . $backDoc->getClientOriginalName(), file_get_contents($backDoc));
+            $backDocUrl = asset('storage/' . $backDocPath);
         } else {
             return redirect()->back()->withErrors(['msg' => 'Both documents are required.']);
         }
-
-        $this->validator($request->all())->validate();
 
         $user = $this->create($request->all());
 
