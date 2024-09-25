@@ -113,11 +113,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $userData = [
             'role_id' => 3,
-            'name' => $data['name'],
+            'username' => $data['name'],
             'email' => $data['email'],
             'cpf' => $data['cpf'],
             'birthdate' => $data['birthdate'],
-            'username' => 'u' . time(),
             'password' => isset($data['password']) ? Hash::make($data['password']) : '',
             'website' => $data['instagram'] ?? null,
             'phone' => $data['phone'],
