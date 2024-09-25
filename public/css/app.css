@@ -1165,10 +1165,9 @@ footer .brand-logo {
   width: 100vw;
   border-top-left-radius: 50px;
   border-bottom-left-radius: 50px;
-  background-size: cover; /* O usa 'contain' según necesites */
-  background-repeat: no-repeat; /* Evita que se repita */
-  background-position: center; /* Centra la imagen */
-  background-image: url('/img/Banner.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; 
 }
 
 .titleLogin {

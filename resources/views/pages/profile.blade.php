@@ -74,6 +74,14 @@
                 <div>
                     @if(!Auth::check() || Auth::user()->id !== $user->id)
                         <div class="d-flex flex-row">
+                        @php
+                            $followingUser = \App\Providers\ListsHelperServiceProvider::getUserFollowingType($user->id, true)
+                        @endphp
+                    <span class="d-flex flex-row align-items-center ml-2 p-1 pointer-cursor btn-follow-user border {{ $followingUser === __('Follow') ? 'btnFollow' : 'btnUnfollow' }}" border btn-follow-user text-sm" data-toggle="tooltip" data-placement="top" title="{{ $followingUser === __('Follow') ? __('Seguir') : __('Seguindo') }}" onclick="Lists.manageFollowsAction('{{$user->id}}')">
+                        <span class="manage-follows-text text-sm">
+                            {{ $followingUser }}
+                        </span>
+                    </span>
                             @if(Auth::check())
                                 <div class="">
                                 <span class="p-pill ml-2 pointer-cursor to-tooltip"
