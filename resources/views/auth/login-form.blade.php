@@ -21,7 +21,10 @@
         <div class="">
             <input class="inputLogin form-control" id="username" type="text" placeholder="Apelido*"
                 class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"
-                autocomplete="username" autofocus>
+                autocomplete="username" autofocus
+                maxlength=15 
+                minlength=4
+                >
             @error('name')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
