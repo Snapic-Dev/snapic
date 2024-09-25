@@ -12,5 +12,15 @@
         </a>
         @endif
         @endforeach
+           @if(
+        Auth::user()->role_id === 1 ||
+        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+        )
+        <a class="nav-item nav-link {{$activeSettingsTab == $route ? 'active' : ''}}" href="{{route('my.settings.referrals')}}">
+            <div class="d-flex justify-content-center">
+                @include('elements.icon',['icon'=>'person-add'.'-outline','centered'=>'false','variant'=>'medium'])
+            </div>
+        </a>
+        @endif
     </nav>
 </div>
