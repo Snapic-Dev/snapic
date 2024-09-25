@@ -16,6 +16,20 @@
             </a>
             @endif
             @endforeach
+             @if(
+            Auth::user()->role_id === 1 ||
+            (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+            )
+            <a href="{{route('my.settings.referrals')}}" class="{{$activeSettingsTab == $route ? 'active' : ''}} list-group-item list-group-item-action d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                    @include('elements.icon',['icon'=>'person-add'.'-outline','centered'=>'false','classes'=>'mr-3','variant'=>'medium'])
+                    <span>{{ucfirst(__('referrals'))}}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    @include('elements.icon',['icon'=>'chevron-forward-outline'])
+                </div>
+            </a>
+            @endif
         </div>
     </div>
 </div>
