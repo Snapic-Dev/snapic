@@ -389,7 +389,7 @@ class PostsController extends Controller
                 return response()->json(['success' => false, 'errors' => [__('Not found')], 'message' => __('Post not found')], 404);
             }
 
-            if ($this->validateUserAccessForPost($post)) {
+
                 if ($type == 'post') {
                     $data['post_id'] = $id;
                 } elseif ($type == 'comment') {
@@ -409,7 +409,6 @@ class PostsController extends Controller
                 }
 
                 return response()->json(['success' => true, 'message' => $message]);
-            }
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message' => $exception->getMessage()]);
         }
