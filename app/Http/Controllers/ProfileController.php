@@ -57,6 +57,10 @@ class ProfileController extends Controller
         if (!$this->user->public_profile && !Auth::check()) {
             abort(403, __('Profile access is denied.'));
         }
+        
+        if ($this->user->role_id !== 3 || !$this->user->identity_verified_at) {
+            abort(403, __('Profile access is denied.'));
+        }
 
         // Geoblocking rule
         if ($this->isGeoLocationBlocked()) {
