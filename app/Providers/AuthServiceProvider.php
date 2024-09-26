@@ -41,9 +41,8 @@ class AuthServiceProvider extends ServiceProvider
     public static function createUser($data)
     {
         $userData = [
-            'name' => $data['name'],
             'email' => $data['email'],
-            'username' => 'u' . time(),
+            'username' => $data['name'],
             'password' => isset($data['password']) ? Hash::make($data['password']) : '',
             'settings' => collect([
                 'notification_email_new_sub' => 'true',
@@ -113,7 +112,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $userData = [
             'role_id' => 3,
-            'username' => $data['name'],
             'email' => $data['email'],
             'cpf' => $data['cpf'],
             'birthdate' => $data['birthdate'],
