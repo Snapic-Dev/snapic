@@ -175,10 +175,22 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getTotalEarned() /*dash*/
     {
+         $date = request()->query('date');
 
-        $date = request()->query('date');
-        $query = Transaction::where('status', Transaction::APPROVED_STATUS)
-            ->where('type', '!=', Transaction::DEPOSIT_TYPE)
+         $query = Transaction::where('status', Transaction::APPROVED_STATUS)
+            ->where(function ($query) {
+                $query->where('type', Transaction::DEPOSIT_TYPE)
+                    ->orWhere(function ($query) {
+                        $query->whereIn('type', [
+                            'one-month-subscription',
+                            'three-months-subscription',
+                            'six-months-subscription',
+                            'yearly-subscription',
+                            'subscription-renewal'
+                        ])
+                            ->where('payment_provider', 'card');
+                    });
+            })
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
