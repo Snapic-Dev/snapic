@@ -115,6 +115,7 @@
         </li>
         <div class="menu-divider"></div>
         @endif
+        @if(Auth::check() && (Auth::user()->role_id === 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)))
         <li
             class="influencerMenuMobile w-100">
             <a class="scroll-link d-flex align-items-center 2 w-100" href="{{ request()->root() }}/my/settings/producer">
@@ -127,6 +128,7 @@
                 {{ __('Produtor') }}
             </a>
         </li>
+        @endif
         <!-- <li>
             <a class="scroll-link d-flex align-items-center" href="{{ route('pages.get', ['slug' => 'help']) }}">
                 @include('elements.icon', [
