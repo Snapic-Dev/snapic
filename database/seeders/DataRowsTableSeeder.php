@@ -2579,23 +2579,7 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{}',
                 'order' => 3,
-            ),
-            160 =>
-            array(
-                'id' => 168,
-                'data_type_id' => 28,
-                'field' => 'files',
-                'type' => 'text',
-                'display_name' => 'Files',
-                'required' => 0,
-                'browse' => 0,
-                'read' => 0,
-                'edit' => 1,
-                'add' => 0,
-                'delete' => 0,
-                'details' => '{}',
-                'order' => 5,
-            ),
+            ),        
             161 =>
             array(
                 'id' => 169,
