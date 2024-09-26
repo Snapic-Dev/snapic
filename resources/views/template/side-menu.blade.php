@@ -322,7 +322,8 @@
         @endif
         @endif
         @endif
-        @if(Auth::check() && (Auth::user()->role_id === 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)))
+        @if(Auth::check())
+        @if((Auth::user()->role_id === 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)))
         @if (!getSetting('site.hide_create_post_menu'))
         @if (GenericHelper::isEmailEnforcedAndValidated())
         <li class="nav-item mt-4">
@@ -354,6 +355,7 @@
                     ])</span>
             </a>
         </li>
+        @endif
         @endif
     </ul>
 </div>
