@@ -18,6 +18,15 @@
                 </div>
             </div>
         </a>
+        @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+            <a href="{{ route('my.streams.get') }}{{ StreamsHelper::getUserInProgressStream() ? '' : (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? '' : '?action=create') }}" class="h-pill h-pill-primary nav-link d-flex justify-content-between px-3 {{Route::currentRouteName() == 'feed' ? 'active' : ''}}">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="icon-wrapper d-flex justify-content-center align-items-center">
+                        @include('elements.icon',['icon'=>'videocam-outline','variant'=>'large'])
+                    </div>
+                </div>
+            </a>
+        @endif
         @if(
         Auth::user()->role_id === 1 ||
         (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)

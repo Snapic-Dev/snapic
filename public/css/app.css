@@ -1187,7 +1187,6 @@ footer .brand-logo {
   display: inline-block;
   gap: 25px;
   width: 100%;
-  height: 50%;
   flex-wrap: wrap;
 }
 @media (max-width: 800px) {
@@ -1208,6 +1207,15 @@ footer .brand-logo {
   opacity: 0;
   cursor: pointer;
 }
+.tooglePass {
+  position: absolute;
+  right: 40px;
+}
+
+#togglePasswordIcon {
+  font-size: 18px;
+}
+
 
 .file-uploadCampaign button {
   display: flex;

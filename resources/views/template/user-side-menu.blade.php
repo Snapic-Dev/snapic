@@ -103,16 +103,20 @@
                 ])
                 {{ __('Lists') }}</a>
         </li>
-        <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
-            <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
-                @include('elements.icon', [
-                'icon' => 'settings-outline',
-                'variant' => 'medium',
-                'centered' => false,
-                'classes' => 'mr-2',
-                ])
-                {{ __('Settings') }}</a>
-        </li>
+        @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+            <li
+                class="w-100">
+                <a class="scroll-link d-flex align-items-center 2 w-100" href="{{ request()->root() }}/my/settings/payments">
+                    @include('elements.icon', [
+                    'icon' => 'bar-chart',
+                    'variant' => 'medium',
+                    'centered' => false,
+                    'classes' => 'mr-2',
+                    ])
+                    {{ __('Dashboard') }}
+                </a>
+            </li>
+        @endif
         <div class="menu-divider"></div>
         @endif
         <li
@@ -124,7 +128,7 @@
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('Produtor') }}
+                {{ __('Become a producer') }}
             </a>
         </li>
         <!-- <li>
@@ -159,6 +163,16 @@
                 {{ __('Dark mode') }}
                 @endif
             </a>
+        </li>
+        <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
+            <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
+                @include('elements.icon', [
+                'icon' => 'settings-outline',
+                'variant' => 'medium',
+                'centered' => false,
+                'classes' => 'mr-2',
+                ])
+                {{ __('Settings') }}</a>
         </li>
         @endif
         {{-- @if (getSetting('site.allow_direction_switch'))
