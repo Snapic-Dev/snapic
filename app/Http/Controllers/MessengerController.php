@@ -483,10 +483,16 @@ class MessengerController extends Controller
                 }
             }
 
-            if ($request->file('image')) {
+              if ($request->file('image')) {
                 $file_campaign = $request->file('image');
-                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->put('campaign/' . $file_campaign->getClientOriginalName(), file_get_contents($file_campaign));
-                $image_uploaded = asset('storage/' . $campaignPath);
+
+                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->putFileAs(
+                    'campaign',
+                    $file_campaign,
+                    $file_campaign->getClientOriginalName()
+                );
+
+                $image_uploaded = Storage::url($campaignPath);
             }
 
             foreach ($receiverIDs as $receiverID) {
