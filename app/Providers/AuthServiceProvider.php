@@ -112,6 +112,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $userData = [
             'role_id' => 3,
+            'username' => $data['name'],
             'email' => $data['email'],
             'cpf' => $data['cpf'],
             'birthdate' => $data['birthdate'],
