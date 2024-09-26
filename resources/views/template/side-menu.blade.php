@@ -229,6 +229,7 @@
         </div>
         </a>
         </li> --}}
+         @if(Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
         <li class="nav-item">
             <a href="{{ route('profile', ['username' => Auth::user()->username]) }}"
                 class="nav-link {{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -245,7 +246,7 @@
             </a>
         </li>
         @endif
-
+        @endif
         {{-- @if (!Auth::check())
         <li class="nav-item">
             <a href="{{ route('search.get') }}" class="nav-link {{ Route::currentRouteName() == 'search.get' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
