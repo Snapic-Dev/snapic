@@ -41,7 +41,7 @@ class LoginController extends Controller
      */
     public function username()
     {
-        return 'name';
+        return 'username';
     }
 
     /**
@@ -82,7 +82,7 @@ class LoginController extends Controller
     protected function validateLogin(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
     }
@@ -140,7 +140,7 @@ class LoginController extends Controller
         } else {
             try {
                 $authUser = AuthServiceProvider::createUser([
-                    'name' => $user->getName(),
+                    'username' => $user->getName(),
                     'email' => $user->getEmail(),
                     'auth_provider' => $provider,
                     'auth_provider_id' => $user->id

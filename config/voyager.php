@@ -35,9 +35,9 @@ return [
 
     'multilingual' => [
         'enabled' => true,
-        'default' => 'en',
+        'default' => 'pt',
         'locales' => [
-            'en',
+            'pt',
         ],
     ],
 

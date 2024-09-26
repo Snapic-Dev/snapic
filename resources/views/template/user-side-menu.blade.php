@@ -24,7 +24,7 @@
                 @if (Auth::check())
                 <div class="ml-2">
                     <span
-                        class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->name }}
+                        class="text-bold text-truncate mt-1 {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }}">{{ Auth::user()->username }}
                     </span>
                 </div>
                 <a class="walletPerfil mt-1 d-flex flex-row" href="/my/settings/wallet">
@@ -52,7 +52,8 @@
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('My profile') }}</a>
+                {{ __('My profile') }}
+            </a>
         </li>
         <li
             class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
@@ -63,7 +64,8 @@
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('Streams') }}</a>
+                {{ __('Streams') }}
+            </a>
         </li>
         <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center" href="{{ route('my.bookmarks') }}">
@@ -113,6 +115,18 @@
         </li>
         <div class="menu-divider"></div>
         @endif
+        <li
+            class="influencerMenuMobile w-100">
+            <a class="scroll-link d-flex align-items-center 2 w-100" href="{{ request()->root() }}/my/settings/producer">
+                @include('elements.icon', [
+                'icon' => 'cash-outline',
+                'variant' => 'medium',
+                'centered' => false,
+                'classes' => 'mr-2',
+                ])
+                {{ __('Produtor') }}
+            </a>
+        </li>
         <!-- <li>
             <a class="scroll-link d-flex align-items-center" href="{{ route('pages.get', ['slug' => 'help']) }}">
                 @include('elements.icon', [

@@ -775,11 +775,8 @@ class SettingsController extends Controller
         if (!getSetting('referrals.enabled')) {
             unset($this->availableSettings['referrals']);
         }
-        if (getSetting('referrals.disable_for_non_verified')) {
-            $user = Auth::user();
-            if (!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))) {
-                unset($this->availableSettings['referrals']);
-            }
+        if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+            unset($this->availableSettings['referrals']);
         }
     }
 

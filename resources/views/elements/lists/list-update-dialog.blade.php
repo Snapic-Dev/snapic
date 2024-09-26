@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="Lists.updateList('{{$mode}}');">{{__('Save')}}</button>
+                <button type="button" class="btn btn-primary btn-round" onclick="Lists.updateList('{{$mode}}');">{{__('Save')}}</button>
             </div>
         </div>
     </div>

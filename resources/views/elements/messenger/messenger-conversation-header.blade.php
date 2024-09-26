@@ -31,7 +31,7 @@
                         >{{__('Send a tip')}}</a>
                         <a class="dropdown-item d-flex align-items-center conversation-profile-link" href="#" target="_blank">{{__('Go to profile')}}</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item unfollow-btn" href="javascript:void(0);">{{__('Unfollow')}}</a>
+                        <!-- <a class="dropdown-item unfollow-btn" href="javascript:void(0);">{{__('Unfollow')}}</a> -->
                         <a class="dropdown-item block-btn" href="javascript:void(0);">{{__('Block')}}</a>
                         <a class="dropdown-item report-btn" href="javascript:void(0);">{{__('Report')}}</a>
                     </div>

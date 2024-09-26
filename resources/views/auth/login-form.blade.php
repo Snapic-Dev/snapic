@@ -19,9 +19,9 @@
     <div class="form-group">
         <!-- <label for="name" class="col-form-label required-label">{{ __('Name') }}</label> -->
         <div class="">
-            <input class="inputLogin form-control" id="name" type="text" placeholder="Apelido*"
-                class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
-                autocomplete="name" autofocus>
+            <input class="inputLogin form-control" id="username" type="text" placeholder="Apelido*"
+                class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"
+                autocomplete="username" autofocus>
             @error('name')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
