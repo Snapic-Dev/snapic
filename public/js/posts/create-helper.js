@@ -14,7 +14,8 @@ $(function () {
 
 var PostCreate = {
     // Paid post price
-    postPrice : 0,
+  postPrice: 0,
+  requires_subscription: false,
     isSavingRedirect: false,
     postNotifications: false,
     postReleaseDate: null,
@@ -61,10 +62,19 @@ var PostCreate = {
             $('#post-price').addClass('is-invalid');
             return false;
         }
-        $('.post-price-label').html('('+getWebsiteFormattedAmount(PostCreate.postPrice)+')');
-        $('#post-set-price-dialog').modal('hide');
-        $('#post-price').removeClass('is-invalid');
+    $(".post-price-label").html(
+      "(" + getWebsiteFormattedAmount(PostCreate.postPrice) + ")"
+    );
+    $("#post-set-price-dialog").modal("hide");
+    $("#post-price").removeClass("is-invalid");
+  },
+
+  saveRequireSubscription: function () {
+    PostCreate.requires_subscription = $(".requires_subscription_post").prop(
+      "checked"
+    );
     },
+
     /**
      * Clears up post price
      */
@@ -159,7 +169,7 @@ var PostCreate = {
      * @param postID
      */
     save: function (type = 'create', postID = false, forceSave = false) {
-        // Warning for any file that might still be uploading or a video transcoding
+        PostCreate.saveRequireSubscription();
         if((FileUpload.isLoading === true || FileUpload.isTranscodingVideo === true) && forceSave === false){
             let dialogMessage = '';
             if(FileUpload.isLoading === true){
@@ -181,12 +191,13 @@ var PostCreate = {
         PostCreate.savePostScheduleSettings();
         let route = app.baseUrl + '/posts/save';
         let data = {
-            'attachments': FileUpload.attachaments,
-            'text': $('#dropzone-uploader').val(),
-            'price': PostCreate.postPrice,
-            'postNotifications' : PostCreate.postNotifications,
-            'postReleaseDate': PostCreate.postReleaseDate,
-            'postExpireDate': PostCreate.postExpireDate
+      attachments: FileUpload.attachaments,
+      text: $("#dropzone-uploader").val(),
+      price: PostCreate.postPrice,
+      requires_subscription: PostCreate.requires_subscription,
+      postNotifications: PostCreate.postNotifications,
+      postReleaseDate: PostCreate.postReleaseDate,
+      postExpireDate: PostCreate.postExpireDate,
         };
         if(type === 'create'){
             data.type = 'create';

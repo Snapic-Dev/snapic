@@ -158,7 +158,7 @@
 
     @if (count($post->attachments))
         <div class="post-media">
-            @if ($post->isSubbed || (getSetting('profiles.allow_users_enabling_open_profiles') && $post->user->open_profile))
+        @if ($post->isSubbed || !$post->requires_subscription)
                 @if (
                     (Auth::check() &&
                         Auth::user()->id !== $post->user_id &&

@@ -1179,6 +1179,12 @@ footer .brand-logo {
   color: #784ba0;
 }
 
+.requires_subscription_post_container {
+  align-items: center;
+  display: flex;
+  margin-left: 10px;
+}
+
 /*Campanha */
 
 .file-uploadCampaign {

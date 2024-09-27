@@ -287,7 +287,13 @@ class PostsHelperServiceProvider extends ServiceProvider
                 'first_page_url' => $posts->nextPageUrl(),
                 'hasMore' => $posts->hasMorePages(),
             ];
-            $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts, $data) {
+
+            // Filtra e mapeia os posts
+            $postsData = $posts
+                ->filter(function ($post) use ($hasSub) {
+                    return !($post->requires_subscription && !$hasSub); // Exclui posts que exigem assinatura se o usuário não for assinante
+                })
+                ->map(function ($post) use ($hasSub, $ownPosts, $data) {
                 if ($ownPosts) {
                     $post->setAttribute('isSubbed', $hasSub);
                 } else {
@@ -348,7 +354,7 @@ class PostsHelperServiceProvider extends ServiceProvider
         if ($filterType == 'subs' || $filterType == 'all') {
             if ($filterType == 'all') {
                 // Exibe posts de assinantes ativos e perfis seguidos gratuitamente
-                // $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
+                $posts->where('price', 0)->where('requires_subscription', 0);
                 $posts->where('posts.user_id', '!=', $userID);
             } else {
                 // Exibe apenas posts de assinantes ativos
