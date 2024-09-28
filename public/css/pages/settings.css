@@ -75,6 +75,32 @@
   height: 30px;
 }
 
+
+.btnWithdrawalMobile {
+  background-color:#683ab7;
+  width: 100%;
+  border-radius: 25px;
+  color: white;
+  padding: 20px;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  height: 40px;
+  font-size: 13px;
+}
+
+.btnWithdrawalMobile:hover {
+  color: white;
+}
+
+.BoxBtnWithdrawal {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 @media (max-width: 767px) {
   .settings-content {
     border: none !important;
@@ -558,6 +584,13 @@ ion-icon {
 
     .dateArea {
       gap:3px
+    }
+
+    .btnWithdrawalMobile {
+      display:flex;
+    }
+    .BoxBtnWithdrawal {
+      display:flex;
     }
 }
 

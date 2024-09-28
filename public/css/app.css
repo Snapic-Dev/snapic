@@ -1279,6 +1279,20 @@ footer .brand-logo {
   height: 100%;
 }
 
+.errorCPF {
+  font-size: 14px;
+}
+
+.linkCpfError {
+  color:rgb(214, 3, 3);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.linkCpfError:hover {
+  color:rgb(214, 3, 3);
+  text-decoration: none
+}
 
 
 @media (max-width: 575px) {
@@ -1311,6 +1325,11 @@ footer .brand-logo {
     display: flex;
   }
 
+  .errorCPF p {
+    text-align: center;
+    font-size: 13px;
+  }
+
 
 }
 
@@ -1321,6 +1340,11 @@ footer .brand-logo {
 
   .file-upload label {
     min-width: 380px;
+  }
+
+  .errorCPF p {
+    text-align: center;
+    font-size: 13px;
   }
 
 }
