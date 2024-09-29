@@ -42,9 +42,7 @@
 
     <ul class="list-unstyled menu-elements p-0">
         @if (GenericHelper::isEmailEnforcedAndValidated())
-        if ($this->user->role_id !== 3 || !$this->user->identity_verified_at) {
-        abort(403, __('Profile access is denied.'));
-        }
+        @if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at)
         <li
             class="{{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center"
