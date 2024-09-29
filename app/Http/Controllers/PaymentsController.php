@@ -49,6 +49,70 @@ class PaymentsController extends Controller
         ], 200);
     }
 
+    function convertToCents($amount)
+    {
+        $amount = str_replace(',', '.', $amount);
+        $cents = (int) round($amount * 100);
+
+        return $cents;
+    }
+
+    function handleErrorsCard($res)
+    {
+        try {
+            if (isset($res['data']['status'])) {
+                switch ($res['data']['status']) {
+                    case 'unpaid':
+                        throw new \Exception("Houve um erro ao processar seu pagamento. Por favor, verifique as informações e tente novamente.");
+                    case 'approved':
+                        return 'approved';
+                    default:
+                        throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
+                }
+            }
+            if (isset($res['error_description']['property'])) {
+                switch ($res['error_description']['property']) {
+                    case '/payment/credit_card/customer/name':
+
+                        throw new \Exception("Nome incorreto");
+                    case '/payment/credit_card/customer/birth':
+
+                        throw new \Exception("Aniversário incorreto");
+                    case '/payment/credit_card/customer/phone_number':
+
+                        throw new \Exception("Número de telefone incorreto");
+                    case 'payment_token':
+
+                        throw new \Exception("Erro na geracao do token de cartao");
+                    default:
+
+                        throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
+                }
+            }
+            if (isset($res['error_description'])) {
+                switch ($res['error_description']) {
+                    case "Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.":
+
+                        throw new \Exception("Limite de emissões idênticas excedido.");
+                    case "CPF inválido.":
+
+                        throw new \Exception("CPF inválido.");
+                    case '/payment/credit_card/customer/phone_number':
+
+                        throw new \Exception("Número de telefone incorreto");
+                    case 'Número do cartão é inválido.':
+
+                        throw new \Exception("Número do cartão é inválido.");
+                    default:
+
+                        throw new \Exception("Mensagem de erro desconhecida: " . $res['error_description']);
+                }
+            }
+        } catch (\Exception $exception) {
+            throw new Exception($exception);
+        }
+    }
+
     /**
      * Initiates the payment based on the required provider.
      * @param CreateTransactionRequest $request
@@ -59,6 +123,7 @@ class PaymentsController extends Controller
     {
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
+        dd($request->all());
         // generate one time transaction
         try {
             $transaction = new Transaction();
@@ -171,35 +236,29 @@ class PaymentsController extends Controller
                                 'message' => 'Adicione seu CPF para prosseguir!',
                             ], 401);
                         }
-                        $res = $this->paymentHandler->generationCardPayment($request->amount, $request->cardToken);
 
-                        if (isset($res['error_description']['property'])) {
-                            switch ($res['error_description']['property']) {
-                                case '/payment/credit_card/customer/name':
-                                    throw new \Exception("Nome incorreto");
-                                case '/payment/credit_card/customer/birth':
-                                    throw new \Exception("Aniversário incorreto");
-                                case '/payment/credit_card/customer/phone_number':
-                                    throw new \Exception("Número de telefone incorreto");
-                                default:
-                                    throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
-                            }
-                        }
+                        $value = $this->convertToCents($request->amount);
 
-                        if (isset($res['error_description'])) {
-                            switch ($res['error_description']) {
-                                case "Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.":
-                                    throw new \Exception("Limite de emissões idênticas excedido.");
-                                case "CPF inválido.":
-                                    throw new \Exception("CPF inválido.");
-                                case '/payment/credit_card/customer/phone_number':
-                                    throw new \Exception("Número de telefone incorreto");
-                                default:
-                                    throw new \Exception("Mensagem de erro desconhecida: " . $res['error_description']);
-                            }
+                        $res = $this->paymentHandler->generationCardPayment($value, $request->cardToken);
+
+                        $status = $this->handleErrorsCard($res);
+
+                        if ($status === 'approved') {
+                            $transaction['status'] = Transaction::APPROVED_STATUS;
+                            $transaction['transfer_id'] = $res['data']['charge_id'];
+                            $transaction['amount'] = $res['data']['total'];
+                            $transaction->save();
+
+                            DB::table('wallets')
+                                ->where('user_id', $transaction->recipient_user_id)
+                                ->increment(
+                                    'total',
+                                    $res['data']['total']
+                                );
                         }
                     }
                     break;
+
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
                 case Transaction::SIX_MONTHS_SUBSCRIPTION:
@@ -218,6 +277,27 @@ class PaymentsController extends Controller
                     }
 
                     $this->paymentHandler->generateCreditSubscriptionByTransaction($transaction);
+
+                    if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
+
+                        $value = $this->convertToCents($request->amount);
+
+                        $res = $this->paymentHandler->generationCardPayment($value, $request->cardToken);
+
+                        $status = $this->handleErrorsCard($res);
+
+                        $transaction['sender_user_id'] = Auth::user()->id;
+
+                        $transaction['status'] = Transaction::APPROVED_STATUS;
+
+                        $transaction['transfer_id'] = $res['data']['charge_id'];
+
+                        $transaction['amount'] = $res['data']['total'];
+
+                        $transaction->save();
+
+                        return response()->json($res, 201);
+                    }
                     break;
                 default:
                     return $this->paymentHandler->redirectByTransaction($transaction);

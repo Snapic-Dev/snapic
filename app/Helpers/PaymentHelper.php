@@ -67,53 +67,51 @@ use Yabacon\Paystack\Exception\ApiException;
 
 class PaymentHelper
 {
-    private $certificado;
     private $credentials;
-    private $gateway_url;
+    private $efipay_pix_url;
+    private $efipay_cobrancas_url;
     private $client;
 
     public function __construct()
     {
-        $this->initializeCertificado();
-        $this->initializeCredentials();
         $this->initializeClient();
-    }
-
-    private function initializeCertificado()
-    {
-        $this->certificado = Storage::disk('local')->get('certs/producao-594018-producao-snapic.p12');
-        if ($this->certificado === false) {
-            throw new \Exception('Erro ao carregar o certificado.');
-        }
+        $this->initializeCredentials();
     }
 
     private function initializeCredentials()
     {
+        $this->efipay_cobrancas_url = env('EFIPAY_COBRANCAS_URL');
+        $this->efipay_pix_url = env('EFIPAY_PIX_URL');
+
+        $certificado_test = Storage::disk('local')->get('certs/cert-production.p12');
+        if ($certificado_test === false) {
+            throw new \Exception('Erro ao carregar o certificado.');
+        }
+
         $this->credentials = [
             'client_id' => env('EFIPAY_CLIENT_ID'),
             'client_secret' => env('EFIPAY_CLIENT_SECRET'),
             'client_identifier' => env('EFIPAY_IDENTIFIER')
         ];
-
-        $this->gateway_url = 'https://pix.api.efipay.com.br';
     }
 
     private function initializeClient()
     {
         $this->client = new \GuzzleHttp\Client([
-            'base_uri' => $this->gateway_url,
+            'base_uri' => $this->efipay_pix_url,
             'http_errors' => false,
             'verify' => false,
-            'cert' => ['certs/producao-594018-producao-snapic.p12', ''],
-            'ssl_key' => ['certs/producao-594018-producao-snapic.p12', '']
+            'cert' => ['certs/cert-production.p12', ''],
+            'ssl_key' => ['certs/cert-production.p12', '']
         ]);
     }
 
     private function getGuzzleConfig($auth, $data, $path, $put = false)
     {
+        $url = $this->efipay_pix_url . $path;
         return [
             'method' => $put ? 'PUT' : 'POST',
-            'url' => $this->gateway_url . $path,
+            'url' => $url,
             'headers' => [
                 'Authorization' => $auth,
                 'Content-Type' => 'application/json',
@@ -150,7 +148,7 @@ class PaymentHelper
                 "nome" => $user->name
             ],
 
-            //"valor" => ['original' => '0.01'], // Valor de exemplo
+            // "valor" => ['original' => '0.01'], // Valor de exemplo
             "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
             "chave" => $this->credentials['client_identifier'],
             "solicitacaoPagador" => "Compra de créditos no Snapic.",
@@ -179,7 +177,7 @@ class PaymentHelper
     {
         return [
             'valor' => number_format($amount, 2, '.', ''),
-            //'valor' => '0.01', // Valor de exemplo
+            // 'valor' => '0.01', // Valor de exemplo
             'pagador' => ['chave' => $this->credentials['client_identifier'], 'infoPagador' => ''],
             'favorecido' => ['chave' => $identifier],
         ];
@@ -210,11 +208,11 @@ class PaymentHelper
     {
         try {
             $user = Auth::user();
-
             $access_token = $this->getAuthorizationToken();
+            $url_efipay = $this->efipay_cobrancas_url . '/v1/charge/one-step';
 
             $response = $this->client->post(
-                'https://cobrancas.api.efipay.com.br/v1/charge/one-step',
+                $url_efipay,
                 [
                     'json' => [
                         'items' => [
@@ -230,13 +228,13 @@ class PaymentHelper
                                     'name' => $user->name,
                                     'cpf' => $user->cpf,
                                     'email' => $user->email,
-                                    'birth' => $user->birthdate ?? '',
+                                    'birth' => $user->birthdate | '1990-08-29',
                                     'phone_number' => $user->phone,
                                 ],
                                 'installments' => 1,
                                 'payment_token' => $token,
                                 'billing_address' => [
-                                    'street' => $user->location,
+                                    'street' => 'Republica, SP',
                                     'number' => '1',
                                     'neighborhood' => '1',
                                     'zipcode' => '00000000',
@@ -260,14 +258,49 @@ class PaymentHelper
         }
     }
 
+    private function generatePaymentPayload($user, $value, $token)
+    {
+        return [
+            'items' => [
+                [
+                    'name' => 'Meu Produto',
+                    'value' => 300,
+                    'amount' => 1,
+                ],
+            ],
+            'payment' => [
+                'credit_card' => [
+                    'customer' => [
+                        'name' => 'Gorbadoc Oldbuck',
+                        'cpf' => '94271564656',
+                        'email' => 'email_do_cliente@servidor.com.br',
+                        'birth' => '1990-08-29',
+                        'phone_number' => '5144916523',
+                    ],
+                    'installments' => 1,
+                    'payment_token' => $token,
+                    'billing_address' => [
+                        'street' => 'Avenida Juscelino Kubitschek',
+                        'number' => '909',
+                        'neighborhood' => 'Bauxita',
+                        'zipcode' => '35400000',
+                        'city' => 'Ouro Preto',
+                        'complement' => '',
+                        'state' => 'MG',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function getAuthorizationToken()
     {
         try {
             $data = json_encode(['grant_type' => 'client_credentials']);
             $auth = base64_encode($this->credentials['client_id'] . ':' . $this->credentials['client_secret']);
-
+            $url_efipay = $this->efipay_cobrancas_url . '/v1/authorize';
             $response = $this->client->post(
-                'https://cobrancas.api.efipay.com.br/v1/authorize',
+                $url_efipay,
                 [
                     'headers' => [
                         'Authorization' => 'Basic ' . $auth,
@@ -276,7 +309,6 @@ class PaymentHelper
                     'body' => $data,
                 ]
             );
-
             return json_decode($response->getBody(), true)['access_token'];
         } catch (RequestException $e) {
             throw new \Exception('Erro ao obter o token de autorização: ' . $e->getMessage());

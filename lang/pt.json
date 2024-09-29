@@ -481,10 +481,10 @@
   "List not found.": "Lista não encontrada.",
   "List cleared.": "Lista limpa.",
   "Report sent.": "Relatório enviado.",
-  "Upload cover image":"Carregar imagem de capa",
-  "Remove cover image":"Remover imagem de capa",
-  "Remove avatar":"Remover avatar",
-  "Upload avatar":"Carregar avatar",
+  "Upload cover image": "Carregar imagem de capa",
+  "Remove cover image": "Remover imagem de capa",
+  "Remove avatar": "Remover avatar",
+  "Upload avatar": "Carregar avatar",
   "Looks like the payment process has been cancelled.": "Parece que o processo de pagamento foi cancelado.",
   "User not verified. Can not post content.": "Usuário não verificado. Não pode postar conteúdo.",
   "Not found": "Não encontrado",
@@ -659,6 +659,7 @@
   "Payment method": "Método de pagamento",
   "Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.": "Nota: Após clicar no botão ( Confirmar ) o valor correspondente será deduzido da sua carteira e enviado diretamente para o influenciador. Todo o processo de pagamento será realizado na mesma página.",
   "Billing agreement details": "Detalhes do acordo de cobrança",
+  "Card information": "Informações do cartão",
   "Add user to list": "Adicionar usuário à lista",
   "Choose the list you want to add the user into.": "Escolha a lista à qual deseja adicionar o usuário.",
   "Follow": "Seguir",
@@ -960,5 +961,8 @@
   "voyager::settings.delete_confirm": "Tem certeza que deseja excluir?",
   "Settings saved.": "Configurações salvas",
   "Your post must contain more than 10 characters": "Seu post deve conter mais de 10 caracteres",
-  "Texto_Pix": " Use o aplicativo de seu banco para ler o QRCode ao lado, ou toque no botão PIX Copia e Cola para copiar o código e realizar a transação no aplicativo do seu banco"
+  "Texto_Pix": " Use o aplicativo de seu banco para ler o QRCode ao lado, ou toque no botão PIX Copia e Cola para copiar o código e realizar a transação no aplicativo do seu banco",
+  "Card Number": "Numero do cartao",
+  "Validate": "Validade",
+  "Card": "Cartão"
 }
