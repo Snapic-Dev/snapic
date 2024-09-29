@@ -1,5 +1,5 @@
 <div class="form-group p-2">
-    <div class="card py-4 px-4">
+    <!-- <div class="card py-4 px-4">
         <div class="ml-3 custom-control custom-switch custom-switch">
             <input type="checkbox" class="custom-control-input" id="public_profile"
                 {{ Auth::user()->public_profile ? 'checked' : '' }}>
@@ -13,7 +13,7 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </div> -->
 
     @if (getSetting('profiles.allow_users_enabling_open_profiles'))
         <div class="card py-4 px-4 mt-4">

@@ -11,10 +11,10 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-7 col-xl-6 mx-auto">
-                            <a href="{{ action('HomeController@index') }}">
-                                <picture class="logoArea">
+                            <a href="{{ action('HomeController@index') }}" class="d-flex align-items-center linkAreaLoginLogo">
+                                        <picture class="logoArea">
                                                 <source media="(max-width: 600px)" 
-                                                    srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                                                    srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
                                                     class="brand-logo-form"
                                                     >
                                                 <img
@@ -22,7 +22,7 @@
                                                 alt="Descrição"
                                                 class="brand-logo-form"
                                                 > 
-                                </picture>  
+                                        </picture>
                             </a>
                             @if (session('status'))
                             <div class="alert alert-success text-white" role="alert">

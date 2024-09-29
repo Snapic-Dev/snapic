@@ -400,6 +400,12 @@ $type=request()->input('type');
                         </div>
                     </div>
                 </div>
+                <div class="pl-5 pr-5 BoxBtnWithdrawal mt-4">
+                    <a class="btnWithdrawalMobile justify-content-center align-items-center" href="http://127.0.0.1:8000/my/settings/wallet?active=withdraw">
+                        <ion-icon class="withdrawalIcon ml-2 md hydrated" name="card-outline" role="img" aria-label="card outline"></ion-icon>     
+                        Sacar
+                    </a>
+                </div>
             </div>
         </div>
     </div>

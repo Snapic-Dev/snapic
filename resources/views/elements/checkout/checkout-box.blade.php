@@ -77,9 +77,9 @@
                                     </span>
                                 </div>
                                 <input class="form-control uifield-amount"
-                                    placeholder="{{ __(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)', ['min' => getSetting('payments.min_tip_value'), 'max' => getSetting('payments.max_tip_value'), 'currency' => config('app.site.currency_symbol')]) }}"
+                                    placeholder="Adicione sua gorgeta aqui"
                                     aria-label="Username" aria-describedby="amount-label" id="checkout-amount"
-                                    type="number" min="0" step="1" max="500">
+                                    type="number" min="1" step="1" max="500">
                                 <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
                             </div>
                         </div>

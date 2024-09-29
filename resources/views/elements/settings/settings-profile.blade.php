@@ -64,7 +64,7 @@
     <div class="form-group p-2">
         <label for="username">{{ __('Username') }}</label>
         <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" id="username" name="username"
-            aria-describedby="emailHelp" value="{{ Auth::user()->username }}" maxlength=15 minlength=5>
+            aria-describedby="emailHelp" value="{{ Auth::user()->username }}" maxlength=15 minlength=4>
         @if ($errors->has('username'))
         <span class="invalid-feedback" role="alert">
             <strong>{{ $errors->first('username') }}</strong>
@@ -74,8 +74,17 @@
     </div>
     <div class="form-group p-2">
         <label for="name">{{ __('Full name') }}</label>
-        <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name" name="name"
-            aria-describedby="emailHelp" value="{{ Auth::user()->name }}" maxlength=40>
+        <input 
+            class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" 
+            id="name" 
+            name="name" 
+            aria-describedby="emailHelp" 
+            value="{{ Auth::user()->name }}" 
+            maxlength="40" 
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$" 
+            title="Insira um nome válido" 
+            required
+        >
         @if ($errors->has('name'))
         <span class="invalid-feedback" role="alert">
             <strong>{{ $errors->first('name') }}</strong>

@@ -42,7 +42,10 @@
 
     <ul class="list-unstyled menu-elements p-0">
         @if (GenericHelper::isEmailEnforcedAndValidated())
-        @if (Auth::user()->role_id !== 3 || !Auth::user()->identity_verified_at)
+        @if(
+        Auth::user()->role_id === 1 ||
+        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+        )
         <li
             class="{{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center"
@@ -56,7 +59,7 @@
                 {{ __('My profile') }}
             </a>
         </li>
-         @endif
+        @endif
         <li
             class="{{ in_array(Route::currentRouteName(), ['my.streams.get', 'public.stream.get', 'public.vod.get']) ? 'active' : '' }}">
             <a class="scroll-link d-flex align-items-center 2" href="{{ route('search.get') }}?filter=live">
@@ -105,16 +108,20 @@
                 ])
                 {{ __('Lists') }}</a>
         </li>
-        <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
-            <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
+        @if(Auth::user()->role_id!==2 && Auth::user()->identity_verified_at)
+        <li
+            class="w-100">
+            <a class="scroll-link d-flex align-items-center 2 w-100" href="{{ request()->root() }}/my/settings/payments">
                 @include('elements.icon', [
-                'icon' => 'settings-outline',
+                'icon' => 'bar-chart',
                 'variant' => 'medium',
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('Settings') }}</a>
+                {{ __('Dashboard') }}
+            </a>
         </li>
+        @endif
         <div class="menu-divider"></div>
         @endif
         @if(Auth::check() && (Auth::user()->role_id === 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)))
@@ -127,7 +134,7 @@
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('Produtor') }}
+                {{ __('Become a producer') }}
             </a>
         </li>
         @endif
@@ -163,6 +170,16 @@
                 {{ __('Dark mode') }}
                 @endif
             </a>
+        </li>
+        <li class="{{ Route::currentRouteName() == 'my.settings' ? 'active' : '' }}">
+            <a class="scroll-link d-flex align-items-center" href="{{ route('my.settings') }}">
+                @include('elements.icon', [
+                'icon' => 'settings-outline',
+                'variant' => 'medium',
+                'centered' => false,
+                'classes' => 'mr-2',
+                ])
+                {{ __('Settings') }}</a>
         </li>
         @endif
         {{-- @if (getSetting('site.allow_direction_switch'))

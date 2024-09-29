@@ -21,7 +21,10 @@
         <div class="">
             <input class="inputLogin form-control" id="username" type="text" placeholder="Apelido*"
                 class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"
-                autocomplete="username" autofocus>
+                autocomplete="username" autofocus
+                maxlength=15 
+                minlength=4
+                >
             @error('name')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -32,15 +35,17 @@
 
     <div class="form-group">
         <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
-        <div class="input-group">
-            <input class="inputLogin form-control" id="password" placeholder="Senha*" type="password"
-                class="form-control @error('password') is-invalid @enderror" name="password"
-                autocomplete="current-password">
-            <!-- <div class="input-group-append">
-                <span class="input-group-text" onclick="togglePasswordVisibility()">
-                    <ion-icon id="togglePasswordIcon" name="eye-outline"></ion-icon>
-                </span>
-            </div> -->
+        <div class="">
+            <div class="d-flex align-items-center">
+                <input class="inputLogin form-control" id="password" placeholder="Senha*" type="password"
+                    class="form-control @error('password') is-invalid @enderror" name="password"
+                    autocomplete="current-password">
+                <div class="tooglePass">
+                        <span class="" onclick="togglePasswordVisibility()">
+                            <ion-icon id="togglePasswordIcon" name="eye-outline"></ion-icon>
+                        </span>
+                    </div>
+            </div>
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>

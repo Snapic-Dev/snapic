@@ -45,7 +45,7 @@
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="exampleFormControlTextarea1" class="required-label">Mensagem</label>
-                        <textarea style="resize:none;" class="form-control" id="exampleFormControlTextarea1" maxlength="500" rows="5" placeholder="Mensagem de campanha" name="message" required></textarea>
+                        <textarea style="resize:none;" class="form-control" id="exampleFormControlTextarea1" maxlength="500" rows="5" placeholder="Mensagem de campanha" name="message"></textarea>
                         <div>
                             <span id="MessageError" style="display: none; " class="text-danger mt-2"></span>
                         </div>

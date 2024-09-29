@@ -130,6 +130,9 @@
                     <span class="textLoadingBtn">Depositar</span>
                 </div>
             </button>
+              <span class="text-danger errorCPF justify-content-center w-100">
+                    <p>Adicione um CPF para poder processar a transação, <a class="linkCpfError"> clique aqui para adicionar.</a></p>
+                </span>
             <div class="p-3 pb-4 mt-4">
                 <p class="text-xs alertWitdrawalMsg">
                     <strong>Aviso Importante:</strong>
@@ -212,6 +215,13 @@
         let cardNumber = document.querySelector('.cardNumber')
         let cardDateValidate = document.querySelector('.cardDateValidate')
         let cardCVV = document.querySelector('.cardCVV')
+        let errorCPF=document.querySelector('.errorCPF');
+        let linkCpfError = document.querySelector('.linkCpfError');
+        
+        const origin = window.location.origin;
+        const linkEditProfile = `${origin}/my/settings/profile`;
+
+         errorCPF.style.display="none"
 
         document.addEventListener("DOMContentLoaded", function() {
             if (pixRadio) {
@@ -360,6 +370,11 @@
                 }
 
             } catch (error) {
+                if(error.message==="Adicione seu CPF para prosseguir!") {
+                    launchToast("danger", trans("Error"), `${error.message}`);
+                    linkCpfError.setAttribute("href",linkEditProfile)
+                    return errorCPF.style.display="flex"
+                }
                 launchToast("danger", trans("Error"), error.message);
             } finally {
                 loading(false);
