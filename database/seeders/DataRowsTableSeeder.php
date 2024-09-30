@@ -2579,7 +2579,7 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{}',
                 'order' => 3,
-            ),        
+            ),
             161 =>
             array(
                 'id' => 169,
@@ -5304,7 +5304,7 @@ class DataRowsTableSeeder extends Seeder
             array(
                 'id' => 404,
                 'data_type_id' => 51,
-                'field' => 'subscriber_name',
+                'field' => 'subscribers',
                 'type' => 'text',
                 'display_name' => 'Assinantes',
                 'required' => 1,
