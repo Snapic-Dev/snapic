@@ -23,6 +23,7 @@ class VerifyCsrfToken extends Middleware
         'transcoding/coconut/update',
         'payment/deposit',
         'my/messenger/sendMessage',
+        'my/messenger/sendCampaign',
         'payment/webhook',
         'payment/webhook/config',
         'webhook/pix',
