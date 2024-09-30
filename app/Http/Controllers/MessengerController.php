@@ -541,6 +541,105 @@ class MessengerController extends Controller
         }
     }
 
+    public function sendCampaign(Request $request)
+    {
+        try {
+            // Validação do formulário
+            $request->validate([
+                'message' => 'nullable|string|max:500',
+                'frontDoc' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+                'valor' => 'nullable|numeric|min:10|max:1000',
+            ]);
+
+            $senderID = Auth::user()->id;
+            $receiverIDs = [];
+            $image_uploaded = '';
+
+            // Verifica assinantes
+            if ($request->input('subscribers')) {
+                $subscribers = Subscription::where('recipient_user_id', $senderID)
+                    ->where('expires_at', '>', Carbon::now('UTC'))
+                    ->get();
+
+                foreach ($subscribers as $subscriber) {
+                    if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
+                        $receiverIDs[] = $subscriber->user_id;
+                    }
+                }
+            }
+
+            // Verifica seguidores
+            if ($request->input('followers')) {
+                $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
+                foreach ($followers as $follower) {
+                    if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                        $receiverIDs[] = $follower->user_id;
+                    }
+                }
+            }
+
+            // Verifica se há imagem anexada
+            if ($request->file('frontDoc')) {
+                $file_campaign = $request->file('frontDoc');
+                $campaignPath = $file_campaign->store('campaign', 'do_spaces');
+                $image_uploaded = Storage::disk('do_spaces')->url($campaignPath);
+            }
+
+            if ($request->get('attachments')) {
+                foreach ($request->get('attachments') as $attachment) {
+                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
+                }
+            }
+
+            // Envia a mensagem da campanha para cada usuário
+            if (count($receiverIDs) > 0) {
+                foreach ($receiverIDs as $receiverID) {
+                    $this->sendUserCampaignMessage([
+                        'senderID' => $senderID,
+                        'receiverID' => $receiverID,
+                        'messageValue' => $request->input('message', ''),
+                        'messagePrice' => $request->input('valor', 0),
+                        'image' => $image_uploaded,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Campanha enviada com sucesso!',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
+        }
+    }
+
+
+    protected function sendUserCampaignMessage($options)
+    {
+        $message = UserMessage::create([
+            'sender_id' => $options['senderID'],
+            'receiver_id' => $options['receiverID'],
+            'message' => $options['messageValue'],
+            'price' => $options['messagePrice'] ?? 0,
+        ]);
+
+
+        if ($options['image']) {
+            Attachment::create([
+                'user_id' => Auth::user()->id,
+                'filename' => $options['image'],
+                'driver' => 'do_spaces',
+                'type' => 'image',
+                'message_id' => $message->id,
+            ]);
+        }
+
+        NotificationServiceProvider::createNewUserMessageNotification($message);
+
+        broadcast(new NewUserMessage(json_encode($message), $options['senderID'], $options['receiverID']))->toOthers();
+    }
+
+
 
 
     /**

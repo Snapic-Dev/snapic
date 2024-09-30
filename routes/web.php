@@ -134,6 +134,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
             Route::delete('/delete/{commentID}', [App\Http\Controllers\MessengerController::class, 'deleteMessage'])->name('delete');
             Route::post('/authorizeUser', [App\Http\Controllers\MessengerController::class, 'authorizeUser'])->name('authorize');
             Route::post('/markSeen', [App\Http\Controllers\MessengerController::class, 'markSeen'])->name('mark');
+            Route::post('/sendCampaign', [App\Http\Controllers\MessengerController::class, 'sendCampaign'])->name('send.campaign');
             Route::get('/campanha', function () {
                 if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
                     abort(404);

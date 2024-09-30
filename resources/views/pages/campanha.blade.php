@@ -53,7 +53,7 @@
                             <label for="frontDoc" class="col-form-label">Adicionar arquivo</label>
                             <div class="file-uploadCampaign d-flex">
                                 <input id="inputFile" type="file" class="form-control uploadFb" name="frontDoc"
-                                    accept=".jpg, .jpeg, .png, .webp">
+                                    accept=".jpg, .jpeg, .png, .webp" title="Adicione um arquivo para prosseguir">
                                 <button type="button" for="frontDoc" class="preview-img">
                                     <ion-icon name="folder-open-outline"></ion-icon>
                                     <span>{{ __('Escolher arquivo') }}</span>
@@ -125,25 +125,27 @@
                                 <span style="display: none;" id="errorGroup" class="text-danger mt-3">Selecione pelo
                                     menos um grupo para promover</span>
                             </div>
-                            <div class="d-flex justify-content-end w-100 mb-3 mt-3">
-                                <div class="form-group btn-block ml-4 mr-4 p-3">
-                                    <button type="submit"
-                                        class="btn btn-block btn-primary btn-round campaignBtn post-create-button mb-0 uploadButton p-3"
-                                        disabled>
-                                        <div class="d-flex justify-content-center spinnerArea">
-                                            <span class="spinner spinner-border spinner-border-sm" role="status"
-                                                aria-hidden="true"></span>
-                                            <span id="buttonText">{{ __('Promover') }}</span>
-                                        </div>
-                                    </button>
-                                </div>
+                        </div>
+                        <div class="d-flex justify-content-end w-100 mb-3 mt-3">
+                            <div class="form-group btn-block ml-4 mr-4 p-3">
+                                <button type="submit"
+                                    class="btn btn-block btn-primary btn-round campaignBtn post-create-button mb-0 uploadButton p-3"
+                                    disabled>
+                                    <div class="d-flex justify-content-center spinnerArea">
+                                        <span class="spinner spinner-border spinner-border-sm" role="status"
+                                            aria-hidden="true"></span>
+                                        <span id="buttonText">{{ __('Promover') }}</span>
+                                    </div>
+                                </button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 @stop
+
 
 <script type="module">
     const SIX_HOURS = 21600;
@@ -239,6 +241,24 @@
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
+
+    document.querySelector("#inputFile").addEventListener('change', function() {
+        const input = this;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const bg = document.querySelector('.preview-img')
+                bg.style.background =
+                    `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${e.target.result}) no-repeat center center/cover`;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    });
+
+    const btn = document.querySelector('.uploadButton');
+    const inputFile = document.querySelector('#inputFile');
 
     function showToast(message, isError = false) {
         const toastHTML = `
