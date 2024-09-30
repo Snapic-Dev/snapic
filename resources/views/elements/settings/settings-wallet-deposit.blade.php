@@ -17,22 +17,22 @@
             R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00
         </button>
         @php
-            $minAmount = \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount();
-            $increments = [2, 5, 10, 20, 50]; // Fatores de incremento progressivo
-            $depositValues = [];
+        $minAmount = \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount();
+        $increments = [2, 5, 10, 20, 50]; // Fatores de incremento progressivo
+        $depositValues = [];
 
-            $baseAmount = ceil($minAmount / 10) * 10;
+        $baseAmount = ceil($minAmount / 10) * 10;
 
-            foreach ($increments as $increment) {
-                $nextValue = $baseAmount + $increment * 10;
-                $depositValues[] = $nextValue;
-            }
+        foreach ($increments as $increment) {
+        $nextValue = $baseAmount + $increment * 10;
+        $depositValues[] = $nextValue;
+        }
         @endphp
 
         @foreach ($depositValues as $value)
-            <button class="btn btn-round border ml-2" onclick="inputDepositValueBtn('{{ $value }}')">
-                R${{ $value }},00
-            </button>
+        <button class="btn btn-round border ml-2" onclick="inputDepositValueBtn('{{ $value }}')">
+            R${{ $value }},00
+        </button>
         @endforeach
     </div>
 </div>
@@ -51,7 +51,7 @@
         </div> -->
         <div class="custom-control custom-radio mb-1">
             <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input"
-                value="card">
+                value="card" disabled>
             <label class="custom-control-label text-bold stepTooltip" for="creditRadio" title="">Cartão</label>
         </div>
 
@@ -101,8 +101,8 @@
                                     <button class="btnPix btn btn-round mb-3 p-3 d-flex" onclick="copyCodePix()">
                                         <div class="ml-4">
                                             @include('elements.icon', [
-                                                'icon' => 'cash-outline',
-                                                'variant' => 'small',
+                                            'icon' => 'cash-outline',
+                                            'variant' => 'small',
                                             ])
                                         </div>
                                         Copiar código PIX
@@ -130,9 +130,9 @@
                     <span class="textLoadingBtn">Depositar</span>
                 </div>
             </button>
-              <span class="text-danger errorCPF justify-content-center w-100">
-                    <p>Adicione um CPF para poder processar a transação, <a class="linkCpfError"> clique aqui para adicionar.</a></p>
-                </span>
+            <span class="text-danger errorCPF justify-content-center w-100">
+                <p>Adicione um CPF para poder processar a transação, <a class="linkCpfError"> clique aqui para adicionar.</a></p>
+            </span>
             <div class="p-3 pb-4 mt-4">
                 <p class="text-xs alertWitdrawalMsg">
                     <strong>Aviso Importante:</strong>
@@ -215,13 +215,13 @@
         let cardNumber = document.querySelector('.cardNumber')
         let cardDateValidate = document.querySelector('.cardDateValidate')
         let cardCVV = document.querySelector('.cardCVV')
-        let errorCPF=document.querySelector('.errorCPF');
+        let errorCPF = document.querySelector('.errorCPF');
         let linkCpfError = document.querySelector('.linkCpfError');
-        
+
         const origin = window.location.origin;
         const linkEditProfile = `${origin}/my/settings/profile`;
 
-         errorCPF.style.display="none"
+        errorCPF.style.display = "none"
 
         document.addEventListener("DOMContentLoaded", function() {
             if (pixRadio) {
@@ -306,7 +306,7 @@
                         `{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)) {
                     throw new Error(
                         `O valor minimo para deposito e de ${`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`}`
-                        )
+                    )
                 }
 
                 let data = {
@@ -370,10 +370,10 @@
                 }
 
             } catch (error) {
-                if(error.message==="Adicione seu CPF para prosseguir!") {
+                if (error.message === "Adicione seu CPF para prosseguir!") {
                     launchToast("danger", trans("Error"), `${error.message}`);
-                    linkCpfError.setAttribute("href",linkEditProfile)
-                    return errorCPF.style.display="flex"
+                    linkCpfError.setAttribute("href", linkEditProfile)
+                    return errorCPF.style.display = "flex"
                 }
                 launchToast("danger", trans("Error"), error.message);
             } finally {
@@ -392,7 +392,7 @@
                     return;
                 }
 
-                const efiPay = EfiPay.CreditCard.setAccount("ac82fa088699e475f01e8703227a7da4")
+                const efiPay = EfiPay.CreditCard.setAccount("fc07c8c0cbbbb3277f2e769cb05e041f")
                     .setEnvironment("production");
 
                 const brand = await EfiPay.CreditCard
@@ -401,11 +401,11 @@
 
                 const cardData = {
                     brand: brand,
-                    number: cardNumber.value.split(" ").join(""),
+                    number: cardNumber.value,
                     cvv: cardCVV.value,
                     expirationMonth: cardDateValidate.value.split("/")[0],
                     expirationYear: cardDateValidate.value.split("/")[1],
-                    reuse: true,
+                    reuse: false,
                 };
 
                 const result = await efiPay.setCreditCardData(cardData).getPaymentToken();

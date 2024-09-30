@@ -1061,6 +1061,35 @@ class PaymentHelper
         return $subscription;
     }
 
+    public function generateCardSubscriptionByTransaction($transaction)
+    {
+        $existingSubscription = $this->getSubscriptionBySenderAndReceiverAndProvider(
+            $transaction['sender_user_id'],
+            $transaction['recipient_user_id'],
+            Transaction::CARD_PROVIDER
+        );
+
+        if ($existingSubscription != null) {
+            $subscription = $existingSubscription;
+        } else {
+            $subscription = $this->createSubscriptionFromTransaction($transaction);
+        }
+        $subscription['amount'] = $transaction['amount'];
+        $subscription['expires_at'] = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' ' . 'month', new \DateTimeZone('UTC'));
+        $subscription['status'] = Subscription::ACTIVE_STATUS;
+        $transaction['status'] = Transaction::APPROVED_STATUS;
+
+        $subscription->save();
+
+        // only send the notification for new subs
+        if ($existingSubscription === null) {
+            NotificationServiceProvider::createNewSubscriptionNotification($subscription);
+        }
+        $transaction['subscription_id'] = $subscription['id'];
+
+        return $subscription;
+    }
+
     public function createNewTipNotificationForCreditTransaction($transaction)
     {
         if (

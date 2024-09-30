@@ -146,7 +146,7 @@
                                     <div class="available-credit ml-1">{{number_format(Auth::user()->wallet->total, 2, '.', '')}}</div>
                                 </label>
                                 <label class="radio-button card-payment-provider show-card-form" data-value="card">
-                                    <input type="radio" name="payment_type" value="card" class="radio">
+                                    <input type="radio" name="payment_type" value="card" class="radio" disabled>
                                     <div class="radio-circle"></div>
                                     <span class="radio-label">{{ ucfirst(__("Card")) }}</span>
                                 </label>
@@ -190,18 +190,18 @@
         }
     });
 
-    showCard.forEach((div) => {
-        div.addEventListener("click", () => {
-            const dataValue = div.getAttribute('data-value');
-            if (dataValue === 'card') {
-                form.classList.remove('d-none');
-                formSubmit.setAttribute('disabled', 'true');
-            } else if (dataValue === 'credit') {
-                form.classList.add('d-none');
-                formSubmit.removeAttribute('disabled');
-            }
-        });
-    });
+    // showCard.forEach((div) => {
+    //     div.addEventListener("click", () => {
+    //         const dataValue = div.getAttribute('data-value');
+    //         if (dataValue === 'card') {
+    //             form.classList.remove('d-none');
+    //             formSubmit.setAttribute('disabled', 'true');
+    //         } else if (dataValue === 'credit') {
+    //             form.classList.add('d-none');
+    //             formSubmit.removeAttribute('disabled');
+    //         }
+    //     });
+    // });
 
     cardDateValidate.addEventListener('input', (event) => {
         const currentYear = new Date().getFullYear();
