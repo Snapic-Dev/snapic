@@ -483,7 +483,7 @@ class MessengerController extends Controller
                 }
             }
 
-              if ($request->file('image')) {
+            if ($request->file('image')) {
                 $file_campaign = $request->file('image');
 
                 $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->putFileAs(
