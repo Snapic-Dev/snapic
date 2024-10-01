@@ -11869,3 +11869,11 @@ option {
 option {
   color:white;
 }
+
+.subtitleLogin {
+  color: white !important;
+}
+
+.markText {
+  color: #842FB3 !important;
+}

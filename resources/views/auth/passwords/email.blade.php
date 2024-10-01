@@ -24,6 +24,11 @@
                                                 > 
                                         </picture>
                             </a>
+                            <div class="mb-5">
+                                    <p class="subtitleLogin">
+                                        Entre agora e se <span class="markText">divirta</span> com os seus <span class="markText">criadores favoritos</span>.
+                                    </p>
+                                </div>
                             @if (session('status'))
                             <div class="alert alert-success text-white" role="alert">
                                 {{ session('status') }}

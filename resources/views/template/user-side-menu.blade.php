@@ -64,7 +64,7 @@
                 'centered' => false,
                 'classes' => 'mr-2',
                 ])
-                {{ __('Streams') }}
+                {{ __('Ao vivo') }}
             </a>
         </li>
         <li class="{{ Route::currentRouteName() == 'my.bookmarks' ? 'active' : '' }}">

@@ -1109,9 +1109,19 @@ footer .brand-logo {
 }
 
 .brand-logo-form {
-  height: 130px;
-  width: 200px;
+  height: 140px;
+  width: 290px;
   object-fit: contain;
+}
+
+.subtitleLogin {
+  font-size: 20px;
+  font-weight: 700;
+  color: black;
+}
+
+.markText {
+  color: #531167;
 }
 
 .inputLogin {
@@ -1177,6 +1187,14 @@ footer .brand-logo {
 
 .selectOption {
   color: #784ba0;
+}
+
+.headline {
+  background-color: #59136B;
+  height:40px;
+  display: none;
+  padding: 0px;
+  width:100%;
 }
 
 /*Campanha */
@@ -1308,8 +1326,8 @@ footer .brand-logo {
     display: flex;
     justify-content: center;
     width: 100px;
-    height: 200px;
-    margin-top: 50px;
+    height: 160px;
+    margin-top: 30px;
   }
 
   .titleLogin {
@@ -1330,6 +1348,10 @@ footer .brand-logo {
     font-size: 13px;
   }
 
+  .subtitleLogin {
+    text-align: center;
+    font-size: 18px;
+  }
 
 }
 
@@ -1346,6 +1368,7 @@ footer .brand-logo {
     text-align: center;
     font-size: 13px;
   }
+
 
 }
 
