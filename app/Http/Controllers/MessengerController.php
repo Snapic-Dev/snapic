@@ -560,10 +560,11 @@ class MessengerController extends Controller
                 $subscribers = Subscription::where('recipient_user_id', $senderID)
                     ->where('expires_at', '>', Carbon::now('UTC'))
                     ->get();
-
-                foreach ($subscribers as $subscriber) {
-                    if (!in_array($subscriber->user_id, $receiverIDs) && !is_null($subscriber->user_id)) {
-                        $receiverIDs[] = $subscriber->user_id;
+                if (is_array($subscribers) && count($subscribers) > 0) {
+                    foreach ($subscribers as $subscriber) {
+                        if (!in_array($subscriber['user_id'], $receiverIDs) && !is_null($subscriber['user_id'])) {
+                            $receiverIDs[] = $subscriber['user_id'];
+                        }
                     }
                 }
             }
@@ -571,9 +572,11 @@ class MessengerController extends Controller
             // Verifica seguidores
             if ($request->input('followers')) {
                 $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
-                foreach ($followers as $follower) {
-                    if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
-                        $receiverIDs[] = $follower->user_id;
+                if (is_array($followers) && count($followers) > 0) {
+                    foreach ($followers as $follower) {
+                        if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                            $receiverIDs[] = $follower['user_id'];
+                        }
                     }
                 }
             }
@@ -581,8 +584,14 @@ class MessengerController extends Controller
             // Verifica se há imagem anexada
             if ($request->file('frontDoc')) {
                 $file_campaign = $request->file('frontDoc');
-                $campaignPath = $file_campaign->store('campaign', 'do_spaces');
-                $image_uploaded = Storage::disk('do_spaces')->url($campaignPath);
+
+                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->putFileAs(
+                    'campaign',
+                    $file_campaign,
+                    $file_campaign->getClientOriginalName()
+                );
+
+                $image_uploaded = Storage::url($campaignPath);
             }
 
             if ($request->get('attachments')) {
@@ -625,10 +634,12 @@ class MessengerController extends Controller
 
 
         if ($options['image']) {
+            $id = Uuid::uuid4()->getHex();
             Attachment::create([
+                'id' => $id,
                 'user_id' => Auth::user()->id,
                 'filename' => $options['image'],
-                'driver' => 'do_spaces',
+                'driver' => 0,
                 'type' => 'image',
                 'message_id' => $message->id,
             ]);
