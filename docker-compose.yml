@@ -17,6 +17,8 @@ services:
       DB_PASSWORD: root_password
     volumes:
       - /opt/snapic:/var/www/html
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8.0
