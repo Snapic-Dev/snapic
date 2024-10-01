@@ -24,8 +24,7 @@
                         <div class="col">
                             <h2 class="h1s text-bold mb-3 p-2">{{ __('Contact us') }}</h2>
                             <p class="mb-4 p-2">
-                                {{ __("Dúvidas ou precisa de ajuda? Contate-nos a qualquer momento. Responderemos rapidamente para garantir a melhor experiência.") }}</p>
-
+                                {{ __("Tem dúvidas ou precisa de ajuda? Entre em contato conosco a qualquer momento. Estamos aqui para ajudar e responderemos rapidamente!") }}</p>
                             @csrf
                             @if (session('success'))
                                 <div class="alert alert-success text-white font-weight-bold mt-2" role="alert">
