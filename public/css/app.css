@@ -1188,6 +1188,13 @@ footer .brand-logo {
   color: #784ba0;
 }
 
+.requires_subscription_post_container {
+  align-items: center;
+  display: flex;
+  margin-left: 10px;
+  margin-top: 20px;
+}
+
 .headline {
   background-color: #59136b;
   height: 40px;
