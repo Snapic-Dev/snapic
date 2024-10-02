@@ -17,7 +17,6 @@ $type=request()->input('type');
 
 
 <div class="container mt-2">
-    @if (count($payments))
     <div class="table-responsive">
         <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
             <div class="filterArea d-flex align-items-center">
@@ -213,31 +212,6 @@ $type=request()->input('type');
                             <p class="subText">
                                 QTD: {{ $totalCount  }}
                             </p>
-                            <!-- <p class="text-uppercase dashCardLabel mt-4"><strong>{{ __('Status') }}:</strong>
-                                @switch($payment->status)
-                                @case('approved')
-                                <span class="badge bg-success">{{ ucfirst(__($payment->status)) }}</span>
-                                @break
-
-                                @case('initiated')
-                                @case('pending')
-                                <span class="badge bg-info">{{ ucfirst(__($payment->status)) }}</span>
-                                @break
-
-                                @case('canceled')
-                                @case('refunded')
-                                <span class="badge bg-warning">{{ ucfirst(__($payment->status)) }}</span>
-                                @break
-
-                                @case('partially-paid')
-                                <span class="badge bg-primary">{{ ucfirst(__($payment->status)) }}</span>
-                                @break
-
-                                @case('declined')
-                                <span class="badge bg-danger">{{ ucfirst(__($payment->status)) }}</span>
-                                @break
-                                @endswitch
-                            </p> -->
                         </div>
                         <div class="card2 no-blur-effect">
                             <div class="d-flex headerCard">
@@ -402,60 +376,59 @@ $type=request()->input('type');
                 </div>
                 <div class="pl-5 pr-5 BoxBtnWithdrawal mt-4">
                     <a class="btnWithdrawalMobile justify-content-center align-items-center" href="http://127.0.0.1:8000/my/settings/wallet?active=withdraw">
-                        <ion-icon class="withdrawalIcon ml-2 md hydrated" name="card-outline" role="img" aria-label="card outline"></ion-icon>     
+                        <ion-icon class="withdrawalIcon ml-2 md hydrated" name="card-outline" role="img" aria-label="card outline"></ion-icon>
                         Sacar
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    @else
     <div class="p-2 align-items-center border-bottom font-weight-bold pb-3">
-            <div class="filterArea d-flex align-items-center">
-                <div class="d-flex align-items-center">
-                    <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
-                            <div>
-                    </button>
-                    <div class="d-flex filterBar ml-4">
-                        <p class="badgeFilterStatus justify-content-center">Pendente</p>
-                        <p class="badgeFilterType justify-content-center">Gift</p>
-                        <p class="badgeFilterDate justify-content-center">16/09/24 - 19/09/24</p>
-                    </div>
-                </div>
-                @php
-                $baseUrl = url('/');
-                $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
-                @endphp
-                <div class="mt-2 d-flex align-items-center">
-                    <a class="withdrawalBtnDash justify-content-center align-items-center"
-                        href="{{ $urlWithdrawal }}">
-                        Sacar
-                        <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
-                    </a>
+        <div class="filterArea d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="filterBtn" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <span class="icon-white">@include('elements.icon', ['icon' => 'options-outline'])</span>
+                        <div>
+                </button>
+                <div class="d-flex filterBar ml-4">
+                    <p class="badgeFilterStatus justify-content-center">Pendente</p>
+                    <p class="badgeFilterType justify-content-center">Gift</p>
+                    <p class="badgeFilterDate justify-content-center">16/09/24 - 19/09/24</p>
                 </div>
             </div>
-            <div class="collapse p-3" id="collapseExample">
-                <form class="card card-body cardFilter">
-                    @csrf
-                    <div class="typeArea">
-                        <select class="form-control typeSelect" name="type">
-                            <option value="" disabled selected>Tipo</option>
-                            <option value="gift">Presentes</option>
-                            <option value="post">Posts</option>
-                            <option value="tip">Gorjetas</option>
-                            <option value="one-month-subscription">Assinatura 1 mês</option>
-                            <option value="three-months-subscription">Assinatura 3 meses</option>
-                            <option value="six-months-subscription">Assinatura 6 meses</option>
-                            <option value="yearly-subscription">Assinatura 1 ano</option>
-                            <option value="subscription-renewal">Renovações</option>
-                            <option value="chat-tip">Incentivo</option>
-                            <option value="stream-access">Streams</option>
-                            <option value="message-unlock">Mensagens</option>
-                        </select>
-                    </div>
-                    <!-- <div class="statusArea">
+            @php
+            $baseUrl = url('/');
+            $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
+            @endphp
+            <div class="mt-2 d-flex align-items-center">
+                <a class="withdrawalBtnDash justify-content-center align-items-center"
+                    href="{{ $urlWithdrawal }}">
+                    Sacar
+                    <ion-icon class="withdrawalIcon ml-2" name="card-outline"></ion-icon>
+                </a>
+            </div>
+        </div>
+        <div class="collapse p-3" id="collapseExample">
+            <form class="card card-body cardFilter">
+                @csrf
+                <div class="typeArea">
+                    <select class="form-control typeSelect" name="type">
+                        <option value="" disabled selected>Tipo</option>
+                        <option value="gift">Presentes</option>
+                        <option value="post">Posts</option>
+                        <option value="tip">Gorjetas</option>
+                        <option value="one-month-subscription">Assinatura 1 mês</option>
+                        <option value="three-months-subscription">Assinatura 3 meses</option>
+                        <option value="six-months-subscription">Assinatura 6 meses</option>
+                        <option value="yearly-subscription">Assinatura 1 ano</option>
+                        <option value="subscription-renewal">Renovações</option>
+                        <option value="chat-tip">Incentivo</option>
+                        <option value="stream-access">Streams</option>
+                        <option value="message-unlock">Mensagens</option>
+                    </select>
+                </div>
+                <!-- <div class="statusArea">
                         <select class="form-control statusSelect" name="status">
                             <option value="" disabled selected>Status</option>
                             <option value="pending">Pendente</option>
@@ -464,20 +437,20 @@ $type=request()->input('type');
                             <option value="refunded">Reembolsado</option>
                         </select>
                     </div> -->
-                    <div class="dateArea d-flex">
-                        <input class="filterInput" type="date" class="mr-2" name="initialDate" />
+                <div class="dateArea d-flex">
+                    <input class="filterInput" type="date" class="mr-2" name="initialDate" />
 
-                        <input class="filterInput" type="date" class="ml-2" name="endDate" />
-                    </div>
-                    <div class="d-flex btnFilterArea">
-                        <button class="btnCleanFilter">
-                            <ion-icon name="trash-bin-outline"></ion-icon>
-                        </button>
-                        <button class="btnFilter" type="submit " onclick="generateQuery()">Filtrar</button>
-                    </div>
-                </form>
-            </div>
-            <!-- @php
+                    <input class="filterInput" type="date" class="ml-2" name="endDate" />
+                </div>
+                <div class="d-flex btnFilterArea">
+                    <button class="btnCleanFilter">
+                        <ion-icon name="trash-bin-outline"></ion-icon>
+                    </button>
+                    <button class="btnFilter" type="submit " onclick="generateQuery()">Filtrar</button>
+                </div>
+            </form>
+        </div>
+        <!-- @php
             $baseUrl = url('/');
             $urlWithdrawal = "{$baseUrl}/my/settings/wallet?active=withdraw";
             @endphp
@@ -485,7 +458,7 @@ $type=request()->input('type');
                 <a class="btn btn-primary btn-round withdrawalBtnDash" id="clearFilters"
                     href="{{ $urlWithdrawal }}">Saque</a>
             </div> -->
-        </div>
+    </div>
     <div class="row">
         <div class="col text-center py-3 mt-5 nothingData">
             <p>{{ __('Nenhum dado encontrado') }}</p>
@@ -494,7 +467,6 @@ $type=request()->input('type');
             </button>
         </div>
     </div>
-    @endif
 </div>
 
 <script>
@@ -507,9 +479,9 @@ $type=request()->input('type');
 
     let badgeFilterType = document.querySelector('.badgeFilterType');
     let badgeFilterStatus = document.querySelector('.badgeFilterStatus');
-    let badgeFilterDate= document.querySelector('.badgeFilterDate');
+    let badgeFilterDate = document.querySelector('.badgeFilterDate');
 
-    let dashCardTitleAmount= document.querySelector('.dashCardTitleAmount');
+    let dashCardTitleAmount = document.querySelector('.dashCardTitleAmount');
 
     function copyCode(selector) {
         let linkRef = document.querySelector(selector).value;
@@ -575,7 +547,7 @@ $type=request()->input('type');
 
         let type = urlParams.get('type');
 
-        if(dashCardTitleAmount) {
+        if (dashCardTitleAmount) {
 
         }
 
@@ -645,8 +617,8 @@ $type=request()->input('type');
                 if (dashCardTitleAmount) {
                     dashCardTitleAmount.innerText = "Post"; // Corrigido para "Post"
                 }
-        break;
-        }       
+                break;
+        }
 
         // let status = urlParams.get('status');
         // switch (status) {
@@ -684,8 +656,8 @@ $type=request()->input('type');
 
         let initialDateQuery = urlParams.get('initialDate');
         let endDateQuery = urlParams.get('endDate');
-        
-    if (initialDateQuery !== null && initialDateQuery !== "" && endDateQuery !== null && endDateQuery !== "") {
+
+        if (initialDateQuery !== null && initialDateQuery !== "" && endDateQuery !== null && endDateQuery !== "") {
             badgeFilterDate.innerText = `${initialDateQuery} - ${endDateQuery}`
             badgeFilterDate.style.display = "flex";
         } else {
