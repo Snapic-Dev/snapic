@@ -162,7 +162,7 @@
                         </div>
                     </div>
                     <span
-                        class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Streams') }}</span>
+                        class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate side-menu-label">{{ __('Ao vivo') }}</span>
                 </div>
 
             </a>
@@ -347,7 +347,7 @@
             <a role="button" class="btn btn-round border btn-primary btn-block p-3"
                 href="/my/settings/producer">
                 <span
-                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('Become a producer') }}</span>
+                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('producer') }}</span>
                 <span
                     class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
                     'icon' => 'add-circle-outline',

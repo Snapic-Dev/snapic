@@ -35,7 +35,11 @@
                                             > 
                                     </picture>
                                 </a>
-                                <h1 class="text-bold mb-3 titleLogin">Cadastro</h1>
+                                <div class="mb-5">
+                                    <p class="subtitleLogin">
+                                        Entre agora e se <span class="markText">divirta</span> com os seus <span class="markText">criadores favoritos</span>.
+                                    </p>
+                                </div>
                                 @include('auth.register-form')
                                 @include('auth.social-login-box')
                             </div>

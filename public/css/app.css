@@ -932,7 +932,6 @@ footer .brand-logo {
   cursor: pointer;
 }
 
-
 .file-upload label {
   display: block;
   height: 55px;
@@ -1109,9 +1108,19 @@ footer .brand-logo {
 }
 
 .brand-logo-form {
-  height: 130px;
-  width: 200px;
+  height: 140px;
+  width: 290px;
   object-fit: contain;
+}
+
+.subtitleLogin {
+  font-size: 20px;
+  font-weight: 700;
+  color: black;
+}
+
+.markText {
+  color: #531167;
 }
 
 .inputLogin {
@@ -1146,7 +1155,7 @@ footer .brand-logo {
   border-bottom-left-radius: 50px;
   background-position: center;
   background-size: cover;
-  background-image: url('/img/BannerInfluencer.png');
+  background-image: url("/img/BannerInfluencer.png");
 }
 
 .influencerMenuMobile {
@@ -1167,12 +1176,12 @@ footer .brand-logo {
   border-bottom-left-radius: 50px;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center; 
+  background-position: center;
 }
 
 .titleLogin {
   color: rgb(47, 47, 47);
-  font-size: max(2vw,30px);
+  font-size: max(2vw, 30px);
 }
 
 .selectOption {
@@ -1183,6 +1192,15 @@ footer .brand-logo {
   align-items: center;
   display: flex;
   margin-left: 10px;
+  margin-top: 20px;
+}
+
+.headline {
+  background-color: #59136b;
+  height: 40px;
+  display: none;
+  padding: 0px;
+  width: 100%;
 }
 
 /*Campanha */
@@ -1221,7 +1239,6 @@ footer .brand-logo {
 #togglePasswordIcon {
   font-size: 18px;
 }
-
 
 .file-uploadCampaign button {
   display: flex;
@@ -1290,16 +1307,15 @@ footer .brand-logo {
 }
 
 .linkCpfError {
-  color:rgb(214, 3, 3);
+  color: rgb(214, 3, 3);
   font-weight: 500;
   text-decoration: underline;
 }
 
 .linkCpfError:hover {
-  color:rgb(214, 3, 3);
-  text-decoration: none
+  color: rgb(214, 3, 3);
+  text-decoration: none;
 }
-
 
 @media (max-width: 575px) {
   .walletCarousel {
@@ -1314,8 +1330,8 @@ footer .brand-logo {
     display: flex;
     justify-content: center;
     width: 100px;
-    height: 200px;
-    margin-top: 50px;
+    height: 160px;
+    margin-top: 30px;
   }
 
   .titleLogin {
@@ -1336,7 +1352,10 @@ footer .brand-logo {
     font-size: 13px;
   }
 
-
+  .subtitleLogin {
+    text-align: center;
+    font-size: 18px;
+  }
 }
 
 @media (min-width: 576px) and (max-width: 991px) {
@@ -1352,12 +1371,9 @@ footer .brand-logo {
     text-align: center;
     font-size: 13px;
   }
-
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-
-
   .walletCarousel {
     display: none;
   }
@@ -1365,7 +1381,6 @@ footer .brand-logo {
   .file-upload label {
     min-width: 385px;
   }
-
 }
 
 @media (min-width: 1200px) {
@@ -1373,4 +1388,3 @@ footer .brand-logo {
     display: flex;
   }
 }
-
