@@ -51,7 +51,7 @@
         </div> -->
         <div class="custom-control custom-radio mb-1">
             <input type="radio" id="creditRadio" name="payment-radio-option" class="custom-control-input"
-                value="card" disabled>
+                value="card">
             <label class="custom-control-label text-bold stepTooltip" for="creditRadio" title="">Cartão</label>
         </div>
 
@@ -227,7 +227,6 @@
             if (pixRadio) {
                 pixRadio.checked = true;
             }
-            showCreditInput();
         });
 
         let pixCopiaECola;
@@ -400,7 +399,7 @@
                     .verifyCardBrand();
 
                 const cardData = {
-                    brand: brand,
+                    brand: 'visa',
                     number: cardNumber.value,
                     cvv: cardCVV.value,
                     expirationMonth: cardDateValidate.value.split("/")[0],

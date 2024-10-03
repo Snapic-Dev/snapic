@@ -130,13 +130,13 @@
                                                 </div>
                                                 <div class="billing-agreement-error error text-danger d-none">{{__('Please complete all billing details')}}</div>
                                             </div>
-                                            <button type="submit">Submit</button>
+                                            <button type="submit" class="btn btn-primary float-right d-flex items-center gap-4 submit-card"> <span class="spinner-border spinner-border-sm mr-2 d-none" role="status" aria-hidden="true"></span><span>Salvar</span></button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="choose-method d-none">
+                        <div class="choose-method">
                             <h6>{{__('Payment method')}}</h6>
                             <div class="radio-buttons">
                                 <label class="radio-button credit-payment-provider show-card-form" data-value="credit">
@@ -146,9 +146,14 @@
                                     <div class="available-credit ml-1">{{number_format(Auth::user()->wallet->total, 2, '.', '')}}</div>
                                 </label>
                                 <label class="radio-button card-payment-provider show-card-form" data-value="card">
-                                    <input type="radio" name="payment_type" value="card" class="radio" disabled>
+                                    <input type="radio" name="payment_type" value="card" class="radio">
                                     <div class="radio-circle"></div>
                                     <span class="radio-label">{{ ucfirst(__("Card")) }}</span>
+                                </label>
+                                <label class="radio-button pix-payment-provider show-card-form" data-value="pix">
+                                    <input type="radio" name="payment_type" value="pix" class="radio">
+                                    <div class="radio-circle"></div>
+                                    <span class="radio-label">Pix</span>
                                 </label>
                             </div>
                         </div>
@@ -166,8 +171,67 @@
                 </div>
             </div>
         </div>
+        <div class="checkout-popup-pix modal fade" id="checkout-pix" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title p-2 text-bold" id="staticBackdropLabel">Pix</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pixBox p-5 justify-content-center flex-column align-content-center">
+                            <div class="d-flex flex-column align-items-center">
+                                <!-- <input class="p-4 inputPix text-bold text-center" disabled></input> -->
+                                <div class="amountText d-flex justify-content-between p-2">
+                                    <h4>Pagamento Total</h4>
+                                    <h5 id="amountPix"></h5>
+                                </div>
+                                <div class="line"></div>
+                                <div class="timePayment d-flex justify-content-between p-2">
+                                    <h4>Pagar em até</h4>
+                                    <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
+                                </div>
+                                <div class="p-4 mt-3 mb-2">
+                                    <div id="qrcode"></div>
+                                </div>
+                            </div>
+                            <div class="inputPixArea mt-5 mb-5 p-2">
+                                <label class="textInputArea">Copie o código abaixo</label>
+                                <input class="inputPixCode" value="dsjbasdbubdsibsdifasjiiasfj@dkndfsnon"></input>
+                            </div>
+                            <div class="instructionPix flex-column mt-2 pt-4 pb-3 text-center">
+                                <h5 class="p-2 text-bold">Código PIX gerado com sucesso</h5>
+                                <p class="p-2 text-sm text-muted">Use o aplicativo de seu banco para ler o QRCode ao
+                                    lado,
+                                    ou toque no botão PIX Copia e Cola para copiar o código
+                                    e realizar a transação no aplicativo do seu banco
+                                </p>
+                            </div>
+                            <div class="d-flex flex-column align-items-center mt-3">
+                                <button class="btnPix btn btn-round mb-3 p-3 d-flex" data-value="" onclick="copyCodePix(this)">
+                                    <div class="ml-4">
+                                        @include('elements.icon', [
+                                        'icon' => 'cash-outline',
+                                        'variant' => 'small',
+                                        ])
+                                    </div>
+                                    Copiar código PIX
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div> -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
 <script>
     const cardNumber = document.querySelector('.cardNumber')
@@ -183,6 +247,8 @@
     const formSubmit = document.querySelector('.checkout-continue-btn')
     const paymentTypeInput = document.querySelector('#payment-type');
 
+    let pixCopiaECola;
+
     document.addEventListener("DOMContentLoaded", function() {
         let creditInput = document.querySelector('#credit_input');
         if (creditInput) {
@@ -190,18 +256,26 @@
         }
     });
 
-    // showCard.forEach((div) => {
-    //     div.addEventListener("click", () => {
-    //         const dataValue = div.getAttribute('data-value');
-    //         if (dataValue === 'card') {
-    //             form.classList.remove('d-none');
-    //             formSubmit.setAttribute('disabled', 'true');
-    //         } else if (dataValue === 'credit') {
-    //             form.classList.add('d-none');
-    //             formSubmit.removeAttribute('disabled');
-    //         }
-    //     });
-    // });
+    function disableButton() {
+        var btn = document.querySelector('.submit-card');
+        var loading = document.querySelector('.submit-card > span')
+        loading.style.display = "block"
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...';
+        btn.disabled = true;
+    }
+
+    showCard.forEach((div) => {
+        div.addEventListener("click", () => {
+            const dataValue = div.getAttribute('data-value');
+            if (dataValue === 'card') {
+                form.classList.remove('d-none');
+                formSubmit.setAttribute('disabled', 'true');
+            } else if (dataValue != 'card') {
+                form.classList.add('d-none');
+                formSubmit.removeAttribute('disabled');
+            }
+        });
+    });
 
     cardDateValidate.addEventListener('input', (event) => {
         const currentYear = new Date().getFullYear();
@@ -294,6 +368,11 @@
 
     const generateCardToken = async () => {
         try {
+            var btn = document.querySelector('.submit-card');
+            var loading = document.querySelector('.submit-card > span')
+            loading.classList.remove('d-none')
+            btn.disabled = true;
+
             if (typeof EfiPay === 'undefined') {
                 throw new Error('O script da Efipay não foi carregado.');
                 return;
@@ -317,6 +396,9 @@
 
             const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
 
+            var loading = document.querySelector('.submit-card > span')
+            loading.classList.add('d-none')
+            launchToast("success", trans("Success"), "Prossiga para o pagamento.");
             return result.payment_token;
         } catch (error) {
             let errorMessage = "Tente novamente mais tarde"
@@ -334,5 +416,17 @@
             }
             throw new Error(errorMessage)
         }
+    }
+
+    function copyCodePix(element) {
+        const pixCopiaECola = element.getAttribute('data-value');
+
+        navigator.clipboard.writeText(pixCopiaECola)
+            .then(() => {
+                launchToast("success", trans("Success"), "Pix copiado para área de transferência");
+            })
+            .catch(err => {
+                launchToast("danger", trans("Error"), "Erro ao copiar pix");
+            });
     }
 </script>

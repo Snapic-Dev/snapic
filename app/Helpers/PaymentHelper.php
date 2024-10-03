@@ -140,7 +140,7 @@ class PaymentHelper
 
     private function preparePaymentData($dto)
     {
-        $user = User::find($dto['recipient_user_id']);
+        $user = Auth::user();
         return [
             "calendario" => ["expiracao" => 3600],
             "devedor" => [
@@ -204,12 +204,13 @@ class PaymentHelper
         }
     }
 
-    public function generationCardPayment($value, $token)
+    public function generationCardPayment($value, $token, $title, $cpf, $name,)
     {
         try {
             $user = Auth::user();
             $access_token = $this->getAuthorizationToken();
             $url_efipay = $this->efipay_cobrancas_url . '/v1/charge/one-step';
+            $randomId = rand(1000, 9999);
 
             $response = $this->client->post(
                 $url_efipay,
@@ -217,16 +218,16 @@ class PaymentHelper
                     'json' => [
                         'items' => [
                             [
-                                'name' => 'Deposit',
-                                'value' => 300,
+                                'name' => $title . ' #' . $randomId . '.',
+                                'value' => $value,
                                 'amount' => 1,
                             ],
                         ],
                         'payment' => [
                             'credit_card' => [
                                 'customer' => [
-                                    'name' => $user->name,
-                                    'cpf' => $user->cpf,
+                                    'name' => $name,
+                                    'cpf' => preg_replace('/[.-]/', '', $cpf),
                                     'email' => $user->email,
                                     'birth' => $user->birthdate | '1990-08-29',
                                     'phone_number' => $user->phone,

@@ -92,7 +92,11 @@ input[type="radio"] {
   + .radio-circle::before {
   background-color: #57319a;
 }
-
+.radio-button:nth-of-type(3)
+  input[type="radio"]:checked
+  + .radio-circle::before {
+  background-color: #57319a;
+}
 .radio-label {
   font-size: 16px;
   font-weight: bold;

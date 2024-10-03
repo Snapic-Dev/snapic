@@ -59,6 +59,9 @@ class TransactionsObserver
     private function discountAgreement(Transaction $transaction)
     {
         try {
+            if ($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id)) {
+                return;
+            }
             $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
             if (!$existingReward) {
                 $recipientUserId = (int) $transaction->recipient_user_id;
