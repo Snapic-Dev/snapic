@@ -16,7 +16,8 @@
     @endif
     <style>
         body {
-            background-image: url('{{ Voyager::image(Voyager::setting(' admin.bg_image'), Storage::disk(' public')->url(' ../img/admin-bg.png')) }}');
+            
+            background-image: url(' ../img/admin-bg.png');
 
             background-color: {
                     {
