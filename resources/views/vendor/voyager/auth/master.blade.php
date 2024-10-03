@@ -7,7 +7,7 @@
     <meta name="robots" content="none" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description" content="admin login">
-    <meta name="theme-color" content="#57319A" />
+    <meta name="theme-color" content="#57319A">
     <title>@yield('title', 'Admin - ' . Voyager::setting('admin.title'))</title>
     <link rel="stylesheet" href="{{ voyager_asset('css/app.css') }}">
     @if (__('voyager::generic.is_rtl') == 'true')
@@ -17,7 +17,7 @@
     <style>
         body {
             
-            background-image: url(' ../img/admin-bg.png');
+            background-image: url('{{Voyager::image(Voyager::setting('admin.bg_image'), Storage::disk('public')->url('../img/admin-bg.png'))}}');
 
             background-color: {
                     {
