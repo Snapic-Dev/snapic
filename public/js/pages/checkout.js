@@ -82,13 +82,6 @@ $(function () {
     checkout.updatePaymentSummaryData();
     checkout.prefillBillingDetails();
 
-    const subs_type = "one-month-subscription" || "six-months-subscription";
-    const chooseMethod = document.querySelector(".choose-method");
-    if (type === subs_type) {
-      chooseMethod.classList.remove("d-none");
-    } else {
-      chooseMethod.classList.add("d-none");
-    }
     let paymentTitle = "";
     let paymentDescription = "";
     if (type === "tip" || type === "chat-tip") {
@@ -240,6 +233,7 @@ var checkout = {
     "paypal",
     "credit",
     "card",
+    "pix",
     "coinbase",
     "nowpayments",
     "ccbill",
@@ -259,6 +253,7 @@ var checkout = {
     ".mercado-payment-method",
     ".credit-payment-method",
     ".card-payment-method",
+    ".pix-payment-method",
   ],
 
   /**
@@ -353,12 +348,80 @@ var checkout = {
    */
   validateAllFields: function (callback) {
     checkout.clearFormErrors();
+
     $.ajax({
       type: "POST",
       data: $("#pp-buyItem").serialize(),
       url: app.baseUrl + "/payment/initiate/validate",
-      success: function () {
-        callback();
+      success: function (response) {
+        if ($("#provider").val() === "credit") {
+          callback();
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: app.baseUrl + "/payment/initiate",
+          data: {
+            amount: $("#payment-deposit-amount").val(),
+            transaction_type: $("#payment-type").val(),
+            post_id: $("#post").val(),
+            user_message_id: $("#userMessage").val(),
+            recipient_user_id: $("#recipient").val(),
+            provider: $("#provider").val(),
+            first_name: $("#paymentFirstName").val(),
+            last_name: $("#paymentLastName").val(),
+            billing_address: $("#paymentBillingAddress").val(),
+            city: $("#paymentCity").val(),
+            state: $("#paymentState").val(),
+            postcode: $("#paymentPostcode").val(),
+            country: $("#paymentCountry").val(),
+            taxes: $("#paymentTaxes").val(),
+            stream: $("#stream").val(),
+            card_token: $("#cardToken").val(),
+            cpf: $("#cpfValue").val(),
+            name: $("#nameValue").val(),
+          },
+          success: function (paymentResponse) {
+            if ($("#provider").val() === "pix") {
+              const amountPix = document.getElementById("amountPix");
+              amountPix.innerHTML = "";
+              const pixCopiaECola = paymentResponse.pixCopiaECola;
+              launchToast(
+                "success",
+                trans("Success"),
+                "Pix gerado com sucesso"
+              );
+              $("#checkout-center").modal("hide");
+              $("#checkout-pix").modal("show");
+
+              new QRCode(document.getElementById("qrcode"), {
+                text: pixCopiaECola,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+              });
+              $(".btnPix").attr("data-value", pixCopiaECola);
+              checkout.calculateTimeDifference();
+              amountPix.innerText = "R$ " + paymentResponse.valor.original;
+            } else {
+              launchToast(
+                "success",
+                trans("Success"),
+                "Pagamento bem sucedido"
+              );
+            }
+          },
+          error: function (paymentError) {
+            launchToast(
+              "danger",
+              trans("Error"),
+              paymentError.responseJSON.message
+            );
+          },
+        });
       },
       error: function (result) {
         $(".checkout-continue-btn .spinner-border").addClass("d-none");
@@ -370,16 +433,45 @@ var checkout = {
           fieldElement.addClass("is-invalid");
           fieldElement.parent().append(
             `
-                            <span class="invalid-feedback" role="alert">
-                                <strong>${error}</strong>
-                            </span>
-                        `
+                    <span class="invalid-feedback" role="alert">
+                        <strong>${error}</strong>
+                    </span>
+                    `
           );
         });
       },
     });
   },
 
+  calculateTimeDifference: function () {
+    const now = new Date();
+    const expiration = new Date(now.getTime() + 3600000);
+    let intervalId;
+    let dataExpiration = document.getElementById("dataExpiration");
+
+    const updateRemainingTime = () => {
+      const now = new Date();
+      let differenceInMilliseconds = expiration.getTime() - now.getTime();
+      if (differenceInMilliseconds < 0) {
+        clearInterval(intervalId);
+        return "00:00:00";
+      }
+
+      const differenceInSeconds = Math.floor(differenceInMilliseconds / 1000);
+      const hours = Math.floor(differenceInSeconds / 3600);
+      const minutes = Math.floor((differenceInSeconds % 3600) / 60);
+      const seconds = differenceInSeconds % 60;
+
+      const formattedHours = String(hours).padStart(2, "0");
+      const formattedMinutes = String(minutes).padStart(2, "0");
+      const formattedSeconds = String(seconds).padStart(2, "0");
+
+      dataExpiration.innerText = `${formattedHours}h ${formattedMinutes}min ${formattedSeconds}s`;
+    };
+
+    intervalId = setInterval(updateRemainingTime, 1000);
+    updateRemainingTime();
+  },
   /**
    * Clears up dialog (all) form errors
    */
@@ -397,6 +489,7 @@ var checkout = {
     const stripeProvider = $(".stripe-payment-provider").hasClass("selected");
     const creditProvider = $(".credit-payment-provider").hasClass("selected");
     const cardProvider = $(".card-payment-provider").hasClass("selected");
+    const pixProvider = $(".pix-payment-provider").hasClass("selected");
 
     const coinbaseProvider = $(".coinbase-payment-provider").hasClass(
       "selected"
@@ -419,6 +512,8 @@ var checkout = {
       val = "credit";
     } else if (cardProvider) {
       val = "card";
+    } else if (pixProvider) {
+      val = "pix";
     } else if (coinbaseProvider) {
       val = "coinbase";
     } else if (nowPaymentsProvider) {
