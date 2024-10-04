@@ -315,45 +315,6 @@ class PaymentHelper
             throw new \Exception('Erro ao obter o token de autorização: ' . $e->getMessage());
         }
     }
-    public function configureWebhook(Request $request)
-    {
-        try {
-            $data = [
-                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.com.br/prod/webhook'),
-            ];
-
-            $params = [
-                'chave' => $request->input('chave', $this->credentials['client_identifier']),
-            ];
-
-            $options = [
-                'client_id' => 'Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
-                'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
-                'sandbox' => env('GERENCIANET_SANDBOX', true),
-                'pix_cert' => storage_path('../public/certs/truststore.pem'),
-            ];
-
-            $api = new Gerencianet($options);
-
-            $response = $api->pixConfigWebhook($params, $data);
-
-            return response()->json($response, 200);
-        } catch (GerencianetException $e) {
-            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'message' => 'Falha ao configurar o webhook',
-                'error' => $e->getMessage(),
-            ], 500);
-        } catch (\Exception $e) {
-            Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'message' => 'Falha ao configurar o webhook',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
 
     private $paypalApiContext;
 

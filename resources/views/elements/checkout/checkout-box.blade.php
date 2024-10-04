@@ -95,19 +95,19 @@
                                                         <label for="name">
                                                             <span>{{__('Nome Completo')}}</span>
                                                         </label>
-                                                        <input id="name" class="form-control name_input" placeholder="Nome Completo">
+                                                        <input id="name" class="form-control name_input" placeholder="Nome Completo" required minlength="8">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="cpf">
                                                             <span>CPF</span>
                                                         </label>
-                                                        <input class="form-control cpf_input" placeholder="000.000.000-00">
+                                                        <input class="form-control cpf_input" placeholder="000.000.000-00" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="billingCity">
                                                             <span>{{__('Card Number')}}</span>
                                                         </label>
-                                                        <input maxlength="19" class="form-control cardNumber" placeholder="0000 0000 0000 0000">
+                                                        <input maxlength="19" class="form-control cardNumber" placeholder="0000 0000 0000 0000" required>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-sm-6 col-6">
@@ -115,7 +115,7 @@
                                                                 <label for="billingPostcode">
                                                                     <span>{{__('Validate')}}</span>
                                                                 </label>
-                                                                <input type="month" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YY">
+                                                                <input type="text" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YY" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6 col-6">
@@ -123,7 +123,7 @@
                                                                 <label for="billingState">
                                                                     <span>CVV</span>
                                                                 </label>
-                                                                <input type="number" class="form-control cardCVV" placeholder="CVV">
+                                                                <input type="text" class="form-control cardCVV" placeholder="CVV" required>
                                                             </div>
                                                         </div>
                                                     </div>
