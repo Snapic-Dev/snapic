@@ -382,16 +382,16 @@
                 .setEnvironment("production");
 
             const brand = await EfiPay.CreditCard
-                .setCardNumber(cardNumber.value.split(" ").join(""))
+                .setCardNumber(cardNumber.value)
                 .verifyCardBrand();
 
             const cardData = {
                 brand: brand,
-                number: cardNumber.value.split(" ").join(""),
+                number: cardNumber.value,
                 cvv: cardCVV.value,
                 expirationMonth: cardDateValidate.value.split("/")[0],
                 expirationYear: cardDateValidate.value.split("/")[1],
-                reuse: true,
+                reuse: false,
             };
 
             const result = await efiPay.setCreditCardData(cardData).getPaymentToken();

@@ -395,11 +395,11 @@
                     .setEnvironment("production");
 
                 const brand = await EfiPay.CreditCard
-                    .setCardNumber(cardNumber.value.split(" ").join(""))
+                    .setCardNumber(cardNumber.value)
                     .verifyCardBrand();
 
                 const cardData = {
-                    brand: 'visa',
+                    brand: brand,
                     number: cardNumber.value,
                     cvv: cardCVV.value,
                     expirationMonth: cardDateValidate.value.split("/")[0],

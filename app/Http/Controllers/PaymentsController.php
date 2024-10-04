@@ -61,57 +61,46 @@ class PaymentsController extends Controller
     {
         try {
             if (isset($res['data']['status']) && $res['data']['status'] === Transaction::APPROVED_STATUS) {
-                    return 'approved';
+                return 'approved';
             }
 
             if (isset($res['data']['status']) && $res['data']['status'] === 'unpaid') {
                 throw new \Exception("Houve um erro ao processar seu pagamento. Por favor, verifique as informações e tente novamente.");
-        }
-
-        if (isset($res['error_description']['property'])) {
-            switch ($res['error_description']['property']) {
-                case '/payment/credit_card/customer/name':
-
-                    throw new \Exception("Nome incorreto");
-                case '/payment/credit_card/customer/birth':
-
-                    throw new \Exception("Aniversário incorreto");
-                case '/payment/credit_card/customer/phone_number':
-
-                    throw new \Exception("Número de telefone incorreto");
-                case 'payment_token':
-
-                    throw new \Exception("Erro na geracao do token de cartao");
-                case "Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.":
-
-                    throw new \Exception("Limite de emissões diárias excedido.");
-                default:
-
-                    throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
             }
-        }
-        if (isset($res['error_description'])) {
-            switch ($res['error_description']) {
-                case "Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.":
 
-                    throw new \Exception("Limite de emissões idênticas excedido.");
-                case "Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.":
-
-                    throw new \Exception("Limite de emissões diárias excedido.");
-                case "CPF inválido.":
-
-                    throw new \Exception("CPF inválido.");
-                case '/payment/credit_card/customer/phone_number':
-
-                    throw new \Exception("Número de telefone incorreto");
-                case 'Número do cartão é inválido.':
-
-                    throw new \Exception("Número do cartão é inválido.");
-                default:
-
-                    throw new \Exception("Mensagem de erro desconhecida: " . $res['error_description']);
+            if (isset($res['error_description']['property'])) {
+                switch ($res['error_description']['property']) {
+                    case '/payment/credit_card/customer/name':
+                        throw new \Exception("Nome do cliente está incorreto.");
+                    case '/payment/credit_card/customer/birth':
+                        throw new \Exception("Data de nascimento incorreta.");
+                    case '/payment/credit_card/customer/phone_number':
+                        throw new \Exception("Número de telefone está incorreto.");
+                    case 'payment_token':
+                        throw new \Exception("Erro ao gerar o token do cartão.");
+                    case 'Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.':
+                        throw new \Exception("Limite de emissões diárias excedido. Entre em contato com o suporte.");
+                    default:
+                        throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
+                }
             }
-        }
+
+            if (isset($res['error_description'])) {
+                switch ($res['error_description']) {
+                    case 'Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.':
+                        throw new \Exception("Limite de emissões idênticas excedido. Contate o suporte.");
+                    case 'Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.':
+                        throw new \Exception("Limite de emissões diárias excedido. Contate o suporte.");
+                    case 'CPF inválido.':
+                        throw new \Exception("CPF informado é inválido.");
+                    case '/payment/credit_card/customer/phone_number':
+                        throw new \Exception("Número de telefone está incorreto.");
+                    case 'Número do cartão é inválido.':
+                        throw new \Exception("O número do cartão é inválido.");
+                    default:
+                        throw new \Exception("Erro desconhecido: " . $res['error_description']);
+                }
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro no processamento do pagamento',
@@ -120,38 +109,36 @@ class PaymentsController extends Controller
         }
     }
 
-    protected function verifyUserCpf($userId)
-    {
-        $user = User::find($userId);
-        return $user && $user->cpf ? $user : null;
-    }
 
     protected function processPixPayment($transaction)
     {
         $res = $this->paymentHandler->generationPixPayment($transaction);
+
         if (isset($res['status']) && $res['status'] === 'ATIVA') {
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
             $transaction->save();
+
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
-            $errorMessage = $this->handlePixErrors($errorCode);
-            return response()->json([
-                'error' => $errorCode,
-                'message' => $errorMessage,
-            ], 500);
+
+            switch ($errorCode) {
+                case 'Documento CPF em devedor.cpf é inválido':
+                    return response()->json([
+                        'error' => 'CPF inválido',
+                        'message' => 'O CPF informado é inválido. Por favor, verifique e tente novamente.',
+                    ], 400);
+
+                default:
+                    return response()->json([
+                        'error' => $errorCode ?: 'Erro desconhecido',
+                        'message' => $errorCode ?: 'Ocorreu um erro desconhecido ao tentar gerar o pagamento via Pix.',
+                    ], 400);
+            }
         }
     }
-    protected function handlePixErrors($errorCode)
-    {
-        switch ($errorCode) {
-            case 'Documento CPF em devedor.cpf é inválido':
-                return "Seu CPF é inválido.";
-            default:
-                return $errorCode ?: "Erro desconhecido ao gerar o pagamento via Pix.";
-        }
-    }
+
 
     protected function processCardPayment($transaction, $amount, $cardToken, $title, $cpf, $name)
     {
@@ -159,7 +146,6 @@ class PaymentsController extends Controller
 
 
         $res = $this->paymentHandler->generationCardPayment($value, $cardToken, $title, $cpf, $name);
-
         $status = $this->handleErrorsCard($res);
 
         if ($status === 'approved') {
@@ -298,15 +284,21 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
-                    $this->paymentHandler->generateOneTimeCreditTransaction($transaction);
+                        $this->paymentHandler->generateOneTimeCreditTransaction($transaction);
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
+                        if (!Auth::user()->cpf) {
+                            return response()->json([
+                                'error' => 'CPF não cadastrado.',
+                                'message' => 'Adicione seu CPF para prosseguir!',
+                            ], 401);
+                        }
+
                         return $this->processPixPayment($transaction);
                     }
 
                     if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
-
                         return $this->processCardPayment($transaction, $request->amount, $request->card_token, $transactionTitle, $request->cpf, $request->name);
                     }
 
@@ -314,13 +306,12 @@ class PaymentsController extends Controller
                 case Transaction::DEPOSIT_TYPE:
                     $transaction['recipient_user_id'] = Auth::user()->id;
 
-                    $user = $this->verifyUserCpf($transaction['recipient_user_id']);
-                    if (!$user) {
-                            return response()->json([
-                                'error' => 'CPF não cadastrado.',
-                                'message' => 'Adicione seu CPF para prosseguir!',
-                            ], 401);
-                        }
+                    if (!Auth::user()->cpf) {
+                        return response()->json([
+                            'error' => 'CPF não cadastrado.',
+                            'message' => 'Adicione seu CPF para prosseguir!',
+                        ], 401);
+                    }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
                         return $this->processPixPayment($transaction);
@@ -329,10 +320,9 @@ class PaymentsController extends Controller
                     if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
                         $transactionTitle = "Depósito de R$" . number_format($transaction['amount'], 2, ',', '.') . " para a conta " . Auth::user()->name;
                         return $this->processCardPayment($transaction, $request->amount, $request->cardToken, $transactionTitle, Auth::user()->cpf, Auth::user()->name);
-                        }
                     }
-                    break;
 
+                    break;
                 case Transaction::ONE_MONTH_SUBSCRIPTION:
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
                 case Transaction::SIX_MONTHS_SUBSCRIPTION:

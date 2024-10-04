@@ -204,7 +204,7 @@ class PaymentHelper
         }
     }
 
-    public function generationCardPayment($value, $token, $title, $cpf, $name,)
+    public function generationCardPayment($value, $token, $title, $cpf, $name)
     {
         try {
             $user = Auth::user();
@@ -229,18 +229,18 @@ class PaymentHelper
                                     'name' => $name,
                                     'cpf' => preg_replace('/[.-]/', '', $cpf),
                                     'email' => $user->email,
-                                    'birth' => $user->birthdate | '1990-08-29',
+                                    'birth' => $user->birthdate ?? '2005-09-16',
                                     'phone_number' => $user->phone,
                                 ],
                                 'installments' => 1,
                                 'payment_token' => $token,
                                 'billing_address' => [
-                                    'street' => 'Republica, SP',
-                                    'number' => '1',
-                                    'neighborhood' => '1',
-                                    'zipcode' => '00000000',
-                                    'city' => '1',
-                                    'complement' => '1',
+                                    'street' => 'R. Sete de Abril',
+                                    'number' => '356',
+                                    'neighborhood' => 'República',
+                                    'zipcode' => ' 01042001',
+                                    'city' => 'Sao Paulo',
+                                    'complement' => 'Loja 100',
                                     'state' => 'SP',
                                 ],
                             ],

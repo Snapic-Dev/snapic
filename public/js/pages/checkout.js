@@ -354,7 +354,7 @@ var checkout = {
       data: $("#pp-buyItem").serialize(),
       url: app.baseUrl + "/payment/initiate/validate",
       success: function (response) {
-        if ($("#provider").val() !== "pix") {
+        if ($("#provider").val() === "credit") {
           callback();
           return;
         }
@@ -383,38 +383,51 @@ var checkout = {
             name: $("#nameValue").val(),
           },
           success: function (paymentResponse) {
-            const amountPix = document.getElementById("amountPix");
-            amountPix.innerHTML = "";
-            const pixCopiaECola = paymentResponse.pixCopiaECola;
-            launchToast("success", trans("Success"), "Pix gerado com sucesso");
-            $("#checkout-center").modal("hide");
-            $("#checkout-pix").modal("show");
+            if ($("#provider").val() === "pix") {
+              const amountPix = document.getElementById("amountPix");
+              amountPix.innerHTML = "";
+              const pixCopiaECola = paymentResponse.pixCopiaECola;
+              launchToast(
+                "success",
+                trans("Success"),
+                "Pix gerado com sucesso"
+              );
+              $("#checkout-center").modal("hide");
+              $("#checkout-pix").modal("show");
 
-            new QRCode(document.getElementById("qrcode"), {
-              text: pixCopiaECola,
-              width: 200,
-              height: 200,
-              colorDark: "#000000",
-              colorLight: "#ffffff",
-              correctLevel: QRCode.CorrectLevel.H,
-            });
-            $(".btnPix").attr("data-value", pixCopiaECola);
-            checkout.calculateTimeDifference();
-            amountPix.innerText = "R$ " + paymentResponse.valor.original;
+              new QRCode(document.getElementById("qrcode"), {
+                text: pixCopiaECola,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+              });
+              $(".btnPix").attr("data-value", pixCopiaECola);
+              checkout.calculateTimeDifference();
+              amountPix.innerText = "R$ " + paymentResponse.valor.original;
+            } else {
+              launchToast(
+                "success",
+                trans("Success"),
+                "Pagamento bem sucedido"
+              );
+            }
           },
           error: function (paymentError) {
-            console.error("Erro ao iniciar o pagamento:", paymentError);
+            launchToast(
+              "danger",
+              trans("Error"),
+              paymentError.responseJSON.message
+            );
           },
         });
       },
       error: function (result) {
-        console.log("testeeeeeeeeeee");
-
         $(".checkout-continue-btn .spinner-border").addClass("d-none");
         if (result.status === 500) {
           launchToast("danger", trans("Error"), result.responseJSON.message);
         }
-        // Exibe os erros de validação, caso existam
         $.each(result.responseJSON.errors, function (field, error) {
           let fieldElement = $(".uifield-" + field);
           fieldElement.addClass("is-invalid");
