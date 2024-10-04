@@ -9,13 +9,13 @@
 
 <form method="POST" action="{{ route('my.settings.rates.save') }}">
     @csrf
-    <div class="form-group p-2">
+    <!-- <div class="form-group p-2">
         <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" id="paid-profile" name="paid-profile"
                 {{ isset(Auth::user()->paid_profile) ? (Auth::user()->paid_profile == '1' ? 'checked' : '') : false }}>
             <label class="custom-control-label" for="paid-profile">{{ __('Paid profile') }}</label>
         </div>
-    </div>
+    </div> -->
     <div
         class="paid-profile-rates {{ isset(Auth::user()->paid_profile) ? (Auth::user()->paid_profile == '1' ? '' : 'd-none') : '' }}">
         <div class="form-group p-2">
