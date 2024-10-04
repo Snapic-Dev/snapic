@@ -1,61 +1,135 @@
 .rounded {
-    border-radius: 1rem
+  border-radius: 1rem;
 }
 
 .nav-pills .nav-link {
-    color: #555
+  color: #555;
 }
 
 .nav-pills .nav-link.active {
-    color: white
+  color: white;
 }
 
 input[type="radio"] {
-    margin-right: 5px
+  margin-right: 5px;
 }
 
 .radio {
-    display: inline-block;
-    border-radius: 6px;
-    box-sizing: border-box;
-    border: 2px solid lightgrey;
-    cursor: pointer;
-    margin: 6px 25px 6px 0px
+  display: inline-block;
+  border-radius: 6px;
+  box-sizing: border-box;
+  border: 2px solid lightgrey;
+  cursor: pointer;
+  margin: 6px 25px 6px 0px;
 }
 
 .radio:hover {
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.2)
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.2);
 }
 
 .radio.selected {
-    box-shadow: 0px 0px 0px 1px #9b0979;
-    border: 2px solid #9b0979
+  box-shadow: 0px 0px 0px 1px #9b0979;
+  border: 2px solid #9b0979;
 }
 
 .label-radio {
-    font-weight: bold;
-    color: #000000
+  font-weight: bold;
+  color: #000000;
+}
+
+.radio-buttons {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.radio-button {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.radio-button input[type="radio"] {
+  display: none;
+}
+
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #57319a64;
+  position: relative;
+  margin-right: 10px;
+}
+
+.radio-circle::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ddd;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: all 0.2s ease-in-out;
+}
+
+.radio-button input[type="radio"]:checked + .radio-circle::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.radio-button:nth-of-type(1)
+  input[type="radio"]:checked
+  + .radio-circle::before {
+  background-color: #57319a;
+}
+
+.radio-button:nth-of-type(2)
+  input[type="radio"]:checked
+  + .radio-circle::before {
+  background-color: #57319a;
+}
+
+.radio-label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.radio-button:hover .radio-circle {
+  border-color: #57319a;
+}
+
+.radio-button:hover input[type="radio"]:checked + .radio-circle::before {
+  background-color: #555;
 }
 
 .checkout-payment-provider {
-    background: #ffffff;
-    height: 59px;
-    text-align: center;
+  background: #ffffff;
+  height: 59px;
+  text-align: center;
 }
 
-.coinbase-payment-provider img, .paypal-payment-provider img, .ccbill-payment-provider img, .paystack-payment-provider img, .oxxo-payment-provider img, .mercado-payment-provider img{
-    width:90px
+.coinbase-payment-provider img,
+.paypal-payment-provider img,
+.ccbill-payment-provider img,
+.paystack-payment-provider img,
+.oxxo-payment-provider img,
+.mercado-payment-provider img {
+  width: 90px;
 }
 
-.nowpayments-payment-provider img{
-    width:83px;
+.nowpayments-payment-provider img {
+  width: 83px;
 }
 
 .credit-provider-text {
-    color: #000000;
-    margin: auto;
+  color: #000000;
+  margin: auto;
 }
 
 #billing-agreement-form label.error {
-    color: #ea0606!important;
+  color: #ea0606 !important;
 }

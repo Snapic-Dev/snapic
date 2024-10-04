@@ -52,15 +52,15 @@ class MembersHelperServiceProvider extends ServiceProvider
             // Get top 32 list of most subbed users
             $mostSubbedMax = (int) getSetting('feed.feed_suggestions_total_cards') * 3;
             $query = "
-            SELECT usersTable.id, COUNT(subsTable.id ) AS subs_count FROM users usersTable
-            INNER JOIN subscriptions subsTable ON usersTable.id = subsTable.recipient_user_id
-            " . ($skipUnverifiedProfiles ? 'INNER JOIN user_verifies verifications ON usersTable.id = verifications.user_id AND verifications.status = \'verified\'' : '') . "
-            WHERE usersTable.role_id = 2
-            " . ($skipEmptyProfiles ? 'AND (usersTable.avatar IS NOT NULL AND usersTable.cover IS NOT NULL)' : '') . "
-            GROUP BY usersTable.id
-            ORDER BY subs_count DESC
-            LIMIT 0,{$mostSubbedMax}
-        ";
+                SELECT usersTable.id, COUNT(subsTable.id) AS subs_count 
+                FROM users usersTable
+                INNER JOIN subscriptions subsTable ON usersTable.id = subsTable.recipient_user_id
+                " . ($skipUnverifiedProfiles ? 'INNER JOIN user_verifies verifications ON usersTable.id = verifications.user_id AND verifications.status = \'verified\'' : '') . "
+                " . ($skipEmptyProfiles ? 'AND (usersTable.avatar IS NOT NULL AND usersTable.cover IS NOT NULL)' : '') . "
+                GROUP BY usersTable.id
+                ORDER BY subs_count DESC
+                LIMIT 0,{$mostSubbedMax}
+            ";
             $topSubbedUsers = DB::select($query);
             $topSubbedUsers = array_map(function ($v) {
                 return $v->id;
@@ -68,12 +68,12 @@ class MembersHelperServiceProvider extends ServiceProvider
 
             $members = User::limit(getSetting('feed.feed_suggestions_total_cards') * getSetting('feed.feed_suggestions_card_per_page'))->where('public_profile', 1);
 
+            $members->whereNotNull('users.identity_verified_at')->where('users.role_id', 3);
             // If there are more than 9 users having subs, use those
             // Otherwise, grab latest 9 users by date
             if (count($topSubbedUsers) >= 6) {
                 $members->whereIn('id', $topSubbedUsers);
             } else {
-                $members->where('role_id', 3);
                 $members->orderByDesc('users.created_at');
                 if (Auth::check()) {
                     $members->where('users.id', '<>', Auth::user()->id);

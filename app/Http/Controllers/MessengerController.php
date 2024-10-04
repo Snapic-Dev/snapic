@@ -485,8 +485,14 @@ class MessengerController extends Controller
 
             if ($request->file('image')) {
                 $file_campaign = $request->file('image');
-                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->put('campaign/' . $file_campaign->getClientOriginalName(), file_get_contents($file_campaign));
-                $image_uploaded = asset('storage/' . $campaignPath);
+
+                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->putFileAs(
+                    'campaign',
+                    $file_campaign,
+                    $file_campaign->getClientOriginalName()
+                );
+
+                $image_uploaded = Storage::url($campaignPath);
             }
 
             foreach ($receiverIDs as $receiverID) {
@@ -534,6 +540,116 @@ class MessengerController extends Controller
             echo "<br>Rastreamento da pilha: " . nl2br($exception);
         }
     }
+
+    public function sendCampaign(Request $request)
+    {
+        try {
+            // Validação do formulário
+            $request->validate([
+                'message' => 'nullable|string|max:500',
+                'frontDoc' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+                'valor' => 'nullable|numeric|min:10|max:1000',
+            ]);
+
+            $senderID = Auth::user()->id;
+            $receiverIDs = [];
+            $image_uploaded = '';
+
+            // Verifica assinantes
+            if ($request->input('subscribers')) {
+                $subscribers = Subscription::where('recipient_user_id', $senderID)
+                    ->where('expires_at', '>', Carbon::now('UTC'))
+                    ->get();
+                if (is_array($subscribers) && count($subscribers) > 0) {
+                    foreach ($subscribers as $subscriber) {
+                        if (!in_array($subscriber['user_id'], $receiverIDs) && !is_null($subscriber['user_id'])) {
+                            $receiverIDs[] = $subscriber['user_id'];
+                        }
+                    }
+                }
+            }
+
+            // Verifica seguidores
+            if ($request->input('followers')) {
+                $followers = ListsHelperServiceProvider::getUserFollowers($senderID);
+                if (is_array($followers) && count($followers) > 0) {
+                    foreach ($followers as $follower) {
+                        if (!in_array($follower['user_id'], $receiverIDs) && !is_null($follower['user_id'])) {
+                            $receiverIDs[] = $follower['user_id'];
+                        }
+                    }
+                }
+            }
+
+            // Verifica se há imagem anexada
+            if ($request->file('frontDoc')) {
+                $file_campaign = $request->file('frontDoc');
+
+                $campaignPath = Storage::disk(config('filesystems.defaultFilesystemDriver'))->putFileAs(
+                    'campaign',
+                    $file_campaign,
+                    $file_campaign->getClientOriginalName()
+                );
+
+                $image_uploaded = Storage::url($campaignPath);
+            }
+
+            if ($request->get('attachments')) {
+                foreach ($request->get('attachments') as $attachment) {
+                    Attachment::where('id', $attachment['attachmentID'])->first()->delete();
+                }
+            }
+
+            // Envia a mensagem da campanha para cada usuário
+            if (count($receiverIDs) > 0) {
+                foreach ($receiverIDs as $receiverID) {
+                    $this->sendUserCampaignMessage([
+                        'senderID' => $senderID,
+                        'receiverID' => $receiverID,
+                        'messageValue' => $request->input('message', ''),
+                        'messagePrice' => $request->input('valor', 0),
+                        'image' => $image_uploaded,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Campanha enviada com sucesso!',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
+        }
+    }
+
+
+    protected function sendUserCampaignMessage($options)
+    {
+        $message = UserMessage::create([
+            'sender_id' => $options['senderID'],
+            'receiver_id' => $options['receiverID'],
+            'message' => $options['messageValue'],
+            'price' => $options['messagePrice'] ?? 0,
+        ]);
+
+
+        if ($options['image']) {
+            $id = Uuid::uuid4()->getHex();
+            Attachment::create([
+                'id' => $id,
+                'user_id' => Auth::user()->id,
+                'filename' => $options['image'],
+                'driver' => 0,
+                'type' => 'image',
+                'message_id' => $message->id,
+            ]);
+        }
+
+        NotificationServiceProvider::createNewUserMessageNotification($message);
+
+        broadcast(new NewUserMessage(json_encode($message), $options['senderID'], $options['receiverID']))->toOthers();
+    }
+
 
 
 

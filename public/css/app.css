@@ -932,7 +932,6 @@ footer .brand-logo {
   cursor: pointer;
 }
 
-
 .file-upload label {
   display: block;
   height: 55px;
@@ -1156,7 +1155,7 @@ footer .brand-logo {
   border-bottom-left-radius: 50px;
   background-position: center;
   background-size: cover;
-  background-image: url('/img/BannerInfluencer.png');
+  background-image: url("/img/BannerInfluencer.png");
 }
 
 
@@ -1178,24 +1177,36 @@ footer .brand-logo {
   border-bottom-left-radius: 50px;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center; 
+  background-position: center;
 }
 
 .titleLogin {
   color: rgb(47, 47, 47);
-  font-size: max(2vw,30px);
+  font-size: max(2vw, 30px);
 }
 
 .selectOption {
   color: #784ba0;
 }
 
+.requires_subscription_post_container {
+  align-items: center;
+  display: flex;
+  margin-left: 10px;
+  margin-top: 20px;
+}
+
 .headline {
-  background-color: #59136B;
-  height:40px;
+  background-color: #59136b;
+  height: 40px;
   display: none;
   padding: 0px;
-  width:100%;
+  width: 100%;
+}
+
+.imgBannerNoContent {
+  width: 300px;
+  height: 300px;
 }
 
 .imgBannerNoContent {
@@ -1239,7 +1250,6 @@ footer .brand-logo {
 #togglePasswordIcon {
   font-size: 18px;
 }
-
 
 .file-uploadCampaign button {
   display: flex;
@@ -1308,16 +1318,15 @@ footer .brand-logo {
 }
 
 .linkCpfError {
-  color:rgb(214, 3, 3);
+  color: rgb(214, 3, 3);
   font-weight: 500;
   text-decoration: underline;
 }
 
 .linkCpfError:hover {
-  color:rgb(214, 3, 3);
-  text-decoration: none
+  color: rgb(214, 3, 3);
+  text-decoration: none;
 }
-
 
 @media (max-width: 575px) {
   .walletCarousel {
@@ -1379,13 +1388,9 @@ footer .brand-logo {
     text-align: center;
     font-size: 13px;
   }
-
-
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-
-
   .walletCarousel {
     display: none;
   }
@@ -1393,7 +1398,6 @@ footer .brand-logo {
   .file-upload label {
     min-width: 385px;
   }
-
 }
 
 @media (min-width: 1200px) {
@@ -1401,4 +1405,3 @@ footer .brand-logo {
     display: flex;
   }
 }
-

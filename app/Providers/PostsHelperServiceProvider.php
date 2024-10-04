@@ -287,17 +287,23 @@ class PostsHelperServiceProvider extends ServiceProvider
                 'first_page_url' => $posts->nextPageUrl(),
                 'hasMore' => $posts->hasMorePages(),
             ];
-            $postsData = $posts->map(function ($post) use ($hasSub, $ownPosts, $data) {
-                if ($ownPosts) {
-                    $post->setAttribute('isSubbed', $hasSub);
-                } else {
-                    $post->setAttribute('isSubbed', true);
-                }
-                $post->setAttribute('postPage', $data['currentPage']);
-                $post = ['id' => $post->id, 'html' => View::make('elements.feed.post-box')->with('post', $post)->render()];
 
-                return $post;
-            });
+            // Filtra e mapeia os posts
+            $postsData = $posts
+                ->filter(function ($post) use ($hasSub) {
+                    return !($post->requires_subscription && !$hasSub); // Exclui posts que exigem assinatura se o usuário não for assinante
+                })
+                ->map(function ($post) use ($hasSub, $ownPosts, $data) {
+                    if ($ownPosts) {
+                        $post->setAttribute('isSubbed', $hasSub);
+                    } else {
+                        $post->setAttribute('isSubbed', true);
+                    }
+                    $post->setAttribute('postPage', $data['currentPage']);
+                    $post = ['id' => $post->id, 'html' => View::make('elements.feed.post-box')->with('post', $post)->render()];
+
+                    return $post;
+                });
             $data['posts'] = $postsData;
         } else {
             // Collection data posts | To be rendered on the server side
@@ -326,7 +332,7 @@ class PostsHelperServiceProvider extends ServiceProvider
      * @param bool $mediaType
      * @return mixed
      */
-      public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
+    public static function filterPosts($posts, $userID, $filterType, $mediaType = false, $sortOrder = false, $searchTerm = '')
     {
         // Filtro para seguidores ou todos os posts
         // if ($filterType == 'following' || $filterType == 'all') {
@@ -348,8 +354,7 @@ class PostsHelperServiceProvider extends ServiceProvider
         if ($filterType == 'subs' || $filterType == 'all') {
             if ($filterType == 'all') {
                 // Exibe posts de assinantes ativos e perfis seguidos gratuitamente
-                // $userIds = array_merge(self::getUserActiveSubs($userID), self::getFreeFollowingProfiles($userID));
-                $posts->where('posts.user_id', '!=', $userID);
+                $posts->where('requires_subscription', 0);
             } else {
                 // Exibe apenas posts de assinantes ativos
                 $activeSubs = self::getUserActiveSubs($userID);

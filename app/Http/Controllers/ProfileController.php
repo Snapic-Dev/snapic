@@ -54,7 +54,8 @@ class ProfileController extends Controller
 
         // General access rules
         $this->setAccessRules();
-        if (!$this->user->public_profile && !Auth::check()) {
+
+        if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
             abort(403, __('Profile access is denied.'));
         }
 

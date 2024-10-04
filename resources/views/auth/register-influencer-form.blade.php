@@ -20,11 +20,10 @@
     @endif
 
     <div class="form-group">
-        <!-- <label for="name" class="col-form-label required-label">{{ __('Apelido') }}</label> -->
         <div class="">
             <input id="name" placeholder="Apelido*" type="text"
-                class="inputLogin form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"
-                autocomplete="name" autofocus>
+                class="inputLogin form-control @error('name') is-invalid @enderror" name="name"
+                value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -34,11 +33,10 @@
     </div>
 
     <div class="form-group">
-        <!-- <label for="email" class="col-form-label required-label">{{ __('E-Mail Address') }}</label> -->
         <div class="">
             <input id="email" placeholder="Email*" type="email"
-                class="inputLogin form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
-                required autocomplete="email">
+                class="inputLogin form-control @error('email') is-invalid @enderror" name="email"
+                value="{{ old('email') }}" required autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -48,11 +46,10 @@
     </div>
 
     <div class="form-group">
-        <!-- <label for="cpf" class="col-form-label required-label">{{ __('CPF') }}</label> -->
         <div class="">
             <input id="cpf" placeholder="CPF*" type="text"
-                class="inputLogin form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}"
-                required autocomplete="cpf">
+                class="inputLogin form-control @error('cpf') is-invalid @enderror" name="cpf"
+                value="{{ old('cpf') }}" required autocomplete="cpf">
             @error('cpf')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -62,30 +59,21 @@
     </div>
 
     <div class="form-group">
-        <!-- <label for="birthdate" placeholder="Idade" class="col-form-label required-label">{{ __('Data Nascimento') }}</label> -->
-        <div class="">
-            <input id="birthdate" type="text" class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror"
-                name="birthdate" 
-                value="{{ old('birthdate') }}" 
-                required 
-                autocomplete="date"
-                placeholder="Data Nascimento"
-                onfocus="this.type='date'"
-                onblur="this.type='text'"
-                >
-            @error('birthdate')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
+        <input id="birthdate" type="date"
+            class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror" name="birthdate"
+            value="{{ old('birthdate') }}" required autocomplete="date" placeholder="Data Nascimento">
+        @error('birthdate')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
     </div>
 
     <div class="form-group">
-        <!-- <label for="phone" class="col-form-label required-label">{{ __('telefone') }}</label> -->
         <div class="">
-            <input id="phone" placeholder="Telefone*" type="tel" class="inputLogin form-control @error('phone') is-invalid @enderror"
-                name="phone" value="{{ old('phone') }}" required autocomplete="text">
+            <input id="phone" placeholder="Telefone*" type="tel"
+                class="inputLogin form-control @error('phone') is-invalid @enderror" name="phone"
+                value="{{ old('phone') }}" required autocomplete="text">
             @error('phone')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -98,7 +86,8 @@
     <div class="form-group">
         <!-- <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label> -->
         <div class="">
-            <select id="niche" class="inputLogin nicheSelect form-control @error('niche') is-invalid @enderror" name="niche" required>
+            <select id="niche" class="inputLogin nicheSelect form-control @error('niche') is-invalid @enderror"
+                name="niche" required>
                 <option class="selectOption" value="">{{ __('Nicho*') }}</option>
                 @foreach ($niches as $niche)
                     <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
@@ -117,8 +106,9 @@
     <div class="form-group">
         <!-- <label for="instagram" class="col-form-label">instagram</label> -->
         <div class="">
-            <input id="instagram" placeholder="Instagram" type="tel" class="inputLogin form-control @error('instagram') is-invalid @enderror"
-                name="instagram" value="{{ old('instagram') }}" autocomplete="text">
+            <input id="instagram" placeholder="Instagram" type="tel"
+                class="inputLogin form-control @error('instagram') is-invalid @enderror" name="instagram"
+                value="{{ old('instagram') }}" autocomplete="text">
             @error('instagram')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -131,8 +121,9 @@
     <div class="form-group">
         <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="">
-            <input id="password"  placeholder="Senha*" type="password" class="inputLogin form-control @error('password') is-invalid @enderror"
-                name="password" required autocomplete="new-password">
+            <input id="password" placeholder="Senha*" type="password"
+                class="inputLogin form-control @error('password') is-invalid @enderror" name="password" required
+                autocomplete="new-password">
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -145,8 +136,8 @@
         <!-- <label for="password-confirm" class="col-form-label required-label">{{ __('Confirm Password') }}</label> -->
         <div class="">
             <input id="password-confirm" type="password"
-                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"  placeholder="Confirmar Senha*" name="password_confirmation"
-                required autocomplete="new-password">
+                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"
+                placeholder="Confirmar Senha*" name="password_confirmation" required autocomplete="new-password">
             @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -230,24 +221,25 @@
             @enderror
         </div>
     @endif
-    
-        <div class="form-group row mb-0">
-            <div class="col">
-                <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
-                    {{ __('Register') }}
-                </button>
-            </div>
+
+    <div class="form-group row mb-0">
+        <div class="col">
+            <button type="submit" class="btn btn-grow btn-lg btn-primary bg-gradient-primary btn-block btnLogin">
+                {{ __('Register') }}
+            </button>
         </div>
-        <div class="form-group row mb-0">
-            <div class="col">
+    </div>
+    <div class="form-group row mb-0">
+        <div class="col">
 
 
-                <a href="{{ route('register') }}" class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
-                    {{ __('Quero ser Assinante') }}
-                </a>
+            <a href="{{ route('register') }}"
+                class="border btn btn-grow btn-lg btn-color btn-block btnToSwitchRegister">
+                {{ __('Quero ser Assinante') }}
+            </a>
 
-            </div>
         </div>
+    </div>
 
 </form>
 @if (

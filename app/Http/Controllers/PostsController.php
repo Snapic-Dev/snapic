@@ -172,6 +172,7 @@ class PostsController extends Controller
     public function savePost(SavePostRequest $request)
     {
         try {
+
             if (! GenericHelperServiceProvider::isUserVerified() && getSetting('site.enforce_user_identity_checks')) {
                 return response()->json(['success' => false, 'errors' => ['permissions' => __('User not verified. Can not post content.')]], 500);
             }
@@ -182,12 +183,12 @@ class PostsController extends Controller
                 'release_date' => $request->get('postReleaseDate') ? Carbon::parse($request->get('postReleaseDate'))->toDateTimeString() : null,
                 'expire_date' => $request->get('postExpireDate') ? Carbon::parse($request->get('postExpireDate'))->toDateTimeString() : null
             ];
-
             if ($type == 'create') {
                 $postID = Post::create(array_merge([
                     'user_id' => $request->user()->id,
                     'text' => $request->get('text'),
                     'price' => $request->get('price'),
+                    'requires_subscription' => filter_var($request->get('requires_subscription'), FILTER_VALIDATE_BOOLEAN) ?? false,
                     'status' => $postStatus,
                 ], $postSchedulingData))->id;
             } elseif ($type == 'update') {
@@ -390,25 +391,25 @@ class PostsController extends Controller
             }
 
 
-                if ($type == 'post') {
-                    $data['post_id'] = $id;
-                } elseif ($type == 'comment') {
-                    $data['post_comment_id'] = $id;
-                }
-                $message = '';
-                if ($action == 'add') {
-                    $message = __('Reaction added.');
-                    $reaction = Reaction::create($data);
+            if ($type == 'post') {
+                $data['post_id'] = $id;
+            } elseif ($type == 'comment') {
+                $data['post_comment_id'] = $id;
+            }
+            $message = '';
+            if ($action == 'add') {
+                $message = __('Reaction added.');
+                $reaction = Reaction::create($data);
 
-                    if ($reaction != null) {
-                        NotificationServiceProvider::createNewReactionNotification($reaction);
-                    }
-                } elseif ($action == 'remove') {
-                    $message = __('Reaction removed.');
-                    Reaction::where($data)->first()->delete();
+                if ($reaction != null) {
+                    NotificationServiceProvider::createNewReactionNotification($reaction);
                 }
+            } elseif ($action == 'remove') {
+                $message = __('Reaction removed.');
+                Reaction::where($data)->first()->delete();
+            }
 
-                return response()->json(['success' => true, 'message' => $message]);
+            return response()->json(['success' => true, 'message' => $message]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'errors' => [__('An internal error has occurred.')], 'message' => $exception->getMessage()]);
         }

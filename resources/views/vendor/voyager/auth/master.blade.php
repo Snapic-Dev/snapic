@@ -7,44 +7,77 @@
     <meta name="robots" content="none" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description" content="admin login">
+    <meta name="theme-color" content="#57319A" />
     <title>@yield('title', 'Admin - ' . Voyager::setting('admin.title'))</title>
     <link rel="stylesheet" href="{{ voyager_asset('css/app.css') }}">
     @if (__('voyager::generic.is_rtl') == 'true')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css">
-        <link rel="stylesheet" href="{{ voyager_asset('css/rtl.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css">
+    <link rel="stylesheet" href="{{ voyager_asset('css/rtl.css') }}">
     @endif
     <style>
         body {
-            background-image: url('{{ Voyager::image(Voyager::setting('admin.bg_image'), Storage::disk('public')->url('../img/admin-bg.png')) }}');
-            background-color: {{ Voyager::setting('admin.bg_color', '#FFFFFF') }};
+            background-image: url('{{ Voyager::image(Voyager::setting(' admin.bg_image'), Storage::disk(' public')->url(' ../img/admin-bg.png')) }}');
+
+            background-color: {
+                    {
+                    Voyager: :setting('admin.bg_color', '#FFFFFF')
+                }
+            }
+
+            ;
         }
 
         body.login .login-sidebar {
-            border-top: 5px solid {{ config('voyager.primary_color', '#333333') }};
+            border-top: 5px solid {
+                    {
+                    config('voyager.primary_color', '#333333')
+                }
+            }
+
+            ;
         }
 
         @media (max-width: 767px) {
             body.login .login-sidebar {
                 border-top: 0px !important;
-                border-left: 5px solid {{ config('voyager.primary_color', '#333333') }};
+
+                border-left: 5px solid {
+                        {
+                        config('voyager.primary_color', '#333333')
+                    }
+                }
+
+                ;
             }
         }
 
         body.login .form-group-default.focused {
-            border-color: {{ config('voyager.primary_color', '#333333') }};
+            border-color: {
+                    {
+                    config('voyager.primary_color', '#333333')
+                }
+            }
+
+            ;
         }
 
         .login-button,
         .bar:before,
         .bar:after {
-            background: {{ config('voyager.primary_color', '#333333') }};
+            background: {
+                    {
+                    config('voyager.primary_color', '#333333')
+                }
+            }
+
+            ;
         }
     </style>
 
     @if (!empty(config('voyager.additional_css')))<!-- Additional CSS -->
-        @foreach (config('voyager.additional_css') as $css)
-            <link rel="stylesheet" type="text/css" href="{{ asset($css) }}">
-        @endforeach
+    @foreach (config('voyager.additional_css') as $css)
+    <link rel="stylesheet" type="text/css" href="{{ asset($css) }}">
+    @endforeach
     @endif
 
     @yield('pre_css')
@@ -53,10 +86,10 @@
     <!-- Favicon -->
     <?php $admin_favicon = Voyager::setting('admin.icon_image', ''); ?>
     @if ($admin_favicon == '')
-        <link rel="shortcut icon" href="{{ Storage::disk('public')->url('../img/rounded-logo-white.svg') }}"
-            type="image/x-icon">
+    <link rel="shortcut icon" href="{{ Storage::disk('public')->url('../img/rounded-logo-white.svg') }}"
+        type="image/x-icon">
     @else
-        <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
+    <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
     @endif
 
 </head>
@@ -68,22 +101,22 @@
                 <div class="faded-bg animated"></div>
                 <?php $admin_bg = Voyager::setting('admin.bg_image', ''); ?>
                 @if ($admin_bg == '')
-                    <div class="d-flex m-0 p-0 bg-gradient-primary min-vh-100 p-0">
-                        <img src="{{ asset('img/pattern-lines.svg') }}" alt="pattern-lines"
-                            class="img-fluid opacity-10 min-vh-100">
-                    </div>
+                <div class="d-flex m-0 p-0 bg-gradient-primary min-vh-100 p-0">
+                    <img src="{{ asset('img/pattern-lines.svg') }}" alt="pattern-lines"
+                        class="img-fluid opacity-10 min-vh-100">
+                </div>
                 @endif
                 <div class="clearfix">
                     <div class="col-sm-12 col-md-10 col-md-offset-2">
                         <div class="logo-title-container">
                             <?php $admin_logo_img = Voyager::setting('admin.icon_image', ''); ?>
                             @if ($admin_logo_img == '')
-                                <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn"
-                                    src="{{ Storage::disk('public')->url('../img/rounded-logo-gradient.svg') }}"
-                                    alt="Logo Icon">
+                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn"
+                                src="{{ Storage::disk('public')->url('../img/rounded-logo-gradient.svg') }}"
+                                alt="Logo Icon">
                             @else
-                                <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn"
-                                    src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
+                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn"
+                                src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
                             @endif
                             <div class="copy animated fadeIn">
                                 <h1>{{ Voyager::setting('admin.title', 'Voyager') }}</h1>

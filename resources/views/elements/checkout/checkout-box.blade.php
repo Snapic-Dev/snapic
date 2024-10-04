@@ -2,7 +2,7 @@
     <div class="col-lg-6 mx-auto">
         {{-- Paypal and stripe actual buttons --}}
         <div class="paymentOption paymentPP d-none">
-            <form id="pp-buyItem" method="post" action="{{ route('payment.initiatePayment') }}">
+            <form id="pp-buyItem" method="post" action="{{route('payment.initiatePayment')}}">
                 @csrf
                 <input type="hidden" name="amount" id="payment-deposit-amount" value="">
                 <input type="hidden" name="transaction_type" id="payment-type" value="">
@@ -19,278 +19,320 @@
                 <input type="hidden" name="country" id="paymentCountry" value="">
                 <input type="hidden" name="taxes" id="paymentTaxes" value="">
                 <input type="hidden" name="stream" id="stream" value="">
+                <input type="hidden" name="card_token" id="cardToken" value="">
+                <input type="hidden" name="cpf" id="cpfValue" value="">
+                <input type="hidden" name="name" id="nameValue" value="">
                 <button class="payment-button" type="submit"></button>
             </form>
         </div>
 
         <div class="paymentOption ml-2 paymentStripe d-none">
-            <button id="stripe-checkout-button">{{ __('Checkout') }}</button>
+            <button id="stripe-checkout-button">{{__('Checkout')}}</button>
         </div>
 
         <!-- Modal -->
-        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog"
-            aria-labelledby="checkout" aria-hidden="true">
+        <div class="checkout-popup modal fade" id="checkout-center" tabindex="-1" role="dialog" aria-labelledby="checkout" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title p-2" id="payment-title"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Close') }}">
+                        <h5 class="modal-title" id="payment-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{{__('Close')}}">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="payment-body">
                             <div class="d-flex flex-row">
-                                <div class="ml-0 ml-md-2 mb-2 p-2">
+                                <div class="ml-0 ml-md-2 mb-2">
                                     <img src="" class="rounded-circle user-avatar">
                                 </div>
-                                <div class="d-lg-block mt-2">
+                                <div class="d-lg-block">
                                     <div class="pl-2 d-flex justify-content-center flex-column">
-                                        <div class="ml-2">
-                                            <div
-                                                class="text-bold {{ Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r') }} name">
-                                            </div>
-                                            <a class="walletPerfil mt-1 d-flex" href="/my/settings/wallet">
-                                                <div class="d-flex justify-content-center align-items-center"">
-                                                    @include('elements.icon', [
-                                                        'icon' => 'wallet-outline',
-                                                        'variant' => 'small',
-                                                    ])
-                                                </div>
-                                                <span class=" font-weight-medium wallet-total-amount ml-1">
-                                                    {{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount(number_format(Auth::user()->wallet->total, 2, '.', '')) }}
-                                                </span>
-                                            </a>
+                                        <div class="ml-2 ">
+                                            <div class="text-bold {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}} name"></div>
+                                            <div class="text-muted username"><span>@</span></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="payment-description mb-3 d-none"></div> -->
-                            <div class="input-group mb-3 checkout-amount-input d-none p-3">
+                            <div class="payment-description mb-3 d-none"></div>
+                            <div class="input-group mb-3 checkout-amount-input d-none">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="amount-label">
-                                        @include('elements.icon', [
-                                            'icon' => 'cash-outline',
-                                            'variant' => 'medium',
-                                            'centered' => false,
-                                        ])
+                                        @include('elements.icon',['icon'=>'cash-outline','variant'=>'medium','centered'=>false])
                                     </span>
                                 </div>
-                                <input class="form-control uifield-amount"
-                                    placeholder="Adicione sua gorgeta aqui"
-                                    aria-label="Username" aria-describedby="amount-label" id="checkout-amount"
-                                    type="number" min="1" step="1" max="500">
-                                <div class="invalid-feedback">{{ __('Please enter a valid amount.') }}</div>
+                                <input class="form-control uifield-amount" placeholder="{{__(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)',['min'=>getSetting('payments.min_tip_value'),'max'=>getSetting('payments.max_tip_value'),'currency'=>config('app.site.currency_symbol')])}}" aria-label="Username" aria-describedby="amount-label" id="checkout-amount" type="number" min="0" step="1" max="500">
+                                <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="total row">
+                                <span class="col-sm left"><b>{{__('Total')}}:</b></span>
+                                <span class="total-amount col-sm right text-right">
+                                    <b>$0.00</b>
+                                </span>
                             </div>
                         </div>
 
-                        {{-- <div id="accordion" class="mb-3">
+                        <div id="accordion" class="mb-3 card-form d-none">
                             <div class="card">
-                                <div class="card-header d-flex justify-content-between" id="headingOne"
-                                    data-toggle="collapse" data-target="#billingInformation" aria-expanded="true"
-                                    aria-controls="billingInformation">
+                                <div class="card-header d-flex justify-content-between" id="headingOne" data-toggle="collapse" data-target="#billingInformation" aria-expanded="true" aria-controls="billingInformation">
                                     <h6 class="mb-0">
-                                        {{ __('Billing agreement details') }}
-                        </h6>
-                        <div class="ml-1 label-icon">
-                            @include('elements.icon', [
-                            'icon' => 'chevron-down-outline',
-                            'centered' => false,
-                            ])
-                        </div>
-                    </div>
-                    <div id="billingInformation" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                        <div class="card-body">
-                            <form id="billing-agreement-form">
-                                <div class="tab-content">
-                                    <!-- credit card info-->
-                                    <div id="individual" class="tab-pane fade show active pt-1">
-                                        <div class="row form-group">
-                                            <div class="col-sm-6 col-6">
-                                                <div class="form-group">
-                                                    <label for="firstName">
-                                                        <span>{{ __('First name') }}</span>
-                                                    </label>
-                                                    <input type="text" name="firstName" placeholder="{{ __('First name') }}" onchange="checkout.validateFirstNameField();" required class="form-control uifield-first_name">
-                                                </div>
-
-                                            </div>
-                                            <div class="col-sm-6 col-6">
-                                                <div class="form-group">
-                                                    <label for="lastName">
-                                                        <span>{{ __('Last name') }}</span>
-                                                    </label>
-                                                    <input type="text" name="lastName" placeholder="{{ __('Last name') }}" onblur="checkout.validateLastNameField()" required class="form-control uifield-last_name">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="countrySelect">
-                                                <span>{{ __('Country') }}</span>
-                                            </label>
-                                            <select class="country-select form-control input-sm uifield-country" id="countrySelect" required onchange="checkout.validateCountryField()"></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="billingCity">
-                                                <span>{{ __('City') }}</span>
-                                            </label>
-                                            <input type="text" name="billingCity" placeholder="{{ __('City') }}" onblur="checkout.validateCityField()" required class="form-control uifield-city">
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6 col-6">
-                                                <div class="form-group">
-                                                    <label for="billingState">
-                                                        <span>{{ __('State') }}</span>
-                                                    </label>
-                                                    <input type="text" name="billingState" placeholder="{{ __('State') }}" onblur="checkout.validateStateField()" required class="form-control uifield-state">
-                                                </div>
-
-                                            </div>
-                                            <div class="col-sm-6 col-6">
-                                                <div class="form-group">
-                                                    <label for="billingPostcode">
-                                                        <span>{{ __('Postcode') }}</span>
-                                                    </label>
-                                                    <input type="text" name="billingPostcode" placeholder="{{ __('Postcode') }}" onblur="checkout.validatePostcodeField()" required class="form-control uifield-postcode">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="cardNumber">
-                                                <span>{{ __('Address') }}</span>
-                                            </label>
-                                            <textarea rows="2" type="text" name="billingAddress" onblur="checkout.validateBillingAddressField()" placeholder="{{ __('Street address, apartment, suite, unit') }}" class="form-control w-100 uifield-billing_address" required></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="billing-agreement-error error text-danger d-none">
-                                        {{ __('Please complete all billing details') }}
+                                        {{__('Card information')}}
+                                    </h6>
+                                    <div class="ml-1 label-icon">
+                                        @include('elements.icon',['icon'=>'chevron-down-outline','centered'=>false])
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-
-                        {{-- <div class="mb-3">
-                            <h6>{{ __('Payment summary') }}</h6>
-            <div class="subtotal row">
-                <span class="col-sm left"><b>{{ __('Subtotal') }}:</b></span>
-                <span class="subtotal-amount col-sm right text-right">
-                    <b>$0.00</b>
-                </span>
-            </div>
-            <div class="taxes row">
-                <span class="col-sm left"><b>{{ __('Taxes') }}</b></span>
-            </div>
-            <div class="taxes-details"></div>
-            <div class="total row">
-                <span class="col-sm left"><b>{{ __('Total') }}:</b></span>
-                <span class="total-amount col-sm right text-right">
-                    <b>$0.00</b>
-                </span>
-            </div>
-        </div>
-
-        <div>
-            <h6>{{ __('Payment method') }}</h6>
-            <div class="d-flex text-left radio-group row px-2">
-                @if (getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 stripe-payment-method">
-                    <div class="radio mx-auto stripe-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="stripe">
-                        <img src="{{ asset('/img/logos/stripe.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (config('paypal.client_id') && config('paypal.secret') && !getSetting('payments.paypal_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 paypal-payment-method">
-                    <div class="radio mx-auto paypal-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="paypal">
-                        <img src="{{ asset('/img/logos/paypal.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (getSetting('payments.coinbase_api_key') && !getSetting('payments.coinbase_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none coinbase-payment-method">
-                    <div class="radio mx-auto coinbase-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="coinbase">
-                        <img src="{{ asset('/img/logos/coinbase.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (getSetting('payments.nowpayments_api_key') && !getSetting('payments.nowpayments_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none nowpayments-payment-method">
-                    <div class="radio mx-auto nowpayments-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="nowpayments">
-                        <img src="{{ asset('/img/logos/nowpayments.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (\App\Providers\PaymentsServiceProvider::ccbillCredentialsProvided())
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none ccbill-payment-method">
-                    <div class="radio mx-auto ccbill-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="ccbill">
-                        <img src="{{ asset('/img/logos/ccbill.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (getSetting('payments.paystack_secret_key') && !getSetting('payments.paystack_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none paystack-payment-method">
-                    <div class="radio mx-auto paystack-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="paystack">
-                        <img src="{{ asset('/img/logos/paystack.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (getSetting('payments.stripe_secret_key') && getSetting('payments.stripe_public_key') && !getSetting('payments.stripe_checkout_disabled') && getSetting('payments.stripe_oxxo_provider_enabled'))
-                <div class="p-1 col-6 col-md-3 col-lg-3 col-md-3 d-none oxxo-payment-method">
-                    <div class="radio mx-auto oxxo-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="oxxo">
-                        <img src="{{ asset('/img/logos/oxxo.svg') }}">
-                    </div>
-                </div>
-                @endif
-                @if (getSetting('payments.mercado_access_token') && !getSetting('payments.mercado_checkout_disabled'))
-                <div class="p-1 col-6 col-md-3 d-none mercado-payment-method">
-                    <div class="radio mx-auto mercado-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="mercado">
-                        <img src="{{ asset('/img/logos/mercado.svg') }}">
-                    </div>
-                </div>
-                @endif
-                <div class="credit-payment-method p-1 col-6 col-md-3 col-lg-3 col-md-3" {!! !Auth::check() || Auth::user()->wallet->total <= 0 ? 'data-toggle="tooltip" data-placement="right"' : '' !!} title="{{ __('You can use the wallet deposit page to add credit.') }}">
-                        <div class="radio mx-auto credit-payment-provider checkout-payment-provider d-flex align-items-center justify-content-center" data-value="credit">
-                            <div class="credit-provider-text">
-                                <b>{{ __('Credit') }}</b>
-                                <div class="available-credit">
-                                    ({{ \App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount('0') }})
+                                <div id="billingInformation" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <form id="billing-agreement-form" onsubmit="handleFormSubmit(event)">
+                                            <div class="tab-content">
+                                                <!-- credit card info-->
+                                                <div id="individual" class="tab-pane fade show active pt-1">
+                                                    <div class="form-group">
+                                                        <label for="name">
+                                                            <span>{{__('Nome Completo')}}</span>
+                                                        </label>
+                                                        <input id="name" class="form-control name_input" placeholder="Nome Completo">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="cpf">
+                                                            <span>CPF</span>
+                                                        </label>
+                                                        <input class="form-control cpf_input" placeholder="000.000.000-00">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="billingCity">
+                                                            <span>{{__('Card Number')}}</span>
+                                                        </label>
+                                                        <input maxlength="19" class="form-control cardNumber" placeholder="0000 0000 0000 0000">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-6">
+                                                            <div class="form-group">
+                                                                <label for="billingPostcode">
+                                                                    <span>{{__('Validate')}}</span>
+                                                                </label>
+                                                                <input type="month" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YY">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-6">
+                                                            <div class="form-group">
+                                                                <label for="billingState">
+                                                                    <span>CVV</span>
+                                                                </label>
+                                                                <input type="number" class="form-control cardCVV" placeholder="CVV">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="billing-agreement-error error text-danger d-none">{{__('Please complete all billing details')}}</div>
+                                            </div>
+                                            <button type="submit">Submit</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                </div>
-            </div>
-        </div> --}}
-                        {{-- <div class="payment-error error text-danger text-bold d-none mb-1">
-                            {{ __('Please select your payment method') }}
-    </div>
-    <p class="text-muted mt-1">
-        {{ __('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.') }}
-    </p> --}}
+                        <div class="choose-method d-none">
+                            <h6>{{__('Payment method')}}</h6>
+                            <div class="radio-buttons">
+                                <label class="radio-button credit-payment-provider show-card-form" data-value="credit">
+                                    <input type="radio" id="credit_input" name="payment_type" value="credit" class="radio">
+                                    <div class="radio-circle"></div>
+                                    <b>{{ ucfirst(__("wallet")) }}</b>
+                                    <div class="available-credit ml-1">{{number_format(Auth::user()->wallet->total, 2, '.', '')}}</div>
+                                </label>
+                                <label class="radio-button card-payment-provider show-card-form" data-value="card">
+                                    <input type="radio" name="payment_type" value="card" class="radio" disabled>
+                                    <div class="radio-circle"></div>
+                                    <span class="radio-label">{{ ucfirst(__("Card")) }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
+                        <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
                     </div>
-                    <div class="modal-footer p-4">
-                        <button type="button" class="btn btn-round border"
-                            data-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit"
-                            class="btn btn-round btn-primary checkout-continue-btn">{{ __('Confirmar') }}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Cancel')}}</button>
+                        <button type="submit" class="btn btn-primary checkout-continue-btn">{{__('Continue')}}
                             <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
-                                <span class="sr-only">{{ __('Loading...') }}</span>
+                                <span class="sr-only">{{__('Loading...')}}</span>
                             </div>
                         </button>
                     </div>
-                    <div class="payment-error error text-danger text-bold d-none mb-1">
-                        {{ __('Please select your payment method') }}
-                    </div>
-                    <p class="text-muted mt-1 text-sm ml-2 mr-2 pl-4 pr-4 pb-4 pt-1 text-left">
-                        <strong>{{ __('Nota:') }}</strong>
-                        {{ __('Após clicar no botão, o valor correspondente será deduzido da sua carteira e enviado diretamente para o influenciador.') }}
-                        <span
-                            class="font-weight-bold">{{ __('Todo o processo de pagamento será realizado na mesma página.') }}</span>
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
+<script>
+    const cardNumber = document.querySelector('.cardNumber')
+    const cardDateValidate = document.querySelector('.cardDateValidate')
+    const cardCVV = document.querySelector('.cardCVV')
+    const showCard = document.querySelectorAll('.show-card-form')
+    const form = document.querySelector('.card-form')
+    const name_input = document.querySelector('.name_input')
+    const cpf_input = document.querySelector('.cpf_input')
+    const cardTokenInput = document.querySelector('#cardToken')
+    const cpfValueInput = document.querySelector('#cpfValue')
+    const nameValueInput = document.querySelector('#nameValue')
+    const formSubmit = document.querySelector('.checkout-continue-btn')
+    const paymentTypeInput = document.querySelector('#payment-type');
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let creditInput = document.querySelector('#credit_input');
+        if (creditInput) {
+            creditInput.checked = true;
+        }
+    });
+
+    // showCard.forEach((div) => {
+    //     div.addEventListener("click", () => {
+    //         const dataValue = div.getAttribute('data-value');
+    //         if (dataValue === 'card') {
+    //             form.classList.remove('d-none');
+    //             formSubmit.setAttribute('disabled', 'true');
+    //         } else if (dataValue === 'credit') {
+    //             form.classList.add('d-none');
+    //             formSubmit.removeAttribute('disabled');
+    //         }
+    //     });
+    // });
+
+    cardDateValidate.addEventListener('input', (event) => {
+        const currentYear = new Date().getFullYear();
+
+        let value = event.target.value.replace(/\D/g, '');
+
+        if (value.length >= 2) {
+            let month = value.substring(0, 2);
+
+            if (Number(month) > 12 || Number(month) < 1) {
+                launchToast("danger", trans("Error"), "Mês inválido. O mês deve estar entre 01 e 12.");
+                event.target.value = '';
+                return;
+            }
+
+            if (value.length > 2) {
+                let year = value.substring(2, 6);
+
+                if (year.length === 4 && Number(year) < currentYear || year.length === 4 && Number(year) >
+                    currentYear + 10) {
+                    launchToast("danger", trans("Error"),
+                        `Ano inválido. O ano deve estar entre ${currentYear} e ${currentYear + 10}.`);
+                    event.target.value = '';
+                    return;
+                }
+
+                value = `${month}/${year}`;
+            } else {
+                value = month;
+            }
+        }
+
+        event.target.value = value;
+    });
+
+    cardCVV.addEventListener('input', (event) => {
+        let value = event.target.value.replace(/\D/g, '');
+        if (value.length > 3) {
+            launchToast("danger", trans("Error"), "O código CVV deve conter 3 dígitos.");
+            value = ''
+        }
+        event.target.value = value;
+    })
+
+    cpf_input.addEventListener('input', (event) => {
+        let value = event.target.value.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
+
+        if (value.length > 11) {
+            value = value.slice(0, 11); // Apenas mantém os primeiros 11 dígitos
+        }
+
+        value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Primeiro ponto
+        value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Segundo ponto
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Traço antes dos dois últimos dígitos
+
+        event.target.value = value; // Atualiza o valor do input com a máscara
+    });
+
+    cardNumber.addEventListener('input', (event) => {
+        let value = event.target.value.replace(/\D/g, '');
+        value = value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+        event.target.value = value;
+    });
+
+    async function handleFormSubmit(event) {
+        event.preventDefault(); // Evita o envio do formulário
+        const name = document.querySelector(".name_input").value;
+        const cpf = document.querySelector(".cpf_input").value;
+        const cardNumber = document.querySelector(".cardNumber").value;
+        const cardCVV = document.querySelector(".cardCVV").value;
+        const cardDateValidate = document.querySelector(".cardDateValidate").value;
+
+        try {
+            const cardToken = await generateCardToken()
+            cardTokenInput.value = cardToken
+            nameValueInput.value = name_input.value
+            cpfValueInput.value = cpf_input.value
+            console.log(cardToken);
+            formSubmit.removeAttribute('disabled');
+
+        } catch (error) {
+            if (error.message === "Adicione seu CPF para prosseguir!") {
+                launchToast("danger", trans("Error"), `${error.message}`);
+                linkCpfError.setAttribute("href", linkEditProfile)
+                return errorCPF.style.display = "flex"
+            }
+            launchToast("danger", trans("Error"), error.message);
+        }
+    }
+
+    const generateCardToken = async () => {
+        try {
+            if (typeof EfiPay === 'undefined') {
+                throw new Error('O script da Efipay não foi carregado.');
+                return;
+            }
+
+            const efiPay = EfiPay.CreditCard.setAccount("fc07c8c0cbbbb3277f2e769cb05e041f")
+                .setEnvironment("production");
+
+            const brand = await EfiPay.CreditCard
+                .setCardNumber(cardNumber.value.split(" ").join(""))
+                .verifyCardBrand();
+
+            const cardData = {
+                brand: brand,
+                number: cardNumber.value.split(" ").join(""),
+                cvv: cardCVV.value,
+                expirationMonth: cardDateValidate.value.split("/")[0],
+                expirationYear: cardDateValidate.value.split("/")[1],
+                reuse: true,
+            };
+
+            const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
+
+            return result.payment_token;
+        } catch (error) {
+            let errorMessage = "Tente novamente mais tarde"
+
+            switch (error.error) {
+                case 'erro_gn_fingerprint':
+                    errorMessage = "Desative seu AdBlock"
+                    break
+                case 'invalid_data':
+                    errorMessage = error.error_description
+                    break
+                default:
+                    errorMessage = error.message
+                    break
+            }
+            throw new Error(errorMessage)
+        }
+    }
+</script>

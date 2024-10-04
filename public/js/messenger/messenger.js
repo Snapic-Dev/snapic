@@ -778,9 +778,9 @@ var messenger = {
   parseMessageAttachment: function (file) {
     let attachmentsHtml = "";
     function adjustUrl(url) {
-      if (url.includes("firebasestorage.googleapis.com")) {
+      if (url.includes("https://armazenamentosnapic.nyc3.digitaloceanspaces.com")) {
         const startIndex = url.indexOf(
-          "https://firebasestorage.googleapis.com"
+          "https://armazenamentosnapic.nyc3.digitaloceanspaces.com"
         );
         const adjustedUrl = url.substring(startIndex);
 

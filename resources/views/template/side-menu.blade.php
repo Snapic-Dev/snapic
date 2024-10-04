@@ -229,6 +229,7 @@
         </div>
         </a>
         </li> --}}
+         @if(Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
         <li class="nav-item">
             <a href="{{ route('profile', ['username' => Auth::user()->username]) }}"
                 class="nav-link {{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -245,7 +246,7 @@
             </a>
         </li>
         @endif
-
+        @endif
         {{-- @if (!Auth::check())
         <li class="nav-item">
             <a href="{{ route('search.get') }}" class="nav-link {{ Route::currentRouteName() == 'search.get' ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -322,10 +323,8 @@
         @endif
         @endif
         @endif
-        @if(
-        Auth::user()->role_id === 1 ||
-        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
-        )
+        @if(Auth::check())
+        @if((Auth::user()->role_id === 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)))
         @if (!getSetting('site.hide_create_post_menu'))
         @if (GenericHelper::isEmailEnforcedAndValidated())
         <li class="nav-item mt-4">
@@ -348,7 +347,7 @@
             <a role="button" class="btn btn-round border btn-primary btn-block p-3"
                 href="/my/settings/producer">
                 <span
-                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('Become a producer') }}</span>
+                    class="d-none d-md-block d-xl-block d-lg-block ml-2 text-truncate new-post-label">{{ __('producer') }}</span>
                 <span
                     class="d-block d-md-none d-flex align-items-center justify-content-center">@include('elements.icon', [
                     'icon' => 'add-circle-outline',
@@ -357,6 +356,7 @@
                     ])</span>
             </a>
         </li>
+        @endif
         @endif
     </ul>
 </div>

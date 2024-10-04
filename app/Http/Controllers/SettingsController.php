@@ -770,7 +770,7 @@ class SettingsController extends Controller
         }
     }
 
-  protected function checkReferralAccess()
+    protected function checkReferralAccess()
     {
         if (!getSetting('referrals.enabled')) {
             unset($this->availableSettings['referrals']);
@@ -782,7 +782,7 @@ class SettingsController extends Controller
 
     public function renderSettingReferrals($route, $data = [])
     {
-         if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
+        if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
             abort(404);
         }
         $currentTab = $route ? $route : 'referrals';
