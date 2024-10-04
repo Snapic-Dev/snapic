@@ -31,6 +31,8 @@ class UserVerifyObserver
             } elseif ($userVerify->status = 'verified') {
                 $user = User::find($userVerify->user_id);
                 $user->identity_verified_at = $userVerify->updated_at;
+                $user->public_profile = true;
+                $user->paid_profile = true;
                 $user->save();
 
                 $emailSubject = __('Your identity check passed.');

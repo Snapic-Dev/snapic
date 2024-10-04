@@ -246,6 +246,11 @@ class SettingsController extends Controller
                     $data['referrals'] = ReferralCodeUsage::with(['usedBy'])->where('referral_code', $user->referral_code)->orderBy('id', 'desc')->paginate(6);
                 }
                 break;
+            case 'producer':
+                if (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at) {
+                    abort(404);
+                }
+                break;
             case 'rates':
                 if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
                     abort(404);

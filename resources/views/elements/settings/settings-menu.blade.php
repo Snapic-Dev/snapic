@@ -4,6 +4,8 @@
             @foreach($availableSettings as $route => $setting)
             @if(Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) && ($route==="rates" || $route==="payments"))
             <div></div>
+            @elseif( Auth::user()->role_id === 3 && Auth::user()->identity_verified_at && ($route==="producer"))
+            <div></div>
             @else
             <a href="{{route('my.settings',['type'=>$route])}}" class="{{$activeSettingsTab == $route ? 'active' : ''}} list-group-item list-group-item-action d-flex justify-content-between">
                 <div class="d-flex align-items-center">

@@ -1158,6 +1158,7 @@ footer .brand-logo {
   background-image: url("/img/BannerInfluencer.png");
 }
 
+
 .influencerMenuMobile {
   display: none;
 }
@@ -1201,6 +1202,16 @@ footer .brand-logo {
   display: none;
   padding: 0px;
   width: 100%;
+}
+
+.imgBannerNoContent {
+  width: 300px;
+  height: 300px;
+}
+
+.imgBannerNoContent {
+  width: 300px;
+  height: 300px;
 }
 
 /*Campanha */
@@ -1356,6 +1367,12 @@ footer .brand-logo {
     text-align: center;
     font-size: 18px;
   }
+
+  .imgBannerNoContent {
+    height: 200px;
+    width: 200px;
+  }
+
 }
 
 @media (min-width: 576px) and (max-width: 991px) {

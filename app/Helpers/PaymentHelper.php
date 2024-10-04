@@ -140,7 +140,7 @@ class PaymentHelper
 
     private function preparePaymentData($dto)
     {
-        $user = User::find($dto['recipient_user_id']);
+        $user = Auth::user();
         return [
             "calendario" => ["expiracao" => 3600],
             "devedor" => [
@@ -204,12 +204,13 @@ class PaymentHelper
         }
     }
 
-    public function generationCardPayment($value, $token)
+    public function generationCardPayment($value, $token, $title, $cpf, $name)
     {
         try {
             $user = Auth::user();
             $access_token = $this->getAuthorizationToken();
             $url_efipay = $this->efipay_cobrancas_url . '/v1/charge/one-step';
+            $randomId = rand(1000, 9999);
 
             $response = $this->client->post(
                 $url_efipay,
@@ -217,29 +218,29 @@ class PaymentHelper
                     'json' => [
                         'items' => [
                             [
-                                'name' => 'Deposit',
-                                'value' => 300,
+                                'name' => $title . ' #' . $randomId . '.',
+                                'value' => $value,
                                 'amount' => 1,
                             ],
                         ],
                         'payment' => [
                             'credit_card' => [
                                 'customer' => [
-                                    'name' => $user->name,
-                                    'cpf' => $user->cpf,
+                                    'name' => $name,
+                                    'cpf' => preg_replace('/[.-]/', '', $cpf),
                                     'email' => $user->email,
-                                    'birth' => $user->birthdate | '1990-08-29',
+                                    'birth' => $user->birthdate ?? '2005-09-16',
                                     'phone_number' => $user->phone,
                                 ],
                                 'installments' => 1,
                                 'payment_token' => $token,
                                 'billing_address' => [
-                                    'street' => 'Republica, SP',
-                                    'number' => '1',
-                                    'neighborhood' => '1',
-                                    'zipcode' => '00000000',
-                                    'city' => '1',
-                                    'complement' => '1',
+                                    'street' => 'R. Sete de Abril',
+                                    'number' => '356',
+                                    'neighborhood' => 'República',
+                                    'zipcode' => ' 01042001',
+                                    'city' => 'Sao Paulo',
+                                    'complement' => 'Loja 100',
                                     'state' => 'SP',
                                 ],
                             ],
@@ -312,45 +313,6 @@ class PaymentHelper
             return json_decode($response->getBody(), true)['access_token'];
         } catch (RequestException $e) {
             throw new \Exception('Erro ao obter o token de autorização: ' . $e->getMessage());
-        }
-    }
-    public function configureWebhook(Request $request)
-    {
-        try {
-            $data = [
-                'webhookUrl' => $request->input('webhookUrl', 'https://api.snapic.com.br/prod/webhook'),
-            ];
-
-            $params = [
-                'chave' => $request->input('chave', $this->credentials['client_identifier']),
-            ];
-
-            $options = [
-                'client_id' => 'Client_Id_215acb46eee5350c997da17c9df75e6a9dcef5da',
-                'client_secret' => 'Client_Secret_7852a68ae57877666a62866fdbfea77801953657',
-                'sandbox' => env('GERENCIANET_SANDBOX', true),
-                'pix_cert' => storage_path('../public/certs/truststore.pem'),
-            ];
-
-            $api = new Gerencianet($options);
-
-            $response = $api->pixConfigWebhook($params, $data);
-
-            return response()->json($response, 200);
-        } catch (GerencianetException $e) {
-            Log::error('Erro ao configurar o webhook:', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'message' => 'Falha ao configurar o webhook',
-                'error' => $e->getMessage(),
-            ], 500);
-        } catch (\Exception $e) {
-            Log::error('Erro inesperado ao configurar o webhook:', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'message' => 'Falha ao configurar o webhook',
-                'error' => $e->getMessage(),
-            ], 500);
         }
     }
 

@@ -229,7 +229,7 @@
         </div>
         </a>
         </li> --}}
-         @if(Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+        @if(Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
         <li class="nav-item">
             <a href="{{ route('profile', ['username' => Auth::user()->username]) }}"
                 class="nav-link {{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
@@ -343,6 +343,7 @@
         @endif
         @endif
         @else
+        @if (Auth::user()->role_id === 2 || !Auth::user()->identity_verified_at)
         <li class="nav-item mt-4">
             <a role="button" class="btn btn-round border btn-primary btn-block p-3"
                 href="/my/settings/producer">
@@ -356,6 +357,7 @@
                     ])</span>
             </a>
         </li>
+        @endif
         @endif
         @endif
     </ul>
