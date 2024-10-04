@@ -9,11 +9,11 @@
     @include('elements.photoswipe-container')
 @else
     <div class="d-flex justify-content-center align-items-center">
-        <div class="col-10">
-            <img src="{{asset('/img/no-content-available.svg')}}">
+        <div class="col-10 d-flex align-items-center justify-content-center">
+            <img  class="imgBannerNoContent" src="{{asset('/img/no-content-available.svg')}}">
         </div>
     </div>
-    <div class="d-flex justify-content-center align-items-center">
+    <!-- <div class="d-flex justify-content-center align-items-center">
         <h5 class="text-center mb-2 mt-2">{{__('No posts available')}}</h5>
-    </div>
+    </div> -->
 @endif

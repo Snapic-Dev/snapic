@@ -120,7 +120,7 @@
                             !(
                             !GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks')
                             ) /*|| Auth::user()->role_id === 1*/)
-                            @if(Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at)) )
+                            @if(Auth::user()->role_id == 1 || (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at) )
                             <button
                                 class="btn btn-outline-primary btn-rounded-icon messenger-button mx-2 to-tooltip"
                                 data-placement="top" title="{{ __('Message price') }}"
