@@ -13,7 +13,7 @@
 @endif
 
 {{-- Mobile tab color --}}
-<meta name="theme-color" content="#505050">
+<meta name="theme-color" content="#57319A">
 <meta name="color-scheme" content="dark light">
 
 {{-- Facebook share section --}}
