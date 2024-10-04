@@ -42,7 +42,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="payment-body">
-                            <div class="d-flex flex-row">
+                            <div class="d-flex flex-row p-2">
                                 <div class="ml-0 ml-md-2 mb-2">
                                     <img src="" class="rounded-circle user-avatar">
                                 </div>
@@ -55,8 +55,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="payment-description mb-3 d-none"></div>
-                            <div class="input-group mb-3 checkout-amount-input d-none">
+                            <div class="payment-description mb-3 d-none p-2"></div>
+                            <div class="input-group mb-3 checkout-amount-input d-none p-2">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="amount-label">
                                         @include('elements.icon',['icon'=>'cash-outline','variant'=>'medium','centered'=>false])
@@ -66,7 +66,7 @@
                                 <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 p-2">
                             <div class="total row">
                                 <span class="col-sm left"><b>{{__('Total')}}:</b></span>
                                 <span class="total-amount col-sm right text-right">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
 
-                        <div id="accordion" class="mb-3 card-form d-none">
+                        <div id="accordion" class="mb-3 card-form d-none p-2">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between" id="headingOne" data-toggle="collapse" data-target="#billingInformation" aria-expanded="true" aria-controls="billingInformation">
                                     <h6 class="mb-0">
@@ -130,39 +130,39 @@
                                                 </div>
                                                 <div class="billing-agreement-error error text-danger d-none">{{__('Please complete all billing details')}}</div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary float-right d-flex items-center gap-4 submit-card"> <span class="spinner-border spinner-border-sm mr-2 d-none" role="status" aria-hidden="true"></span><span>Salvar</span></button>
+                                            <button type="submit" class="btn btn-round btn-primary float-right d-flex items-center gap-4 submit-card"> <span class="spinner-border spinner-border-sm mr-2 d-none" role="status" aria-hidden="true"></span><span>Salvar</span></button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="choose-method">
-                            <h6>{{__('Payment method')}}</h6>
+                        <div class="choose-method p-2">
+                            <h6 class="mb-4 ">{{__('Payment method')}}</h6>
                             <div class="radio-buttons">
                                 <label class="radio-button credit-payment-provider show-card-form" data-value="credit">
                                     <input type="radio" id="credit_input" name="payment_type" value="credit" class="radio">
                                     <div class="radio-circle"></div>
-                                    <b>{{ ucfirst(__("wallet")) }}</b>
+                                    <b class="textRadioCheckout">{{ ucfirst(__("wallet")) }}</b>
                                     <div class="available-credit ml-1">{{number_format(Auth::user()->wallet->total, 2, '.', '')}}</div>
                                 </label>
                                 <label class="radio-button card-payment-provider show-card-form" data-value="card">
                                     <input type="radio" name="payment_type" value="card" class="radio">
                                     <div class="radio-circle"></div>
-                                    <span class="radio-label">{{ ucfirst(__("Card")) }}</span>
+                                    <span class="radio-label textRadioCheckout">{{ ucfirst(__("Card")) }}</span>
                                 </label>
                                 <label class="radio-button pix-payment-provider show-card-form" data-value="pix">
                                     <input type="radio" name="payment_type" value="pix" class="radio">
                                     <div class="radio-circle"></div>
-                                    <span class="radio-label">Pix</span>
+                                    <span class="radio-label textRadioCheckout">Pix</span>
                                 </label>
                             </div>
                         </div>
                         <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
-                        <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
+                        <p class="text-muted mt-1 p-2"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Cancel')}}</button>
-                        <button type="submit" class="btn btn-primary checkout-continue-btn">{{__('Continue')}}
+                        <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">{{__('Cancel')}}</button>
+                        <button type="submit" class="btn btn-round btn-primary checkout-continue-btn">{{__('Continue')}}
                             <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">
                                 <span class="sr-only">{{__('Loading...')}}</span>
                             </div>

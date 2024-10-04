@@ -5,7 +5,7 @@
                 <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-center">
                     <div class="">
                         <!-- About -->
-                        <div class="headline d-flex">
+                        <div class="d-flex">
                             <a href="{{route('home')}}">
                             <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
                                         class="d-inline-block align-top mb-1 brand-logo-form"

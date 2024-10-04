@@ -10674,3 +10674,7 @@ a.text-white:hover {
 .text-link:hover {
   color: #46287d;
 }
+
+.textRadioCheckout {
+  color: #5c5b5b !important;
+}
