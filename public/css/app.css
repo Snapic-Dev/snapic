@@ -1214,6 +1214,11 @@ footer .brand-logo {
   height: 300px;
 }
 
+.lockedPost {
+  width: 300px;
+  height: 300px;
+}
+
 /*Campanha */
 
 .file-uploadCampaign {
@@ -1372,6 +1377,11 @@ footer .brand-logo {
     height: 200px;
     width: 200px;
   }
+
+  .lockedPost {
+    width: 250px;
+    height: 250px;
+  } 
 
 }
 
