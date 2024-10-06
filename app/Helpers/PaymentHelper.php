@@ -1285,8 +1285,8 @@ class PaymentHelper
                     ]);
                 } elseif ($transaction->type === Transaction::TIP_TYPE || $transaction->type === Transaction::CHAT_TIP_TYPE) {
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
-                        ? 'You successfully sent a tip of :currencySymbol:amount.'
-                        : 'You successfully sent a tip of :amount:currencySymbol.';
+                        ? 'Você enviou com sucesso uma gorjeta de :currencySymbol:amount.'
+                        : 'Você enviou com sucesso uma gorjeta de :amount:currencySymbol.';
                     $successMessage = __($key, [
                         'amount' => $transaction->amount,
                         'currencySymbol' => SettingsServiceProvider::getWebsiteCurrencySymbol()
