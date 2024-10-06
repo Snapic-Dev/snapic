@@ -238,7 +238,7 @@ class PaymentHelper
                                     'street' => 'R. Sete de Abril',
                                     'number' => '356',
                                     'neighborhood' => 'República',
-                                    'zipcode' => ' 01042001',
+                                    'zipcode' => '08450384',
                                     'city' => 'Sao Paulo',
                                     'complement' => 'Loja 100',
                                     'state' => 'SP',
