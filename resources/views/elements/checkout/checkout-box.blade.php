@@ -140,10 +140,10 @@
                             <h6 class="mb-4 ">{{__('Payment method')}}</h6>
                             <div class="radio-buttons">
                                 <label class="radio-button credit-payment-provider show-card-form" data-value="credit">
-                                    <input type="radio" id="credit_input" name="payment_type" value="credit" class="radio">
+                                    <input type="radio" id="credit_input" name="payment_type" value="credit" class="radio" checked>
                                     <div class="radio-circle"></div>
                                     <b class="textRadioCheckout">{{ ucfirst(__("wallet")) }}</b>
-                                    <div class="available-credit ml-1">{{number_format(Auth::user()->wallet->total, 2, '.', '')}}</div>
+                                    <div class="available-credit ml-1">R$ {{ number_format(floatval(Auth::user()->wallet->total), 2, ',', '.') }}</div>
                                 </label>
                                 <label class="radio-button card-payment-provider show-card-form" data-value="card">
                                     <input type="radio" name="payment_type" value="card" class="radio">
