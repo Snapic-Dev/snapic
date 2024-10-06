@@ -144,10 +144,9 @@ class PaymentHelper
         return [
             "calendario" => ["expiracao" => 3600],
             "devedor" => [
-                "cpf" => $user->cpf,
+                'cpf' => preg_replace('/[.-]/', '', $user->cpf),
                 "nome" => $user->name
             ],
-
             // "valor" => ['original' => '0.01'], // Valor de exemplo
             "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
             "chave" => $this->credentials['client_identifier'],
