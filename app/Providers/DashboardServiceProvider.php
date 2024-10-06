@@ -175,9 +175,9 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public static function getTotalEarned() /*dash*/
     {
-         $date = request()->query('date');
+        $date = request()->query('date');
 
-         $query = Transaction::where('status', Transaction::APPROVED_STATUS)
+        $query = Transaction::where('status', Transaction::APPROVED_STATUS)
             ->where(function ($query) {
                 $query->where('type', Transaction::DEPOSIT_TYPE)
                     ->orWhere(function ($query) {
@@ -256,7 +256,10 @@ class DashboardServiceProvider extends ServiceProvider
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
+            ->join('users', 'transactions.recipient_user_id', '=', 'users.id')
+            ->where('users.role_id', 3)
             ->sum('amount');
+        dd($rewards, $agreements, $transactions, ((float) $rewards + (float) $transactions - $agreements));
 
         return number_format((float) $rewards + (float) $transactions - $agreements, 2, ',', '.');
     }
