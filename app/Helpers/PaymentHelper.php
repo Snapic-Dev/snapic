@@ -1273,7 +1273,7 @@ class PaymentHelper
 
                 // Verifica o tipo de transação e ajusta a mensagem de sucesso de acordo.
                 if ($this->isSubscriptionPayment($transaction->type)) {
-                    $successMessage = __('You can now access this user profile.');
+                    $successMessage = "Agora você pode acessar os conteúdos deste usuário.";
                 } elseif ($transaction->type === Transaction::DEPOSIT_TYPE) {
                     // Define a mensagem para depósitos, ajustando a posição do símbolo da moeda conforme a configuração.
                     $key = SettingsServiceProvider::leftAlignedCurrencyPosition()
@@ -1293,13 +1293,13 @@ class PaymentHelper
                     ]);
                 } elseif ($transaction->type === Transaction::POST_UNLOCK) {
                     // Define a mensagem para desbloqueio de postagens.
-                    $successMessage = __('You successfully unlocked this post.');
+                    $successMessage = "Você desbloqueou esta postagem com sucesso.";
                 } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
                     // Define a mensagem para pagamento de acesso a streaming.
-                    $successMessage = __('You successfully paid for this streaming.');
+                    $successMessage = "Você pagou com sucesso por este streaming.";
                 } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
                     // Define a mensagem para desbloqueio de mensagens.
-                    $successMessage = __('You successfully unlocked this message.');
+                    $successMessage =  "Você desbloqueou esta mensagem com sucesso.";
                 }
 
                 // Redireciona o usuário com uma mensagem de sucesso.
