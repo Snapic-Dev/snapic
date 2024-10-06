@@ -291,7 +291,7 @@ class PaymentsController extends Controller
                         if (!Auth::user()->cpf) {
                             return response()->json([
                                 'error' => 'CPF não cadastrado.',
-                                'message' => 'Adicione seu CPF para prosseguir!',
+                                'message' => 'Cadastre seu CPF para prosseguir!',
                             ], 401);
                         }
 
