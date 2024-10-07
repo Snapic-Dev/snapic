@@ -124,18 +124,38 @@ class PaymentHelper
     {
         $auth = base64_encode($this->credentials['client_id'] . ':' . $this->credentials['client_secret']);
         try {
-            $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
+             Log::info('Iniciando o processo de obtenção do token de acesso.', ['client_id' => $this->credentials['client_id']]);
 
-            $response = $this->client->request($config['method'], $config['url'], [
-                'headers' => $config['headers'],
-                'body' => $config['body']
-            ]);
+        // Configurando a requisição com as credenciais
+             $config = $this->getGuzzleConfig("Basic $auth", ['grant_type' => 'client_credentials'], '/oauth/token');
+             Log::info('Configuração do Guzzle concluída.', ['config' => $config]);
 
+             // Enviando a requisição ao endpoint OAuth
+             $response = $this->client->request($config['method'], $config['url'], [
+              'headers' => $config['headers'],
+              'body' => $config['body']
+             ]);
+            Log::info('Requisição enviada ao OAuth endpoint.', ['url' => $config['url']]);
+
+        // Convertendo a resposta JSON para um array PHP
             $body = json_decode($response->getBody(), true);
-            return $body['access_token'];
+            Log::info('Resposta recebida do endpoint.', ['response_body' => $body]);
+
+        // Verificando se o token de acesso está presente
+            if (!isset($body['access_token'])) {
+              Log::error('Token de acesso não encontrado na resposta.', ['response_body' => $body]);
+              throw new \Exception('Token de acesso não encontrado na resposta.');
+            }
+
+          Log::info('Token de acesso obtido com sucesso.', ['access_token' => $body['access_token']]);
+
+           // Retorna o token de acesso
+          return $body['access_token'];
         } catch (RequestException $e) {
-            throw new \Exception('Erro ao obter o token de acesso: ' . $e->getMessage());
-        }
+         // Tratando erro da requisição e lançando exceção com detalhes
+         Log::error('Erro ao obter o token de acesso.', ['error' => $e->getMessage()]);
+         throw new \Exception('Erro ao obter o token de acesso: ' . $e->getMessage());
+      }        
     }
 
     private function preparePaymentData($dto)
