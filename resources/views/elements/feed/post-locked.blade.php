@@ -1,8 +1,8 @@
 <div class="px-3 px-md-0">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col-10">
-            <div class="">
-                <img src="{{asset('/img/post-locked.svg')}}">
+            <div class="d-flex justify-content-center">
+                <img class="lockedPost" src="{{asset('/img/post-locked.svg')}}">
             </div>
         </div>
     </div>

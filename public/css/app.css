@@ -1123,6 +1123,7 @@ footer .brand-logo {
   color: #531167;
 }
 
+
 .inputLogin {
   background-color: #683ab617;
   height: 50px;
@@ -1210,6 +1211,11 @@ footer .brand-logo {
 }
 
 .imgBannerNoContent {
+  width: 300px;
+  height: 300px;
+}
+
+.lockedPost {
   width: 300px;
   height: 300px;
 }
@@ -1372,6 +1378,11 @@ footer .brand-logo {
     height: 200px;
     width: 200px;
   }
+
+  .lockedPost {
+    width: 250px;
+    height: 250px;
+  } 
 
 }
 
