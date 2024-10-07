@@ -2,14 +2,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ __('How to stream') }}</h5>
+                <h5 class="modal-title p-2">{{ __('How to stream') }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('Close') }}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
 
-                <p>{{ __('Your stream server is online. In order to get going, follow the steps below:') }}</p>
+                <p class="p-2">{{ __('Your stream server is online. In order to get going, follow the steps below:') }}</p>
 
 
                 <div class="mt-3 inline-border-tabs">
@@ -51,32 +51,33 @@
                                     <code>{{ __('Server & Stream key') }}</code>, {{ __('use the values below.') }}
                                 </li>
                             </ol>
-                            <div class="form-group row ">
+                            <div class="form-group">
                                 <label for="colFormLabelSm"
-                                    class="col-sm-3 col-form-label col-form-label-md">{{ __('Stream url') }}</label>
-                                <div class="col-sm-7">
+                                    class="p-2">{{ __('Stream url') }}</label>
+                                <div class="w-100 d-flex p-2">
                                     <input type="text" class="form-control form-control-md" id="stream-url"
                                         placeholder="{{ __('Stream url') }}">
-                                </div>
-                                <div class="col-sm-auto d-flex align-items-center justify-content-center">
-                                    <span class="h-pill h-pill-accent rounded mr-2"
-                                        onclick="Streams.copyStreamData('url')">
-                                        @include('elements.icon', ['icon' => 'copy-outline'])
-                                    </span>
+                                    <div class="col-sm-auto d-flex align-items-center justify-content-center">
+                                        <span class="h-pill h-pill-accent rounded mr-2"
+                                            onclick="Streams.copyStreamData('url')">
+                                            @include('elements.icon', ['icon' => 'copy-outline'])
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group">
                                 <label for="colFormLabelSm"
-                                    class="col-sm-3 col-form-label col-form-label-md">{{ __('Stream key') }}</label>
-                                <div class="col-sm-7">
+                                    class="p-2">{{ __('Stream key') }}</label>
+                                <div class="w-100 d-flex p-2">
                                     <input type="text" class="form-control form-control-md" id="stream-key"
                                         placeholder="{{ __('Stream key') }}">
-                                </div>
-                                <div class="col-sm-auto d-flex align-items-center justify-content-center">
-                                    <span class="h-pill h-pill-accent rounded mr-2"
-                                        onClick="Streams.copyStreamData('key');">
-                                        @include('elements.icon', ['icon' => 'copy-outline'])
-                                    </span>
+                    
+                                    <div class="col-sm-auto d-flex align-items-center justify-content-center">
+                                        <span class="h-pill h-pill-accent rounded mr-2"
+                                            onClick="Streams.copyStreamData('key');">
+                                            @include('elements.icon', ['icon' => 'copy-outline'])
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -84,28 +85,47 @@
                     <div class="tab-pane fade" id="nav-mobile" role="tabpanel">
                         <div class="mt-2">
                             <ol class="py-3">
-                                <li class="mb-1">{{ __('Download') }} {{ __('Larix for') }} <a
-                                        href="https://apps.apple.com/us/app/larix-broadcaster/id1042474385"
+                                <li class="mb-1">{{ __('Download') }} StreamLabs <a
+                                        href="https://apps.apple.com/us/app/streamlabs-live-streaming-app/id1294578643"
                                         target="_blank">iOS</a> {{ __('or') }} <a
-                                        href="https://play.google.com/store/apps/details?id=com.wmspanel.larix_broadcaster&hl=en&gl=US"
+                                        href="https://play.google.com/store/apps/details?id=com.streamlabs&hl=pt_BR"
                                         target="_blank">Android</a>.</li>
                                 <li class="mb-1">{{ __('Go to') }}
-                                    <code>{{ __('Settings > Connection > New connection') }}</code>.</li>
-                                <li class="mb-1">{{ ucfirst(__('for the')) }} <code>URL</code>,
-                                    {{ __('use the following value') }}.</li>
+                                    <code>Menu > Configurações da conta > Servidor RMTP</code>.</li>
+                                <li class="mb-1">{{ ucfirst(__('for the')) }}
+                                    <code>Stream url & Stream key</code>, {{ __('use the values below.') }}
+                                </li>
+                                <li class="mb-1">
+                                    Iniciar Live.
+                                </li>
                             </ol>
-                            <div class="form-group row ">
+                            <div class="form-group">
                                 <label for="colFormLabelSm"
-                                    class="col-sm-3 col-form-label col-form-label-md">{{ __('Stream url') }}</label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control form-control-md" id="stream-url-larix"
+                                    class="p-2">{{ __('Stream url') }}</label>
+                                <div class="w-100 d-flex p-2">
+                                    <input type="text" class="form-control form-control-md" id="stream-url"
                                         placeholder="{{ __('Stream url') }}">
+                                    <div class="col-sm-auto d-flex align-items-center justify-content-center">
+                                        <span class="h-pill h-pill-accent rounded mr-2"
+                                            onclick="Streams.copyStreamData('url')">
+                                            @include('elements.icon', ['icon' => 'copy-outline'])
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="col-sm-auto d-flex align-items-center justify-content-center">
-                                    <span class="h-pill h-pill-accent rounded mr-2"
-                                        onclick="Streams.copyStreamData('mobile-url')">
-                                        @include('elements.icon', ['icon' => 'copy-outline'])
-                                    </span>
+                            </div>
+                            <div class="form-group">
+                                <label for="colFormLabelSm"
+                                    class="p-2">{{ __('Stream key') }}</label>
+                                <div class="w-100 d-flex p-2">
+                                    <input type="text" class="form-control form-control-md" id="stream-key"
+                                        placeholder="{{ __('Stream key') }}">
+                    
+                                    <div class="col-sm-auto d-flex align-items-center justify-content-center">
+                                        <span class="h-pill h-pill-accent rounded mr-2"
+                                            onClick="Streams.copyStreamData('key');">
+                                            @include('elements.icon', ['icon' => 'copy-outline'])
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +134,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">{{ __('Got it') }}</button>
+                <button type="button" class="btn btn-primary btn-round" data-dismiss="modal">{{ __('Got it') }}</button>
             </div>
         </div>
     </div>

@@ -175,12 +175,12 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title p-2 text-bold" id="staticBackdropLabel">Pix</h5>
+                        <h5 class="modal-title p-2 text-bold titlePixModal" id="staticBackdropLabel">Pix gerado com sucesso</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body pixModalBody">
                         <div class="pixBox p-5 justify-content-center flex-column align-content-center">
                             <div class="d-flex flex-column align-items-center">
                                 <!-- <input class="p-4 inputPix text-bold text-center" disabled></input> -->
@@ -202,8 +202,7 @@
                                 <input class="inputPixCode" value="dsjbasdbubdsibsdifasjiiasfj@dkndfsnon"></input>
                             </div>
                             <div class="instructionPix flex-column mt-2 pt-4 pb-3 text-center">
-                                <h5 class="p-2 text-bold">Código PIX gerado com sucesso</h5>
-                                <p class="p-2 text-sm text-muted">Use o aplicativo de seu banco para ler o QRCode ao
+                                <p class="p-2 text-sm text-muted textInstruction">Use o aplicativo de seu banco para ler o QRCode ao
                                     lado,
                                     ou toque no botão PIX Copia e Cola para copiar o código
                                     e realizar a transação no aplicativo do seu banco
