@@ -21,17 +21,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use MercadoPago\SDK;
 use Stripe\StripeClient;
 use Yabacon\Paystack;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\DB;
+use MercadoPago\Payment;
 use Pusher\Pusher;
 
 class PaymentsController extends Controller
 {
     protected $paymentHandler;
+    protected $MERCADOPAGO_BASE_URL;
+    protected $ACCESS_TOKEN;
 
     /**
      * PaymentsController constructor.
@@ -40,6 +46,8 @@ class PaymentsController extends Controller
     public function __construct(PaymentHelper $paymentHandler)
     {
         $this->paymentHandler = $paymentHandler;
+        $this->MERCADOPAGO_BASE_URL = 'https://api.mercadopago.com/v1/';
+        $this->ACCESS_TOKEN = 'APP_USR-6211710841718220-100720-d609bab0ef91a88404a9785a065a804b-2025141516 ';
     }
 
     public function paymentInitiateValidator(CreateTransactionRequest $request)
@@ -55,58 +63,6 @@ class PaymentsController extends Controller
         $cents = (int) round($amount * 100);
 
         return $cents;
-    }
-
-    function handleErrorsCard($res)
-    {
-        try {
-            if (isset($res['data']['status']) && $res['data']['status'] === Transaction::APPROVED_STATUS) {
-                return 'approved';
-            }
-
-            if (isset($res['data']['status']) && $res['data']['status'] === 'unpaid') {
-                throw new \Exception("Houve um erro ao processar seu pagamento. Por favor, verifique as informações e tente novamente.");
-            }
-
-            if (isset($res['error_description']['property'])) {
-                switch ($res['error_description']['property']) {
-                    case '/payment/credit_card/customer/name':
-                        throw new \Exception("Nome do cliente está incorreto.");
-                    case '/payment/credit_card/customer/birth':
-                        throw new \Exception("Data de nascimento incorreta.");
-                    case '/payment/credit_card/customer/phone_number':
-                        throw new \Exception("Número de telefone está incorreto.");
-                    case 'payment_token':
-                        throw new \Exception("Erro ao gerar o token do cartão.");
-                    case 'Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.':
-                        throw new \Exception("Limite de emissões diárias excedido. Entre em contato com o suporte.");
-                    default:
-                        throw new \Exception("Erro desconhecido na propriedade: " . $res['error_description']['property']);
-                }
-            }
-
-            if (isset($res['error_description'])) {
-                switch ($res['error_description']) {
-                    case 'Limite de emissões idênticas excedido. Por favor, entre em contato com nosso suporte para orientações sobre o uso correto dos serviços Gerencianet.':
-                        throw new \Exception("Limite de emissões idênticas excedido. Contate o suporte.");
-                    case 'Limite de emissões diárias excedido. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.':
-                        throw new \Exception("Limite de emissões diárias excedido. Contate o suporte.");
-                    case 'CPF inválido.':
-                        throw new \Exception("CPF informado é inválido.");
-                    case '/payment/credit_card/customer/phone_number':
-                        throw new \Exception("Número de telefone está incorreto.");
-                    case 'Número do cartão é inválido.':
-                        throw new \Exception("O número do cartão é inválido.");
-                    default:
-                        throw new \Exception("Erro desconhecido: " . $res['error_description']);
-                }
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Erro no processamento do pagamento',
-                'message' => $e->getMessage(),
-            ], 401);
-        }
     }
 
 
@@ -139,34 +95,98 @@ class PaymentsController extends Controller
         }
     }
 
-
-    protected function processCardPayment($transaction, $amount, $cardToken, $title, $cpf, $name)
+    function getCardBrand($cardNumber)
     {
-        $value = $this->convertToCents($amount);
+        $cardNumber = preg_replace('/\D/', '', $cardNumber);
 
-
-        $res = $this->paymentHandler->generationCardPayment($value, $cardToken, $title, $cpf, $name);
-        $status = $this->handleErrorsCard($res);
-
-        if ($status === 'approved') {
-            $transaction['status'] = Transaction::APPROVED_STATUS;
-            $transaction['transfer_id'] = $res['data']['charge_id'];
-            $transaction['amount'] = $amount;
-            $transaction->save();
-
-            // Incrementa o saldo na carteira do usuário
-            DB::table('wallets')
-                ->where('user_id', $transaction['recipient_user_id'])
-                ->increment('total', $amount);
-            self::handleTransactionNotification($transaction);
-            return response()->json($res, 201);
+        if (preg_match('/^4/', $cardNumber)) {
+            return 'visa';
+        } elseif (preg_match('/^(50|51|52|53|54|55)/', $cardNumber)) {
+            return 'master';
+        } elseif (preg_match('/^(34|37)/', $cardNumber)) {
+            return 'amex';
         } else {
-            return response()->json([
-                'error' => 'Erro ao processar o pagamento com cartão.',
-                'message' => 'O pagamento não foi aprovado.'
-            ], 401);
+            throw new Exception("O cartão informado não é aceito. Por favor, utilize um cartão Visa, MasterCard ou American Express.");
         }
     }
+
+    function createToken($token)
+    {
+        $client = new \GuzzleHttp\Client(['verify' => false]);
+
+        try {
+            $response = $client->post($this->MERCADOPAGO_BASE_URL . 'card_tokens', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->ACCESS_TOKEN,
+                ],
+                'json' => $token,
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+            if (empty($body['id'])) {
+                throw new Exception('Erro em processar pagamento: ID do token não encontrado.');
+            }
+
+            return $body['id'];
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            throw new Exception('Erro ao criar token: ' . $e->getMessage());
+        }
+    }
+
+    public function generationCardPayment($token, $title, $user, $amount, $brand)
+    {
+        try {
+            $idempotencyKey = uniqid();
+            $client = new \GuzzleHttp\Client(['verify' => false]);
+            $response = $client->post($this->MERCADOPAGO_BASE_URL . 'payments', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->ACCESS_TOKEN,
+                    'X-Idempotency-Key' => $idempotencyKey,
+                ],
+                'json' => $this->preparePaymentData($token, $title, $user, $amount, $brand),
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+
+            if ($body['status'] === 'rejected' && $body['status_detail'] === 'cc_rejected_high_risk') {
+                throw new Exception('Seu pagamento foi rejeitado devido a alto risco. Tente outro método de pagamento ou contate seu banco.');
+            }
+
+            if ($body['status'] !== 'approved') {
+                throw new Exception('Pagamento recusado');
+            }
+
+            return $body;
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            return response()->json([
+                'error' => 'Payment not approved',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function preparePaymentData($token, $title, $user, $amount, $brand)
+    {
+        return [
+            'transaction_amount' => round($amount),
+            'token' => $token,
+            'description' => $title,
+            'installments' => 1,
+            'payment_method_id' => $brand,
+            'payer' => [
+                'entity_type' => 'individual',
+                'type' => 'customer',
+                'email' => $user->email,
+                'identification' => [
+                    'type' => 'CPF',
+                    'number' => $user->cpf,
+                ],
+            ]
+        ];
+    }
+
     /**
      * Initiates the payment based on the required provider.
      * @param CreateTransactionRequest $request
@@ -175,6 +195,7 @@ class PaymentsController extends Controller
      */
     public function initiatePayment(CreateTransactionRequest $request)
     {
+
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
         // generate one time transaction
@@ -288,18 +309,34 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
-                        if (!Auth::user()->cpf) {
+                        if (!Auth::user()->cpf && !$request->get('cpf')) {
                             return response()->json([
-                                'error' => 'CPF não cadastrado.',
+                                'error' => 'CPF não cadastrado',
                                 'message' => 'Cadastre seu CPF para prosseguir!',
                             ], 401);
                         }
+                        if (!Auth::user()->cpf && $request->input('cpf')) {
+                            $user = Auth::user();
+                            $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
+                            $existingUser = User::where('cpf', $cleanedCpf)->first();
+
+                            if ($existingUser) {
+                                throw new \Exception('CPF já cadastrado no sistema.');
+                            }
+
+                            $user->cpf = $cleanedCpf;
+                            $user->save();
+                        }
                         return $this->processPixPayment($transaction);
                     }
 
-                    if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
-                        return $this->processCardPayment($transaction, $request->amount, $request->card_token, $transactionTitle, $request->cpf, $request->name);
+                    if ($transaction['payment_provider'] === Transaction::CARD_PROVIDER) {
+                        $token = json_decode($request->input('card_token'), true);
+                        $card_token = self::createToken($token);
+                        $brand = self::getCardBrand($token['card_number']);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        return response()->json($res, 201);
                     }
 
                     break;
@@ -308,8 +345,8 @@ class PaymentsController extends Controller
 
                     if (!Auth::user()->cpf) {
                         return response()->json([
-                            'error' => 'CPF não cadastrado.',
-                            'message' => 'Adicione seu CPF para prosseguir!',
+                            'error' => 'CPF não cadastrado',
+                            'message' => 'Cadastre seu CPF para prosseguir!',
                         ], 401);
                     }
 
@@ -364,11 +401,35 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
+                        if (!Auth::user()->cpf && !$request->get('cpf')) {
+                            return response()->json([
+                                'error' => 'CPF não cadastrado',
+                                'message' => 'Cadastre seu CPF para prosseguir!',
+                            ], 401);
+                        }
+                        if (!Auth::user()->cpf && $request->input('cpf')) {
+                            $user = Auth::user();
+                            $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
+
+                            $existingUser = User::where('cpf', $cleanedCpf)->first();
+
+                            if ($existingUser) {
+                                throw new \Exception('CPF já cadastrado no sistema.');
+                            }
+
+                            $user->cpf = $cleanedCpf;
+                            $user->save();
+                        }
                         return $this->processPixPayment($transaction);
                     }
 
-                    if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
-                        return $this->processCardPayment($transaction, $request->amount, $request->card_token, $transactionTitle, $request->cpf, $request->name);
+                    if ($transaction['payment_provider'] === Transaction::CARD_PROVIDER) {
+                        $token = json_decode($request->input('card_token'), true);
+                        $card_token = self::createToken($token);
+                        $brand = self::getCardBrand($token['card_number']);
+                        dd($token['card_number'], $brand);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        return response()->json($res, 201);
                     }
                     break;
                 default:

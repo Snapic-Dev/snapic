@@ -20,8 +20,8 @@
                 <input type="hidden" name="taxes" id="paymentTaxes" value="">
                 <input type="hidden" name="stream" id="stream" value="">
                 <input type="hidden" name="card_token" id="cardToken" value="">
-                <input type="hidden" name="cpf" id="cpfValue" value="">
-                <input type="hidden" name="name" id="nameValue" value="">
+                <input type="hidden" name="cpf" id="cpf" value="">
+                <input type="hidden" name="name" id="name" value="{{ Auth::user()->name }}">
                 <button class="payment-button" type="submit"></button>
             </form>
         </div>
@@ -65,6 +65,10 @@
                                 <input class="form-control uifield-amount" placeholder="{{__(\App\Providers\SettingsServiceProvider::leftAlignedCurrencyPosition() ? 'Amount ($5 min, $500 max)' : 'Amount (5$ min, 500$ max)',['min'=>getSetting('payments.min_tip_value'),'max'=>getSetting('payments.max_tip_value'),'currency'=>config('app.site.currency_symbol')])}}" aria-label="Username" aria-describedby="amount-label" id="checkout-amount" type="number" min="0" step="1" max="500">
                                 <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
                             </div>
+                            <div class="mb-3 checkout-cpf-input d-none p-2">
+                                <label for="checkout-cpf"><b>CPF</b><span style="color:blueviolet">*</span></label>
+                                <input class="form-control uifield-amount cpf_input" required placeholder="000.000.000-00" aria-label="CPF" aria-describedby="cpf-label" id="checkout-cpf" type="text">
+                            </div>
                         </div>
                         <div class="mb-3 p-2">
                             <div class="total row">
@@ -92,12 +96,6 @@
                                                 <!-- credit card info-->
                                                 <div id="individual" class="tab-pane fade show active pt-1">
                                                     <div class="form-group">
-                                                        <label for="name">
-                                                            <span>{{__('Nome Completo')}}</span>
-                                                        </label>
-                                                        <input id="name" class="form-control name_input" placeholder="Nome Completo" required minlength="8">
-                                                    </div>
-                                                    <div class="form-group">
                                                         <label for="cpf">
                                                             <span>CPF</span>
                                                         </label>
@@ -115,7 +113,7 @@
                                                                 <label for="billingPostcode">
                                                                     <span>{{__('Validate')}}</span>
                                                                 </label>
-                                                                <input type="text" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YY" required>
+                                                                <input type="text" class="form-control cardDateValidate" id="data" name="data" placeholder="MM/YYYY" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6 col-6">
@@ -130,7 +128,6 @@
                                                 </div>
                                                 <div class="billing-agreement-error error text-danger d-none">{{__('Please complete all billing details')}}</div>
                                             </div>
-                                            <button type="submit" class="btn btn-round btn-primary float-right d-flex items-center gap-4 submit-card"> <span class="spinner-border spinner-border-sm mr-2 d-none" role="status" aria-hidden="true"></span><span>Salvar</span></button>
                                         </form>
                                     </div>
                                 </div>
@@ -231,22 +228,13 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
+<script src="https://cdn.jsdeli vr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
 <script>
-    const cardNumber = document.querySelector('.cardNumber')
-    const cardDateValidate = document.querySelector('.cardDateValidate')
-    const cardCVV = document.querySelector('.cardCVV')
     const showCard = document.querySelectorAll('.show-card-form')
-    const form = document.querySelector('.card-form')
-    const name_input = document.querySelector('.name_input')
-    const cpf_input = document.querySelector('.cpf_input')
-    const cardTokenInput = document.querySelector('#cardToken')
-    const cpfValueInput = document.querySelector('#cpfValue')
-    const nameValueInput = document.querySelector('#nameValue')
     const formSubmit = document.querySelector('.checkout-continue-btn')
     const paymentTypeInput = document.querySelector('#payment-type');
-
-    let pixCopiaECola;
+    const cardForm = document.querySelector('.card-form')
+    const cpf_input = document.querySelector('.checkout-cpf-input')
 
     document.addEventListener("DOMContentLoaded", function() {
         let creditInput = document.querySelector('#credit_input');
@@ -255,28 +243,26 @@
         }
     });
 
-    function disableButton() {
-        var btn = document.querySelector('.submit-card');
-        var loading = document.querySelector('.submit-card > span')
-        loading.style.display = "block"
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...';
-        btn.disabled = true;
-    }
-
     showCard.forEach((div) => {
         div.addEventListener("click", () => {
             const dataValue = div.getAttribute('data-value');
             if (dataValue === 'card') {
-                form.classList.remove('d-none');
-                formSubmit.setAttribute('disabled', 'true');
-            } else if (dataValue != 'card') {
-                form.classList.add('d-none');
+                cardForm.classList.remove('d-none');
+                cpf_input.classList.add('d-none');
+            } else if (dataValue === 'credit') {
+                cardForm.classList.add('d-none');
                 formSubmit.removeAttribute('disabled');
+                cpf_input.classList.add('d-none');
+            } else {
+                formSubmit.removeAttribute('disabled');
+                cardForm.classList.add('d-none');
+                if ("{{!Auth::user()->cpf}}")
+                    cpf_input.classList.remove('d-none')
             }
         });
     });
 
-    cardDateValidate.addEventListener('input', (event) => {
+    document.querySelector('.cardDateValidate').addEventListener('input', (event) => {
         const currentYear = new Date().getFullYear();
 
         let value = event.target.value.replace(/\D/g, '');
@@ -310,7 +296,7 @@
         event.target.value = value;
     });
 
-    cardCVV.addEventListener('input', (event) => {
+    document.querySelector('.cardCVV').addEventListener('input', (event) => {
         let value = event.target.value.replace(/\D/g, '');
         if (value.length > 3) {
             launchToast("danger", trans("Error"), "O código CVV deve conter 3 dígitos.");
@@ -319,103 +305,30 @@
         event.target.value = value;
     })
 
-    cpf_input.addEventListener('input', (event) => {
-        let value = event.target.value.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
+    document.querySelectorAll('.cpf_input').forEach((element) => {
 
-        if (value.length > 11) {
-            value = value.slice(0, 11); // Apenas mantém os primeiros 11 dígitos
-        }
+        element.addEventListener('input', (event) => {
+            let value = event.target.value.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
 
-        value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Primeiro ponto
-        value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Segundo ponto
-        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Traço antes dos dois últimos dígitos
+            if (value.length > 11) {
+                value = value.slice(0, 11); // Apenas mantém os primeiros 11 dígitos
+            }
 
-        event.target.value = value; // Atualiza o valor do input com a máscara
-    });
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Primeiro ponto
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Segundo ponto
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Traço antes dos dois últimos dígitos
 
-    cardNumber.addEventListener('input', (event) => {
+            event.target.value = value;
+            document.querySelector("#cpf").value = value
+        });
+    })
+
+    document.querySelector('.cardNumber').addEventListener('input', (event) => {
         let value = event.target.value.replace(/\D/g, '');
         value = value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
         event.target.value = value;
     });
 
-    async function handleFormSubmit(event) {
-        event.preventDefault(); // Evita o envio do formulário
-        const name = document.querySelector(".name_input").value;
-        const cpf = document.querySelector(".cpf_input").value;
-        const cardNumber = document.querySelector(".cardNumber").value;
-        const cardCVV = document.querySelector(".cardCVV").value;
-        const cardDateValidate = document.querySelector(".cardDateValidate").value;
-
-        try {
-            const cardToken = await generateCardToken()
-            cardTokenInput.value = cardToken
-            nameValueInput.value = name_input.value
-            cpfValueInput.value = cpf_input.value
-            console.log(cardToken);
-            formSubmit.removeAttribute('disabled');
-
-        } catch (error) {
-            if (error.message === "Adicione seu CPF para prosseguir!") {
-                launchToast("danger", trans("Error"), `${error.message}`);
-                linkCpfError.setAttribute("href", linkEditProfile)
-                return errorCPF.style.display = "flex"
-            }
-            launchToast("danger", trans("Error"), error.message);
-        }
-    }
-
-    const generateCardToken = async () => {
-        try {
-            var btn = document.querySelector('.submit-card');
-            var loading = document.querySelector('.submit-card > span')
-            loading.classList.remove('d-none')
-            btn.disabled = true;
-
-            if (typeof EfiPay === 'undefined') {
-                throw new Error('O script da Efipay não foi carregado.');
-                return;
-            }
-
-            const efiPay = EfiPay.CreditCard.setAccount("fc07c8c0cbbbb3277f2e769cb05e041f")
-                .setEnvironment("production");
-
-            const brand = await EfiPay.CreditCard
-                .setCardNumber(cardNumber.value)
-                .verifyCardBrand();
-
-            const cardData = {
-                brand: brand,
-                number: cardNumber.value,
-                cvv: cardCVV.value,
-                expirationMonth: cardDateValidate.value.split("/")[0],
-                expirationYear: cardDateValidate.value.split("/")[1],
-                reuse: false,
-            };
-
-            const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
-
-            var loading = document.querySelector('.submit-card > span')
-            loading.classList.add('d-none')
-            launchToast("success", trans("Success"), "Prossiga para o pagamento.");
-            return result.payment_token;
-        } catch (error) {
-            let errorMessage = "Tente novamente mais tarde"
-
-            switch (error.error) {
-                case 'erro_gn_fingerprint':
-                    errorMessage = "Desative seu AdBlock"
-                    break
-                case 'invalid_data':
-                    errorMessage = error.error_description
-                    break
-                default:
-                    errorMessage = error.message
-                    break
-            }
-            throw new Error(errorMessage)
-        }
-    }
 
     function copyCodePix(element) {
         const pixCopiaECola = element.getAttribute('data-value');

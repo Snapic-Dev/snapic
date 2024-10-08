@@ -59,7 +59,7 @@ $(function () {
     var streamId = $(e.relatedTarget).data("stream-id");
     var userMessageId = $(e.relatedTarget).data("message-id");
     var cardToken = $(e.relatedTarget).data("card_token");
-
+    var cpf = $(e.relatedTarget).data("cpf");
     checkout.initiatePaymentData(
       type,
       amount,
@@ -75,7 +75,8 @@ $(function () {
       availableCredit,
       streamId,
       userMessageId,
-      cardToken
+      cardToken,
+      cpf
     );
     checkout.updateUserDetails(avatar, username, name);
     checkout.fillCountrySelectOptions();
@@ -349,6 +350,42 @@ var checkout = {
   validateAllFields: function (callback) {
     checkout.clearFormErrors();
 
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/[^\d]/g, "");
+
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+      }
+
+      var soma = 0;
+      var resto;
+
+      for (var i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) {
+        resto = 0;
+      }
+      if (resto !== parseInt(cpf.substring(9, 10))) {
+        return false;
+      }
+
+      soma = 0;
+      for (var i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) {
+        resto = 0;
+      }
+      if (resto !== parseInt(cpf.substring(10, 11))) {
+        return false;
+      }
+
+      return true;
+    }
+
     $.ajax({
       type: "POST",
       data: $("#pp-buyItem").serialize(),
@@ -357,6 +394,114 @@ var checkout = {
         if ($("#provider").val() === "credit") {
           callback();
           return;
+        }
+        if ($("#provider").val() === "pix") {
+          var cpf = $("#cpf").val();
+
+          if (!validarCPF(cpf) || !cpf) {
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
+            launchToast(
+              "danger",
+              trans("Error"),
+              "CPF inválido. Por favor, insira um CPF válido."
+            );
+            return;
+          }
+        }
+
+        if ($("#provider").val() === "card") {
+          var cardNumber = $(".cardNumber").val().split(" ").join("");
+          var cardholderName = $("#name").val();
+          var expirationDate = $(".cardDateValidate").val();
+          var securityCode = $(".cardCVV").val();
+
+          function validarNumeroCartao(numero) {
+            var soma = 0;
+            var alternar = false;
+
+            for (var i = numero.length - 1; i >= 0; i--) {
+              var n = parseInt(numero.charAt(i), 10);
+              if (alternar) {
+                n *= 2;
+                if (n > 9) {
+                  n -= 9;
+                }
+              }
+              soma += n;
+              alternar = !alternar;
+            }
+
+            return soma % 10 === 0;
+          }
+
+          function validarDataValidade(data) {
+            var mesAno = data.split("/");
+            var mes = parseInt(mesAno[0], 10);
+            var ano = parseInt(mesAno[1], 10);
+
+            var dataAtual = new Date();
+            var anoAtual = dataAtual.getFullYear();
+            var mesAtual = dataAtual.getMonth() + 1;
+
+            return ano > anoAtual || (ano === anoAtual && mes >= mesAtual);
+          }
+
+          var cpf = $("#cpf").val();
+          if (!validarCPF(cpf) || !cpf) {
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
+            launchToast(
+              "danger",
+              trans("Error"),
+              "CPF inválido. Por favor, insira um CPF válido."
+            );
+            return;
+          }
+
+          if (!validarNumeroCartao(cardNumber) || !cardNumber) {
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
+            launchToast(
+              "danger",
+              trans("Error"),
+              "Número do cartão de crédito inválido. Por favor, insira um número válido."
+            );
+            return;
+          }
+
+          if (!validarDataValidade(expirationDate)) {
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
+            launchToast(
+              "danger",
+              trans("Error"),
+              "Data de validade do cartão é inválida. Por favor, insira uma data válida."
+            );
+            return;
+          }
+
+          if (securityCode.length !== 3) {
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
+            launchToast(
+              "danger",
+              trans("Error"),
+              "Código de segurança inválido. O código deve ter 3 dígitos."
+            );
+            return;
+          }
+
+          var cardTokenJson = JSON.stringify({
+            card_number: cardNumber,
+            cardholder: {
+              name: cardholderName,
+              identification: {
+                type: "CPF",
+                number: $("#cpf").val(),
+              },
+            },
+            expiration_month: expirationDate.split("/")[0],
+            expiration_year: expirationDate.split("/")[1],
+            security_code: securityCode,
+          });
+
+          $("#cardToken").val(cardTokenJson);
         }
 
         $.ajax({
@@ -379,8 +524,7 @@ var checkout = {
             taxes: $("#paymentTaxes").val(),
             stream: $("#stream").val(),
             card_token: $("#cardToken").val(),
-            cpf: $("#cpfValue").val(),
-            name: $("#nameValue").val(),
+            cpf: $("#cpf").val(),
           },
           success: function (paymentResponse) {
             if ($("#provider").val() === "pix") {
@@ -407,6 +551,8 @@ var checkout = {
               checkout.calculateTimeDifference();
               amountPix.innerText = "R$ " + paymentResponse.valor.original;
             } else {
+              console.log(paymentResponse);
+              $("#checkout-center").modal("hide");
               launchToast(
                 "success",
                 trans("Success"),
@@ -415,6 +561,8 @@ var checkout = {
             }
           },
           error: function (paymentError) {
+            $("#checkout-center").modal("hide");
+            $(".checkout-continue-btn .spinner-border").addClass("d-none");
             launchToast(
               "danger",
               trans("Error"),

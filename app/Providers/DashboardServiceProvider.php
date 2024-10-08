@@ -259,7 +259,6 @@ class DashboardServiceProvider extends ServiceProvider
             ->join('users', 'transactions.recipient_user_id', '=', 'users.id')
             ->where('users.role_id', 3)
             ->sum('amount');
-        dd($rewards, $agreements, $transactions, ((float) $rewards + (float) $transactions - $agreements));
 
         return number_format((float) $rewards + (float) $transactions - $agreements, 2, ',', '.');
     }
