@@ -11,7 +11,7 @@
     @include('elements.dropzone-dummy-element')
     <div class="mb-4">
         <div class="">
-            <div class="card profile-cover-bg">
+            <div class="card profile-cover-bg bannerPerfil">
                 <img class="card-img-top centered-and-cropped" src="{{ Auth::user()->cover }}">
                 <div class="card-img-overlay d-flex justify-content-center align-items-center">
                     <div class="actions-holder d-none">
@@ -33,7 +33,7 @@
         </div>
         <div class="container">
             <div class="card avatar-holder">
-                <img class="card-img-top" src="{{ Auth::user()->avatar }}">
+                <img class="card-img-top imgPefil" src="{{ Auth::user()->avatar }}">
                 <div class="card-img-overlay d-flex justify-content-center align-items-center">
                     <div class="actions-holder d-none">
                         <div class="d-flex">

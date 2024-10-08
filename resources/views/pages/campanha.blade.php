@@ -41,8 +41,8 @@
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="formGroupExampleInput">Valor do conteúdo</label>
                         <input type="number" class="form-control valueCampaign" name="valor"
-                            id="formGroupExampleInput" placeholder="Definir valor da campanha" min="10"
-                            max="1000">
+                            id="formGroupExampleInput" placeholder="Definir valor da campanha" min="0"
+                            max="5000">
                     </div>
                     <div class="form-group p-3 ml-4 mr-4">
                         <label for="exampleFormControlTextarea1">Mensagem</label>
