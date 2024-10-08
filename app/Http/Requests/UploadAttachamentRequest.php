@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 
 class UploadAttachamentRequest extends FormRequest
 {
@@ -24,13 +23,17 @@ class UploadAttachamentRequest extends FormRequest
      */
     public function rules()
     {
-        if(Request::route() && in_array(Request::route()->parameter('type'), ['payment-request', 'verify-asset'])) {
+        $maxFileSize = 2048 * 1024;
+
+        $type = $this->route('type');
+
+        if ($type && in_array($type, ['payment-request', 'verify-asset'])) {
             return [
-                'file' => 'required|mimes:'.'jpg,jpeg,png,pdf,xls,xlsx'.'|max:'.(string) ((int) getSetting('media.max_file_upload_size') * 1024),
+                'file' => 'required|mimes:jpg,jpeg,png,pdf,xls,xlsx,mp4,avi,mkv|max:' . $maxFileSize,
             ];
         } else {
             return [
-                'file' => 'required|mimes:'.getSetting('media.allowed_file_extensions').'|max:'.(string) ((int) getSetting('media.max_file_upload_size') * 1024),
+                'file' => 'required|mimes:' . getSetting('media.allowed_file_extensions') . '|max:' . $maxFileSize,
             ];
         }
     }
