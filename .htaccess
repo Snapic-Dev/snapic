@@ -1,26 +1,29 @@
 <IfModule mod_rewrite.c>
-# That was ONLY to protect you from 500 errors
-# if your server did not have mod_rewrite enabled
+    RewriteEngine On
 
-RewriteEngine On
-# RewriteBase /
-# NOT needed unless you're using mod_alias to redirect
+    # Certifique-se de que a base da URL está correta
+    # RewriteBase /
 
-# Direct all requests to /public folder
-RewriteCond %{REQUEST_URI} !/public
-RewriteRule ^(.*)$ public/$1 [L]
+    # Redireciona todas as requisições para a pasta /public
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
 
-# Direct all requests to pretty url
-RewriteCond %{THE_REQUEST} ^.*/index\.php
-RewriteRule ^(.*)index.php$ /$1 [R=301,L]
+    # Redireciona URLs bonitas (Pretty URLs)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^\s]*)index\.php [NC]
+    RewriteRule ^ %1 [R=301,L]
 
-# Disable Directory listing
-Options -Indexes
+    # Remove /index.php da URL
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L]
 
-# block files which needs to be hidden, specify .example extension of the file
-<Files ~ "\.(env|config.js|md|gitignore|gitattributes|lock)$">
-    Order allow,deny
-    Deny from all
-</Files>
+    # Desabilitar listagem de diretórios
+    Options -Indexes
+
+    # Bloquear arquivos sensíveis (.env, .git, etc.)
+    <FilesMatch "\.(env|config.js|md|gitignore|gitattributes|lock)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
 
 </IfModule>

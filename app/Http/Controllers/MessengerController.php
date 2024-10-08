@@ -923,18 +923,18 @@ class MessengerController extends Controller
                 }
             }
             // Handling access when both profiles are either free or open an users have a follow relation from any of them
-            if (
-                (($viewerUser->open_profile && $contactUser->open_profile) || (!$viewerUser->paid_profile && !$contactUser->paid_profile))
-                &&
-                (
-                    ListsHelperServiceProvider::isUserFollowing($viewerID, $contactId) ||
-                    ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)
-                )
-            ) {
-                return true;
-            }
+            // if (
+            //     (($viewerUser->open_profile && $contactUser->open_profile) || (!$viewerUser->paid_profile && !$contactUser->paid_profile))
+            //     &&
+            //     (
+            //         ListsHelperServiceProvider::isUserFollowing($viewerID, $contactId) ||
+            //         ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)
+            //     )
+            // ) {
+            //     return true;
+            // }
             // Creator is free/open & wants to message the follower
-            if ((!$viewerUser->paid_profile || $viewerUser->open_profile) && ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
+              if (ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
                 return true;
             }
         }
