@@ -178,19 +178,7 @@ class DashboardServiceProvider extends ServiceProvider
         $date = request()->query('date');
 
         $query = Transaction::where('status', Transaction::APPROVED_STATUS)
-            ->where(function ($query) {
-                $query->where('type', Transaction::DEPOSIT_TYPE)
-                    ->orWhere(function ($query) {
-                        $query->whereIn('type', [
-                            'one-month-subscription',
-                            'three-months-subscription',
-                            'six-months-subscription',
-                            'yearly-subscription',
-                            'subscription-renewal'
-                        ])
-                            ->where('payment_provider', 'card');
-                    });
-            })
+            ->whereIn('payment_provider', ['pix', 'card'])
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
