@@ -161,7 +161,7 @@
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Validade</label>
                                         <input type="month" class="form-control cardDateValidate" id="data"
-                                            name="data" placeholder="MM/YY">
+                                            name="data" placeholder="MM/YYYY">
                                     </div>
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">CVV</label>
