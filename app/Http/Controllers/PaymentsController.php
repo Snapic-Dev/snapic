@@ -130,6 +130,21 @@ class PaymentsController extends Controller
 
             return $body['id'];
         } catch (\GuzzleHttp\Exception\RequestException $e) {
+            if (method_exists($e, 'getResponse')) {
+                $response = $e->getResponse();
+                if ($response) {
+                    $responseBody = json_decode($response->getBody()->getContents(), true);
+
+                    if (isset($responseBody['message'])) {
+                        switch ($responseBody['message']) {
+                            case "invalid card_number":
+                                throw new Exception('Número do cartão inválido');
+                            default:
+                                throw new Exception('Erro: ' . $responseBody['message']);
+                        }
+                    }
+                }
+            }
             throw new Exception('Erro ao criar token: ' . $e->getMessage());
         }
     }
@@ -195,7 +210,6 @@ class PaymentsController extends Controller
      */
     public function initiatePayment(CreateTransactionRequest $request)
     {
-
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
         try {
@@ -349,12 +363,26 @@ class PaymentsController extends Controller
                     break;
                 case Transaction::DEPOSIT_TYPE:
                     $transaction['recipient_user_id'] = Auth::user()->id;
-
-                    if (!Auth::user()->cpf) {
+                    if (!Auth::user()->cpf && !$request->get('cpf')) {
                         return response()->json([
                             'error' => 'CPF não cadastrado',
                             'message' => 'Cadastre seu CPF para prosseguir!',
                         ], 401);
+                    }
+
+
+                    if (!Auth::user()->cpf && $request->input('cpf')) {
+                        $user = Auth::user();
+                        $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
+
+                        $existingUser = User::where('cpf', $cleanedCpf)->first();
+
+                        if ($existingUser) {
+                            throw new \Exception('CPF já cadastrado no sistema.');
+                        }
+
+                        $user->cpf = $cleanedCpf;
+                        $user->save();
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {

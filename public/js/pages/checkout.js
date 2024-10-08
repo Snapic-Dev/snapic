@@ -490,7 +490,7 @@ var checkout = {
           var cardTokenJson = JSON.stringify({
             card_number: cardNumber,
             cardholder: {
-              name: cardholderName,
+              name: cardholderName || "Jonh Doe",
               identification: {
                 type: "CPF",
                 number: $("#cpf").val(),
