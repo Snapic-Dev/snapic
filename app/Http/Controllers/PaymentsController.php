@@ -198,7 +198,6 @@ class PaymentsController extends Controller
 
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
-        // generate one time transaction
         try {
             $transaction = new Transaction();
             $transaction['sender_user_id'] = Auth::user()->id;
@@ -229,7 +228,7 @@ class PaymentsController extends Controller
 
             if (in_array($transaction['payment_provider'], [Transaction::STRIPE_PROVIDER, Transaction::OXXO_PROVIDER])) {
                 $redirectLink = $this->paymentHandler->generateStripeSessionByTransaction($transaction);
-                // if we cannot fetch a redirect link it means stripe session generation process failed
+
                 if ($redirectLink == null) {
                     $transaction['status'] = Transaction::DECLINED_STATUS;
                     $transaction->save();
@@ -239,7 +238,7 @@ class PaymentsController extends Controller
 
             if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
                 $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
-                // check if user have enough money to pay with credit for this transaction
+
                 if ($userAvailableAmount < $transaction['amount']) {
                     $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
 
@@ -336,6 +335,14 @@ class PaymentsController extends Controller
                         $card_token = self::createToken($token);
                         $brand = self::getCardBrand($token['card_number']);
                         $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $transaction['status'] = Transaction::APPROVED_STATUS;
+                        $transaction['transfer_id'] = $res['id'];
+                        $transaction->save();
+
+                        DB::table('wallets')
+                            ->where('user_id', $transaction['recipient_user_id'])
+                            ->increment('total', $transaction['amount']);
+                        self::handleTransactionNotification($transaction);
                         return response()->json($res, 201);
                     }
 
@@ -356,7 +363,20 @@ class PaymentsController extends Controller
 
                     if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
                         $transactionTitle = "Depósito de R$" . number_format($transaction['amount'], 2, ',', '.') . " para a conta " . Auth::user()->name;
-                        return $this->processCardPayment($transaction, $request->amount, $request->cardToken, $transactionTitle, Auth::user()->cpf, Auth::user()->name);
+
+                        $token = json_decode($request->input('card_token'), true);
+                        $card_token = self::createToken($token);
+                        $brand = self::getCardBrand($token['card_number']);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $transaction['status'] = Transaction::APPROVED_STATUS;
+                        $transaction['transfer_id'] = $res['id'];
+                        $transaction->save();
+
+                        DB::table('wallets')
+                            ->where('user_id', $transaction['recipient_user_id'])
+                            ->increment('total', $transaction['amount']);
+                        self::handleTransactionNotification($transaction);
+                        return response()->json($res, 201);
                     }
 
                     break;
@@ -427,8 +447,16 @@ class PaymentsController extends Controller
                         $token = json_decode($request->input('card_token'), true);
                         $card_token = self::createToken($token);
                         $brand = self::getCardBrand($token['card_number']);
-                        dd($token['card_number'], $brand);
                         $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $transaction['status'] = Transaction::APPROVED_STATUS;
+                        $transaction['transfer_id'] = $res['id'];
+                        $transaction->save();
+
+                        DB::table('wallets')
+                            ->where('user_id', $transaction['recipient_user_id'])
+                            ->increment('total', $transaction['amount']);
+                        self::handleTransactionNotification($transaction);
+
                         return response()->json($res, 201);
                     }
                     break;
@@ -447,7 +475,6 @@ class PaymentsController extends Controller
                 NotificationServiceProvider::createPPVNotificationByTransaction($transaction);
             }
 
-            // create payment request for this transaction and leave it on initiated status
             if ($transaction['payment_provider'] === Transaction::MANUAL_PROVIDER) {
                 $manualPaymentFiles = $request->get('manual_payment_files');
                 $manualPaymentDescription = $request->get('manual_payment_description');
@@ -475,9 +502,7 @@ class PaymentsController extends Controller
             ], 500);
         }
 
-        // Url generated successfully
         if (isset($redirectLink) && in_array($transaction['payment_provider'], Transaction::ALLOWED_PAYMENT_PROVIDERS)) {
-            // redirect on payment provider checkout page
             return Redirect::away($redirectLink);
         }
         return $this->paymentHandler->redirectByTransaction($transaction);
