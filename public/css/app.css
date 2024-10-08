@@ -1150,6 +1150,10 @@ footer .brand-logo {
   border-radius: 25px;
 }
 
+.imgPefil {
+  object-fit: cover;
+}
+
 .BannerLoginInfluencer {
   width: 100vw;
   border-top-left-radius: 50px;
@@ -1171,6 +1175,7 @@ footer .brand-logo {
 .btnToSwitchRegister {
   border-radius: 25px;
 }
+
 
 .BannerLogin {
   width: 100vw;
@@ -1398,6 +1403,10 @@ footer .brand-logo {
 
   .titlePixModal {
     font-size:18px;
+  }
+
+  .bannerPerfil {
+    height: 150px;
   }
  
 

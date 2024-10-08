@@ -875,66 +875,68 @@ class MessengerController extends Controller
             $viewerUser = User::where('id', $viewerID)->first();
         }
         $contactUser = User::where('id', $contactId)->first();
+
         if ($viewerUser) {
             // Is subscribed to user
-            if (PostsHelperServiceProvider::hasActiveSub($viewerUser->id, $contactUser->id)) {
-                return true;
-            }
+            // if (PostsHelperServiceProvider::hasActiveSub($viewerUser->id, $contactUser->id)) {
+            //     return true;
+            // }
             if ($viewerUser->id === $contactUser) {
                 return true;
             }
 
-            // handles chat access for creators so they can message their subscribers without subscribing back
-            if (PostsHelperServiceProvider::hasActiveSub($contactUser->id, $viewerUser->id)) {
-                return true;
-            }
-
-            // Contacted user has free profile
-            if (!$contactUser->paid_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($contactUser->id)) {
-                return true;
-            }
-
-            // Contacted user has open profile
-            if ($contactUser->open_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($contactUser->id)) {
-                return true;
-            }
-
-            if ($viewerUser->role_id === 1 || $contactUser->role_id === 1) {
-                return true;
-            }
-            // + If paid creator first created a conversation between him and a open/free profile, set sub = true for the free profile
-            if ((!$viewerUser->paid_profile || $viewerUser->open_profile) && $contactUser->paid_profile) {
-                $senderID = $viewerUser->id;
-                $receiverID = $contactUser->id;
-                $conversation = UserMessage::with(['sender', 'receiver', 'attachments'])->where(function ($q) use ($senderID, $receiverID) {
-                    $q->where('sender_id', $senderID)
-                        ->where('receiver_id', $receiverID);
-                })
-                    ->orWhere(
-                        function ($q) use ($senderID, $receiverID) {
-                            $q->where('receiver_id', $senderID)
-                                ->Where('sender_id', $receiverID);
-                        }
-                    )
-                    ->orderBy('created_at', 'ASC')
-                    ->first();
-                if ($conversation && $conversation->sender_id === $contactUser->id) {
-                    return true;
-                }
-            }
-            // Handling access when both profiles are either free or open an users have a follow relation from any of them
-            // if (
-            //     (($viewerUser->open_profile && $contactUser->open_profile) || (!$viewerUser->paid_profile && !$contactUser->paid_profile))
-            //     &&
-            //     (
-            //         ListsHelperServiceProvider::isUserFollowing($viewerID, $contactId) ||
-            //         ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)
-            //     )
-            // ) {
+            // // handles chat access for creators so they can message their subscribers without subscribing back
+            // if (PostsHelperServiceProvider::hasActiveSub($contactUser->id, $viewerUser->id)) {
             //     return true;
             // }
+
+            // // Contacted user has free profile
+            // if (!$contactUser->paid_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($contactUser->id)) {
+            //     return true;
+            // }
+
+            // // Contacted user has open profile
+            // if ($contactUser->open_profile && ListsHelperServiceProvider::loggedUserIsFollowingUser($contactUser->id)) {
+            //     return true;
+            // }
+
+            // if ($viewerUser->role_id === 1 || $contactUser->role_id === 1) {
+            //     return true;
+            // }
+            // // + If paid creator first created a conversation between him and a open/free profile, set sub = true for the free profile
+            // if ((!$viewerUser->paid_profile || $viewerUser->open_profile) && $contactUser->paid_profile) {
+            //     $senderID = $viewerUser->id;
+            //     $receiverID = $contactUser->id;
+            //     $conversation = UserMessage::with(['sender', 'receiver', 'attachments'])->where(function ($q) use ($senderID, $receiverID) {
+            //         $q->where('sender_id', $senderID)
+            //             ->where('receiver_id', $receiverID);
+            //     })
+            //         ->orWhere(
+            //             function ($q) use ($senderID, $receiverID) {
+            //                 $q->where('receiver_id', $senderID)
+            //                     ->Where('sender_id', $receiverID);
+            //             }
+            //         )
+            //         ->orderBy('created_at', 'ASC')
+            //         ->first();
+            //     if ($conversation && $conversation->sender_id === $contactUser->id) {
+            //         return true;
+            //     }
+            // }
+            // // Handling access when both profiles are either free or open an users have a follow relation from any of them
+            // // if (
+            // //     (($viewerUser->open_profile && $contactUser->open_profile) || (!$viewerUser->paid_profile && !$contactUser->paid_profile))
+            // //     &&
+            // //     (
+            // //         ListsHelperServiceProvider::isUserFollowing($viewerID, $contactId) ||
+            // //         ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)
+            // //     )
+            // // ) {
+            // //     return true;
+            // // }
+            
             // Creator is free/open & wants to message the follower
-              if (ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
+            if (ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
                 return true;
             }
         }
