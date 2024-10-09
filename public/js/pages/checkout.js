@@ -398,7 +398,7 @@ var checkout = {
         if ($("#provider").val() === "pix") {
           var cpf = $("#cpf").val();
 
-          if (!validarCPF(cpf) || !cpf) {
+          if (cpf && !validarCPF(cpf)) {
             $(".checkout-continue-btn .spinner-border").addClass("d-none");
             launchToast(
               "danger",
