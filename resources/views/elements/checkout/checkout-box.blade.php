@@ -192,7 +192,7 @@
                                     <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
                                 </div>
                                 <div class="p-4 mt-3 mb-2">
-                                    <div id="qrcode"></div>
+                                    <div id="qrcode-checkout"></div>
                                 </div>
                             </div>
                             <div class="inputPixArea mt-5 mb-5 p-2">

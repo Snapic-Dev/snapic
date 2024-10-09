@@ -538,8 +538,9 @@ var checkout = {
               );
               $("#checkout-center").modal("hide");
               $("#checkout-pix").modal("show");
-
-              new QRCode(document.getElementById("qrcode"), {
+              const qrcode = document.getElementById("qrcode-checkout");
+              qrcode.innerHTML = "";
+              new QRCode(qrcode, {
                 text: pixCopiaECola,
                 width: 200,
                 height: 200,
