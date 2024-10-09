@@ -875,7 +875,6 @@ class MessengerController extends Controller
             $viewerUser = User::where('id', $viewerID)->first();
         }
         $contactUser = User::where('id', $contactId)->first();
-
         if ($viewerUser) {
             // Is subscribed to user
             // if (PostsHelperServiceProvider::hasActiveSub($viewerUser->id, $contactUser->id)) {
@@ -934,9 +933,9 @@ class MessengerController extends Controller
             // // ) {
             // //     return true;
             // // }
-            
+
             // Creator is free/open & wants to message the follower
-            if (ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
+            if (!ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
                 return true;
             }
         }

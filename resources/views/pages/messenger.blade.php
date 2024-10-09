@@ -88,7 +88,7 @@
                     @include('elements.messenger.messenger-new-conversation-header')
                     @include('elements.preloading.messenger-conversation-header-box')
                     @include('elements.preloading.messenger-conversation-box')
-                    <div class="conversation-content pt-4 pb-1 px-3 flex-fill">
+                    <div class="conversation-content pt-4 pb-1 px-3 flex-fill pl-2">
                     </div>
                     <div class="dropzone-previews dropzone w-100 ppl-0 pr-0 pt-1 pb-1"></div>
                     <div
