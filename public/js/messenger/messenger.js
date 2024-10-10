@@ -430,7 +430,10 @@ var messenger = {
       $(".conversation-header").removeClass("d-none");
       $(".conversation-header-loading-box").addClass("d-none");
       $(".conversation-header-avatar").attr("src", avatar);
-      $(".conversation-header-user").html(name);
+      $(".conversation-header-user").html(
+        name !== null && name !== "null" ? name : username
+      );
+
       $(".conversation-profile-link").attr("href", profile);
 
       $(".details-holder .unfollow-btn").unbind("click");
@@ -778,7 +781,9 @@ var messenger = {
   parseMessageAttachment: function (file) {
     let attachmentsHtml = "";
     function adjustUrl(url) {
-      if (url.includes("https://armazenamentosnapic.nyc3.digitaloceanspaces.com")) {
+      if (
+        url.includes("https://armazenamentosnapic.nyc3.digitaloceanspaces.com")
+      ) {
         const startIndex = url.indexOf(
           "https://armazenamentosnapic.nyc3.digitaloceanspaces.com"
         );

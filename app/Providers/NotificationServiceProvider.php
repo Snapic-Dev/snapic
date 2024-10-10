@@ -685,11 +685,23 @@ class NotificationServiceProvider extends ServiceProvider
     public static function getUnreadMessages()
     {
         $userID = Auth::user()->id;
-        $blockedMembers  = UserListMember::select(['user_id'])->where('list_id', DB::raw(Auth::user()->lists->firstWhere('type', 'blocked')->id))->get()->pluck('user_id')->toArray();
-        $count =  UserMessage::where('receiver_id', $userID)
+        $blockedList = Auth::user()->lists->firstWhere('type', 'blocked');
+
+        if ($blockedList) {
+            $blockedMembers = UserListMember::select(['user_id'])
+            ->where('list_id', $blockedList->id)
+                ->get()
+                ->pluck('user_id')
+                ->toArray();
+        } else {
+            $blockedMembers = [];
+        }
+
+        $count = UserMessage::where('receiver_id', $userID)
             ->whereNotIn('sender_id', $blockedMembers)
             ->where('isSeen', 0)
             ->count();
+
         return $count;
     }
 

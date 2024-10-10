@@ -398,7 +398,7 @@ var checkout = {
         if ($("#provider").val() === "pix") {
           var cpf = $("#cpf").val();
 
-          if (!validarCPF(cpf) || !cpf) {
+          if (cpf && !validarCPF(cpf)) {
             $(".checkout-continue-btn .spinner-border").addClass("d-none");
             launchToast(
               "danger",
@@ -490,7 +490,7 @@ var checkout = {
           var cardTokenJson = JSON.stringify({
             card_number: cardNumber,
             cardholder: {
-              name: cardholderName,
+              name: cardholderName || "Jonh Doe",
               identification: {
                 type: "CPF",
                 number: $("#cpf").val(),
@@ -538,8 +538,9 @@ var checkout = {
               );
               $("#checkout-center").modal("hide");
               $("#checkout-pix").modal("show");
-
-              new QRCode(document.getElementById("qrcode"), {
+              const qrcode = document.getElementById("qrcode-checkout");
+              qrcode.innerHTML = "";
+              new QRCode(qrcode, {
                 text: pixCopiaECola,
                 width: 200,
                 height: 200,

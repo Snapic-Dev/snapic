@@ -16,14 +16,32 @@ function contactElement(contact){
     const avatar = contact.receiverID === user.user_id ? contact.senderAvatar : contact.receiverAvatar;
     const name = contact.receiverID === user.user_id ? contact.senderName : contact.receiverName;
     return `
-      <div class="col-12 d-flex pt-2 pb-2 contact-box contact-${contact.contactID}" onclick="messenger.fetchConversation(${contact.contactID})">
-        <img src="${ avatar }" class="contact-avatar rounded-circle"/>
+      <div class="col-12 d-flex pt-2 pb-2 contact-box contact-${
+        contact.contactID
+      }" onclick="messenger.fetchConversation(${contact.contactID})">
+        <img src="${avatar}" class="contact-avatar rounded-circle"/>
         <div class="m-0 ml-md-3 d-none d-lg-flex d-md-flex d-xl-flex justify-content-center flex-column text-truncate">
-            <div class="m-0 text-truncate overflow-hidden contact-name ${contact.lastMessageSenderID !== user.user_id && contact.isSeen === 0 ? 'font-weight-bold' : ''}">${filterXSS(name)}</div>
+            <div class="m-0 text-truncate overflow-hidden contact-name ${
+              contact.lastMessageSenderID !== user.user_id &&
+              contact.isSeen === 0
+                ? "font-weight-bold"
+                : ""
+            }">${filterXSS(name !== null && name !== "null" ? name : contact.receiverUsername)}</div>
             <small class="message-excerpt-holder d-flex text-truncate">
-                <span class="text-muted mr-1 ${contact.lastMessageSenderID !== user.user_id ? 'd-none' : ''}"> ${trans('You')}: </span>
-                <div class="m-0 text-muted contact-message text-truncate ${contact.lastMessageSenderID !== user.user_id && contact.isSeen === 0 ? 'font-weight-bold' : ''}" >${filterXSS(contact.lastMessage)}</div>
-                <div class="d-flex"> <div class="font-weight-bold ml-1">${(contact.created_at !== null ? '∙' :'')}</div>${(contact.created_at !== null ? '&nbsp;' + contact.created_at : '')}</div>
+                <span class="text-muted mr-1 ${
+                  contact.lastMessageSenderID !== user.user_id ? "d-none" : ""
+                }"> ${trans("You")}: </span>
+                <div class="m-0 text-muted contact-message text-truncate ${
+                  contact.lastMessageSenderID !== user.user_id &&
+                  contact.isSeen === 0
+                    ? "font-weight-bold"
+                    : ""
+                }" >${filterXSS(contact.lastMessage)}</div>
+                <div class="d-flex"> <div class="font-weight-bold ml-1">${
+                  contact.created_at !== null ? "∙" : ""
+                }</div>${
+      contact.created_at !== null ? "&nbsp;" + contact.created_at : ""
+    }</div>
             </small>
         </div>
       </div>
@@ -146,7 +164,7 @@ function lockedMessagePreview(messageData, senderData) {
             <div class="card ${app.theme === 'light' ? 'bg-gradient-faded-light-vertical' : 'bg-gradient-faded-dark-vertical'}">
               <div>
               <div class="lockedPreviewWrapper">
-                  <img class="card-img" src="${messengerVars.lockedMessageSVGPath}" >
+                  <img class="card-img postLockedDirect" src="/img/post-locked-direct.png" >
               </div>
                   <div class="card-img-overlay d-flex flex-column-reverse">
                            ${lockedMessagePaymentButton(messageData, senderData)}

@@ -144,6 +144,7 @@ class MessengerController extends Controller
              senderDetails.role_id as senderRole,
              receiverDetails.id as receiverID,
              receiverDetails.name as receiverName,
+             receiverDetails.username as receiverUsername,
              receiverDetails.avatar as receiverAvatar,
              receiverDetails.role_id as receiverRole,
              IF(receiverDetails.id = ' . $userID . ', senderDetails.id, receiverDetails.id) as contactID
@@ -875,7 +876,6 @@ class MessengerController extends Controller
             $viewerUser = User::where('id', $viewerID)->first();
         }
         $contactUser = User::where('id', $contactId)->first();
-
         if ($viewerUser) {
             // Is subscribed to user
             // if (PostsHelperServiceProvider::hasActiveSub($viewerUser->id, $contactUser->id)) {
@@ -934,11 +934,12 @@ class MessengerController extends Controller
             // // ) {
             // //     return true;
             // // }
-            
+
             // Creator is free/open & wants to message the follower
-            if (ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
-                return true;
-            }
+            // if (!ListsHelperServiceProvider::isUserFollowing($contactId, $viewerID)) {
+            //     return true;
+            // }
+            return true;
         }
         return false;
     }

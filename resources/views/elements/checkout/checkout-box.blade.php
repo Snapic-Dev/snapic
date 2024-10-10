@@ -192,7 +192,7 @@
                                     <h5 id="dataExpiration" aria-placeholder="00h 00min 00s"></h5>
                                 </div>
                                 <div class="p-4 mt-3 mb-2">
-                                    <div id="qrcode"></div>
+                                    <div id="qrcode-checkout"></div>
                                 </div>
                             </div>
                             <div class="inputPixArea mt-5 mb-5 p-2">
@@ -229,7 +229,6 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdeli vr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
 <script>
     const showCard = document.querySelectorAll('.show-card-form')
     const formSubmit = document.querySelector('.checkout-continue-btn')
@@ -309,15 +308,15 @@
     document.querySelectorAll('.cpf_input').forEach((element) => {
 
         element.addEventListener('input', (event) => {
-            let value = event.target.value.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
+            let value = event.target.value.replace(/\D/g, '');
 
             if (value.length > 11) {
-                value = value.slice(0, 11); // Apenas mantém os primeiros 11 dígitos
+                value = value.slice(0, 11);
             }
 
-            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Primeiro ponto
-            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Segundo ponto
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Traço antes dos dois últimos dígitos
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 
             event.target.value = value;
             document.querySelector("#cpf").value = value

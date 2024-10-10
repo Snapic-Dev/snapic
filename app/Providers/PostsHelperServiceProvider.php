@@ -345,9 +345,12 @@ class PostsHelperServiceProvider extends ServiceProvider
 
         // Filtro para bloquear usuários ou exibir todos os posts
         if ($filterType == 'blocked' || $filterType == 'all') {
-            // Exclui os posts de usuários bloqueados
-            $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
-            $posts->whereNotIn('posts.user_id', $blockedUsers); // Exclui usuários bloqueados dos resultados
+            $blockedList = Auth::user()->lists->firstWhere('type', 'blocked');
+
+            if ($blockedList) {
+                $blockedUsers = ListsHelperServiceProvider::getListMembers($blockedList->id);
+                $posts->whereNotIn('posts.user_id', $blockedUsers); // Exclui usuários bloqueados dos resultados
+            }
         }
 
         // Filtro para exibir posts de assinaturas ou todos os posts

@@ -1,6 +1,6 @@
 <div class="input-group mb-3 mt-5 p-2 d-block">
     <div class="">
-        <label class="text-sm text-bold">Valor do Depósito</label>
+        <label class="text-sm text-bold">Valor do Depósito <span style="color:blueviolet;">*</span></label>
         <input class="form-control inputText depositInput"
             placeholder="{{ \App\Providers\PaymentsServiceProvider::getDepositLimitAmounts() }}"
             aria-label="{{ __('Username') }}" aria-describedby="amount-label" id="deposit-amount" type="number"
@@ -11,6 +11,12 @@
             <label class="text-sm text-muted">Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00 para saque</label>
         </div> -->
     </div>
+    @if (Auth::user() && !Auth::user()->cpf)
+    <div class="my-3 checkout-cpf-input" id="">
+        <label for="checkout-cpf"><b style="font-size: 14px; font-weight: bold;">CPF</b><span style="color:blueviolet; margin-left:3px;">*</span></label>
+        <input class="form-control uifield-amount cpf_input" required placeholder="000.000.000-00" aria-label="CPF" aria-describedby="cpf-label" id="checkout-cpf" type="text">
+    </div>
+    @endif
     <div class="ml-2 justify-content-center mt-5 walletCarousel">
         <button class="btnOne btn btn-round  border ml-2"
             onclick="inputDepositValueBtn(`{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}`)">
@@ -18,7 +24,7 @@
         </button>
         @php
         $minAmount = \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount();
-        $increments = [2, 5, 10, 20, 50]; // Fatores de incremento progressivo
+        $increments = [2, 5, 10, 20, 50];
         $depositValues = [];
 
         $baseAmount = ceil($minAmount / 10) * 10;
@@ -129,9 +135,6 @@
                     <span class="textLoadingBtn">Depositar</span>
                 </div>
             </button>
-            <span class="text-danger errorCPF justify-content-center w-100">
-                <p>Adicione um CPF para poder processar a transação, <a class="linkCpfError"> clique aqui para adicionar.</a></p>
-            </span>
             <div class="p-3 pb-4 mt-4">
                 <p class="text-xs alertWitdrawalMsg">
                     <strong>Aviso Importante:</strong>
@@ -158,7 +161,7 @@
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">Validade</label>
                                         <input type="month" class="form-control cardDateValidate" id="data"
-                                            name="data" placeholder="MM/YY">
+                                            name="data" placeholder="MM/YYYY">
                                     </div>
                                     <div class="col mt-2">
                                         <label class="text-sm text-bold">CVV</label>
@@ -201,7 +204,6 @@
     @include('elements.uploaded-file-preview-template')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi-umd.min.js"></script>
     <script>
         let pixRadio = document.querySelector("#pixRadio");
         let modalCreditCard = document.querySelector(".modalCreditCard");
@@ -214,13 +216,8 @@
         let cardNumber = document.querySelector('.cardNumber')
         let cardDateValidate = document.querySelector('.cardDateValidate')
         let cardCVV = document.querySelector('.cardCVV')
-        let errorCPF = document.querySelector('.errorCPF');
-        let linkCpfError = document.querySelector('.linkCpfError');
-
-        const origin = window.location.origin;
-        const linkEditProfile = `${origin}/my/settings/profile`;
-
-        errorCPF.style.display = "none"
+        let cpf = document.querySelector('#checkout-cpf')
+        const cpfInputDiv = document.querySelector('.checkout-cpf-input');
 
         document.addEventListener("DOMContentLoaded", function() {
             if (pixRadio) {
@@ -293,6 +290,42 @@
                 });
         }
 
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, "");
+
+            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+                return false;
+            }
+
+            var soma = 0;
+            var resto;
+
+            for (var i = 1; i <= 9; i++) {
+                soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) {
+                resto = 0;
+            }
+            if (resto !== parseInt(cpf.substring(9, 10))) {
+                return false;
+            }
+
+            soma = 0;
+            for (var i = 1; i <= 10; i++) {
+                soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) {
+                resto = 0;
+            }
+            if (resto !== parseInt(cpf.substring(10, 11))) {
+                return false;
+            }
+
+            return true;
+        }
+
         const deposit = async () => {
             const hostname = window.location.origin;
             const url = `${hostname}/payment/deposit`;
@@ -310,14 +343,60 @@
                 let data = {
                     transaction_type: "deposit",
                     provider: pixRadio.checked ? "pix" : "card",
-                    amount: depositInput.value
+                    amount: depositInput.value,
+                    cpf: cpf?.value ?? null
                 }
 
+                if ("{{!Auth::user()->cpf}}" && (!cpf?.value || !validarCPF(cpf?.value))) {
+                    throw new Error('Preencha o campo de CPF corretamente para prosseguir!')
+                }
 
                 if (creditRadio.checked) {
                     $('#staticBackdrop2').modal('hide');
-                    const cardToken = await generateCardToken()
-                    data.cardToken = cardToken;
+
+                    if (!validarNumeroCartao(cardNumber.value.split(" ").join("")) || !cardNumber.value) {
+                        console.log(cardNumber.value);
+
+                        launchToast(
+                            "danger",
+                            trans("Error"),
+                            "Número do cartão de crédito inválido. Por favor, insira um número válido."
+                        );
+                        return;
+                    }
+
+                    if (!validarDataValidade(cardDateValidate.value)) {
+                        launchToast(
+                            "danger",
+                            trans("Error"),
+                            "Data de validade do cartão é inválida. Por favor, insira uma data válida."
+                        );
+                        return;
+                    }
+
+                    if (cardCVV.value.length !== 3) {
+                        launchToast(
+                            "danger",
+                            trans("Error"),
+                            "Código de segurança inválido. O código deve ter 3 dígitos."
+                        );
+                        return;
+                    }
+
+                    var card_token = JSON.stringify({
+                        card_number: cardNumber.value,
+                        cardholder: {
+                            name: "{{Auth::user()->name}}" || "Jonh Doe",
+                            identification: {
+                                type: "CPF",
+                                number: cpf?.value ?? "{{Auth::user()->cpf}}",
+                            },
+                        },
+                        expiration_month: cardDateValidate.value.split("/")[0],
+                        expiration_year: cardDateValidate.value.split("/")[1],
+                        security_code: cardCVV.value,
+                    });
+                    data.card_token = card_token;
                 }
 
                 const response = await fetch(url, {
@@ -370,8 +449,6 @@
             } catch (error) {
                 if (error.message === "Adicione seu CPF para prosseguir!") {
                     launchToast("danger", trans("Error"), `${error.message}`);
-                    linkCpfError.setAttribute("href", linkEditProfile)
-                    return errorCPF.style.display = "flex"
                 }
                 launchToast("danger", trans("Error"), error.message);
             } finally {
@@ -381,50 +458,6 @@
 
         const openCreditModal = () => {
             $('#staticBackdrop2').modal('show');
-        }
-
-        const generateCardToken = async () => {
-            try {
-                if (typeof EfiPay === 'undefined') {
-                    throw new Error('O script da Efipay não foi carregado.');
-                    return;
-                }
-
-                const efiPay = EfiPay.CreditCard.setAccount("fc07c8c0cbbbb3277f2e769cb05e041f")
-                    .setEnvironment("production");
-
-                const brand = await EfiPay.CreditCard
-                    .setCardNumber(cardNumber.value)
-                    .verifyCardBrand();
-
-                const cardData = {
-                    brand: brand,
-                    number: cardNumber.value,
-                    cvv: cardCVV.value,
-                    expirationMonth: cardDateValidate.value.split("/")[0],
-                    expirationYear: cardDateValidate.value.split("/")[1],
-                    reuse: false,
-                };
-
-                const result = await efiPay.setCreditCardData(cardData).getPaymentToken();
-
-                return result.payment_token;
-            } catch (error) {
-                let errorMessage = "Tente novamente mais tarde"
-
-                switch (error.error) {
-                    case 'erro_gn_fingerprint':
-                        errorMessage = "Desative seu AdBlock"
-                        break
-                    case 'invalid_data':
-                        errorMessage = error.error_description
-                        break
-                    default:
-                        errorMessage = error.message
-                        break
-                }
-                throw new Error(errorMessage)
-            }
         }
 
         function calculateTimeDifference() {
@@ -504,4 +537,55 @@
             value = value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
             event.target.value = value;
         });
+
+        if (document.querySelector('#checkout-cpf')) {
+            document.querySelector('#checkout-cpf').addEventListener('input', (event) => {
+                let value = event.target.value.replace(/\D/g, '');
+
+                if (value.length > 11) {
+                    value = value.slice(0, 11);
+                }
+
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+                event.target.value = value;
+
+                const cpfHiddenField = document.querySelector("#cpf");
+                if (cpfHiddenField) {
+                    cpfHiddenField.value = value;
+                }
+            });
+        }
+
+        function validarNumeroCartao(numero) {
+            var soma = 0;
+            var alternar = false;
+            for (var i = numero.length - 1; i >= 0; i--) {
+                var n = parseInt(numero.charAt(i), 10);
+                if (alternar) {
+                    n *= 2;
+                    if (n > 9) {
+                        n -= 9;
+                    }
+                }
+                soma += n;
+                alternar = !alternar;
+            }
+
+            return soma % 10 === 0;
+        }
+
+        function validarDataValidade(data) {
+            var mesAno = data.split("/");
+            var mes = parseInt(mesAno[0], 10);
+            var ano = parseInt(mesAno[1], 10);
+
+            var dataAtual = new Date();
+            var anoAtual = dataAtual.getFullYear();
+            var mesAtual = dataAtual.getMonth() + 1;
+
+            return ano > anoAtual || (ano === anoAtual && mes >= mesAtual);
+        }
     </script>
