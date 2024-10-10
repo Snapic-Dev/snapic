@@ -72,12 +72,12 @@
 }
 
 .paid-message-box .lockedPreviewWrapper {
-  width: 260px !important;
+  width: 250px !important;
 }
 
 @media (min-width: 767px) {
   .paid-message-box .lockedPreviewWrapper {
-    width: 400px !important;
+    width: 390px !important;
   }
   .paid-message-box {
     width: 430px !important;

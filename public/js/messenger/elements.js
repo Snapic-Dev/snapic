@@ -164,7 +164,7 @@ function lockedMessagePreview(messageData, senderData) {
             <div class="card ${app.theme === 'light' ? 'bg-gradient-faded-light-vertical' : 'bg-gradient-faded-dark-vertical'}">
               <div>
               <div class="lockedPreviewWrapper">
-                  <img class="card-img" src="${messengerVars.lockedMessageSVGPath}" >
+                  <img class="card-img postLockedDirect" src="/img/post-locked-direct.png" >
               </div>
                   <div class="card-img-overlay d-flex flex-column-reverse">
                            ${lockedMessagePaymentButton(messageData, senderData)}
