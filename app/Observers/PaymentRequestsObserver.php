@@ -64,11 +64,11 @@ class PaymentRequestsObserver
                 [
                     'email' => $user->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name' => $user->name]),
-                    'content' => __('Email payment request processed', [
+                    'title' => __('Olá, :name,', ['name' => $user->name]),
+                    'content' => __('Solicitação de pagamento processada', [
                         'siteName' => getSetting('site.name'),
                         'status' => __($paymentRequest->status),
-                    ]) . ($paymentRequest->status == 'approved' ? ' $' . $paymentRequest->amount . ' ' . __('have been credited to your account.') : ''),
+                    ]) . ($paymentRequest->status == 'approved' ? ' R$ ' . $paymentRequest->amount . ' ' . __('foram creditados em sua conta.') : ''),
                     'button' => $button,
                 ]
             );
@@ -99,10 +99,10 @@ class PaymentRequestsObserver
                 [
                     'email' => $paymentRequest->user()->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name' => $user->name]),
-                    'content' => __('Email payment request processed', [
+                    'title' => __('Olá, :name,', ['name' => $user->name]),
+                    'content' => __('Solicitação de pagamento processada', [
                         'siteName' => getSetting('site.name'),
-                        'status' => __('rejected'),
+                        'status' => __('rejeitada'),
                     ]),
                     'button' => $button,
                 ]

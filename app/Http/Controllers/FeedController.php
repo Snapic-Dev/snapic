@@ -29,6 +29,8 @@ class FeedController extends Controller
         $startPage = PostsHelperServiceProvider::getFeedStartPage(PostsHelperServiceProvider::getPrevPage($request));
         $posts = PostsHelperServiceProvider::getFeedPosts(Auth::user()->id, false, $startPage);
         PostsHelperServiceProvider::shouldDeletePaginationCookie($request);
+        $blockedList = Auth::user()->lists->firstWhere('type', 'blocked');
+        $followingList = Auth::user()->lists->firstWhere('type', 'following');
 
         JavaScript::put([
             'paginatorConfig' => [
@@ -47,8 +49,8 @@ class FeedController extends Controller
                 'username' => Auth::user()->username,
                 'user_id' => Auth::user()->id,
                 'lists' => [
-                    'blocked' => Auth::user()->lists->firstWhere('type', 'blocked')->id,
-                    'following' => Auth::user()->lists->firstWhere('type', 'following')->id,
+                    'blocked' => $blockedList ? $blockedList->id : null,
+                    'following' => $followingList ? $followingList->id : null,
                 ],
             ],
 

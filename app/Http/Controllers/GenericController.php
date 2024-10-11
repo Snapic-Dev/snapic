@@ -122,13 +122,13 @@ class GenericController extends Controller
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $user->email,
-                        'subject' => __('Action required | New contact message received'),
-                        'title' => __('Hello, :name,', ['name' => $user->name]),
-                        'content' => __('There is a new contact message on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
+                        'subject' => __('Ação necessária | Nova mensagem de contato recebida'),
+                        'title' => __('Olá, :name,', ['name' => $user->name]),
+                        'content' => __('Há uma nova mensagem de contato em :siteName que requer sua atenção.', ['siteName' => getSetting('site.name')]),
                         'quote' => $request->get('message'),
                         'replyTo' => $request->get('email'),
                         'button' => [
-                            'text' => __('Go to admin'),
+                            'text' => __('Ir para o painel administrativo'),
                             'url' => route('voyager.dashboard') . '/contact-messages',
                         ],
                     ]

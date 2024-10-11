@@ -99,11 +99,11 @@ class WithdrawalsObserver
             [
                 'email' => $user->email,
                 'subject' => $emailSubject,
-                'title' => __('Hello, :name,', ['name' => $user->name]),
-                'content' => __('Email withdrawal processed', [
+                'title' => __('Olá, :name,', ['name' => $user->name]),
+                'content' => __('Email de retirada processada', [
                     'siteName' => getSetting('site.name'),
                     'status' => __($withdrawal->status),
-                ]) . ($withdrawal->status == 'approved' ? ' ' . SettingsServiceProvider::getWebsiteFormattedAmount($withdrawal->amount) . (getSetting('payments.withdrawal_allow_fees') ? '(-' . SettingsServiceProvider::getWebsiteCurrencySymbol() . ($withdrawal->amount * (getSetting('payments.withdrawal_default_fee_percentage') / 100)) . ' taxes)' : '') . ' ' . __('has been sent to your account.') : ''),
+                ]) . ($withdrawal->status == 'approved' ? ' ' . SettingsServiceProvider::getWebsiteFormattedAmount($withdrawal->amount) . (getSetting('payments.withdrawal_allow_fees') ? '(-' . SettingsServiceProvider::getWebsiteCurrencySymbol() . ($withdrawal->amount * (getSetting('payments.withdrawal_default_fee_percentage') / 100)) . ' taxas)' : '') . ' ' . __('foi enviado para sua conta.') : ''),
                 'button' => $button,
             ]
         );

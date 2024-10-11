@@ -68,11 +68,11 @@ class PaymentRequestServiceProvider extends ServiceProvider
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $user->email,
-                        'subject' => __('Action required | New payment request'),
-                        'title' => __('Hello, :name,', ['name' => $user->name]),
-                        'content' => __('There is a new payment request on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
+                        'subject' => __('Ação necessária | Nova solicitação de pagamento'),
+                        'title' => __('Olá, :name,', ['name' => $user->name]),
+                        'content' => __('Há uma nova solicitação de pagamento em :siteName que requer sua atenção.', ['siteName' => getSetting('site.name')]),
                         'button' => [
-                            'text' => __('Go to admin'),
+                            'text' => __('Ir para o admin'),
                             'url' => route('voyager.dashboard') . '/payment-requests',
                         ],
                     ]

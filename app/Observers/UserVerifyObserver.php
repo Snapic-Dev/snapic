@@ -53,8 +53,8 @@ class UserVerifyObserver
                 [
                     'email' => $user->email,
                     'subject' => $emailSubject,
-                    'title' => __('Hello, :name,', ['name' => $user->name]),
-                    'content' => __('Email identity checked', ['siteName' => getSetting('site.name'), 'status' => __($userVerify->status)]),
+                    'title' => __('Olá, :name,', ['name' => $user->name]),
+                    'content' => __('Email de verificação de identidade', ['siteName' => getSetting('site.name'), 'status' => __($userVerify->status)]),
                     'button' => $button,
                 ]
             );

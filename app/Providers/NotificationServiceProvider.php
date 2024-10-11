@@ -106,11 +106,11 @@ class NotificationServiceProvider extends ServiceProvider
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $user->email,
-                            'subject' => __('New comment received'),
-                            'title' => __('Hello, :name,', ['name' => $user->name]),
-                            'content' =>  __("You've received a new comment on one of your posts at :siteName.", ['siteName' => getSetting('site.name')]),
+                            'subject' => __('Novo comentário recebido'),
+                            'title' => __('Olá, :name,', ['name' => $user->name]),
+                            'content' => __("Você recebeu um novo comentário em um de seus posts em :siteName.", ['siteName' => getSetting('site.name')]),
                             'button' => [
-                                'text' => __('Your notifications'),
+                                'text' => __('Suas notificações'),
                                 'url' => route('my.notifications'),
                             ],
                         ]
@@ -146,11 +146,11 @@ class NotificationServiceProvider extends ServiceProvider
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $user->email,
-                            'subject' => __('You got a new subscriber!'),
-                            'title' => __('Hello, :name,', ['name' => $user->name]),
-                            'content' => __('You got a new subscriber! You can see more details over your subscriptions tab.'),
+                            'subject' => __('Você ganhou um novo assinante!'),
+                            'title' => __('Olá, :name,', ['name' => $user->name]),
+                            'content' => __('Você ganhou um novo assinante! Você pode ver mais detalhes na aba de assinaturas.'),
                             'button' => [
-                                'text' => __('Manage your subs'),
+                                'text' => __('Gerenciar suas assinaturas'),
                                 'url' => route('my.settings', ['type' => 'subscriptions']),
                             ],
                         ]
@@ -184,11 +184,11 @@ class NotificationServiceProvider extends ServiceProvider
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $user->email,
-                            'subject' => __('You got a new tip!'),
-                            'title' => __('Hello, :name,', ['name' => $user->name]),
+                            'subject' => __('Você recebeu uma nova gorjeta!'),
+                            'title' => __('Olá, :name,', ['name' => $user->name]),
                             'content' => $notificationData['message'],
                             'button' => [
-                                'text' => __('Your notifications'),
+                                'text' => __('Suas notificações'),
                                 'url' => route('my.notifications', ['type' => 'subscriptions']),
                             ],
                         ]
@@ -228,11 +228,11 @@ class NotificationServiceProvider extends ServiceProvider
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $user->email,
-                            'subject' => __('Your paid content has been unlocked!'),
-                            'title' => __('Hello, :name,', ['name' => $user->name]),
+                            'subject' => __('Seu conteúdo pago foi desbloqueado!'),
+                            'title' => __('Olá, :name,', ['name' => $user->name]),
                             'content' => $message,
                             'button' => [
-                                'text' => __('Your notifications'),
+                                'text' => __('Suas notificações'),
                                 'url' => route('my.notifications', ['type' => 'tips']),
                             ],
                         ]
@@ -326,11 +326,11 @@ class NotificationServiceProvider extends ServiceProvider
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $stream->user->email,
-                        'subject' => __('Your live stream is about to end'),
-                        'title' => __('Hello, :name,', ['name' => $stream->user->name]),
-                        'content' =>  $message,
+                        'subject' => __('Sua transmissão ao vivo está prestes a terminar'),
+                        'title' => __('Olá, :name,', ['name' => $stream->user->name]),
+                        'content' => $message,
                         'button' => [
-                            'text' => __('Watch streaming'),
+                            'text' => __('Assistir transmissão'),
                             'url' => Redirect::route('public.stream.get', ['streamID' => $stream->id, 'slug' => $stream->slug])->getTargetUrl(),
                         ],
                     ]
@@ -562,9 +562,9 @@ class NotificationServiceProvider extends ServiceProvider
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $subscription->subscriber->email,
-                            'subject' => __('Your subscription renewal'),
-                            'title' => __('Hello, :name,', ['name' => $subscription->subscriber->name]),
-                            'content' =>  __('Email subscription updated', ['name' => $subscription->creator->name, 'message' => $message]),
+                            'subject' => __('Renovação da sua assinatura'),
+                            'title' => __('Olá, :name,', ['name' => $subscription->subscriber->name]),
+                            'content' => __('E-mail de atualização da assinatura', ['name' => $subscription->creator->name, 'message' => $message]),
                             'button' => [
                                 'text' => $buttonText,
                                 'url' => $buttonUrl,
@@ -715,11 +715,11 @@ class NotificationServiceProvider extends ServiceProvider
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $transaction->receiver->email,
-                    'subject' => __('Your deposit request has been approved'),
-                    'title' => __('Hello, :name,', ['name' => $transaction->receiver->name]),
-                    'content' =>  __('Your deposit request of :amount has been approved.', ['amount' => $transaction->amount]),
+                    'subject' => __('Sua solicitação de depósito foi aprovada'),
+                    'title' => __('Olá, :name,', ['name' => $transaction->receiver->name]),
+                    'content' => __('Sua solicitação de depósito de :amount foi aprovada.', ['amount' => $transaction->amount]),
                     'button' => [
-                        'text' => __('Check your wallet'),
+                        'text' => __('Ver sua carteira'),
                         'url' => route('my.settings', ['type' => 'wallet']),
                     ],
                 ]
@@ -739,11 +739,11 @@ class NotificationServiceProvider extends ServiceProvider
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $email,
-                        'subject' => __('Partially paid payment'),
-                        'title' => __('Hello, :name,', ['name' => 'Admin']),
-                        'content' =>  __('There is a partially paid payment done with NowPayments that requires your attention. (:paymentId)', ['paymentId' => $transaction->nowpayments_payment_id]),
+                        'subject' => __('Pagamento parcialmente pago'),
+                        'title' => __('Olá, :name,', ['name' => 'Admin']),
+                        'content' => __('Há um pagamento parcialmente pago realizado com NowPayments que requer sua atenção. (:paymentId)', ['paymentId' => $transaction->nowpayments_payment_id]),
                         'button' => [
-                            'text' => __('Check payment'),
+                            'text' => __('Ver pagamento'),
                             'url' => 'https://account.nowpayments.io/payments',
                         ],
                     ]
