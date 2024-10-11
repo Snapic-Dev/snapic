@@ -74,7 +74,6 @@ class PaymentsController extends Controller
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
             $transaction->save();
-
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
@@ -483,8 +482,7 @@ class PaymentsController extends Controller
                         DB::table('wallets')
                             ->where('user_id', $transaction['recipient_user_id'])
                             ->increment('total', $transaction['amount']);
-                        self::handleTransactionNotification($transaction);
-
+                        $this->paymentHandler->generateSubscriptionByTransaction($transaction);
                         return response()->json($res, 201);
                     }
                     break;
@@ -598,7 +596,16 @@ class PaymentsController extends Controller
                 ->where('user_id', $transaction->recipient_user_id)
                 ->increment('total', $amount);
 
-            self::handleTransactionNotification($transaction);
+            if (
+                $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION ||
+                $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::YEARLY_SUBSCRIPTION
+            ) {
+                $this->paymentHandler->generateSubscriptionByTransaction($transaction);
+            } else {
+                self::handleTransactionNotification($transaction);
+            }
             return response()->json(['message' => 'Pagamento Processado'], 200);
         } catch (\Exception $e) {
             Log::error('Erro ao processar o webhook PIX:', ['error' => $e->getMessage()]);

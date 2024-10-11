@@ -1022,12 +1022,12 @@ class PaymentHelper
         return $subscription;
     }
 
-    public function generateCardSubscriptionByTransaction($transaction)
+    public function generateSubscriptionByTransaction($transaction)
     {
         $existingSubscription = $this->getSubscriptionBySenderAndReceiverAndProvider(
             $transaction['sender_user_id'],
             $transaction['recipient_user_id'],
-            Transaction::CARD_PROVIDER
+            $transaction['payment_provider'],
         );
 
         if ($existingSubscription != null) {
