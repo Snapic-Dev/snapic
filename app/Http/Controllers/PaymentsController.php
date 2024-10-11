@@ -274,19 +274,19 @@ class PaymentsController extends Controller
 
                     switch ($transactionType) {
                         case Transaction::TIP_TYPE:
-                            $transactionTitle = "Gorjeta no Post de {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Gorjeta no Post de {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::CHAT_TIP_TYPE:
-                            $transactionTitle = "Gorjeta no Chat de {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Gorjeta no Chat de {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::STREAM_ACCESS:
-                            $transactionTitle = "Acesso à Transmissão de {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Acesso à Transmissão de {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::POST_UNLOCK:
-                            $transactionTitle = "Desbloqueio do Post de {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Desbloqueio do Post de {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::MESSAGE_UNLOCK:
-                            $transactionTitle = "Desbloqueio de Mensagem de {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Desbloqueio de Mensagem de {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         default:
                             $transactionTitle = "Transação não identificada - R$" . number_format($transaction['amount'], 2, ',', '.');
@@ -390,7 +390,7 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::CARD_PROVIDER) {
-                        $transactionTitle = "Depósito de R$" . number_format($transaction['amount'], 2, ',', '.') . " para a conta " . Auth::user()->name;
+                        $transactionTitle = "Depósito de R$" . number_format($transaction['amount'], 2, ',', '.') . " para a conta " . Auth::user()->username;
 
                         $token = json_decode($request->input('card_token'), true);
                         $card_token = self::createToken($token);
@@ -415,16 +415,16 @@ class PaymentsController extends Controller
                     $transactionTitle = '';
                     switch ($transactionType) {
                         case Transaction::ONE_MONTH_SUBSCRIPTION:
-                            $transactionTitle = "Assinatura de 1 Mês para {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Assinatura de 1 Mês para {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::THREE_MONTHS_SUBSCRIPTION:
-                            $transactionTitle = "Assinatura de 3 Meses para {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Assinatura de 3 Meses para {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::SIX_MONTHS_SUBSCRIPTION:
-                            $transactionTitle = "Assinatura de 6 Meses para {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Assinatura de 6 Meses para {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         case Transaction::YEARLY_SUBSCRIPTION:
-                            $transactionTitle = "Assinatura Anual para {$recipientUser->name} - R$" . number_format($transaction['amount'], 2, ',', '.');
+                            $transactionTitle = "Assinatura Anual para {$recipientUser->username} - R$" . number_format($transaction['amount'], 2, ',', '.');
                             break;
                         default:
                             $transactionTitle = "Transação não identificada - R$" . number_format($transaction['amount'], 2, ',', '.');
