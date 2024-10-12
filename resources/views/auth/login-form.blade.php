@@ -19,13 +19,13 @@
     <div class="form-group">
         <!-- <label for="name" class="col-form-label required-label">{{ __('Name') }}</label> -->
         <div class="">
-            <input class="inputLogin form-control" id="username" type="text" placeholder="Apelido*"
-                class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"
+            <input class="inputLogin form-control @error('username') is-invalid @enderror" id="username" type="text" placeholder="Apelido*"
+                name="username" value="{{ old('username') }}"
                 autocomplete="username" autofocus
                 maxlength=15 
                 minlength=4
                 >
-            @error('name')
+            @error('username')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -35,22 +35,22 @@
 
     <div class="form-group">
         <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
-        <div class="">
-            <div class="d-flex align-items-center">
-                <input class="inputLogin form-control" id="password" placeholder="Senha*" type="password"
-                    class="form-control @error('password') is-invalid @enderror" name="password"
+        <div class="d-flex align-items-center">
+            <div class="w-100">
+                <input class="inputLogin form-control @error('password') is-invalid @enderror" id="password" placeholder="Senha*" type="password"
+                    name="password"
                     autocomplete="current-password">
-                <div class="tooglePass">
-                        <span class="" onclick="togglePasswordVisibility()">
-                            <ion-icon id="togglePasswordIcon" name="eye-outline"></ion-icon>
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
                         </span>
-                    </div>
+                    @enderror
             </div>
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
+            <div class="tooglePass">
+                <span class="" onclick="togglePasswordVisibility()">
+                    <ion-icon id="togglePasswordIcon" name="eye-outline"></ion-icon>
                 </span>
-            @enderror
+            </div>
         </div>
     </div>
 

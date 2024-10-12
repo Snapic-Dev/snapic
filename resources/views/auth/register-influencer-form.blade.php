@@ -36,7 +36,7 @@
         <div class="">
             <input id="email" placeholder="Email*" type="email"
                 class="inputLogin form-control @error('email') is-invalid @enderror" name="email"
-                value="{{ old('email') }}" required autocomplete="email">
+                value="{{ old('email') }}" autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -49,7 +49,7 @@
         <div class="">
             <input id="cpf" placeholder="CPF*" type="text"
                 class="inputLogin form-control @error('cpf') is-invalid @enderror" name="cpf"
-                value="{{ old('cpf') }}" required autocomplete="cpf">
+                value="{{ old('cpf') }}" autocomplete="cpf">
             @error('cpf')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -61,7 +61,7 @@
     <div class="form-group">
         <input id="birthdate" type="date"
             class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror" name="birthdate"
-            value="{{ old('birthdate') }}" required autocomplete="date" placeholder="Data Nascimento">
+            value="{{ old('birthdate') }}" autocomplete="date" placeholder="Data Nascimento">
         @error('birthdate')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -73,7 +73,7 @@
         <div class="">
             <input id="phone" placeholder="Telefone*" type="tel"
                 class="inputLogin form-control @error('phone') is-invalid @enderror" name="phone"
-                value="{{ old('phone') }}" required autocomplete="text">
+                value="{{ old('phone') }}" autocomplete="text">
             @error('phone')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -87,7 +87,7 @@
         <!-- <label for="niche" class="col-form-label required-label">{{ __('Niche') }}</label> -->
         <div class="">
             <select id="niche" class="inputLogin nicheSelect form-control @error('niche') is-invalid @enderror"
-                name="niche" required>
+                name="niche">
                 <option class="selectOption" value="">{{ __('Nicho*') }}</option>
                 @foreach ($niches as $niche)
                     <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
@@ -122,7 +122,7 @@
         <!-- <label for="password" class="col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="">
             <input id="password" placeholder="Senha*" type="password"
-                class="inputLogin form-control @error('password') is-invalid @enderror" name="password" required
+                class="inputLogin form-control @error('password') is-invalid @enderror" name="password"
                 autocomplete="new-password">
             @error('password')
                 <span class="invalid-feedback" role="alert">
@@ -137,7 +137,7 @@
         <div class="">
             <input id="password-confirm" type="password"
                 class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"
-                placeholder="Confirmar Senha*" name="password_confirmation" required autocomplete="new-password">
+                placeholder="Confirmar Senha*" name="password_confirmation" autocomplete="new-password">
             @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -200,11 +200,6 @@
                         {{ __('and') }} <a
                             href="{{ route('pages.get', ['slug' => GenericHelper::getPrivacyPage()->slug]) }}">{{ __('Privacy Policy') }}</a>.</span>
                 </label>
-                @error('terms')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
             </div>
         </div>
     </div>

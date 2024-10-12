@@ -1,6 +1,7 @@
 <form method="POST" action="{{ route('register') }}" id="register-form">
     @csrf
 
+
     @if (getSetting('social-login.facebook_client_id') ||
             getSetting('social-login.twitter_client_id') ||
             getSetting('social-login.google_client_id'))
@@ -37,7 +38,7 @@
         <div class="">
             <input id="email" type="email" placeholder="Email*"
                 class="inputLogin form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
-                required autocomplete="email">
+                autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -50,7 +51,7 @@
         <!-- <label for="password" class=" col-form-label required-label">{{ __('Password') }}</label> -->
         <div class="">
             <input id="password" type="password" placeholder="Senha*"
-                class="inputLogin form-control @error('password') is-invalid @enderror" required name="password"
+                class="inputLogin form-control @error('password') is-invalid @enderror" name="password"
                 autocomplete="new-password">
 
             @error('password')
@@ -66,7 +67,7 @@
 
         <div class="">
             <input id="password-confirm" type="password" placeholder="Confirmar senha*"
-                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror" required
+                class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"
                 name="password_confirmation" autocomplete="new-password">
             @error('password_confirmation')
                 <span class="invalid-feedback" role="alert">
