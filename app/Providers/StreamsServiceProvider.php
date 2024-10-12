@@ -271,7 +271,10 @@ class StreamsServiceProvider extends ServiceProvider
             $streams->where('name', 'like', '%' . $options['searchTerm'] . '%');
         }
 
-        $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
+        $blockedList = Auth::user()->lists->firstWhere('type', 'blocked');
+
+        $blockedUsers = $blockedList ? ListsHelperServiceProvider::getListMembers($blockedList->id) : [];
+
         $streams->whereNotIn('user_id', $blockedUsers);
 
         $showUsername = true;
@@ -320,10 +323,19 @@ class StreamsServiceProvider extends ServiceProvider
      * Gets # of public live streams to show the menu pill indicator
      * @return mixed
      */
-    public static function getPublicLiveStreamsCount()
+    public static function getPublicLiveStreamsCount(): int
     {
-        $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
-        $streams = Stream::where('is_public', 1)->where('status', Stream::IN_PROGRESS_STATUS)->whereNotIn('user_id', $blockedUsers)->count();
+        $user = Auth::user();
+
+        $blockedList = $user->lists->firstWhere('type', 'blocked');
+
+        $blockedUsers = $blockedList ? ListsHelperServiceProvider::getListMembers($blockedList->id) : [];
+
+        $streams = Stream::where('is_public', 1)
+            ->where('status', Stream::IN_PROGRESS_STATUS)
+            ->whereNotIn('user_id', $blockedUsers)
+            ->count();
+
         return $streams;
     }
 }
