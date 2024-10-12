@@ -496,7 +496,7 @@ class PaymentHelper
             if ($plan != null) {
                 $subscription['paypal_plan_id'] = $plan->getId();
             }
-            $subscription['status'] = Transaction::PENDING_STATUS;
+            $subscription['status'] = $transaction['type'];
         }
 
         return $subscription;
@@ -1024,30 +1024,33 @@ class PaymentHelper
 
     public function generateSubscriptionByTransaction($transaction)
     {
-        $existingSubscription = $this->getSubscriptionBySenderAndReceiverAndProvider(
-            $transaction['sender_user_id'],
-            $transaction['recipient_user_id'],
-            $transaction['payment_provider'],
-        );
+        $existingSubscription = Subscription::where('sender_user_id', $transaction['sender_user_id'])
+            ->where('recipient_user_id', $transaction['recipient_user_id'])
+            ->where('provider', Transaction::CREDIT_PROVIDER)
+            ->first();
 
-        if ($existingSubscription != null) {
+        if ($existingSubscription !== null) {
             $subscription = $existingSubscription;
         } else {
-            $subscription = $this->createSubscriptionFromTransaction($transaction);
+            $subscription = new Subscription();
+            $subscription->sender_user_id = $transaction['sender_user_id'];
+            $subscription->recipient_user_id = $transaction['recipient_user_id'];
+            $subscription->provider = $transaction['payment_provider'];
+            $subscription->type = $transaction['type'];
         }
-        $subscription['amount'] = $transaction['amount'];
-        $subscription['expires_at'] = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' ' . 'month', new \DateTimeZone('UTC'));
-        $subscription['status'] = Subscription::ACTIVE_STATUS;
-        $transaction['status'] = Transaction::APPROVED_STATUS;
+
+        $subscription->amount = $transaction['amount'];
+        $subscription->expires_at = new \DateTime('+' . ($transaction['type'] === 'monthly' ? 1 : 0) . ' months', new \DateTimeZone('UTC'));
+        $subscription->status = Subscription::ACTIVE_STATUS;
 
         $subscription->save();
 
-        // only send the notification for new subs
         if ($existingSubscription === null) {
             NotificationServiceProvider::createNewSubscriptionNotification($subscription);
         }
-        $transaction['subscription_id'] = $subscription['id'];
 
+        $transaction['subscription_id'] = $subscription->id;
+        $transaction->save();
         return $subscription;
     }
 

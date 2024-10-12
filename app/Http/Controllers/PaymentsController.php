@@ -8,6 +8,7 @@ use App\Helpers\PaymentHelper;
 use App\Http\Requests\CreateTransactionRequest;
 use App\Model\Subscription;
 use App\Model\Transaction;
+use App\Model\Wallet;
 use App\Model\Withdrawal;
 use App\Providers\InvoiceServiceProvider;
 use App\Providers\NotificationServiceProvider;
@@ -577,14 +578,8 @@ class PaymentsController extends Controller
                 return response()->json(['message' => 'txid inválido'], 400);
             }
 
-            DB::table('transactions')
-                ->where('transfer_id', $txid)
-                ->update([
-                    'status' => 'approved',
-                    'e2eId' => $e2eid
-                ]);
-
-            $transaction = DB::table('transactions')
+            // Atualizando a transação usando Eloquent
+            $transaction = Transaction::query()
                 ->where('transfer_id', $txid)
                 ->first();
 
@@ -592,20 +587,30 @@ class PaymentsController extends Controller
                 return response()->json(['message' => 'Transação não encontrada'], 404);
             }
 
-            DB::table('wallets')
+            // Atualizando os dados da transação
+            $transaction->update([
+                'status' => 'approved',
+                'e2eId' => $e2eid
+            ]);
+
+            // Incrementando o total na carteira do usuário
+            Wallet::query()
                 ->where('user_id', $transaction->recipient_user_id)
                 ->increment('total', $amount);
 
+            // Verificando o tipo de transação para gerar assinatura ou notificação
             if (
                 $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION ||
                 $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
                 $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
                 $transaction->type === Transaction::YEARLY_SUBSCRIPTION
             ) {
+                // Gerar assinatura
                 $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             } else {
                 self::handleTransactionNotification($transaction);
             }
+
             return response()->json(['message' => 'Pagamento Processado'], 200);
         } catch (\Exception $e) {
             Log::error('Erro ao processar o webhook PIX:', ['error' => $e->getMessage()]);
