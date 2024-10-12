@@ -55,11 +55,11 @@ class CronEmailUpcomingRenewals extends Command
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $subToRenew->subscriber->email,
-                        'subject' => __('Upcoming renewal'),
-                        'title' => __('Hello, :name,', ['name'=>$subToRenew->subscriber->name]),
-                        'content' => __('Your subscription to :creatorName is about to renew in the next 24h hours. If your payment settings are up to date, there\'s nothing to do on your end.', ['creatorName' => $subToRenew->creator->name]),
+                        'subject' => __('Renovação iminente'),
+                        'title' => __('Olá, :name,', ['name' => $subToRenew->subscriber->name]),
+                        'content' => __('Sua assinatura de :creatorName será renovada nas próximas 24 horas. Se as suas configurações de pagamento estiverem atualizadas, não há nada que você precise fazer.', ['creatorName' => $subToRenew->creator->name]),
                         'button' => [
-                            'text' => __('Manage your subs'),
+                            'text' => __('Gerenciar suas assinaturas'),
                             'url' => route('my.settings', ['type' => 'subscriptions']),
                         ],
                     ]

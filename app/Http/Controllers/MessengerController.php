@@ -403,11 +403,11 @@ class MessengerController extends Controller
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $message->receiver->email,
-                        'subject' => __('New message received'),
-                        'title' => __('Hello, :name,', ['name' => $message->receiver->name]),
-                        'content' => __('Email new message title', ['siteName' => getSetting('site.name')]),
+                        'subject' => __('Nova mensagem recebida'),
+                        'title' => __('Olá, :name,', ['name' => $message->receiver->name]),
+                        'content' => __('Título da nova mensagem de email', ['siteName' => getSetting('site.name')]),
                         'button' => [
-                            'text' => __('View your messages'),
+                            'text' => __('Ver suas mensagens'),
                             'url' => route('my.messenger.get'),
                         ],
                     ]

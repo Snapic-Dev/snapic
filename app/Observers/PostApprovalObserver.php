@@ -30,11 +30,11 @@ class PostApprovalObserver
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,
-                    'subject' => __("Post status updated"),
-                    'title' => __('Hello, :name,', ['name' => $user->name]),
-                    'content' => __('Your post has been :status.', ['status' => Post::getStatusName($post->status)]),
+                    'subject' => __("Status do post atualizado"),
+                    'title' => __('Olá, :name,', ['name' => $user->name]),
+                    'content' => __('Seu post foi :status.', ['status' => Post::getStatusName($post->status)]),
                     'button' => [
-                        'text' => __('View post'),
+                        'text' => __('Ver post'),
                         'url' => route('posts.get', ['post_id' => $post->id, 'username' => $user->username]),
                     ]
                 ]

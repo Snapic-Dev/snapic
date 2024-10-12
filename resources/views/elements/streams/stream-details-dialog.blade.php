@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="stream-details-dialog">
+<div class="modal fade" tabindex="-1" role="dialog" id="stream-details-dialog" style="overflow-y: auto;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
 
-                <p class="p-2">{{ __('Your stream server is online. In order to get going, follow the steps below:') }}</p>
+                <p class="p-2 ml-1">{{ __('Your stream server is online. In order to get going, follow the steps below:') }}</p>
 
 
                 <div class="mt-3 inline-border-tabs">
@@ -41,7 +41,7 @@
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-desktop" role="tabpanel">
                         <div class="mt-2">
-                            <ol class="py-3">
+                            <ol class="py-1">
                                 <li class="mb-1">{{ __('Download') }} <a href="https://obsproject.com/download"
                                         target="_blank">OBS</a> {{ __('for desktop or mobile alternatives.') }}</li>
                                 <li class="mb-1">{{ __('Go to') }} <code>{{ __('Settings > Stream') }}</code>.
@@ -51,12 +51,12 @@
                                     <code>{{ __('Server & Stream key') }}</code>, {{ __('use the values below.') }}
                                 </li>
                             </ol>
-                            <div class="form-group">
+                            <div class="form-group ml-1">
                                 <label for="colFormLabelSm"
-                                    class="p-2">{{ __('Stream url') }}</label>
-                                <div class="w-100 d-flex p-2">
-                                    <input type="text" class="form-control form-control-md" id="stream-url"
-                                        placeholder="{{ __('Stream url') }}">
+                                    class="p-1">{{ __('Stream url') }}</label>
+                                <div class="w-100 d-flex p-1 ml-1">
+                                    <input type="text" class="form-control form-control-md streamInput" id="stream-url"
+                                        placeholder="{{ __('Stream url') }}" readonly>
                                     <div class="col-sm-auto d-flex align-items-center justify-content-center">
                                         <span class="h-pill h-pill-accent rounded mr-2"
                                             onclick="Streams.copyStreamData('url')">
@@ -65,12 +65,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group ml-1">
                                 <label for="colFormLabelSm"
-                                    class="p-2">{{ __('Stream key') }}</label>
-                                <div class="w-100 d-flex p-2">
-                                    <input type="text" class="form-control form-control-md" id="stream-key"
-                                        placeholder="{{ __('Stream key') }}">
+                                    class="p-1">{{ __('Stream key') }}</label>
+                                <div class="w-100 d-flex p-1 ml-1">
+                                    <input type="text" class="form-control form-control-md streamInput" id="stream-key"
+                                        placeholder="{{ __('Stream key') }}" readonly>
                     
                                     <div class="col-sm-auto d-flex align-items-center justify-content-center">
                                         <span class="h-pill h-pill-accent rounded mr-2"
@@ -84,7 +84,7 @@
                     </div>
                     <div class="tab-pane fade" id="nav-mobile" role="tabpanel">
                         <div class="mt-2">
-                            <ol class="py-3">
+                            <ol class="py-1">
                                 <li class="mb-1">{{ __('Download') }} StreamLabs <a
                                         href="https://apps.apple.com/us/app/streamlabs-live-streaming-app/id1294578643"
                                         target="_blank">iOS</a> {{ __('or') }} <a
@@ -99,12 +99,12 @@
                                     Iniciar Live.
                                 </li>
                             </ol>
-                            <div class="form-group">
+                            <div class="form-group ml-1">
                                 <label for="colFormLabelSm"
-                                    class="p-2">{{ __('Stream url') }}</label>
-                                <div class="w-100 d-flex p-2">
-                                    <input type="text" class="form-control form-control-md" id="stream-url"
-                                        placeholder="{{ __('Stream url') }}">
+                                    class="p-1">{{ __('Stream url') }}</label>
+                                <div class="w-100 d-flex p-1">
+                                    <input type="text" class="form-control form-control-md streamInput" id="stream-url"
+                                        placeholder="{{ __('Stream url') }}" readonly >
                                     <div class="col-sm-auto d-flex align-items-center justify-content-center">
                                         <span class="h-pill h-pill-accent rounded mr-2"
                                             onclick="Streams.copyStreamData('url')">
@@ -113,12 +113,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group ml-1">
                                 <label for="colFormLabelSm"
-                                    class="p-2">{{ __('Stream key') }}</label>
-                                <div class="w-100 d-flex p-2">
-                                    <input type="text" class="form-control form-control-md" id="stream-key"
-                                        placeholder="{{ __('Stream key') }}">
+                                    class="p-1">{{ __('Stream key') }}</label>
+                                <div class="w-100 d-flex p-1">
+                                    <input type="text" class="form-control form-control-md streamInput" id="stream-key"
+                                        placeholder="{{ __('Stream key') }}" readonly>
                     
                                     <div class="col-sm-auto d-flex align-items-center justify-content-center">
                                         <span class="h-pill h-pill-accent rounded mr-2"

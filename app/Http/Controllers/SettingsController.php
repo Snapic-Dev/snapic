@@ -745,11 +745,11 @@ class SettingsController extends Controller
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $user->email,
-                            'subject' => __('Action required | New identity check'),
-                            'title' => __('Hello, :name,', ['name' => $user->name]),
-                            'content' => __('There is a new identity check on :siteName that requires your attention.', ['siteName' => getSetting('site.name')]),
+                            'subject' => __('Ação necessária | Nova verificação de identidade'),
+                            'title' => __('Olá, :name,', ['name' => $user->name]),
+                            'content' => __('Há uma nova verificação de identidade em :siteName que requer sua atenção.', ['siteName' => getSetting('site.name')]),
                             'button' => [
-                                'text' => __('Go to admin'),
+                                'text' => __('Ir para o admin'),
                                 'url' => route('voyager.dashboard'),
                             ],
                         ]

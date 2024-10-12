@@ -58,11 +58,11 @@ class CronEmailExpiringSubs extends Command
                 EmailsServiceProvider::sendGenericEmail(
                     [
                         'email' => $subToRenew->subscriber->email,
-                        'subject' => __('Expiring subscription'),
-                        'title' => __('Hello, :subscriberName', ['subscriberName' => $subToRenew->subscriber->name]),
-                        'content' => __('Your subscription to :creatorName is about to expire in the next 24h hours. Please top up your credit in order to keep your subscription going.', ['creatorName' => $subToRenew->creator->name]),
+                        'subject' => __('Assinatura expirando'),
+                        'title' => __('Olá, :subscriberName', ['subscriberName' => $subToRenew->subscriber->name]),
+                        'content' => __('Sua assinatura de :creatorName está prestes a expirar nas próximas 24 horas. Por favor, adicione crédito para continuar com sua assinatura.', ['creatorName' => $subToRenew->creator->name]),
                         'button' => [
-                            'text' => __('Manage your subs'),
+                            'text' => __('Gerenciar suas assinaturas'),
                             'url' => route('my.settings', ['type' => 'subscriptions']),
                         ],
                     ]

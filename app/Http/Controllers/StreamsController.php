@@ -196,11 +196,11 @@ class StreamsController extends Controller
                     EmailsServiceProvider::sendGenericEmail(
                         [
                             'email' => $follower['email'],
-                            'subject' => __('New stream from :username', ['username' => Auth::user()->username]),
-                            'title' => __('Hello, :name,', ['name' => $follower['name']]),
-                            'content' => __('@:username has went live on :sitename', ['username' => Auth::user()->username, 'siteName' => getSetting('site.name')]),
+                            'subject' => __('Novo stream de :username', ['username' => Auth::user()->username]),
+                            'title' => __('Olá, :name,', ['name' => $follower['name']]),
+                            'content' => __('@:username está ao vivo em :siteName', ['username' => Auth::user()->username, 'siteName' => getSetting('site.name')]),
                             'button' => [
-                                'text' => __('View live session'),
+                                'text' => __('Ver sessão ao vivo'),
                                 'url' => route('search.get', ['filter' => 'live']),
                             ],
                         ]

@@ -237,11 +237,11 @@ class PostsController extends Controller
                             EmailsServiceProvider::sendGenericEmail(
                                 [
                                     'email' => $follower['email'],
-                                    'subject' => __('New content from @:username', ['username' => Auth::user()->username]),
-                                    'title' => __('Hello, :name,', ['name' => $follower['name']]),
-                                    'content' => __('New content from people you follow is available', ['siteName' => getSetting('site.name')]),
+                                    'subject' => __('Novo conteúdo de @:username', ['username' => Auth::user()->username]),
+                                    'title' => __('Olá, :name,', ['name' => $follower['name']]),
+                                    'content' => __('Novo conteúdo de pessoas que você segue está disponível', ['siteName' => getSetting('site.name')]),
                                     'button' => [
-                                        'text' => __('View your feed'),
+                                        'text' => __('Ver seu feed'),
                                         'url' => route('feed'),
                                     ],
                                 ]
@@ -259,11 +259,11 @@ class PostsController extends Controller
                         EmailsServiceProvider::sendGenericEmail(
                             [
                                 'email' => $user->email,
-                                'subject' => __('Action required | New post pending approval'),
-                                'title' => __('Hello, :name,', ['name' => $user->name]),
-                                'content' => __('There is a new post pending your approval on :siteName.', ['siteName' => getSetting('site.name')]),
+                                'subject' => __('Ação necessária | Novo post aguardando aprovação'),
+                                'title' => __('Olá, :name,', ['name' => $user->name]),
+                                'content' => __('Há um novo post aguardando sua aprovação em :siteName.', ['siteName' => getSetting('site.name')]),
                                 'button' => [
-                                    'text' => __('Go to admin'),
+                                    'text' => __('Ir para o admin'),
                                     'url' => route('voyager.dashboard') . '/user-posts?key=status&filter=equals&s=0',
                                 ],
                             ]

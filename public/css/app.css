@@ -706,6 +706,10 @@ footer .brand-logo {
   padding: 50px;
 }
 
+.streamInput {
+  min-width: 280px;
+}
+
 .btnPix {
   background-color: #673ab6;
   color: white;

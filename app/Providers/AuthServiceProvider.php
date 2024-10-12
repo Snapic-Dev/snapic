@@ -205,11 +205,11 @@ class AuthServiceProvider extends ServiceProvider
             EmailsServiceProvider::sendGenericEmail(
                 [
                     'email' => $user->email,
-                    'subject' => __('Verify your new device'),
-                    'title' => __('Hello, :name,', ['name' => $user->name]),
-                    'content' => __('Your verification code is:') . ' ' .  $code,
+                    'subject' => __('Verifique seu novo dispositivo'),
+                    'title' => __('Olá, :name,', ['name' => $user->name]),
+                    'content' => __('Seu código de verificação é:') . ' ' .  $code,
                     'button' => [
-                        'text' => __('Go to site'),
+                        'text' => __('Ir para o site'),
                         'url' => route('feed'),
                     ],
                 ]
