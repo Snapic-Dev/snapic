@@ -147,7 +147,7 @@
                         @foreach ($topInfluencers as $index => $influencer)
                         <tr>
                             <td class="rankingNumber">{{ $index + 1 }}</td>
-                            <td class="col-name">{{ $influencer->name }}</td>
+                            <td class="col-name">{{ $influencer->username }}</td>
                             <td class="col-transaction">
                                 {{ \App\Providers\DashboardServiceProvider::getSubscriberRank($influencer->id) }}
                             </td>

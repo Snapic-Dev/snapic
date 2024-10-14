@@ -213,10 +213,10 @@ class DashboardServiceProvider extends ServiceProvider
         (SELECT to_user_id, SUM(amount) as total_rewards 
         FROM rewards 
         GROUP BY to_user_id) as r'), 'users.id', '=', 'r.to_user_id')
-            ->select('users.id', 'users.name', 'users.email', DB::raw('
+            ->select('users.id', 'users.username', 'users.email', DB::raw('
         COALESCE(t.total_transactions, 0) + COALESCE(r.total_rewards, 0) as total_earned
     '))
-            ->groupBy('users.id', 'users.name', 'users.email', 't.total_transactions', 'r.total_rewards')
+            ->groupBy('users.id', 'users.username', 'users.email', 't.total_transactions', 'r.total_rewards')
             ->orderByDesc('total_earned')
             ->limit(10)
             ->get();
