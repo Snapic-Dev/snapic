@@ -145,7 +145,7 @@ class PaymentHelper
             "calendario" => ["expiracao" => 3600],
             "devedor" => [
                 'cpf' => preg_replace('/[.-]/', '', $user->cpf),
-                "nome" => $user->name
+                "nome" => $user->username
             ],
             // "valor" => ['original' => '0.01'], // Valor de exemplo
             "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
