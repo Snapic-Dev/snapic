@@ -6,21 +6,21 @@
         <div class="d-flex flex-row justify-content-between">
             <div class="text-bold d-flex align-items-center"><a href="{{route('profile',['username'=>$comment->author->username])}}" class="text-dark-r">{{$comment->author->username}}</a>
                 @if($comment->author->email_verified_at && $comment->author->birthdate && ($comment->author->verification && $comment->author->verification->status == 'verified'))
-                    <span class="ml-1" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                        @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1 text-primary'])
-                    </span>
+                <span class="ml-1" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
+                    <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
+                </span>
                 @endif
             </div>
             <div class="position-absolute separator">
                 <div class="d-flex">
 
                     @if(Auth::user()->id == $comment->author->id)
-                        <span class="ml-1 h-pill h-pill-primary rounded react-button" data-toggle="tooltip" data-placement="top" title="{{__("Delete")}}" onclick="Post.showDeleteCommentDialog({{$comment->post->id}},{{$comment->id}})">
-                             @include('elements.icon',['icon'=>'trash-outline'])
-                        </span>
+                    <span class="ml-1 h-pill h-pill-primary rounded react-button" data-toggle="tooltip" data-placement="top" title="{{__("Delete")}}" onclick="Post.showDeleteCommentDialog({{$comment->post->id}},{{$comment->id}})">
+                        @include('elements.icon',['icon'=>'trash-outline'])
+                    </span>
                     @else
-                        <span class="h-pill h-pill-primary rounded react-button {{PostsHelper::didUserReact($comment->reactions) ? 'active' : ''}}" data-toggle="tooltip" data-placement="top" title="{{__("Like")}}" onclick="Post.reactTo('comment',{{$comment->id}})">
-                         @include('elements.icon',['icon'=>'heart-outline'])
+                    <span class="h-pill h-pill-primary rounded react-button {{PostsHelper::didUserReact($comment->reactions) ? 'active' : ''}}" data-toggle="tooltip" data-placement="top" title="{{__("Like")}}" onclick="Post.reactTo('comment',{{$comment->id}})">
+                        @include('elements.icon',['icon'=>'heart-outline'])
                     </span>
                     @endif
                 </div>

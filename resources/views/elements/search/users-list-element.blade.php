@@ -12,7 +12,7 @@
                         </a>
                         @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
                         <span class="" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                            @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1 text-primary'])
+                            <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
                         </span>
                         @endif
                     </div>
