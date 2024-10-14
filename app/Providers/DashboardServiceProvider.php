@@ -202,7 +202,7 @@ class DashboardServiceProvider extends ServiceProvider
 
     public static function topInfluencerList()
     {
-        $topInfluencers = User::where('role_id', 3)
+        $topInfluencers = User::where('role_id', 3)->whereNotNull('identity_verified_at')
             ->leftJoin(DB::raw('
         (SELECT recipient_user_id, SUM(CASE 
             WHEN status = "approved" AND type != "deposit" 
