@@ -270,7 +270,7 @@ $type=request()->input('type');
                             return $query->whereDate('created_at', '>=', $initialDate);
                             })
                             ->when($endDate, function ($query, $endDate) {
-                            return $query->whereDate('created_at', '<=', $endDate);
+                            return $query->whereDate('expires_at', '<=', $endDate);
                                 })
                                 ->count();
                                 @endphp

@@ -228,6 +228,7 @@ class DashboardServiceProvider extends ServiceProvider
     {
         $subscribers = Subscription::where('recipient_user_id', $senderID)
             ->where('expires_at', '>', Carbon::now('UTC'))
+            ->where('status','completed')
             ->count();
 
         return $subscribers;
