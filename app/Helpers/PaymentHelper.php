@@ -1026,7 +1026,7 @@ class PaymentHelper
     {
         $existingSubscription = Subscription::where('sender_user_id', $transaction['sender_user_id'])
             ->where('recipient_user_id', $transaction['recipient_user_id'])
-            ->where('provider', Transaction::CREDIT_PROVIDER)
+            ->where('provider', $transaction['payment_provider'])
             ->first();
 
         if ($existingSubscription !== null) {
@@ -1040,7 +1040,7 @@ class PaymentHelper
         }
 
         $subscription->amount = $transaction['amount'];
-        $subscription->expires_at = new \DateTime('+' . ($transaction['type'] === 'monthly' ? 1 : 0) . ' months', new \DateTimeZone('UTC'));
+        $subscription->expires_at = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type) . ' ' . 'month', new \DateTimeZone('UTC'));
         $subscription->status = Subscription::ACTIVE_STATUS;
 
         $subscription->save();

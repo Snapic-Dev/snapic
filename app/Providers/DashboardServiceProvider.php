@@ -227,7 +227,7 @@ class DashboardServiceProvider extends ServiceProvider
     public static function getSubscriberRank($senderID)
     {
         $subscribers = Subscription::where('recipient_user_id', $senderID)
-            ->where('expires_at', '>=', Carbon::now('UTC'))
+            ->where('expires_at', '>', Carbon::now('UTC'))
             ->count();
 
         return $subscribers;
