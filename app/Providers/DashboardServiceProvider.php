@@ -237,16 +237,22 @@ class DashboardServiceProvider extends ServiceProvider
     {
         $date = request()->query('date');
 
-        $rewards = Reward::sum('amount');
-        $agreements = Agreement::sum('amount');
+        $rewards = Reward::when($date, function ($query, $date) {
+            return $query->whereDate('created_at', $date);
+        })->sum('amount');
+
+        $agreements = Agreement::when($date, function ($query, $date) {
+            return $query->whereDate('created_at', $date);
+        })->sum('amount');
+
         $transactions = Transaction::where('status', Transaction::APPROVED_STATUS)
             ->where('type', '!=', Transaction::DEPOSIT_TYPE)
             ->when($date, function ($query, $date) {
-                return $query->whereDate('created_at', $date);
+                return $query->whereDate('transactions.created_at', $date); // Especificando a tabela transactions
             })
             ->join('users', 'transactions.recipient_user_id', '=', 'users.id')
             ->where('users.role_id', 3)
-            ->sum('amount');
+            ->sum('transactions.amount');
 
         return number_format((float) $rewards + (float) $transactions - $agreements, 2, ',', '.');
     }
