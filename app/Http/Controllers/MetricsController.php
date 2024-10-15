@@ -24,7 +24,7 @@ class MetricsController extends Controller
 
         $query = Transaction::query()
             ->where('status', Transaction::APPROVED_STATUS)
-            ->where('type', 'deposit');
+            ->whereIn('payment_provider', ['pix', 'card']);
 
         $users = (new Trend())->get($query, $request->input('function'), $request->input('unit'), $request->input('range'), 'amount', 'created_at');
 
