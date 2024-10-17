@@ -7,7 +7,7 @@ return [
         'description' => env('APP_DESCRIPTION', 'Snapic is a premium creators sass social media platform.'),
         'light_logo' => '/img/snapic-black.png',
         'dark_logo' => '/img/snapic-white.png',
-        'favicon' => '/img/rounded-logo-gradient.svg',
+        'favicon' => '/img/snapic-white.png.svg',
         'currency_code' => 'BRL',
         'currency_symbol' => 'R$',
         'default_site_language' => 'pt',

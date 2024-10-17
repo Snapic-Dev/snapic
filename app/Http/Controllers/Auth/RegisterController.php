@@ -12,35 +12,14 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $redirectRoute = route('feed');
-        if(getSetting('site.redirect_page_after_register') && getSetting('site.redirect_page_after_register') == 'settings'){
+        if (getSetting('site.redirect_page_after_register') && getSetting('site.redirect_page_after_register') == 'settings') {
             $redirectRoute = route('my.settings');
         }
         $this->redirectTo = $redirectRoute;
@@ -48,35 +27,53 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Handle a registration request to the application.
+     * 
+     * Registers a new user and returns a success message if registration is successful.
      *
-     * @param  array $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @bodyParam name string required The name of the user. Example: John Doe
+     * @bodyParam email string required The email of the user. Example: johndoe@example.com
+     * @bodyParam password string required The password for the user. Minimum 6 characters. Example: secret
+     * @bodyParam password_confirmation string required The confirmation of the password. Must match the password.
+     * @bodyParam terms boolean required Must be true, indicating acceptance of terms and conditions.
+     * @bodyParam g-recaptcha-response string Optional if CAPTCHA is enabled. Example: some-captcha-token
+     * 
+     * @response 201 {
+     *  "success": true,
+     *  "message": "Register successful."
+     * }
+     * @response 422 {
+     *  "errors": {
+     *     "email": [
+     *       "The email has already been taken."
+     *     ],
+     *     "password": [
+     *       "The password must be at least 6 characters."
+     *     ]
+     *  }
+     * }
      */
     protected function validator(array $data)
     {
-
         $additionalRules = [];
-        if(getSetting('security.recaptcha_enabled')){
+        if (getSetting('security.recaptcha_enabled')) {
             $additionalRules = [
                 'g-recaptcha-response' => 'required|captcha'
             ];
         }
 
         $emailValidationRule = ['required', 'string', 'email', 'max:255', 'unique:users'];
-        if(getSetting('security.enforce_email_valid_check') && getSetting('security.email_abstract_api_key')){
+        if (getSetting('security.enforce_email_valid_check') && getSetting('security.email_abstract_api_key')) {
             $emailValidationRule = ['required', 'string', 'email', 'max:255', 'unique:users', new IsEmailDelivrable];
         }
 
-        // If abstract api enabled, check if email is delivrable
         return Validator::make($data, array_merge([
             'name' => ['required', 'string', 'max:255'],
             'email' => $emailValidationRule,
             'password' => ['min:6', 'required', 'string', 'confirmed'],
             'password_confirmation' => ['required', 'min:6'],
             'terms' => ['required'],
-            ],$additionalRules)
-        );
+        ], $additionalRules));
     }
 
     /**

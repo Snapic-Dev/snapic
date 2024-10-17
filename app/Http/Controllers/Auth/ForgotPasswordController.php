@@ -8,25 +8,25 @@ use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset emails and
-    | includes a trait which assists in sending these notifications from
-    | your application to your users. Feel free to explore this trait.
-    |
-    */
-
     use SendsPasswordResetEmails;
 
     /**
-     * Get the response for a successful password reset link.
+     * Request a password reset link.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * This endpoint sends a password reset link to the user's email.
+     *
+     * @bodyParam email string required The email address of the user requesting the password reset. Example: johndoe@example.com
+     * 
+     * @response 200 {
+     *  "success": true,
+     *  "message": "We have emailed your password reset link!"
+     * }
+     * @response 419 {
+     *  "success": false,
+     *  "errors": {
+     *      "email": "We can't find a user with that email address."
+     *  }
+     * }
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
@@ -38,16 +38,19 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * Get the response for a failed password reset link.
+     * Handle a failed password reset link request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @response 419 {
+     *  "success": false,
+     *  "errors": {
+     *      "email": "We can't find a user with that email address."
+     *  }
+     * }
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
         if ($request->ajax()) {
-            return response()->json(['success' => false, 'errors' => ['email'=>trans($response)]], 419);
+            return response()->json(['success' => false, 'errors' => ['email' => trans($response)]], 419);
         }
 
         return back()

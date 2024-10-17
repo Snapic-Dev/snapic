@@ -10,35 +10,21 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Session;
+use Illuminate\Support\Facades\Session;
+use GuzzleHttp\Exception\RequestException;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->redirectTo = route('feed');
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * Get the login username to be used by the controller.
-     *
-     * @return string
-     */
     public function username()
     {
         return 'username';
@@ -47,8 +33,18 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @bodyParam username string required The username of the user. Example: johndoe
+     * @bodyParam password string required The password of the user. Example: secret
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Logged in successfully."
+     * }
+     * @response 422 {
+     *  "message": "These credentials do not match our records."
+     * }
+     * @response 429 {
+     *  "message": "Too many login attempts. Please try again later."
+     * }
      */
     public function login(Request $request)
     {
@@ -67,18 +63,11 @@ class LoginController extends Controller
             return $this->sendLoginResponse($request);
         }
 
-
         $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }
 
-    /**
-     * Validate the user login request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     */
     protected function validateLogin(Request $request)
     {
         $request->validate([
@@ -88,32 +77,12 @@ class LoginController extends Controller
     }
 
     /**
-     * The user has been authenticated.
+     * Redirect the user to the social authentication page.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param mixed $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        // Handling 2FA stuff
-        $force2FA = false;
-        if (getSetting('security.enable_2fa')) {
-            if (Auth::user()->enable_2fa && !in_array(AuthServiceProvider::generate2FaDeviceSignature(), AuthServiceProvider::getUserDevices(Auth::user()->id))) {
-                AuthServiceProvider::generate2FACode();
-                AuthServiceProvider::addNewUserDevice(Auth::user()->id);
-                $force2FA = true;
-            }
-        }
-        Session::put('force2fa', $force2FA);
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Logged in successfully.']);
-        }
-    }
-
-    /**
-     * Redirect the user to the Facebook authentication page.
+     * @urlParam provider string required The provider to use for authentication (e.g., facebook, google). Example: facebook
+     * @response 302 {
+     *  "redirect_url": "https://facebook.com/..."
+     * }
      */
     public function redirectToProvider(Request $request)
     {
@@ -121,7 +90,12 @@ class LoginController extends Controller
     }
 
     /**
-     * Obtain the user information from Facebook.
+     * Handle the social authentication callback.
+     *
+     * @urlParam provider string required The provider to use for authentication (e.g., facebook, google). Example: facebook
+     * @response 302 {
+     *  "redirect_url": "http://your-app.com/feed"
+     * }
      */
     public function handleProviderCallback(Request $request)
     {
@@ -133,7 +107,6 @@ class LoginController extends Controller
             throw new \ErrorException($e->getMessage());
         }
 
-        // Creating the user & Logging in the user
         $userCheck = User::where('auth_provider_id', $user->id)->first();
         if ($userCheck) {
             $authUser = $userCheck;
@@ -146,7 +119,6 @@ class LoginController extends Controller
                     'auth_provider_id' => $user->id
                 ]);
             } catch (\Exception $exception) {
-                // Redirect to homepage with error
                 return redirect(route('home'))->with('error', $exception->getMessage());
             }
         }
