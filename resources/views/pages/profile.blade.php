@@ -170,12 +170,12 @@ Minify::stylesheet([
 
             <div class="pt-2 pl-4 pr-4">
                 <h5 class="text-bold d-flex align-items-center">
-                    <span>{{$user->name}}</span>
-                    @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
-                    <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                        <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
-                    </span>
-                    @endif
+                    <div class="d-flex">
+                        <span>{{$user->name}}</span>
+                        <span class="ml-1" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
+                            <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
+                        </span>
+                    </div>
                     @if($hasActiveStream)
                     <span data-toggle="tooltip" data-placement="right" title="{{__('Live streaming')}}">
                         <div class="blob red ml-3"></div>

@@ -233,7 +233,7 @@ $type=request()->input('type');
                                 })
                                 ->sum('amount');
 
-                                $totalIndications = ReferralCodeUsage::where('used_by', $userId)
+                                $totalIndications = ReferralCodeUsage::where('referral_code', Auth::user()->referral_code)
                                 ->when($initialDate, function ($query) use ($initialDate) {
                                 return $query->whereDate('created_at', '>=', $initialDate);
                                 })

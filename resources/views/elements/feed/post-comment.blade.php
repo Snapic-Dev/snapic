@@ -5,7 +5,7 @@
     <div class="pl-3 w-100">
         <div class="d-flex flex-row justify-content-between">
             <div class="text-bold d-flex align-items-center"><a href="{{route('profile',['username'=>$comment->author->username])}}" class="text-dark-r">{{$comment->author->username}}</a>
-                @if($comment->author->email_verified_at && $comment->author->birthdate && ($comment->author->verification && $comment->author->verification->status == 'verified'))
+                @if($comment->author->email_verified_at && $comment->author->identity_verified_at && $comment->author->user_id===3))
                 <span class="ml-1" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
                     <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
                 </span>

@@ -22,13 +22,13 @@
                 </div>
                 <div class="h-50 w-100 z-index-3 d-flex flex-column justify-content-center text-truncate pr-2">
                     <div class="m-0 h6 text-truncate"><a href="{{route('profile',['username'=>$profile->username])}}" class="text-white d-flex align-items-center">{{$profile->name}}
-                        @if($profile->email_verified_at && $profile->birthdate && ($profile->verification && $profile->verification->status == 'verified'))
-                            <span data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
-                                @include('elements.icon',['icon'=>'checkmark-circle-outline','centered'=>true,'classes'=>'ml-1'])
-                            </span>
-                        @endif
-                        </a></div>
-                    <div class="m-0 text-truncate"><span>@</span><a href="{{route('profile',['username'=>$profile->username])}}" class="text-white">{{$profile->username}}</a></div>
+                    </div>
+                    <div class="m-0 text-truncate d-flex"><span>@</span>
+                        <a href="{{route('profile',['username'=>$profile->username])}}" class="text-white">{{$profile->username}}</a>
+                        <span class="ml-1">
+                            <img src="/img/verified.gif" alt="" style="width: 25px;">
+                        </span>
+                    </div>
                 </div>
             </div>
 

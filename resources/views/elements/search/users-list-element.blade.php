@@ -10,11 +10,9 @@
                         <a href="{{route('profile',['username'=>$user->username])}}" class="text-bold text-{{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'white' : 'dark') : (Cookie::get('app_theme') == 'dark' ? 'white' : 'dark'))}} mr-2 d-flex align-items-center">
                             {{$user->name}}
                         </a>
-                        @if($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))
                         <span class="" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
                             <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
                         </span>
-                        @endif
                     </div>
                     <div class="m-0 text-truncate small"><a href="{{route('profile',['username'=>$user->username])}}" class="text-muted">&commat;{{$user->username}}</a></div>
                 </div>

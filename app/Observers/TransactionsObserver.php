@@ -62,8 +62,9 @@ class TransactionsObserver
             if ($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id)) {
                 return;
             }
-            $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
-            if (!$existingReward) {
+            $existingAgreement = Agreement::where(['transaction_id' => $transaction->id])->first();
+
+            if (!$existingAgreement) {
                 $recipientUserId = (int) $transaction->recipient_user_id;
 
                 if ($recipientUserId <= 0) {
@@ -71,20 +72,11 @@ class TransactionsObserver
                 }
 
                 $recipient = User::query()->where('id', $recipientUserId)->first();
+                $discount = floatval($transaction->amount * ($recipient->discount / 100));
 
-                if (!$recipient) {
-                    throw new \Exception('Recipient user not found.');
-                }
-
-                $recipientWallet = Wallet::query()->where('user_id', $recipientUserId)->first();
-                if (!$recipientWallet) {
-                    throw new \Exception('Recipient wallet not found.');
-                }
-
-                $discount = round($transaction->amount * ($recipient->discount / 100), 2);
-
-                $recipientWallet->total -= $discount;
-                $recipientWallet->save();
+                Wallet::query()
+                ->where('user_id', $recipientUserId)
+                ->decrement('total', floatval($discount  - floatval($transaction->amount /10)) );
 
                 $data = [
                     'user_id' => $recipientUserId,
@@ -95,6 +87,7 @@ class TransactionsObserver
                 ];
 
                 Agreement::create($data);
+                return;
             }
         } catch (\Exception $e) {
             dd(LogLevel::ERROR, "Failed to apply discount agreement: " . $e->getMessage());
@@ -102,76 +95,59 @@ class TransactionsObserver
     }
 
     private function createRewardForTransaction($transaction)
-    {
+    { 
         if (getSetting('referrals.enabled')) {
             try {
-                if (floatval(getSetting('referrals.fee_percentage')) > 0) {
-                    if ($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id)) {
-                        return;
-                    }
+            $percentage = floatval(getSetting('referrals.fee_percentage')) ?? 5;
+            $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
+            if($existingReward) return;
 
-                    $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
-                    if (!$existingReward) {
-                        // check if there is a referral code usage for this user
-                        $referralCodeUsage = ReferralCodeUsage::where(['used_by' => $transaction->recipient_user_id])->first();
-                        if ($referralCodeUsage) {
-                            // find a user with this referral code
-                            $referralCodeUser = User::where(['referral_code' => $referralCodeUsage->referral_code])->first();
-                            if ($referralCodeUser) {
-                                if (getSetting('referrals.apply_for_months') && intval(getSetting('referrals.apply_for_months')) > 0) {
-                                    $expiryDatetime = new \DateTime('-' . intval(getSetting('referrals.apply_for_months')) . ' months');
+            $referralCodeUsage = ReferralCodeUsage::where(['used_by' => $transaction->recipient_user_id])->first();
+            $referralCodeUser = User::where(['referral_code' => $referralCodeUsage->referral_code])->first();
+            if(!$referralCodeUsage ||!$referralCodeUsage ) return;
 
-                                    // this referral is older enough so stop here and don't create anymore rewards for him
-                                    if ($expiryDatetime >= $referralCodeUsage->created_at) {
-                                        return;
-                                    }
-                                }
-
-                                $totalEarnedByUser = 0;
-                                // make sure we don't send more money than the limit set by the admin
-                                if (getSetting('referrals.fee_limit') && intval(getSetting('referrals.fee_limit')) > 0) {
-                                    $totalEarnedByUser = UsersServiceProvider::getTotalAmountEarnedFromRewardsByUsers($referralCodeUser->id, $transaction->recipient_user_id);
-                                    // reached maximum limit set by the admin
-                                    if ($totalEarnedByUser >= floatval(getSetting('referrals.fee_limit'))) {
-                                        return;
-                                    }
-                                }
-
-                                if ($transaction->amount <= 0) {
-                                    return;
-                                }
-
-                                // calculate transaction fee and add it to the total to make sure we don't send more than the threshold
-                                $amountWithTaxesDeducted = PaymentsServiceProvider::getTransactionAmountWithTaxesDeducted($transaction);
-
-                                $rewardFee = (floatval(getSetting('referrals.fee_percentage')) / 100) * $amountWithTaxesDeducted;
-                                if ($rewardFee + $totalEarnedByUser >= floatval(getSetting('referrals.fee_limit')) || $rewardFee === 0) {
-                                    return;
-                                }
-
-                                Reward::create([
-                                    'from_user_id' => $transaction->recipient_user_id,
-                                    'to_user_id' => $referralCodeUser->id,
-                                    'reward_type' => Reward::FEE_PERCENTAGE_REWARD_TYPE,
-                                    'transaction_id' => $transaction->id,
-                                    'referral_code_usage_id' => $referralCodeUsage->id,
-                                    'amount' => $rewardFee,
-                                ]);
-
-                                // add money to user wallet
-                                $recipientUser = User::where('id', $referralCodeUser->id)->first();
-                                if ($recipientUser) {
-                                    $wallet = $recipientUser->wallet;
-                                    $updateData = ['total' => $wallet->total + $rewardFee];
-                                    $wallet->update($updateData);
-                                }
-                            }
-                        }
-                    }
+            if (getSetting('referrals.apply_for_months') && intval(getSetting('referrals.apply_for_months')) > 0) {
+                $expiryDatetime = new \DateTime('-' . intval(getSetting('referrals.apply_for_months')) . ' months');
+                if ($expiryDatetime >= $referralCodeUsage->created_at) {
+                    return;
                 }
-            } catch (\Exception $exception) {
-                Log::log(LogLevel::ERROR, "Failed to generate reward: " . $exception->getMessage());
             }
+            $totalEarnedByUser = 0;
+            if (getSetting('referrals.fee_limit') && intval(getSetting('referrals.fee_limit')) > 0) {
+                $totalEarnedByUser = UsersServiceProvider::getTotalAmountEarnedFromRewardsByUsers($referralCodeUser->id, $transaction->recipient_user_id);
+                if ($totalEarnedByUser >= floatval(getSetting('referrals.fee_limit'))) {
+                    return;
+                }
+            }
+
+            if ($transaction->amount <= 0) {
+                return;
+            }
+
+            $rewardFee = floatval($percentage  * ($transaction->amount / 100));
+            if ($rewardFee + $totalEarnedByUser >= floatval(getSetting('referrals.fee_limit')) || $rewardFee === 0) {
+                return;
+            }
+            Reward::create([
+                'from_user_id' => $transaction->recipient_user_id,
+                'to_user_id' => $referralCodeUser->id,
+                'reward_type' => Reward::FEE_PERCENTAGE_REWARD_TYPE,
+                'transaction_id' => $transaction->id,
+                'referral_code_usage_id' => $referralCodeUsage->id,
+                'amount' => $rewardFee,
+            ]);
+
+            Wallet::query()
+            ->where('user_id', $referralCodeUser->id)
+            ->increment('total', $rewardFee);
+
+            Wallet::query()
+            ->where('user_id', $referralCodeUsage->id)
+            ->decrement('total', $rewardFee);
+        } catch (\Exception $exception) {
+            Log::log(LogLevel::ERROR, "Failed to generate reward: " . $exception->getMessage());
+        }
+
         }
     }
 }

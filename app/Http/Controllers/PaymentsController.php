@@ -329,7 +329,7 @@ class PaymentsController extends Controller
                             ], 401);
                         }
                         if (!Auth::user()->cpf && $request->input('cpf')) {
-                            $user = Auth::user();
+                            $user = User::find(Auth::user()->id);
                             $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
                             $existingUser = User::where('cpf', $cleanedCpf)->first();
@@ -372,7 +372,7 @@ class PaymentsController extends Controller
 
 
                     if (!Auth::user()->cpf && $request->input('cpf')) {
-                        $user = Auth::user();
+                        $user = User::find(Auth::user()->id);
                         $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
                         $existingUser = User::where('cpf', $cleanedCpf)->first();
@@ -456,7 +456,7 @@ class PaymentsController extends Controller
                             ], 401);
                         }
                         if (!Auth::user()->cpf && $request->input('cpf')) {
-                            $user = Auth::user();
+                            $user = User::find(Auth::user()->id);
                             $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
                             $existingUser = User::where('cpf', $cleanedCpf)->first();
