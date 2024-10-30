@@ -207,27 +207,27 @@ class WithdrawalsController extends Controller
         try {
             $payoutSucceeded = true;
 
-            $transfer =  $this->paymentHandler->makeTransfer($withdrawal->amount, $withdrawal->payment_identifier);
-            if (!array_key_exists('STATUS', $transfer) || $transfer['STATUS'] !== 'EM_PROCESSAMENTO' && $transfer['nome']) {
-                switch ($transfer['nome']) {
-                    case 'valor_invalido':
-                        $payoutSucceeded = false;
-                        throw new Exception("A chave Pix fornecida é inválida");
-                        break;
-                    case 'pedido_pagamento_negado':
-                        $payoutSucceeded = false;
-                        throw new Exception("O limite diário de transferências foi atingido");
-                        break;
-                    default:
-                        $payoutSucceeded = false;
-                        throw new Exception("Erro desconhecido");
-                        break;
-                }
-            }
+            // $transfer =  $this->paymentHandler->makeTransfer($withdrawal->amount, $withdrawal->payment_identifier);
+            // if (!array_key_exists('STATUS', $transfer) || $transfer['STATUS'] !== 'EM_PROCESSAMENTO' && $transfer['nome']) {
+            //     switch ($transfer['nome']) {
+            //         case 'valor_invalido':
+            //             $payoutSucceeded = false;
+            //             throw new Exception("A chave Pix fornecida é inválida");
+            //             break;
+            //         case 'pedido_pagamento_negado':
+            //             $payoutSucceeded = false;
+            //             throw new Exception("O limite diário de transferências foi atingido");
+            //             break;
+            //         default:
+            //             $payoutSucceeded = false;
+            //             throw new Exception("Erro desconhecido");
+            //             break;
+            //     }
+            // }
 
             $withdrawal->status = Withdrawal::APPROVED_STATUS;
-            $withdrawal->e2eId = $transfer['e2eId'];
-            $withdrawal->transfer_id = $transfer['idEnvio'];
+            // $withdrawal->e2eId = $transfer['e2eId'];
+            // $withdrawal->transfer_id = $transfer['idEnvio'];
             $withdrawal->processed = true;
 
             if ($payoutSucceeded) {

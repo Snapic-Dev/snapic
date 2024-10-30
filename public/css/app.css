@@ -710,6 +710,11 @@ footer .brand-logo {
   min-width: 280px;
 }
 
+.avatar-Referral {
+  height: 40px;
+  width: 40px;
+}
+
 .btnPix {
   background-color: #673ab6;
   color: white;
