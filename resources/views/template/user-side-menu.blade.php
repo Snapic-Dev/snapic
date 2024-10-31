@@ -42,9 +42,8 @@
 
     <ul class="list-unstyled menu-elements p-0">
         @if (GenericHelper::isEmailEnforcedAndValidated())
-        @if(
-        Auth::user()->role_id === 1 ||
-        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+        @if( Auth::user()->role_id === 1 ||
+        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at && Auth::user()->public_profile )
         )
         <li
             class="{{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }}">
