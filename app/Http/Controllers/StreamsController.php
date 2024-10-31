@@ -48,7 +48,7 @@ class StreamsController extends Controller
         }
         $currentStream = StreamsServiceProvider::getUserInProgressStream();
 
-        if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at && !Auth::user()->public_profile))) {
+        if (Auth::user()->role_id !== 1 && (Auth::user()->role_id === 2 || (Auth::user()->role_id === 3 && !Auth::user()->identity_verified_at))) {
             abort(404);
         }
 
