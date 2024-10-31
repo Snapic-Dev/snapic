@@ -229,7 +229,9 @@
         </div>
         </a>
         </li> --}}
-        @if(Auth::user()->role_id === 3 && Auth::user()->identity_verified_at)
+         @if( Auth::user()->role_id === 1 ||
+        (Auth::user()->role_id === 3 && Auth::user()->identity_verified_at && Auth::user()->public_profile )
+        )
         <li class="nav-item">
             <a href="{{ route('profile', ['username' => Auth::user()->username]) }}"
                 class="nav-link {{ Route::currentRouteName() == 'profile' && request()->route('username') == Auth::user()->username ? 'active' : '' }} h-pill h-pill-primary d-flex justify-content-between">
