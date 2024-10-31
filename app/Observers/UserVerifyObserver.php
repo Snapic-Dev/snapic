@@ -33,6 +33,7 @@ class UserVerifyObserver
                 $user->identity_verified_at = $userVerify->updated_at;
                 $user->public_profile = true;
                 $user->paid_profile = true;
+                $user->role_id = 3;
                 $user->save();
 
                 $emailSubject = __('Your identity check passed.');
