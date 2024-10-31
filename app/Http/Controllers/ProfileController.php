@@ -36,7 +36,7 @@ class ProfileController extends Controller
             abort(404);
         }
 
-        if ($this->user->role_id !== 1 && ($this->user->role_id === 2 || ($this->user->role_id === 3 && !$this->user->identity_verified_at && !Auth::user()->public_profile))) {
+        if ($this->user->role_id !== 1 && ($this->user->role_id === 2 || ($this->user->role_id === 3 && (!$this->user->identity_verified_at || !Auth::user()->public_profile)))) {
             abort(403, __('Profile access is denied.'));
         }
         
