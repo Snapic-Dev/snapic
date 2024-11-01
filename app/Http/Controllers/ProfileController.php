@@ -15,6 +15,7 @@ use Illuminate\Support\ViewErrorBag;
 use JavaScript;
 use Session;
 
+
 class ProfileController extends Controller
 {
     protected $user;
@@ -36,7 +37,8 @@ class ProfileController extends Controller
             abort(404);
         }
 
-         if ($this->user->role_id !== 1 && ($this->user->role_id === 2 || ($this->user->role_id === 3 && !$this->user->identity_verified_at))) {
+
+         if  ($this->user->role_id === 2 || ($this->user->role_id === 3 && (!$this->user->identity_verified_at || !$this->user->public_profile))) {
             abort(403, __('Profile access is denied.'));
         }
         
