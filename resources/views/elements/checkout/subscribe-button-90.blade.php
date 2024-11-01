@@ -11,7 +11,7 @@
                 data-target="#checkout-center"
                 data-type="three-months-subscription"
                 data-recipient-id="{{$user->id}}"
-                data-amount="{{$user->profile_access_price_3_months ? $user->profile_access_price_3_months * 3 : 0}}"
+                data-amount="{{$user->profile_access_price_3_months ?? 0}}"
                 data-first-name="{{Auth::user()->first_name}}"
                 data-last-name="{{Auth::user()->last_name}}"
                 data-billing-address="{{Auth::user()->billing_address}}"
@@ -33,7 +33,7 @@
     <span class="d-flex">
 
 
-        {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($user->profile_access_price_3_months * 3)}}
+        {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($user->profile_access_price_3_months)}}
         {{__('for')}}
         {{trans_choice('months', 3,['number'=>3])}}
         <span class="d-none d-md-flex ml-1">

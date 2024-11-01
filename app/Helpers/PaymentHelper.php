@@ -1939,17 +1939,17 @@ class PaymentHelper
                     }
                     break;
                 case Transaction::THREE_MONTHS_SUBSCRIPTION:
-                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_3_months * 3 + 0)) {
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_3_months + 0)) {
                         $valid = true;
                     }
                     break;
                 case Transaction::SIX_MONTHS_SUBSCRIPTION:
-                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_6_months * 6 + 0)) {
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_6_months + 0)) {
                         $valid = true;
                     }
                     break;
                 case Transaction::YEARLY_SUBSCRIPTION:
-                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_12_months * 12 + 0)) {
+                    if ($transactionAmountWithoutTaxes === (string)($recipientUser->profile_access_price_12_months + 0)) {
                         $valid = true;
                     }
                     break;

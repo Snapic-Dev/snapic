@@ -11,7 +11,7 @@
                 data-target="#checkout-center"
                 data-type="six-months-subscription"
                 data-recipient-id="{{$user->id}}"
-                data-amount="{{$user->profile_access_price_6_months ? $user->profile_access_price_6_months * 6 : 0}}"
+                data-amount="{{$user->profile_access_price_6_months ?? 0}}"
                 data-first-name="{{Auth::user()->first_name}}"
                 data-last-name="{{Auth::user()->last_name}}"
                 data-billing-address="{{Auth::user()->billing_address}}"
@@ -31,7 +31,7 @@
 >
     <span>{{__('Subscribe')}}</span>
     <span class="d-flex">
-        {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($user->profile_access_price_6_months * 6)}}
+        {{\App\Providers\SettingsServiceProvider::getWebsiteFormattedAmount($user->profile_access_price_6_months)}}
         {{__('for')}}
         {{trans_choice('months', 6,['number'=>6])}}
         <span class="d-none d-md-flex ml-1">
