@@ -208,7 +208,7 @@ class SettingsController extends Controller
                     ->when($endDate, function ($query) use ($endDate) {
                         return $query->whereDate('created_at', '<=', $endDate);
                     })->sum("amount");
-                $totalAmount = ($transactions->sum('amount') + $rewards_received) - ($agreements->sum('amount') + $rewards_sent);
+                $totalAmount = $transactions->sum('amount') - ($agreements->sum('amount') + $rewards_sent);
                 $totalCount = $transactions->count();
 
                 $payments = Transaction::with(['receiver', 'sender'])

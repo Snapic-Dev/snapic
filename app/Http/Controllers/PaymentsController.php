@@ -601,7 +601,13 @@ class PaymentsController extends Controller
                 $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
                 $transaction->type === Transaction::YEARLY_SUBSCRIPTION
             ) {
-                $this->paymentHandler->generateSubscriptionByTransaction($transaction);
+                $recipient = User::query()->where('id', $transaction->recipient_user_id)->first();
+                $discount = floatval($recipient->discount / 100) * $transaction->amount;
+                Wallet::query()
+                    ->where('user_id', $recipient->id)
+                    ->decrement('total', $discount);
+
+                $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             } else {
                 self::handleTransactionNotification($transaction);
             }

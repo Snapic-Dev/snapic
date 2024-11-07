@@ -3,20 +3,20 @@
     @csrf
 
     @if (getSetting('social-login.facebook_client_id') ||
-            getSetting('social-login.twitter_client_id') ||
-            getSetting('social-login.google_client_id'))
-        <div class="my-1">
-            <p class="mb-0">
-                {{ __('Already got an account?') }}
-                @if (isset($mode) && $mode == 'ajax')
-                    <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('login')"
-                        class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
-                @else
-                    <a href="{{ route('login') }}"
-                        class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
-                @endif
-            </p>
-        </div>
+    getSetting('social-login.twitter_client_id') ||
+    getSetting('social-login.google_client_id'))
+    <div class="my-1">
+        <p class="mb-0">
+            {{ __('Already got an account?') }}
+            @if (isset($mode) && $mode == 'ajax')
+            <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('login')"
+                class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
+            @else
+            <a href="{{ route('login') }}"
+                class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
+            @endif
+        </p>
+    </div>
     @endif
 
     <div class="form-group">
@@ -25,9 +25,9 @@
                 class="inputLogin form-control @error('name') is-invalid @enderror" name="name"
                 value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -38,9 +38,9 @@
                 class="inputLogin form-control @error('email') is-invalid @enderror" name="email"
                 value="{{ old('email') }}" autocomplete="email">
             @error('email')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -51,9 +51,9 @@
                 class="inputLogin form-control @error('cpf') is-invalid @enderror" name="cpf"
                 value="{{ old('cpf') }}" autocomplete="cpf">
             @error('cpf')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -63,9 +63,9 @@
             class="inputLogin inputRegisterDate form-control @error('birthdate') is-invalid @enderror" name="birthdate"
             value="{{ old('birthdate') }}" autocomplete="date" placeholder="Data Nascimento">
         @error('birthdate')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
         @enderror
     </div>
 
@@ -75,9 +75,9 @@
                 class="inputLogin form-control @error('phone') is-invalid @enderror" name="phone"
                 value="{{ old('phone') }}" autocomplete="text">
             @error('phone')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -90,15 +90,15 @@
                 name="niche">
                 <option class="selectOption" value="">{{ __('Nicho*') }}</option>
                 @foreach ($niches as $niche)
-                    <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
-                        {{ $niche->name }}
-                    </option>
+                <option value="{{ $niche->name }}" {{ old('niche') == $niche->name ? 'selected' : '' }}>
+                    {{ $niche->name }}
+                </option>
                 @endforeach
             </select>
             @error('niche')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -106,13 +106,13 @@
     <div class="form-group">
         <!-- <label for="instagram" class="col-form-label">instagram</label> -->
         <div class="">
-            <input id="instagram" placeholder="Instagram" type="tel"
+            <input id="instagram" placeholder="Instagram" type="text"
                 class="inputLogin form-control @error('instagram') is-invalid @enderror" name="instagram"
                 value="{{ old('instagram') }}" autocomplete="text">
             @error('instagram')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -125,9 +125,9 @@
                 class="inputLogin form-control @error('password') is-invalid @enderror" name="password"
                 autocomplete="new-password">
             @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -139,9 +139,9 @@
                 class="inputLogin form-control @error('password_confirmation') is-invalid @enderror"
                 placeholder="Confirmar Senha*" name="password_confirmation" autocomplete="new-password">
             @error('password_confirmation')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -161,9 +161,9 @@
                 </div>
             </div>
             @error('frontDoc')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
 
@@ -181,9 +181,9 @@
                 </div>
             </div>
             @error('backDoc')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
@@ -205,16 +205,16 @@
     </div>
 
     @if (getSetting('security.recaptcha_enabled') && !Auth::check())
-        <div class="form-group row d-flex justify-content-center captcha-field">
-            {!! NoCaptcha::display([
-                'data-theme' => Cookie::get('app_theme') == null ? getSetting('site.default_user_theme') : Cookie::get('app_theme'),
-            ]) !!}
-            @error('g-recaptcha-response')
-                <span class="text-danger" role="alert">
-                    <strong>{{ __('Please check the captcha field.') }}</strong>
-                </span>
-            @enderror
-        </div>
+    <div class="form-group row d-flex justify-content-center captcha-field">
+        {!! NoCaptcha::display([
+        'data-theme' => Cookie::get('app_theme') == null ? getSetting('site.default_user_theme') : Cookie::get('app_theme'),
+        ]) !!}
+        @error('g-recaptcha-response')
+        <span class="text-danger" role="alert">
+            <strong>{{ __('Please check the captcha field.') }}</strong>
+        </span>
+        @enderror
+    </div>
     @endif
 
     <div class="form-group row mb-0">
@@ -238,22 +238,22 @@
 
 </form>
 @if (
-    !getSetting('social-login.facebook_client_id') &&
-        !getSetting('social-login.twitter_client_id') &&
-        !getSetting('social-login.google_client_id'))
-    <hr>
-    <div class=" text-center">
-        <p class="mb-4">
-            {{ __('Already got an account?') }}
-            @if (isset($mode) && $mode == 'ajax')
-                <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('login')"
-                    class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
-            @else
-                <a href="{{ route('login') }}"
-                    class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
-            @endif
-        </p>
-    </div>
+!getSetting('social-login.facebook_client_id') &&
+!getSetting('social-login.twitter_client_id') &&
+!getSetting('social-login.google_client_id'))
+<hr>
+<div class=" text-center">
+    <p class="mb-4">
+        {{ __('Already got an account?') }}
+        @if (isset($mode) && $mode == 'ajax')
+        <a href="javascript:void(0);" onclick="LoginModal.changeActiveTab('login')"
+            class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
+        @else
+        <a href="{{ route('login') }}"
+            class="text-primary text-gradient font-weight-bold">{{ __('Sign in') }}</a>
+        @endif
+    </p>
+</div>
 @endif
 <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -220,12 +220,14 @@ class DashboardServiceProvider extends ServiceProvider
             $agreements = Agreement::whereIn('transaction_id', $transactionIds)->get();
             $totalTransactions = $transactions->sum('amount');
             $totalAgreements = $agreements->sum('amount');
+            // comissao
             $totalEarned = ($totalTransactions + $rewards_received) - ($totalAgreements + $rewards_sent);
 
             $topInfluencers[] = [
                 'id' => $influencer->id,
                 'username' => $influencer->username,
-                'total_earned' => $totalEarned,
+                'total_earned' => $totalTransactions,
+                'total_comission' => $totalEarned,
             ];
         }
         return  $topInfluencers;

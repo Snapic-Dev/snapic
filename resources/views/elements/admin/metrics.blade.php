@@ -138,6 +138,7 @@
                             <th>Usuário</th>
                             <th>Assinantes</th>
                             <th>Faturamento</th>
+                            <th>Comissão</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,6 +158,9 @@
                                 </td>
                                 <td class="col-totalEarned">R$
                                     {{ number_format($influencer['total_earned'], 2, ',', '.') }}
+                                </td>
+                                <td class="col-totalEarned">R$
+                                    {{ number_format($influencer['total_comission'], 2, ',', '.') }}
                                 </td>
                             </tr>
                             @endforeach
