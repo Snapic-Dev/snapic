@@ -202,33 +202,40 @@ class DashboardServiceProvider extends ServiceProvider
 
     public static function topInfluencerList()
     {
-        $topInfluencers = User::where('role_id', 3)->whereNotNull('identity_verified_at')
-            ->leftJoin(DB::raw('
-        (SELECT recipient_user_id, SUM(CASE 
-            WHEN status = "approved" AND type != "deposit" 
-            THEN amount ELSE 0 END) as total_transactions 
-        FROM transactions 
-        GROUP BY recipient_user_id) as t'), 'users.id', '=', 't.recipient_user_id')
-            ->leftJoin(DB::raw('
-        (SELECT to_user_id, SUM(amount) as total_rewards 
-        FROM rewards 
-        GROUP BY to_user_id) as r'), 'users.id', '=', 'r.to_user_id')
-            ->select('users.id', 'users.username', 'users.email', DB::raw('
-        COALESCE(t.total_transactions, 0) + COALESCE(r.total_rewards, 0) as total_earned
-    '))
-            ->groupBy('users.id', 'users.username', 'users.email', 't.total_transactions', 'r.total_rewards')
-            ->orderByDesc('total_earned')
-            ->limit(10)
+        $topInfluencers = [];
+
+        $influencers = User::where('role_id', 3)
+            ->whereNotNull('identity_verified_at')
             ->get();
 
-        return $topInfluencers;
+        foreach ($influencers as $influencer) {
+            $transactions = Transaction::where('recipient_user_id', $influencer->id)
+                ->where('status', Transaction::APPROVED_STATUS)
+                ->where('type', '!=', Transaction::DEPOSIT_TYPE)
+                ->get();
+            $rewards_received = Reward::where('to_user_id', $influencer->id)->sum("amount");
+            $rewards_sent = Reward::where('from_user_id', $influencer->id)->sum("amount");
+
+            $transactionIds = $transactions->pluck('id');
+            $agreements = Agreement::whereIn('transaction_id', $transactionIds)->get();
+            $totalTransactions = $transactions->sum('amount');
+            $totalAgreements = $agreements->sum('amount');
+            $totalEarned = ($totalTransactions + $rewards_received) - ($totalAgreements + $rewards_sent);
+
+            $topInfluencers[] = [
+                'id' => $influencer->id,
+                'username' => $influencer->username,
+                'total_earned' => $totalEarned,
+            ];
+        }
+        return  $topInfluencers;
     }
 
     public static function getSubscriberRank($senderID)
     {
         $subscribers = Subscription::where('recipient_user_id', $senderID)
             ->where('expires_at', '>', Carbon::now('UTC'))
-            ->where('status','completed')
+            ->where('status', 'completed')
             ->count();
 
         return $subscribers;
@@ -255,7 +262,7 @@ class DashboardServiceProvider extends ServiceProvider
             ->where('users.role_id', 3)
             ->sum('transactions.amount');
 
-        return number_format((float) $rewards + (float) $transactions - $agreements, 2, ',', '.');
+        return number_format(floatval($rewards) + (floatval($transactions) - floatval($rewards)) - floatval($agreements), 2, ',', '.');
     }
 
     public function getMetrics(Request $request)

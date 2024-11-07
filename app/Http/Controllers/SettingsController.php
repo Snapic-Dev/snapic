@@ -196,9 +196,19 @@ class SettingsController extends Controller
                 $transactionIds = $transactions->pluck('id');
 
                 $agreements = Agreement::whereIn('transaction_id', $transactionIds)->get();
-
-                $totalAmount = $transactions->sum('amount') -  $agreements->sum('amount');
-
+                $rewards_received = Reward::where('to_user_id',  Auth::user()->id)->when($initialDate, function ($query) use ($initialDate) {
+                    return $query->whereDate('created_at', '>=', $initialDate);
+                })
+                    ->when($endDate, function ($query) use ($endDate) {
+                        return $query->whereDate('created_at', '<=', $endDate);
+                    })->sum("amount");
+                $rewards_sent = Reward::where('from_user_id',  Auth::user()->id)->when($initialDate, function ($query) use ($initialDate) {
+                    return $query->whereDate('created_at', '>=', $initialDate);
+                })
+                    ->when($endDate, function ($query) use ($endDate) {
+                        return $query->whereDate('created_at', '<=', $endDate);
+                    })->sum("amount");
+                $totalAmount = ($transactions->sum('amount') + $rewards_received) - ($agreements->sum('amount') + $rewards_sent);
                 $totalCount = $transactions->count();
 
                 $payments = Transaction::with(['receiver', 'sender'])
