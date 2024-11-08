@@ -208,7 +208,7 @@ class DashboardServiceProvider extends ServiceProvider
             ->whereNotNull('identity_verified_at')
             ->get();
 
-        foreach ($influencers as $influencer) {
+        foreach ($influencers as $index => $influencer) {
             $transactions = Transaction::where('recipient_user_id', $influencer->id)
                 ->where('status', Transaction::APPROVED_STATUS)
                 ->where('type', '!=', Transaction::DEPOSIT_TYPE)
@@ -221,15 +221,16 @@ class DashboardServiceProvider extends ServiceProvider
             $totalTransactions = $transactions->sum('amount');
             $totalAgreements = $agreements->sum('amount');
             // comissao
-            $totalEarned = ($totalTransactions + $rewards_received) - ($totalAgreements + $rewards_sent);
+            $totalEarned = floatval($totalTransactions + $rewards_received) - ($totalAgreements + $rewards_sent);
 
             $topInfluencers[] = [
                 'id' => $influencer->id,
                 'username' => $influencer->username,
                 'total_earned' => $totalTransactions,
-                'total_comission' => $totalEarned,
+                'total_comission' => floatval($totalTransactions) + floatval($rewards_received) - (floatval($totalAgreements) + floatval($rewards_sent)),
             ];
         }
+
         return  $topInfluencers;
     }
 
