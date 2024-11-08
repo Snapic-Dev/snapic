@@ -602,24 +602,6 @@ class PaymentsController extends Controller
                 $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
                 $transaction->type === Transaction::YEARLY_SUBSCRIPTION
             ) {
-                $recipient = User::query()->where('id', $transaction->recipient_user_id)->first();
-                $discount = floatval($recipient->discount / 100) * $transaction->amount;
-
-                $percentage_reward = floatval(getSetting('referrals.fee_percentage')) ?? 5;
-                $discount_reward = floatval($percentage_reward  * ($transaction->amount / 100));
-
-                $referralCodeUsed = ReferralCodeUsage::where(['used_by' => $recipient->id])->first();
-                $indicator = User::where(['referral_code' => $referralCodeUsed->referral_code])->first();
-
-                $value_of_reward = 0;
-                if ($indicator) {
-                    $value_of_reward = 5;
-                }
-
-                Wallet::query()
-                    ->where('user_id', $recipient->id)
-                    ->decrement('total', $discount - $value_of_reward);
-
                 $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             } else {
                 self::handleTransactionNotification($transaction);
