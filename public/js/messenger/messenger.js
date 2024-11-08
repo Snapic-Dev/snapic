@@ -431,7 +431,7 @@ var messenger = {
       $(".conversation-header-loading-box").addClass("d-none");
       $(".conversation-header-avatar").attr("src", avatar);
       $(".conversation-header-user").html(
-        name !== null && name !== "null" ? name : username
+        username ?? name ?? 'null'
       );
 
       $(".conversation-profile-link").attr("href", profile);

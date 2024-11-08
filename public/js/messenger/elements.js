@@ -14,7 +14,7 @@
 // eslint-disable-next-line no-unused-vars
 function contactElement(contact){
     const avatar = contact.receiverID === user.user_id ? contact.senderAvatar : contact.receiverAvatar;
-    const name = contact.receiverID === user.user_id ? contact.senderName : contact.receiverName;
+    const userName = contact.receiverID === user.user_id ? contact.senderUsername : contact.receiverUsername;
     return `
       <div class="col-12 d-flex pt-2 pb-2 contact-box contact-${
         contact.contactID
@@ -26,7 +26,7 @@ function contactElement(contact){
               contact.isSeen === 0
                 ? "font-weight-bold"
                 : ""
-            }">${filterXSS(name !== null && name !== "null" ? name : contact.receiverUsername)}</div>
+            }">${filterXSS(userName !== null && userName !== "null" ? userName : contact.receiverUsername)}</div>
             <small class="message-excerpt-holder d-flex text-truncate">
                 <span class="text-muted mr-1 ${
                   contact.lastMessageSenderID !== user.user_id ? "d-none" : ""

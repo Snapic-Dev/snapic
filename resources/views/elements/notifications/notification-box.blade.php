@@ -13,7 +13,7 @@
             <div class="d-flex flex-row-no-rtl justify-content-between">
                 @if($notification->fromUser)
                     <div class="d-flex flex-column">
-                        <h6 class="text-bold  m-0 p-0 d-flex"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-dark-r">{{$notification->fromUser->name}}</a></h6>
+                        <h6 class="text-bold  m-0 p-0 d-flex"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-dark-r">{{$notification->fromUser->username}}</a></h6>
                         <!-- <div class="text-bold"><a href="{{route('profile',['username'=>$notification->fromUser->username])}}" class="text-muted">{{'@'}}{{$notification->fromUser->username}}</a></div> -->
                     </div>
                 @endif

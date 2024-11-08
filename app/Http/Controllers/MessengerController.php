@@ -140,6 +140,7 @@ class MessengerController extends Controller
              t1.created_at as messageDate,
              senderDetails.id as senderID,
              senderDetails.name as senderName,
+             senderDetails.username as senderUsername,
              senderDetails.avatar as senderAvatar,
              senderDetails.role_id as senderRole,
              receiverDetails.id as receiverID,
