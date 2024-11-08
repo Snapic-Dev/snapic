@@ -138,24 +138,32 @@
                             <th>Usuário</th>
                             <th>Assinantes</th>
                             <th>Faturamento</th>
+                            <th>Comissão</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php
                         $topInfluencers = \App\Providers\DashboardServiceProvider::topInfluencerList();
-                        @endphp
-                        @foreach ($topInfluencers as $index => $influencer)
-                        <tr>
-                            <td class="rankingNumber">{{ $index + 1 }}</td>
-                            <td class="col-name">{{ $influencer->username }}</td>
-                            <td class="col-transaction">
-                                {{ \App\Providers\DashboardServiceProvider::getSubscriberRank($influencer->id) }}
-                            </td>
-                            <td class="col-totalEarned">R$
-                                {{ number_format($influencer->total_earned, 2, ',', '.') }}
-                            </td>
-                        </tr>
-                        @endforeach
+                        usort($topInfluencers, function($a, $b) {
+                        return $b['total_earned'] <=> $a['total_earned']; // Compara de forma decrescente
+                            });
+                            $topInfluencers = array_slice($topInfluencers, 0, 10);
+                            @endphp
+                            @foreach ($topInfluencers as $index => $influencer)
+                            <tr>
+                                <td class="rankingNumber">{{ $index + 1 }}</td>
+                                <td class="col-name">{{ $influencer['username'] }}</td>
+                                <td class="col-transaction">
+                                    {{ \App\Providers\DashboardServiceProvider::getSubscriberRank($influencer['id']) }}
+                                </td>
+                                <td class="col-totalEarned">R$
+                                    {{ number_format($influencer['total_earned'], 2, ',', '.') }}
+                                </td>
+                                <td class="col-totalEarned">R$
+                                    {{ number_format($influencer['total_comission'], 2, ',', '.') }}
+                                </td>
+                            </tr>
+                            @endforeach
                     </tbody>
                 </table>
             </div>

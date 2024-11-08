@@ -68,7 +68,7 @@ class MembersHelperServiceProvider extends ServiceProvider
 
             $members = User::limit(getSetting('feed.feed_suggestions_total_cards') * getSetting('feed.feed_suggestions_card_per_page'))->where('public_profile', 1);
 
-            $members->whereNotNull('users.identity_verified_at')->where('users.role_id', 3)->where('users.public_profile',1);
+            $members->whereNotNull('users.identity_verified_at')->where('users.role_id', 3)->where('users.public_profile', 1);
             // If there are more than 9 users having subs, use those
             // Otherwise, grab latest 9 users by date
             if (count($topSubbedUsers) >= 6) {
@@ -148,8 +148,8 @@ class MembersHelperServiceProvider extends ServiceProvider
     {
 
         $users = User::where('users.public_profile', 1);
-        $users->where('users.role_id', 2);
-
+        $users->where('users.role_id', 3)->whereNotNull('identity_verified_at');
+        
         if (Auth::check()) {
             $users->where('users.id', '<>', Auth::user()->id);
         }
@@ -230,6 +230,7 @@ class MembersHelperServiceProvider extends ServiceProvider
             });
             $data = $users;
         }
+
 
         return $data;
     }
