@@ -70,7 +70,7 @@ Minify::stylesheet([
                     @include('elements.search.search-filters')
                 </div>
                 @endif
-                <div class="inline-border-tabs mt-3">
+                <div class="inline-border-tabs mt-3 w-full">
                     <nav class="nav nav-pills nav-justified bookmarks-nav">
                         @php
                         $availableFilters = ['Live', 'people']
@@ -79,15 +79,13 @@ Minify::stylesheet([
                         <a class="nav-item nav-link {{$filter == $activeFilter ? 'active' : ''}}" href="{{route('search.get',array_merge(['query'=>isset($searchTerm) && $searchTerm ? $searchTerm : ''],['filter'=>$filter]))}}">
                             <div class="d-flex justify-content-center text-bold">
                                 <span class="d-md-none">
-                                    @switch($filter)
-                                    @case('live')
-                                    @include('elements.icon',['icon'=>'play-outline','centered' => false,'variant'=>'medium'])
-                                    @break
-                                    @case('people')
-                                    @include('elements.icon',['icon'=>'people-outline','centered' => false,'variant'=>'medium'])
-                                    @break
-                                    @endswitch
+                                    @if($filter === 'people')
+                                    @include('elements.icon', ['icon' => 'people-outline', 'centered' => false, 'variant' => 'medium'])
+                                    @else
+                                    @include('elements.icon', ['icon' => 'play-outline', 'centered' => false, 'variant' => 'medium'])
+                                    @endif
                                 </span>
+
                                 @if($filter == 'live') <div class="blob red d-none d-md-block"></div> @endif
                                 <span class="d-none d-md-block ml-2">{{ucfirst(trim( (in_array($filter,['videos','people']) ? trans_choice($filter,2,['number'=>'']) : __(ucfirst($filter))) )) }}</span>
                             </div>
