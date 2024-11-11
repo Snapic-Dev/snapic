@@ -54,6 +54,7 @@ class TransactionsObserver
         }
     }
 
+    
     private function discounts($transaction)
     {
         try {
@@ -66,10 +67,36 @@ class TransactionsObserver
             $discount_reward = floatval($percentage_reward  * ($transaction->amount / 100));
 
             $referralCodeUsed = ReferralCodeUsage::where(['used_by' => $recipient->id])->first();
-            $indicator = User::where(['referral_code' => $referralCodeUsed->referral_code])->first();
-
+            $indicator = null;
+            if ($referralCodeUsed) {
+                $indicator = User::where(['referral_code' => $referralCodeUsed->referral_code])->first();
+            }
             $percentage_agreement = $recipient->discount;
             $discount_agreement = floatval($transaction->amount * ($percentage_agreement / 100));
+
+            $existingAgreement = Agreement::where(['transaction_id' => $transaction->id])->first();
+
+            if (!$existingAgreement) {
+
+                $value_of_reward = 0;
+
+                if ($indicator && $indicator->id) {
+                    $value_of_reward = 5;
+                };
+                Wallet::query()
+                    ->where('user_id', $recipient->id)
+                    ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
+
+                $data = [
+                    'user_id' => $recipient->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => floatval($discount_agreement - $value_of_reward),
+                    'percentage' => (int) $recipient->discount,
+                    'currency' => SettingsServiceProvider::getAppCurrencyCode(),
+                ];
+
+                Agreement::create($data);
+            }
 
             if (getSetting('referrals.enabled') && $indicator) {
                 $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
@@ -109,31 +136,6 @@ class TransactionsObserver
                 Wallet::query()
                     ->where('user_id',  $recipient->id)
                     ->decrement('total', $discount_reward);
-            }
-
-            $existingAgreement = Agreement::where(['transaction_id' => $transaction->id])->first();
-
-            if (!$existingAgreement) {
-
-                $value_of_reward = 0;
-
-                if ($indicator->id) {
-                    $value_of_reward = 5;
-                };
-                Wallet::query()
-                    ->where('user_id', $recipient->id)
-                    ->decrement('total', floatval(($discount_agreement - $discount_reward * 2) - floatval($transaction->amount / 10)));
-
-                $data = [
-                    'user_id' => $recipient->id,
-                    'transaction_id' => $transaction->id,
-                    'amount' => floatval($discount_agreement - ($value_of_reward / 100)),
-                    'percentage' => (int) $recipient->discount,
-                    'currency' => SettingsServiceProvider::getAppCurrencyCode(),
-                ];
-
-                Agreement::create($data);
-                return;
             }
         } catch (\Exception $exception) {
             Log::log(LogLevel::ERROR, "Failed to generate reward: " . $exception->getMessage());
