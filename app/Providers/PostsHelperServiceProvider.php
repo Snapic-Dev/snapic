@@ -603,7 +603,11 @@ class PostsHelperServiceProvider extends ServiceProvider
             'image' => 0,
         ];
         foreach ($attachments as $attachment) {
+            if ($attachment->type === 'long_video') {
+                $typeCounts['video'] += 1;
+            } else {
             $typeCounts[AttachmentServiceProvider::getAttachmentType($attachment->type)] += 1;
+            }
         }
         $streams = Stream::where('user_id', $userID)->where('is_public', 1)->whereIn('status', [Stream::ENDED_STATUS, Stream::IN_PROGRESS_STATUS])->count();
         $typeCounts['streams'] = $streams;

@@ -168,28 +168,111 @@ var PostCreate = {
      * @param type
      * @param postID
      */
-    save: function (type = 'create', postID = false, forceSave = false) {
+     generateRandomId: function () {
+    return Math.random().toString(36).substr(2, 26);
+  },
+
+  uploadVideo: async function () {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js");
+    const { getStorage, ref, uploadBytesResumable, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js");
+
+    const videoInput = $("#upload_video_post")[0];
+    const videoFile = videoInput.files[0];
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqyMEep9-140R2oPYY7AcBw3ycryQ-TWk",
+      authDomain: "snapic-e326c.firebaseapp.com",
+      projectId: "snapic-e326c",
+      storageBucket: "snapic-e326c.appspot.com",
+      messagingSenderId: "173447004036",
+      appId: "1:173447004036:web:e06cfe657f50c5572e27d1",
+      measurementId: "G-NVV0XMVCBR",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    const uploadFile = async (file) => {
+      try {
+        const storageRef = ref(storage, `uploads/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        return new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              $("#percentage-upload-video").text(Math.floor(progress) + "%");
+            },
+            (error) => {
+              reject(new Error(error.message));
+            },
+            async () => {
+              try {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(url);
+              } catch (error) {
+                reject(new Error(error.message));
+              }
+            }
+          );
+        });
+      } catch (error) {
+        return null;
+      } finally {
+      }
+    };
+
+    try {
+      const url = await uploadFile(videoFile);
+      return url;
+    } catch (error) {
+      return null;
+    }
+  },
+
+  save:async function (type = "create", postID = false, forceSave = false) {
         PostCreate.saveRequireSubscription();
-        if((FileUpload.isLoading === true || FileUpload.isTranscodingVideo === true) && forceSave === false){
-            let dialogMessage = '';
-            if(FileUpload.isLoading === true){
-                dialogMessage = `${trans('Some attachments are still being uploaded.')} ${trans('Are you sure you want to continue?')}`;
+    if ((FileUpload.isLoading === true || FileUpload.isTranscodingVideo === true) && !forceSave) {
+      let dialogMessage = "";
+
+      if (FileUpload.isLoading) {
+        dialogMessage = `${trans("Some attachments are still being uploaded.")} ${trans("Are you sure you want to continue?")}`;
             }
-            if(FileUpload.isTranscodingVideo === true){
-                dialogMessage = `${trans('A video is currently being converted.')} ${trans('Are you sure you want to continue without it?')}`;
+
+      if (FileUpload.isTranscodingVideo) {
+        dialogMessage = `${trans("A video is currently being converted.")} ${trans("Are you sure you want to continue without it?")}`;
             }
-            $('#confirm-post-save .modal-body p').html(dialogMessage)
-            $('.confirm-post-save').unbind('click');
-            $('.confirm-post-save').on('click',function () {
+
+      $("#confirm-post-save .modal-body p").html(dialogMessage);
+      $(".confirm-post-save")
+        .unbind("click")
+        .on("click", function () {
                 PostCreate.save(type, postID, true);
             });
-            $('#confirm-post-save').modal('show');
+
+      $("#confirm-post-save").modal("show");
             return false;
         }
+    $(".spinner-post-create").removeClass("d-none");
+    $(".post-create-button").addClass("disabled", true);
+    $(".post-price-button").addClass("d-none");
+    $(".file-upload-button").addClass("d-none");
+    $(".requires_subscription_post_container").addClass("d-none");
+    $(".requires_subscription_post_container").removeClass("d-flex");
+    $(".draft-clear-button").addClass("d-none");
+    $("#remove_long_video").addClass("d-none");
 
-        updateButtonState('loading',$('.post-create-button'));
         PostCreate.savePostScheduleSettings();
-        let route = app.baseUrl + '/posts/save';
+
+    let upload_video;
+
+    if ($("#upload_video_post")[0] && $("#upload_video_post")[0].files.length > 0) {
+      $("#percentage-upload-video").removeClass("d-none");
+      $("#percentage-upload-video").addClass("d-flex");
+      upload_video = await PostCreate.uploadVideo();
+    }
+
+    let route = app.baseUrl + "/posts/save";
         let data = {
       attachments: FileUpload.attachaments,
       text: $("#dropzone-uploader").val(),
@@ -198,61 +281,66 @@ var PostCreate = {
       postNotifications: PostCreate.postNotifications,
       postReleaseDate: PostCreate.postReleaseDate,
       postExpireDate: PostCreate.postExpireDate,
-        };
-        if(type === 'create'){
-            data.type = 'create';
-        }
-        else{
-            data.type = 'update';
+      long_video: upload_video,
+    };
+
+    data.type = type === "create" ? "create" : "update";
+    if (type === "update") {
             data.id = postID;
         }
+
         $.ajax({
-            type: 'POST',
+      type: "POST",
             data: data,
             url: route,
             success: function () {
-                if(type === 'create'){
+        if (type === "create") {
                     PostCreate.isSavingRedirect = true;
-                    PostCreate.clearDraftData(redirect(app.baseUrl+'/'+user.username));
+          PostCreate.clearDraftData(redirect(app.baseUrl + "/" + user.username));
+        } else {
+          redirect(app.baseUrl + "/posts/" + postID + "/" + user.username);
                 }
-                else{
-                    redirect(app.baseUrl+'/posts/'+postID+'/'+user.username);
-                }
-                updateButtonState('loaded',$('.post-create-button'), trans('Save'));
-                $('#confirm-post-save').modal('hide');
+
+        updateButtonState("loaded", $(".post-create-button"), trans("Save"));
+        $("#confirm-post-save").modal("hide");
             },
             error: function (result) {
-                if(result.status === 422 || result.status === 500) {
+        if (result.status === 422 || result.status === 500) {
                     $.each(result.responseJSON.errors, function (field, error) {
-                        if (field === 'text') {
-                            $('.post-invalid-feedback').html(trans_choice('Your post must contain more than 10 characters.',mediaSettings.max_post_description_size, {'num':mediaSettings.max_post_description_size}));
-                            $('#dropzone-uploader').addClass('is-invalid');
-                            $('#dropzone-uploader').focus();
+            if (field === "text") {
+              $(".post-invalid-feedback").html(trans_choice("Your post must contain more than 10 characters.", mediaSettings.max_post_description_size, { num: mediaSettings.max_post_description_size }));
+              $("#dropzone-uploader").addClass("is-invalid").focus();
                         }
-                        if (field === 'attachments') {
-                            $('.post-invalid-feedback').html(trans('Your post must contain at least one attachment.'));
-                            $('#dropzone-uploader').addClass('is-invalid');
-                            $('#dropzone-uploader').focus();
+            if (field === "attachments") {
+              $(".post-invalid-feedback").html(trans("Your post must contain at least one attachment."));
+              $("#dropzone-uploader").addClass("is-invalid").focus();
                         }
-                        if (field === 'price') {
-                            $('.post-invalid-feedback').html(result.responseJSON.message);
-                            $('#dropzone-uploader').addClass('is-invalid');
-                            $('#dropzone-uploader').focus();
+            if (field === "price") {
+              $(".post-invalid-feedback").html(result.responseJSON.message);
+              $("#dropzone-uploader").addClass("is-invalid").focus();
                         }
-
-                        if(field === 'permissions'){
-                            launchToast('danger',trans('Error'),error);
+            if (field === "permissions") {
+              launchToast("danger", trans("Error"), error);
                         }
                     });
+        } else if (result.status === 403) {
+          launchToast("danger", trans("Error"), "Post not found.");
                 }
-                else if(result.status === 403){
-                    launchToast('danger',trans('Error'),'Post not found.');
-                }
-                $('#confirm-post-save').modal('hide');
-                updateButtonState('loaded',$('.post-create-button'), trans('Save'));
-            }
+        $("#confirm-post-save").modal("hide");
+        $(".spinner-post-create").addClass("d-none");
+        $(".post-create-button").removeClass("disabled");
+        $(".post-price-button").removeClass("d-none");
+        $(".file-upload-button").removeClass("d-none");
+        $(".requires_subscription_post_container").removeClass("d-none");
+        $(".requires_subscription_post_container").addClass("d-flex");
+        $(".draft-clear-button").removeClass("d-none");
+        $("#percentage-upload-video").addClass("d-none");
+        $("#percentage-upload-video").removeClass("d-flex");
+      },
         });
     },
+
+
 
     /**
      * Shows up the post scheduling setting setter dialog

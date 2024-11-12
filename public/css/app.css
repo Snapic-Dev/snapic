@@ -1133,6 +1133,42 @@ footer .brand-logo {
 }
 
 
+.upload_video {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  right: 0px;
+  bottom: -450px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+#remove_long_video {
+  position: absolute;
+  right: 40px;
+  bottom: -480px;
+  background: none;
+  color: #673ab6;
+  border: none;
+  font-size: 10px;
+}
+#percentage-upload-video {
+  position: absolute;
+  right: 27px;
+  bottom: -425px;
+  background: none;
+  color: #673ab6;
+  border: none;
+  font-size: 20px;
+  font-weight: 900;
+  background: #0000006f;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .inputLogin {
   background-color: #683ab617;
   height: 50px;

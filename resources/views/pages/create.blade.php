@@ -49,6 +49,17 @@
                 @endif
                 <div class="d-flex flex-column-reverse">
                     <div class="w-100 p-2">
+                        <div class="mb-3 relative" style="position: relative;">
+                            <video id="video_player_upload" class="upload_video shadow d-none" playsinline="" loop="" autoplay="" src="" muted="">
+                            </video>
+                            <button id="remove_long_video" class="d-none"> @include('elements.icon', [
+                                'icon' => 'close',
+                                'variant' => 'small',
+                                'centered' => true,
+                                'classes' => 'mr-1',
+                                ])</button>
+                            <span id="percentage-upload-video" class="d-none"></span>
+                        </div>
                         <textarea style="resize:none;" maxlength="500" rows="8" id="dropzone-uploader" name="input-text" class="form-control border dropzone w-100" rows="3"
                             spellcheck="false" placeholder="{{ __('Write a new post, drag and drop files to add attachments.') }}"
                             value="{{ isset($post) ? $post->text : '' }}"></textarea>
@@ -74,8 +85,9 @@
                                     @if (!GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks'))
                                         <button class="btn btn-outline-primary disabled mb-0">{{ __('Save') }}</button>
                                     @else
-                                        <button
-                                            class="btn btn-primary btn-block btn-round  post-create-button mb-0">{{ __('Postar') }}</button>
+                                        <button class="btn btn-primary btn-block btn-round d-flex itens-center post-create-button mb-0">{{ __('Postar') }}
+                                            <span class="spinner-border spinner-border-sm pt-1 ml-4 d-none spinner-post-create" role="status" aria-hidden="false"></span>
+                                        </button>
                                     @endif
                                 </div>
                             </div>

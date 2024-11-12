@@ -112,6 +112,9 @@ class AttachmentServiceProvider extends ServiceProvider
             case 'xlsx':
                 return 'document';
                 break;
+            case 'long_video':
+                return 'long_video';
+                break;
             default:
                 return 'image';
                 break;

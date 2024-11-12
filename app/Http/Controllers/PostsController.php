@@ -206,6 +206,23 @@ class PostsController extends Controller
             }
 
             if ($postID) {
+
+                $long_video = $request->get("long_video");
+
+                if ($long_video) {
+                    $long_video_id = substr(md5($long_video), 0, 20);
+
+                    Attachment::create([
+                        'id' => $long_video_id,
+                        'filename' => $long_video,
+                        'driver' => 0,
+                        'type' => 'long_video',
+                        'user_id' => $request->user()->id,
+                        'post_id' => $postID,
+                    ]);
+
+                }
+
                 $attachments = collect($request->get('attachments'))->map(function ($v, $k) {
                     if (isset($v['attachmentID'])) {
                         return $v['attachmentID'];

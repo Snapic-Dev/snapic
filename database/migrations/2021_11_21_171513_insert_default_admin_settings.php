@@ -175,10 +175,10 @@ class InsertDefaultAdminSettings extends Migration
             array(
                 'id' => 33,
                 'key' => 'media.max_file_upload_size',
-                'display_name' => 'Max file uploads size',
+                'display_name' => 'Max file uploads sizesdsda',
                 'value' => '9',
                 'details' => '{
-"description": "File size in MB."
+"description": "File size in MBasasas."
 }',
                 'type' => 'text',
                 'order' => 15,

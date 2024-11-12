@@ -11,6 +11,19 @@
             ])
         </span>
     </div>
+    
+    <div class="mt-1 ml-0 ml-md-2">
+        <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Add Long Video') }}."
+            class="h-pill h-pill-primary file-upload-button {{ !GenericHelper::isUserVerified() && getSetting('site.enforce_user_identity_checks') ? 'disabled' : '' }}">
+            <label for="upload_video_post"> @include('elements.icon', [
+                'icon' => 'play',
+                'variant' => 'medium',
+                'centered' => true,
+                'classes' => 'mr-1',
+                ])</label>
+        </span>
+        <input type="file" id="upload_video_post" class="form-control hidden" accept="video/*" default="">
+    </div>
 
     <div class="mt-1 ml-0 ml-md-2">
         <span
@@ -108,3 +121,31 @@
             <label for="cbx-12" style="margin-bottom: 0">Assinantes</label>
         </div>
     </div>
+
+
+<script>
+    const videoInput = document.querySelector('#upload_video_post');
+    const videoPlayer = document.querySelector('#video_player_upload');
+    const remove_long_video = document.querySelector('#remove_long_video');
+    document.addEventListener('DOMContentLoaded', function() {
+        if (videoInput) {
+            videoInput.value = '';
+            videoPlayer.classList.add('d-none')
+        }
+    });
+
+    videoInput.addEventListener('change', async () => {
+        if (videoInput.files.length > 0) {
+            const videoFile = videoInput.files[0];
+            videoPlayer.classList.remove("d-none")
+            const videoURL = URL.createObjectURL(videoFile);
+            videoPlayer.src = videoURL;
+            remove_long_video.classList.remove("d-none")
+        }
+    });
+    remove_long_video.addEventListener("click", () => {
+        videoPlayer.src = ""
+        videoInput.value =""
+        remove_long_video.classList.add("d-none")
+    })
+</script>
