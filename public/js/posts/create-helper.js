@@ -261,6 +261,8 @@ var PostCreate = {
     $(".requires_subscription_post_container").removeClass("d-flex");
     $(".draft-clear-button").addClass("d-none");
     $("#remove_long_video").addClass("d-none");
+    $(".post-notification-button ").addClass("d-none");
+
 
         PostCreate.savePostScheduleSettings();
 
@@ -274,7 +276,7 @@ var PostCreate = {
 
     let route = app.baseUrl + "/posts/save";
         let data = {
-      attachments: FileUpload.attachments,
+      attachments: FileUpload.attachaments,
       text: $("#dropzone-uploader").val(),
       price: PostCreate.postPrice,
       requires_subscription: PostCreate.requires_subscription,
@@ -329,6 +331,7 @@ var PostCreate = {
         $("#confirm-post-save").modal("hide");
         $(".spinner-post-create").addClass("d-none");
         $(".post-create-button").removeClass("disabled");
+        $(".post-notification-button ").removeClass("d-none");
         $(".post-price-button").removeClass("d-none");
         $(".file-upload-button").removeClass("d-none");
         $(".requires_subscription_post_container").removeClass("d-none");
