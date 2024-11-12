@@ -82,6 +82,9 @@
                     @include('elements.footer.direction-switcher')
                     <!-- @include('elements.footer.language-switcher') -->
                 </div>
+                <!-- Start of snapic4485 Zendesk Widget script -->
+                    <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=9a2b996f-2370-4eb9-add2-ed81765066a2"> </script>
+                <!-- End of snapic4485 Zendesk Widget script -->
             </div>
         </div>
 
