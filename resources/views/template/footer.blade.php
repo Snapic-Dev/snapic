@@ -24,6 +24,9 @@
                                 @include('elements.icon',['icon'=>'logo-twitter','variant'=>'medium','classes' => 'opacity-8'])
                             </a>
                         @endif -->
+                        <a class="m-2" href="https://www.snapic.com.br/contact">
+                            @include('elements.icon',['icon'=>'headset','variant'=>'medium','classes' => 'text-lg opacity-8'])
+                        </a>
                         @if(getSetting('social-links.instagram_url'))
                             <a class="m-2" href="{{getSetting('social-links.instagram_url')}}" target="_blank" alt="{{__("Instagram")}}" title="{{__("Instagram")}}">
                                 @include('elements.icon',['icon'=>'logo-instagram','variant'=>'medium','classes' => 'opacity-8'])
@@ -79,7 +82,6 @@
                     @include('elements.footer.direction-switcher')
                     <!-- @include('elements.footer.language-switcher') -->
                 </div>
-                <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=9a2b996f-2370-4eb9-add2-ed81765066a2"></script>
             </div>
         </div>
 

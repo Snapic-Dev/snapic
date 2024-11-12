@@ -25,6 +25,11 @@
                                     </a>
                                 </li>
                             @endif -->
+                            <li class="nav-item">
+                                <a class="nav-link pe-1 ml-2" href="https://www.snapic.com.br/contact">
+                                    @include('elements.icon',['icon'=>'headset','variant'=>'medium','classes' => 'text-lg opacity-8'])
+                                </a>
+                            </li>
                             @if(getSetting('social-links.instagram_url'))
                                 <li class="nav-item">
                                     <a class="nav-link pe-1 ml-2" href="{{getSetting('social-links.instagram_url')}}" target="_blank">
@@ -60,6 +65,7 @@
                                     </a>
                                 </li>
                             @endif
+                            
                         </ul>
 
 
