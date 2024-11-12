@@ -123,7 +123,12 @@ var FileUpload = {
                     launchToast('danger',trans('Error'),errorMessage.message);
                 }
                 else{
+                    if (typeof errorMessage === "string" && errorMessage.includes("File is too big")) {
+                        launchToast("danger", trans("Erro"), "O arquivo enviado excede o limite permitido. Para vídeos longos, utilize o botão específico.");
+                    } else {
                     launchToast('danger',trans('Error'),errorMessage);
+                }
+
                 }
             }
             FileUpload.myDropzone.removeFile(file);
