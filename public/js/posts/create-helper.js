@@ -274,7 +274,7 @@ var PostCreate = {
 
     let route = app.baseUrl + "/posts/save";
         let data = {
-      attachments: FileUpload.attachaments,
+      attachments: FileUpload.attachments,
       text: $("#dropzone-uploader").val(),
       price: PostCreate.postPrice,
       requires_subscription: PostCreate.requires_subscription,
