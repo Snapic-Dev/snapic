@@ -813,7 +813,14 @@ class MessengerController extends Controller
         }
 
         // Filtering blocked users
-        $blockedUsers = ListsHelperServiceProvider::getListMembers(Auth::user()->lists->firstWhere('type', 'blocked')->id);
+
+        $blockedList = Auth::user()->lists->firstWhere('type', 'blocked');
+        $blockedUsers = [];
+
+        if ($blockedList) {
+            $blockedUsers = ListsHelperServiceProvider::getListMembers($blockedList->id);
+        }
+
         $values['users'] =  array_filter($values['users'], function ($contact) use ($blockedUsers) {
             if (!in_array($contact['id'], $blockedUsers)) {
                 return $contact;
