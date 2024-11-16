@@ -9,6 +9,7 @@ use App\Providers\AuthServiceProvider;
 use App\Providers\FirebaseProvider;
 use App\Rules\IsEmailDelivrable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -197,6 +198,8 @@ class RegisterInfluencerController extends Controller
             'doc_front' => $frontDocUrl,
             'doc_back' => $backDocUrl,
         ]);
+        
+        Auth::login($user, true);
 
         return redirect($this->redirectTo)->with('success', 'Registration successful!');
     }
