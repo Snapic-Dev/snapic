@@ -41,7 +41,16 @@ class LoginController extends Controller
      */
     public function username()
     {
-        return 'username';
+        $login = request()->input('username_email');
+
+
+        // Verifica se a entrada fornecida é um email válido
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            return 'email';  // Se for um email, retorna 'email'
+        }else {
+             return 'username';
+
+        }
     }
 
     /**
@@ -81,10 +90,20 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
+        // Determina qual campo deve ser validado (email ou username)
+        $loginField = $this->username();  // Vai verificar se é um email ou nome de usuário
+
+        // Valida o campo com base no tipo de dado
         $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
+            'username_email' => 'required|string',  // Vai sempre validar o campo 'username_email'
+            'password' => 'required|string',         // Valida a senha
         ]);
+
+        // Após a validação, substituímos o campo 'username_email' pelo correto
+        $request->merge([
+            $loginField => $request->input('username_email'),  // Substitui 'username_email' por 'email' ou 'username'
+        ]);
+
     }
 
     /**

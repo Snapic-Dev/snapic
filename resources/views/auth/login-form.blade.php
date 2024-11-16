@@ -19,13 +19,15 @@
     <div class="form-group">
         <!-- <label for="name" class="col-form-label required-label">{{ __('Name') }}</label> -->
         <div class="">
-            <input class="inputLogin form-control @error('username') is-invalid @enderror" id="username" type="text" placeholder="Apelido*"
-                name="username" value="{{ old('username') }}"
-                autocomplete="username" autofocus
-                maxlength=15 
-                minlength=4
-                >
-            @error('username')
+            @php
+                $inputSpace = filter_var(old('username_email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            @endphp
+            <input class="inputLogin form-control @error($inputSpace) is-invalid @enderror" 
+                id="username_email" type="text" placeholder="Username ou Email*"
+                name="username_email" value="{{ old('username_email') }}"
+                autocomplete="username_email" autofocus minlength="4">
+
+            @error($inputSpace)
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
