@@ -54,7 +54,7 @@ class TransactionsObserver
         }
     }
 
-    
+
     private function discounts($transaction)
     {
         try {
@@ -83,9 +83,39 @@ class TransactionsObserver
                 if ($indicator && $indicator->id) {
                     $value_of_reward = 5;
                 };
-                Wallet::query()
-                    ->where('user_id', $recipient->id)
-                    ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
+                if ($transaction->payment_provider === "pix") {
+                    switch ($percentage_agreement) {
+                        case 5:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement * 4) - $discount_reward - floatval($transaction->amount / 10)));
+                            break;
+                        case 10:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement * 2.50)  - $discount_reward - floatval($transaction->amount / 10)));
+                            break;
+                        case 15:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement * 2) - $discount_reward - floatval($transaction->amount / 10)));
+                            break;
+                        case 20:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement * 1.75) - $discount_reward - floatval($transaction->amount / 10)));
+                            break;
+                        default:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement * 2) - $discount_reward - floatval($transaction->amount / 10)));
+                            break;
+                    }
+                } else {
+                    Wallet::query()
+                        ->where('user_id', $recipient->id)
+                        ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
+                }
 
                 $data = [
                     'user_id' => $recipient->id,
