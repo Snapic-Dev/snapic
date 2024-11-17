@@ -596,31 +596,15 @@ class PaymentsController extends Controller
                 ->where('user_id', $transaction->recipient_user_id)
                 ->increment('total', $amount);
 
-                if (
-                    $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||
-                    $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
-                    $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
-                    $transaction->type === Transaction::YEARLY_SUBSCRIPTION 
-                ) {
-                    $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
-    
-                    $recipient = User::query()->where('id', $transaction->recipient_user_id)->first();
-                    $discount = floatval($recipient->discount / 100) * $transaction->amount;
-    
-                    $percentage_reward = floatval(getSetting('referrals.fee_percentage')) ?? 5;
-    
-                    $referralCodeUsed = ReferralCodeUsage::where(['used_by' => $recipient->id])->first();
-                    $indicator = User::where(['referral_code' => $referralCodeUsed->referral_code])->first();
-                    $discount_reward = 0;
-    
-                    if ($indicator) {
-                        $discount_reward = floatval($percentage_reward  * ($transaction->amount / 100));
-                    }
-                    Wallet::query()
-                        ->where('user_id', $recipient->id)
-                        ->decrement('total', floatval(($discount - $discount_reward * 2) + floatval($transaction->amount / 10)));
-                }
-                self::handleTransactionNotification($transaction);
+            if (
+                $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||
+                $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::YEARLY_SUBSCRIPTION
+            ) {
+                $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
+            }
+            self::handleTransactionNotification($transaction);
 
             return response()->json(['message' => 'Pagamento Processado'], 200);
         } catch (\Exception $e) {

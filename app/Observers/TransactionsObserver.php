@@ -112,6 +112,7 @@ class TransactionsObserver
                             break;
                     }
                 } else {
+
                     Wallet::query()
                         ->where('user_id', $recipient->id)
                         ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
@@ -162,10 +163,9 @@ class TransactionsObserver
                 Wallet::query()
                     ->where('user_id', $indicator->id)
                     ->increment('total', $discount_reward);
-
                 Wallet::query()
                     ->where('user_id',  $recipient->id)
-                    ->decrement('total', $discount_reward);
+                    ->decrement('total', $discount_reward - $discount_reward);
             }
         } catch (\Exception $exception) {
             Log::log(LogLevel::ERROR, "Failed to generate reward: " . $exception->getMessage());
