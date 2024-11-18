@@ -117,12 +117,9 @@
     }
 
     function getGoogleOAuthURL() {
-
-        // secret
-        //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
         const options = {
-            redirect_uri: "http://localhost:8000/auth/google",
-            client_id: "842254285755-128q8fg6jka9851giilqr9mprcbccl1t.apps.googleusercontent.com",
+            redirect_uri: "https://snapic.com.br/auth/google",
+            client_id: "227086638866-eg7p7llborvuf9tqfjacp4cdolj71bdp.apps.googleusercontent.com",
             access_type: "offline",
             response_type: "code",
             prompt: "consent",
