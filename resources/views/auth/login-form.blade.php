@@ -78,9 +78,9 @@
             </button>
         </div>
     </div>
-    <button type="button" class="btnGoogle" onclick="GoToLoginGoogle()">
+    <button type="button" class="btnGoogle d-flex" onclick="GoToLoginGoogle()">
         <img src="{{asset('/img/logos/google-logo.svg')}}" class="social-media-icon" />
-        <p>ENTRAR COM GOOGLE</p>
+        <p class="textGoogle">Entrar com Google</p>
     </button>
 </form>
 

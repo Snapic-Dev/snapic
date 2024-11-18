@@ -1463,7 +1463,7 @@ footer .brand-logo {
 
 .btnGoogle {
   width: 100%;
-  padding: 14px 25%;
+  padding: 15px;
   border-radius: 25px;
   border: 1px solid #673ab6;
   background: #673ab600;
@@ -1471,12 +1471,12 @@ footer .brand-logo {
   margin-top: 15px;
   transition: 0.2s ease-in-out;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 }
 
 .btnGoogle:hover {
-  background: #673ab6;
+  background: #673ab7;
   transform: scale(1.02);
   color: #ffffff;
 }
@@ -1484,5 +1484,6 @@ footer .brand-logo {
 .btnGoogle > p {
   margin-bottom: 0;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
+  min-width: 200px;
 }
