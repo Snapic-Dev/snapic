@@ -10,7 +10,9 @@
 @else
     <div class="d-flex justify-content-center align-items-center">
         <div class="col-10 d-flex align-items-center justify-content-center">
-            <img  class="imgBannerNoContent" src="{{asset('/img/no-content-available.svg')}}">
+            <img  class="imgBannerNoContent"
+            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/nenhumaPostagemDisponivelWhite.svg' : '/img/nenhumaPostagemDisponivelBlack.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/nenhumaPostagemDisponivelWhite.svg' : '/img/nenhumaPostagemDisponivelBlack.svg')) }}"
+            >
         </div>
     </div>
     <!-- <div class="d-flex justify-content-center align-items-center">

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white') : (Cookie::get('app_theme') == 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-white'))}} shadow-sm ">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('feed') }}">
-        <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg')) }}"
+        <img src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/LogoWhiteHr.svg' : '/img/LogoBlackHr.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/LogoWhiteHr.svg' : '/img/LogoBlackHr.svg')) }}"
                                         class="d-inline-block align-top mb-1 brand-logo-form"
                                         alt="{{ __('Site logo') }}">
         </a>

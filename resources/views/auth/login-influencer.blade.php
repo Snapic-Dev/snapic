@@ -19,11 +19,11 @@
                             <a href="{{ action('HomeController@index') }}" class="d-flex align-items-center linkAreaLoginLogo">
                                     <picture class="logoArea">
                                             <source media="(max-width: 600px)" 
-                                                srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-vert-white.png' : '/img/snapic-vert-black.png')) }}"
+                                               srcset="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/LogoWhiteVert.svg' : '/img/LogoBlackVert.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/LogoWhiteVert.svg' : '/img/LogoBlackVert.svg')) }}"
                                                 class="brand-logo-form"
                                                 >
                                             <img
-                                            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/snapic-white.svg' : '/img/snapic-black.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/snapic-white.png' : '/img/snapic-black.png')) }}"
+                                            src="{{ asset(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '/img/LogoWhiteHr.svg' : '/img/LogoBlackHr.svg') : (Cookie::get('app_theme') == 'dark' ? '/img/LogoWhiteHr.svg' : '/img/LogoBlackHr.svg')) }}"
                                             alt="Descrição"
                                             class="brand-logo-form"
                                             > 
