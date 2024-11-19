@@ -206,7 +206,6 @@ class PostsController extends Controller
             }
 
             if ($postID) {
-
                 $long_video = $request->get("long_video");
 
                 if ($long_video) {
@@ -220,17 +219,21 @@ class PostsController extends Controller
                         'user_id' => $request->user()->id,
                         'post_id' => $postID,
                     ]);
-
                 }
 
-                $attachments = collect($request->get('attachments'))->map(function ($v, $k) {
-                    if (isset($v['attachmentID'])) {
-                        return $v['attachmentID'];
-                    }
-                    if (isset($v['id'])) {
-                        return $v['id'];
-                    }
-                })->toArray();
+                $attachments = collect($request->get('attachments'))
+                    ->filter(function ($v) {
+                        return !isset($v['type']) || $v['type'] !== 'example';
+                    })
+                    ->map(function ($v) {
+                        if (isset($v['attachmentID'])) {
+                            return $v['attachmentID'];
+                        }
+                        if (isset($v['id'])) {
+                            return $v['id'];
+                        }
+                    })
+                    ->toArray();
 
                 if ($request->get('attachments')) {
                     Attachment::whereIn('id', $attachments)->update(['post_id' => $postID]);
