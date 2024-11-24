@@ -179,6 +179,7 @@ class DashboardServiceProvider extends ServiceProvider
 
         $query = Transaction::where('status', Transaction::APPROVED_STATUS)
             ->whereIn('payment_provider', ['pix', 'card'])
+            ->whereNotIn('recipient_user_id', [2, 26])
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
@@ -205,6 +206,7 @@ class DashboardServiceProvider extends ServiceProvider
         $topInfluencers = [];
 
         $influencers = User::where('role_id', 3)
+            ->whereNotIn('id', [2, 26])
             ->whereNotNull('identity_verified_at')
             ->get();
 
@@ -250,11 +252,11 @@ class DashboardServiceProvider extends ServiceProvider
 
         $rewards = Reward::when($date, function ($query, $date) {
             return $query->whereDate('created_at', $date);
-        })->sum('amount');
+        })->whereNotIn('to_user_id', [2, 26])->sum('amount');
 
         $agreements = Agreement::when($date, function ($query, $date) {
             return $query->whereDate('created_at', $date);
-        })->sum('amount');
+        })->whereNotIn('user_id', [2, 26])->sum('amount')->sum('amount');
 
         $transactions = Transaction::where('status', Transaction::APPROVED_STATUS)
             ->where('type', '!=', Transaction::DEPOSIT_TYPE)
@@ -263,6 +265,7 @@ class DashboardServiceProvider extends ServiceProvider
             })
             ->join('users', 'transactions.recipient_user_id', '=', 'users.id')
             ->where('users.role_id', 3)
+            ->whereNotIn('recipient_user_id', [2, 26])
             ->sum('transactions.amount');
 
         return number_format(floatval($rewards) + (floatval($transactions) - floatval($rewards)) - floatval($agreements), 2, ',', '.');
