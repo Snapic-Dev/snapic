@@ -121,7 +121,7 @@ class TransactionsObserver
                 $data = [
                     'user_id' => $recipient->id,
                     'transaction_id' => $transaction->id,
-                    'amount' => floatval($discount_agreement - ($discount_reward ?? 0)),
+                    'amount' => floatval($discount_agreement - ($indicator ?? $discount_reward)),
                     'percentage' => (int) $recipient->discount,
                     'currency' => SettingsServiceProvider::getAppCurrencyCode(),
                 ];
