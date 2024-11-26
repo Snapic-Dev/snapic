@@ -105,10 +105,7 @@ class PaymentsServiceProvider extends ServiceProvider
      */
     public static function getWithdrawalMinimumAmount()
     {
-        return
-            getSetting('payments.withdrawal_min_amount') != null
-            && getSetting('payments.withdrawal_min_amount') > 0
-            ? getSetting('payments.withdrawal_min_amount') : 20;
+        return Auth::user()->min_withdrawal ?? 30;
     }
 
     /**
