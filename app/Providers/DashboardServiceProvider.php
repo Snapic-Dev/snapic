@@ -256,7 +256,7 @@ class DashboardServiceProvider extends ServiceProvider
 
         $agreements = Agreement::when($date, function ($query, $date) {
             return $query->whereDate('created_at', $date);
-        })->whereNotIn('to_user_id', [2, 26])->sum('amount');
+        })->whereNotIn('user_id', [2, 26])->sum('amount');
 
         $transactions = Transaction::where('status', Transaction::APPROVED_STATUS)
             ->where('type', '!=', Transaction::DEPOSIT_TYPE)
