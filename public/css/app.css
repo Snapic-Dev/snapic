@@ -444,6 +444,27 @@ footer .brand-logo {
   -webkit-filter: grayscale(95%); /* Chrome 19+ & Safari 6+ */
 }
 
+.actions-holder {
+  background-color:rgb(100, 100, 100) ;
+  position: absolute;
+  padding: 2px;
+}
+
+.holderAvatar {
+  position:absolute;
+  top: 100px;
+  left:80px
+}
+
+.bannerPerfilCrop {
+  object-fit: cover;
+}
+
+.zoomInBanner,.zoomOutBanner,.saveBanner,.zoomInAvatar, .zoomOutAvatar,
+.saveAvatar,.cancelAvatarCrop,.cancelBannerCrop{
+  display: none;
+}
+
 .grayscale:hover {
   filter: none;
   -webkit-filter: grayscale(0%);
@@ -1175,6 +1196,14 @@ footer .brand-logo {
 .imgPefil {
   object-fit: cover;
 }
+
+
+.avatar-holder  {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .BannerLoginInfluencer {
   width: 100vw;

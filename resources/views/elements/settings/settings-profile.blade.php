@@ -5,52 +5,106 @@
 @if (getSetting('ai.open_ai_enabled'))
 @include('elements.suggest-description')
 @endif
-
 <form method="POST" action="{{ route('my.settings.profile.save', ['type' => 'profile']) }}">
     @csrf
     @include('elements.dropzone-dummy-element')
     <div class="mb-4">
         <div class="">
             <div class="card profile-cover-bg bannerPerfil">
-                <img class="card-img-top centered-and-cropped" src="{{ Auth::user()->cover }}">
-                <div class="card-img-overlay d-flex justify-content-center align-items-center">
+                    <img class="card-img-top centered-and-cropped bannerPerfilCrop" src="{{ Auth::user()->cover }}">
                     <div class="actions-holder d-none">
-
                         <div class="d-flex">
-                            <span class="h-pill h-pill-accent pointer-cursor mr-1 upload-button" data-toggle="tooltip"
+                            <span class="h-pill h-pill-accent pointer-cursor mr-1 upload-button uploadBanner" data-toggle="tooltip"
                                 data-placement="top" title="{{ __('Upload cover image') }}">
                                 @include('elements.icon', ['icon' => 'image', 'variant' => 'medium'])
                             </span>
-                            <span class="h-pill h-pill-accent pointer-cursor"
+                            <span class="h-pill h-pill-accent pointer-cursor removeBanner"
                                 onclick="ProfileSettings.removeUserAsset('cover')" data-toggle="tooltip"
                                 data-placement="top" title="{{ __('Remove cover image') }}">
                                 @include('elements.icon', ['icon' => 'close', 'variant' => 'medium'])
                             </span>
+                            <span class="h-pill h-pill-accent pointer-cursor cropBanner"
+                                onclick="crop(bannerPerfilCrop)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Dimensionar') }}">
+                                @include('elements.icon', ['icon' => 'crop-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor zoomInBanner"
+                                onclick="zoomIn()"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Zoom') }}">
+                                @include('elements.icon', ['icon' => 'chevron-up-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor zoomOutBanner"
+                                onclick="zoomOut()"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('ZoomOut') }}">
+                                @include('elements.icon', ['icon' => 'chevron-down-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor cancelBannerCrop"
+                                onclick="cropClear(bannerPerfilCrop)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Cancelar') }}">
+                                @include('elements.icon', ['icon' => 'close-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor saveBanner upload-button"
+                                onclick="saveCrop(bannerPerfilCrop)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Salvar') }}">
+                                @include('elements.icon', ['icon' => 'checkmark-outline', 'variant' => 'medium'])
+                            </span>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
         <div class="container">
             <div class="card avatar-holder">
                 <img class="card-img-top imgPefil" src="{{ Auth::user()->avatar }}">
-                <div class="card-img-overlay d-flex justify-content-center align-items-center">
-                    <div class="actions-holder d-none">
+                    <div class="actions-holder holderAvatar d-none">
                         <div class="d-flex">
-                            <span class="h-pill h-pill-accent pointer-cursor mr-1 upload-button" data-toggle="tooltip"
+                            <span class="h-pill h-pill-accent pointer-cursor mr-1 upload-button uploadAvatar" data-toggle="tooltip"
                                 data-placement="top" title="{{ __('Upload avatar') }}">
                                 @include('elements.icon', ['icon' => 'image', 'variant' => 'medium'])
                             </span>
-                            <span class="h-pill h-pill-accent pointer-cursor"
+                            <span class="h-pill h-pill-accent pointer-cursor removeButton"
                                 onclick="ProfileSettings.removeUserAsset('avatar')" data-toggle="tooltip"
                                 data-placement="top" title="{{ __('Remove avatar') }}">
                                 @include('elements.icon', ['icon' => 'close', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor cropAvatar"
+                                onclick="crop(imgPefil)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Dimensionar') }}">
+                                @include('elements.icon', ['icon' => 'crop-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor zoomInAvatar"
+                                onclick="zoomIn()"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Zoom') }}">
+                                @include('elements.icon', ['icon' => 'chevron-up-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor zoomOutAvatar"
+                                onclick="zoomOut()"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('ZoomOut') }}">
+                                @include('elements.icon', ['icon' => 'chevron-down-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor cancelAvatarCrop"
+                                onclick="cropClear(imgPefil)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Cancelar') }}">
+                                @include('elements.icon', ['icon' => 'close-circle-outline', 'variant' => 'medium'])
+                            </span>
+                            <span class="h-pill h-pill-accent pointer-cursor saveAvatar"
+                                onclick="saveCrop(imgPefil)"
+                                data-toggle="tooltip"
+                                data-placement="top" title="{{ __('Salvar') }}">
+                                @include('elements.icon', ['icon' => 'checkmark-outline', 'variant' => 'medium'])
                             </span>
                         </div>
 
                     </div>
                 </div>
-            </div>
         </div>
     </div>
     @if (session('success'))
@@ -256,3 +310,187 @@
         <button class="p-3 btn btn-round btn-primary btn-block mr-0" type="submit">{{ __('Save') }}</button>
     </div>
 </form>
+
+<script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+
+
+<script>
+    let bannerPerfilCrop=document.querySelector('.bannerPerfilCrop')
+    let imgPefil=document.querySelector('.imgPefil');
+    let uploadAvatar=document.querySelector('.uploadAvatar');
+    let removeButton=document.querySelector('.removeButton');
+    let uploadBanner=document.querySelector('.uploadBanner');
+    let removeBanner=document.querySelector('.removeBanner');
+    let cropBanner=document.querySelector('.cropBanner');
+    let cropAvatar=document.querySelector('.cropAvatar');
+    let cropper;
+    let croppedImage;
+    let zoomInBanner=document.querySelector('.zoomInBanner');
+    let zoomOutBanner=document.querySelector('.zoomOutBanner');
+    let saveBanner=document.querySelector('.saveBanner');
+    let zoomInAvatar=document.querySelector('.zoomInAvatar');
+    let zoomOutAvatar=document.querySelector('.zoomOutAvatar');
+    let saveAvatar=document.querySelector('.saveAvatar');
+    let cancelAvatarCrop=document.querySelector('.cancelAvatarCrop');
+    let cancelBannerCrop=document.querySelector('.cancelBannerCrop');
+
+
+    const showToast = (message, isError = false) => {
+        const toastHTML = `
+                <div class="toast ${isError ? 'bg-danger text-white' : 'bg-success text-white'}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">${isError ? 'Error' : 'Success'}</strong>
+                        <small>Agora</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+
+        const toastContainer = document.querySelector('.toast-container');
+        if (toastContainer) {
+            toastContainer.innerHTML = toastHTML;
+            const toastElement = toastContainer.querySelector('.toast');
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    };
+
+    function crop(elementCrop) {
+        let viewModeValue;
+
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        if(elementCrop.classList.contains("bannerPerfilCrop")) {
+            zoomInBanner.style.display = 'flex';
+            zoomOutBanner.style.display = 'flex';
+            saveBanner.style.display = 'flex';
+            cancelBannerCrop.style.display= 'flex'
+            zoomInAvatar.style.display = 'none';
+            zoomOutAvatar.style.display = 'none';
+            saveAvatar.style.display = 'none';
+            cancelAvatarCrop.style.display = 'none';
+            uploadBanner.style.display = 'none';
+            removeBanner.style.display = 'none';
+            cropBanner.style.display = 'none';
+
+            viewModeValue=3
+        }else if(elementCrop.classList.contains("imgPefil")) {
+            zoomInAvatar.style.display = 'flex';
+            zoomOutAvatar.style.display = 'flex';
+            saveAvatar.style.display = 'flex';
+            cancelAvatarCrop.style.display = 'flex';
+            uploadAvatar.style.display = 'none';
+            removeButton.style.display ='none'
+            zoomInBanner.style.display = 'none';
+            zoomOutBanner.style.display = 'none';
+            cancelBannerCrop.style.display= 'none'
+            saveBanner.style.display = 'none';
+            uploadBanner.style.display = 'flex';
+            removeBanner.style.display = 'flex';
+            cropAvatar.style.display = 'none';
+
+            viewModeValue=1
+        }
+
+        const originalWidth = elementCrop.naturalWidth; 
+        const originalHeight = elementCrop.naturalHeight; 
+
+        const aspectRatio = originalWidth / originalHeight;
+
+        
+        cropper = new Cropper(elementCrop, {
+            aspectRatio: `${aspectRatio}`,
+            viewMode:`${viewModeValue}`,
+            zoomable: true,
+            autoCropArea: 1,
+            scalable: true,
+            background: false,
+        });
+
+    }
+
+    function saveCrop(imageElement) {
+        if(imageElement && cropper) {
+            if(imageElement.classList.contains("bannerPerfilCrop")) {
+                zoomInBanner.style.display = 'none';
+                zoomOutBanner.style.display = 'none';
+                cancelBannerCrop.style.display= 'none'
+                saveBanner.style.display = 'none';
+                uploadBanner.style.display = 'flex';
+                removeBanner.style.display = 'flex';
+                cropBanner.style.display = 'flex';
+            } else {
+                zoomInAvatar.style.display = 'none';
+                zoomOutAvatar.style.display = 'none';
+                cancelAvatarCrop.style.display = 'none';
+                saveAvatar.style.display = 'none';
+                uploadAvatar.style.display = 'flex';
+                removeButton.style.display ='flex'
+                cropAvatar.style.display = 'flex';
+            }
+            croppedImage=cropper.getCroppedCanvas().toDataURL("image/png");
+            imageElement.setAttribute('src',croppedImage)
+
+            let formData = new FormData();
+            function base64ToFile(base64, filename) {
+            const arr = base64.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1]; 
+            const binary = atob(arr[1]); 
+            const len = binary.length;
+            const u8arr = new Uint8Array(len);
+
+            for (let i = 0; i < len; i++) {
+                u8arr[i] = binary.charCodeAt(i);
+            }
+
+            return new File([u8arr], filename, { type: mime });
+        }
+
+            let croppedImageFile = base64ToFile(croppedImage, 'cropped-image.png');
+            formData.append('file', croppedImageFile);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            let uploadType = imageElement.classList.contains('bannerPerfilCrop') ? 'cover' : 'avatar';
+
+            fetch("/my/settings/profile/upload/" + uploadType, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    launchToast("success", trans("Success"),'Imagem Redimensionada com sucesso!');
+                } else {
+                    launchToast("danger", trans("Error"), 'Erro no redimensionamento da imagem.Tente novamente!');
+                }
+            })
+            .catch(error => {
+                launchToast("danger", trans("Error"), 'Erro interno no redimensionamento da imagem.Tente novamente!');
+            });
+
+            cropper.destroy();
+        }
+    }
+
+    function zoomIn() {
+        cropper.zoom(0.1)
+    }
+
+    function zoomOut() {
+        cropper.zoom(-0.1)
+    }
+
+    function cropClear(element) {
+        if(cropper) {
+            cropper.clear()
+            saveCrop(element);
+        }
+    }
+
+
+</script>
