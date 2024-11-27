@@ -23,7 +23,7 @@ class Attachment extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'post_id', 'filename', 'type', 'id', 'driver', 'payment_request_id', 'message_id', 'coconut_id', 'has_thumbnail'
+        'user_id', 'post_id', 'filename', 'type', 'id', 'driver', 'payment_request_id', 'message_id', 'coconut_id', 'has_thumbnail','poster'
     ];
 
     protected $appends = ['attachmentType', 'path', 'thumbnail'];
