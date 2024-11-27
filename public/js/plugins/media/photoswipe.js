@@ -2717,7 +2717,7 @@
             _initialZoomRunning,
             _controllerDefaultOptions = {
                 index: 0,
-                errorMsg: '<div class="pswp__error-msg"><a href="%url%" target="_blank">The image</a> could not be loaded.</div>',
+                errorMsg: '',
                 forceProgressiveLoading: false, // TODO
                 preload: [1,1],
                 getNumItemsFn: function() {
