@@ -118,10 +118,15 @@ class TransactionsObserver
                         ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
                 }
 
+                $amount = $discount_agreement;
+                if ($indicator) {
+                    $amount = floatval($discount_agreement - $discount_reward);
+                }
+                
                 $data = [
                     'user_id' => $recipient->id,
                     'transaction_id' => $transaction->id,
-                    'amount' => floatval($discount_agreement - floatval($indicator ?? $discount_reward)),
+                    'amount' => $amount,
                     'percentage' => (int) $recipient->discount,
                     'currency' => SettingsServiceProvider::getAppCurrencyCode(),
                 ];
