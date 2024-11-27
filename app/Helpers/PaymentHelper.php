@@ -868,7 +868,7 @@ class PaymentHelper
         $transaction = new Transaction();
         $transaction['sender_user_id'] = $subscription->sender_user_id;
         $transaction['recipient_user_id'] = $subscription->recipient_user_id;
-        $transaction['type'] = Transaction::REFUNDED_STATUS;
+        $transaction['type'] = Transaction::SUBSCRIPTION_RENEWAL;
         $transaction['status'] = $paymentSucceeded ? Transaction::APPROVED_STATUS : Transaction::DECLINED_STATUS;
         $transaction['amount'] = $subscription->amount;
         $transaction['currency'] = config('app.site.currency_code');
