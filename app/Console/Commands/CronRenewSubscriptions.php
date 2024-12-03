@@ -46,7 +46,7 @@ class CronRenewSubscriptions extends Command
      */
     public function handle()
     {
-        Log::channel('cronjobs')->info('[*]['.date('H:i:s')."] Processing expired subscriptions.\r\n");
+        Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Processing expired subscriptions.\r\n");
 
         $activeSubscriptions = Subscription::with('subscriber', 'creator')
             ->where('expires_at', '<=', new \DateTime())
@@ -54,13 +54,13 @@ class CronRenewSubscriptions extends Command
             ->get();
 
         if (count($activeSubscriptions) < 1) {
-            Log::channel('cronjobs')->info('[*]['.date('H:i:s')."] No subscriptions to renew.\r\n");
+            Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] No subscriptions to renew.\r\n");
 
             return;
         }
 
         foreach ($activeSubscriptions as $subscription) {
-            try{
+            try {
                 $paymentSucceeded = false;
                 if ($subscription->provider === Transaction::CREDIT_PROVIDER) {
                     // check if user have enough credit to renew subscription
@@ -84,27 +84,28 @@ class CronRenewSubscriptions extends Command
                         if ($subscription->status !== Subscription::ACTIVE_STATUS) {
                             $subscription->status = Subscription::ACTIVE_STATUS;
                         }
-                        $subscription->expires_at = new \DateTime('+'.PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($subscription->type).' month', new \DateTimeZone('UTC'));
+                        $subscription->expires_at = new \DateTime('+' . PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($subscription->type) . ' month', new \DateTimeZone('UTC'));
                     }
                     $subscription->save();
+                    NotificationServiceProvider::sendSubscriptionRenewalEmailNotification($subscription, $paymentSucceeded);
                 } else {
                     // for paypal & stripe subscriptions that were not yet renewed by the payment provider webhook
                     // set status in suspended / send notification to user
-                    $this->paymentHelper->createSubscriptionRenewalTransaction($subscription, false);
+                    // $this->paymentHelper->createSubscriptionRenewalTransaction($subscription, false);
 
-                    $subscription->status = Subscription::EXPIRED_STATUS;
-                    $subscription->save();
+                    // $subscription->status = Subscription::EXPIRED_STATUS;
+                    // $subscription->save();
                 }
 
-                NotificationServiceProvider::sendSubscriptionRenewalEmailNotification($subscription, $paymentSucceeded);
 
-                Log::channel('cronjobs')->info('[*]['.date('H:i:s').'] Successfully processed subscription:'.$subscription->id.".\r\n");
-            } catch (\Exception $exception){
-                Log::channel('cronjobs')->info('[*]['.date('H:i:s')."] Error processing subscription ".$subscription->id." error: ".$exception->getMessage());
+
+                Log::channel('cronjobs')->info('[*][' . date('H:i:s') . '] Successfully processed subscription:' . $subscription->id . ".\r\n");
+            } catch (\Exception $exception) {
+                Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Error processing subscription " . $subscription->id . " error: " . $exception->getMessage());
             }
         }
 
-        Log::channel('cronjobs')->info('[*]['.date('H:i:s')."] Finished processing subscriptions renew.\r\n");
+        Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Finished processing subscriptions renew.\r\n");
         return 0;
     }
 }
