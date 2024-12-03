@@ -91,10 +91,13 @@ var ProfileSettings = {
             sending: function(file) {
                 file.previewElement.innerHTML = "";
             },
-            success: function(file, response) {
-                $(selector + ' .card-img-top').attr('src',response.assetSrc);
-                if(type === 'avatar') {
-                    $('.user-avatar').attr('src', response.assetSrc);
+      success: function (file, response) {
+        $(selector + " .card-img-top").attr("src", response.assetSrc);
+        if (type === "avatar") {
+          $(".user-avatar").attr("src", response.assetSrc);
+          $("#avatar").val(response.assetSrc);
+        } else {
+          $("#cover").val(response.assetSrc);
                 }
                 file.previewElement.innerHTML = "";
             },
