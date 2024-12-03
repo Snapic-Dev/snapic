@@ -29,34 +29,54 @@
                                 data-placement="top" title="{{ __('Dimensionar') }}">
                                 @include('elements.icon', ['icon' => 'crop-outline', 'variant' => 'medium'])
                             </span>
-                            <span class="h-pill h-pill-accent pointer-cursor zoomInBanner"
-                                onclick="zoomIn()"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Zoom') }}">
-                                @include('elements.icon', ['icon' => 'chevron-up-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor zoomOutBanner"
-                                onclick="zoomOut()"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('ZoomOut') }}">
-                                @include('elements.icon', ['icon' => 'chevron-down-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor cancelBannerCrop"
-                                onclick="cropClear(bannerPerfilCrop)"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Cancelar') }}">
-                                @include('elements.icon', ['icon' => 'close-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor saveBanner upload-button"
-                                onclick="saveCrop(bannerPerfilCrop)"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Salvar') }}">
-                                @include('elements.icon', ['icon' => 'checkmark-outline', 'variant' => 'medium'])
-                            </span>
                         </div>
                     </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade mt-5" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content modelCrop">
+                    <div class="modal-header border-0"">
+                        <h5 class="modal-title p-2 titleCropModal text-bold" id="staticBackdropLabel">Editar Avatar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body modalBodyCrop p-3">
+                        <img class="cropImageModal" src="">
+                        <div class="mt-4 d-flex">
+                            <p class="text-bold mr-4">Zoom: <span class="zoomRangeValue text-base">x</span></p>
+                            <p class="text-bold mr-4">Rotação: <span class="rotationRangeValue text-base">°</span></p>
+                        </div>
+                        <div class="">
+                            <div class="d-flex justify-content-center align-items-center p-2">
+                                <div class="d-flex justify-center align-items-center">
+                                    -
+                                    <input class="zoomBanner ml-4 mr-4" type="range" min="1" max="3" step="0.1" value="1">
+                                    +
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center p-2">
+                                <div class="d-flex justify-center align-items-center">
+                                    <div class="invert-icon">
+                                        @include('elements.icon', ['icon' => 'reload-outline', 'variant' => 'small'])
+                                    </div>
+                                    <input class="RotateImage ml-4 mr-4" type="range"  min="-180" max="180" step="0.1" value="0">
+                                    @include('elements.icon', ['icon' => 'reload-outline', 'variant' => 'small', 'class' => 'invert-icon'])
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center border-0 p-4">
+                        <button type="button" class="btn btn-round border" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary saveCropBtn btn-round">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="container">
             <div class="card avatar-holder">
                 <img class="card-img-top imgPefil" src="{{ Auth::user()->avatar }}">
@@ -76,30 +96,6 @@
                                 data-toggle="tooltip"
                                 data-placement="top" title="{{ __('Dimensionar') }}">
                                 @include('elements.icon', ['icon' => 'crop-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor zoomInAvatar"
-                                onclick="zoomIn()"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Zoom') }}">
-                                @include('elements.icon', ['icon' => 'chevron-up-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor zoomOutAvatar"
-                                onclick="zoomOut()"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('ZoomOut') }}">
-                                @include('elements.icon', ['icon' => 'chevron-down-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor cancelAvatarCrop"
-                                onclick="cropClear(imgPefil)"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Cancelar') }}">
-                                @include('elements.icon', ['icon' => 'close-circle-outline', 'variant' => 'medium'])
-                            </span>
-                            <span class="h-pill h-pill-accent pointer-cursor saveAvatar"
-                                onclick="saveCrop(imgPefil)"
-                                data-toggle="tooltip"
-                                data-placement="top" title="{{ __('Salvar') }}">
-                                @include('elements.icon', ['icon' => 'checkmark-outline', 'variant' => 'medium'])
                             </span>
                         </div>
 
@@ -313,7 +309,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
 
-
 <script>
     let bannerPerfilCrop=document.querySelector('.bannerPerfilCrop')
     let imgPefil=document.querySelector('.imgPefil');
@@ -325,14 +320,21 @@
     let cropAvatar=document.querySelector('.cropAvatar');
     let cropper;
     let croppedImage;
-    let zoomInBanner=document.querySelector('.zoomInBanner');
+    let zoomBanner=document.querySelector('.zoomBanner');
     let zoomOutBanner=document.querySelector('.zoomOutBanner');
     let saveBanner=document.querySelector('.saveBanner');
-    let zoomInAvatar=document.querySelector('.zoomInAvatar');
-    let zoomOutAvatar=document.querySelector('.zoomOutAvatar');
     let saveAvatar=document.querySelector('.saveAvatar');
     let cancelAvatarCrop=document.querySelector('.cancelAvatarCrop');
     let cancelBannerCrop=document.querySelector('.cancelBannerCrop');
+    let cropImageModal=document.querySelector('.cropImageModal');
+    let saveCropBtn=document.querySelector('.saveCropBtn');
+
+    let cropBox = document.querySelector('.cropper-crop-box');
+    let titleCropModal =document.querySelector('.titleCropModal');
+    let elementToCrop=document.querySelector('.elementToCrop');
+    let zoomRangeValue=document.querySelector('.zoomRangeValue');
+    let rotationRangeValue=document.querySelector('.rotationRangeValue')
+
 
 
     const showToast = (message, isError = false) => {
@@ -358,81 +360,74 @@
         }
     };
 
+    let cropViewMode;
+
     function crop(elementCrop) {
-        let viewModeValue;
 
         if (cropper) {
             cropper.destroy();
         }
 
         if(elementCrop.classList.contains("bannerPerfilCrop")) {
-            zoomInBanner.style.display = 'flex';
-            zoomOutBanner.style.display = 'flex';
-            saveBanner.style.display = 'flex';
-            cancelBannerCrop.style.display= 'flex'
-            zoomInAvatar.style.display = 'none';
-            zoomOutAvatar.style.display = 'none';
-            saveAvatar.style.display = 'none';
-            cancelAvatarCrop.style.display = 'none';
-            uploadBanner.style.display = 'none';
-            removeBanner.style.display = 'none';
-            cropBanner.style.display = 'none';
+            let imgBanner=bannerPerfilCrop.getAttribute('src')
+            cropImageModal.src=imgBanner
 
-            viewModeValue=3
-        }else if(elementCrop.classList.contains("imgPefil")) {
-            zoomInAvatar.style.display = 'flex';
-            zoomOutAvatar.style.display = 'flex';
-            saveAvatar.style.display = 'flex';
-            cancelAvatarCrop.style.display = 'flex';
-            uploadAvatar.style.display = 'none';
-            removeButton.style.display ='none'
-            zoomInBanner.style.display = 'none';
-            zoomOutBanner.style.display = 'none';
-            cancelBannerCrop.style.display= 'none'
-            saveBanner.style.display = 'none';
-            uploadBanner.style.display = 'flex';
-            removeBanner.style.display = 'flex';
-            cropAvatar.style.display = 'none';
+            titleCropModal.innerText="Editar Banner"
 
-            viewModeValue=1
+            saveCropBtn.setAttribute('onclick',"saveCrop(bannerPerfilCrop)")
+            cropViewMode=2;
+
+        } else if(elementCrop.classList.contains("imgPefil")) {
+            let imgPerfil=imgPefil.getAttribute('src')
+            cropImageModal.src=imgPerfil
+
+             titleCropModal.innerText="Editar Avatar"
+
+            saveCropBtn.setAttribute('onclick',"saveCrop(imgPefil)")
+            cropViewMode=1;
+
         }
 
-        const originalWidth = elementCrop.naturalWidth; 
-        const originalHeight = elementCrop.naturalHeight; 
 
-        const aspectRatio = originalWidth / originalHeight;
+        setTimeout(function() {
+
+            let originalWidth = elementCrop.naturalWidth;
+            let originalHeight = elementCrop.naturalHeight;
+
+            let aspectRatio = originalWidth / originalHeight;
+            console.log(`aspectRatio ${aspectRatio}`);
+
+            cropper = new Cropper(cropImageModal, {
+                aspectRatio: aspectRatio,
+                viewMode: `${cropViewMode}`,
+                zoomable: true,
+                autoCropArea: 1,
+                scalable: false,
+                background: false,
+                cropBoxResizable: true, 
+                cropBoxMovable: true,
+                quality: 1,
+                ready: function () {
+                    const cropBox = this.cropper.cropBox;
+                    if(elementCrop.classList.contains("imgPefil")) {
+                        cropBox.style.borderRadius = '50%';  // Deixa a área de corte circular
+                        cropBox.style.overflow = 'hidden';   // Garante que a área cortada se ajuste ao círculo
+                    }else if(elementCrop.classList.contains("bannerPerfilCrop")) {
+                        cropBox.style.borderRadius = '0%';  // Deixa a área de corte circular
+                    }
+                }
+            });
+
+        }, 300);
 
         
-        cropper = new Cropper(elementCrop, {
-            aspectRatio: `${aspectRatio}`,
-            viewMode:`${viewModeValue}`,
-            zoomable: true,
-            autoCropArea: 1,
-            scalable: true,
-            background: false,
-        });
-
+        $('#staticBackdrop').modal('show');
     }
+
 
     function saveCrop(imageElement) {
         if(imageElement && cropper) {
-            if(imageElement.classList.contains("bannerPerfilCrop")) {
-                zoomInBanner.style.display = 'none';
-                zoomOutBanner.style.display = 'none';
-                cancelBannerCrop.style.display= 'none'
-                saveBanner.style.display = 'none';
-                uploadBanner.style.display = 'flex';
-                removeBanner.style.display = 'flex';
-                cropBanner.style.display = 'flex';
-            } else {
-                zoomInAvatar.style.display = 'none';
-                zoomOutAvatar.style.display = 'none';
-                cancelAvatarCrop.style.display = 'none';
-                saveAvatar.style.display = 'none';
-                uploadAvatar.style.display = 'flex';
-                removeButton.style.display ='flex'
-                cropAvatar.style.display = 'flex';
-            }
+
             croppedImage=cropper.getCroppedCanvas().toDataURL("image/png");
             imageElement.setAttribute('src',croppedImage)
 
@@ -471,26 +466,66 @@
             })
             .catch(error => {
                 launchToast("danger", trans("Error"), 'Erro interno no redimensionamento da imagem.Tente novamente!');
+                console.log(error);
             });
 
             cropper.destroy();
         }
+
+        $('#staticBackdrop').modal('hide');
+    }
+
+    let zoomAtual = 1;
+    zoomRangeValue.innerText = zoomBanner.value + 'x';
+
+    zoomBanner.addEventListener('input', function() {
+        let zoomValue = parseFloat(zoomBanner.value);  
+        zoomRangeValue.innerText = zoomValue + 'x';
+
+        if (zoomValue < 1) {
+        zoomValue = 1;
+        } else if (zoomValue > 3) {
+            zoomValue = 3;
+        }
+
+        if (zoomAtual > zoomValue) {
+            zoomOut(); 
+        } else if (zoomAtual < zoomValue) {
+            zoomIn(); 
+        }
+    });
+
+    function zoomOut() {
+
+        let newZoom = zoomAtual - 0.1;
+        if (newZoom >= 1) { 
+            zoomAtual = newZoom;
+            cropper.zoom(-0.1);  
+        }
     }
 
     function zoomIn() {
-        cropper.zoom(0.1)
-    }
 
-    function zoomOut() {
-        cropper.zoom(-0.1)
-    }
-
-    function cropClear(element) {
-        if(cropper) {
-            cropper.clear()
-            saveCrop(element);
+        let newZoom = zoomAtual + 0.1;
+        if (newZoom <= 3) {  
+            zoomAtual = newZoom;
+            cropper.zoom(0.1); 
         }
     }
+
+    const rotateInput = document.querySelector('.RotateImage');
+
+    rotationRangeValue.innerText= rotateInput.value + '°';
+
+    rotateInput.addEventListener('input', function() {
+        let rotationValue = parseFloat(rotateInput.value); 
+        rotationRangeValue.innerText= rotationValue + '°'; 
+
+        cropper.rotateTo(rotationValue); 
+        
+    });
+
+
 
 
 </script>

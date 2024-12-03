@@ -460,6 +460,105 @@ footer .brand-logo {
   object-fit: cover;
 }
 
+.modelCrop {
+  width: max(40vw,370px);
+}
+
+.modalBodyCrop  {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.titleCropModal {
+  font-size: max(1vw,17px);
+}
+
+.cropImageModal {
+  height: 20vh;
+  width: 10vw;
+}
+
+.cropper-drag-box {
+  padding: 0px;
+  width: 100%;
+}
+
+.cropper-wrap-box {
+  width: 100%;
+}
+
+
+.invert-icon {
+  transform: rotate(180deg);
+}
+
+/*********** Baseline, reset styles ***********/
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: max(20vw,150px);
+}
+
+/* Removes default focus */
+input[type="range"]:focus {
+  outline: none;
+}
+
+/******** Chrome, Safari, Opera and Edge Chromium styles ********/
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  height: 0.25rem;
+}
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  margin-top: -4.4px; /* Centers thumb on the track */
+  background-color: #640080;
+  border-radius: 1rem;
+  height: 0.8rem;
+  width: 0.8rem;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  outline: 3px solid #640080;
+  outline-offset: 0.125rem;
+}
+
+/*********** Firefox styles ***********/
+/* slider track */
+input[type="range"]::-moz-range-track {
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  height: 0.25rem;
+}
+
+/* slider thumb */
+input[type="range"]::-moz-range-thumb {
+  background-color: #640080;
+  border: none; /*Removes extra border that FF applies*/
+  border-radius: 1rem;
+  height: 0.8rem;
+  width: 0.8rem;
+}
+
+input[type="range"]:focus::-moz-range-thumb{
+  outline: 3px solid #640080;
+  outline-offset: 0.125rem;
+}
+
+
+.zoomRangeValue,.rotationRangeValue {
+  color:#57319a;
+}
+
 .zoomInBanner,.zoomOutBanner,.saveBanner,.zoomInAvatar, .zoomOutAvatar,
 .saveAvatar,.cancelAvatarCrop,.cancelBannerCrop{
   display: none;
@@ -1392,6 +1491,7 @@ footer .brand-logo {
   .walletCarousel {
     display: none;
   }
+
 
   .linkAreaLoginLogo {
     justify-content: center;
