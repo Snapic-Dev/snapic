@@ -171,7 +171,7 @@ Minify::stylesheet([
             <div class="pt-2 pl-4 pr-4">
                 <h5 class="text-bold d-flex align-items-center">
                     <div class="d-flex">
-                        <span>{{$user->name}}</span>
+                        <span>{{$user->social_name ?? $user->name }}</span>
                         <span class="ml-1" data-toggle="tooltip" data-placement="top" title="{{__('Verified user')}}">
                             <img src="/img/verified.gif" alt="" style="width: 25px; margin-left: 10px">
                         </span>

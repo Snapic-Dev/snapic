@@ -147,6 +147,25 @@
         @endif
     </div>
     <div class="form-group p-2">
+        <label for="social_name">{{ __('Social Name') }}</label>
+        <input
+            class="form-control {{ $errors->has('social_name') ? 'is-invalid' : '' }}"
+            id="social_name"
+            name="social_name"
+            aria-describedby="socialNameHelp"
+            value="{{ old('social_name', Auth::user()->social_name) }}"
+            maxlength="40"
+            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$"
+            title="Insira um nome social válido"
+            required>
+        @if ($errors->has('social_name'))
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $errors->first('social_name') }}</strong>
+        </span>
+        @endif
+    </div>
+
+    <div class="form-group p-2">
         <div class="d-flex justify-content-between">
             <label for="bio">
                 {{ __('Bio') }}
