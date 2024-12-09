@@ -214,7 +214,7 @@ class PostsController extends Controller
                         'filename' => $long_video['video'],
                         'driver' => 0,
                         'type' => 'long_video',
-                        'has_thumbnail' => 1,
+                        'has_thumbnail' => true,
                         'poster' => $long_video['file'],
                         'user_id' => $request->user()->id,
                         'post_id' => $postID,

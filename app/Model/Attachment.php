@@ -23,7 +23,17 @@ class Attachment extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'post_id', 'filename', 'type', 'id', 'driver', 'payment_request_id', 'message_id', 'coconut_id', 'has_thumbnail','poster'
+        'user_id',
+        'post_id',
+        'filename',
+        'type',
+        'id',
+        'poster',
+        'driver',
+        'payment_request_id',
+        'message_id',
+        'coconut_id',
+        'has_thumbnail'
     ];
 
     protected $appends = ['attachmentType', 'path', 'thumbnail'];
@@ -33,8 +43,7 @@ class Attachment extends Model
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -65,8 +74,8 @@ class Attachment extends Model
         if ($this->message_id) {
             $path = '/messenger/images/';
         }
-        if($this->type == 'video'){
-            $path = 'posts/videos'.'/thumbnails/'.$this->id.'.jpg';
+        if ($this->type == 'video') {
+            $path = 'posts/videos' . '/thumbnails/' . $this->id . '.jpg';
         }
         return AttachmentServiceProvider::getThumbnailPathForAttachmentByResolution($this, 150, 150, $path);
     }
