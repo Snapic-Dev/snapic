@@ -229,9 +229,8 @@ var PostCreate = {
 
     try {
       const video = await uploadFile(videoFile, `uploads/videos/${videoFile.name}`);
-      const thumbnailBase64 = await captureFrame(videoFile);
-      const thumbnailBlob = await fetch(thumbnailBase64).then((res) => res.blob());
-      const file = await uploadFile(thumbnailBlob, `uploads/thumbnails/${videoFile.name}.jpg`);
+
+      const file = "teste";
       return { video, file };
     } catch (error) {
       return null;
