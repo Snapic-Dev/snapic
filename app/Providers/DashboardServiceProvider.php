@@ -266,6 +266,7 @@ class DashboardServiceProvider extends ServiceProvider
             ->join('users', 'transactions.recipient_user_id', '=', 'users.id')
             ->where('users.role_id', 3)
             ->whereNotIn('recipient_user_id', [2, 26])
+            ->whereNotIn('subscription_id', [36, 4, 5, 53])
             ->sum('transactions.amount');
 
         return number_format(floatval($rewards) + (floatval($transactions) - floatval($rewards)) - floatval($agreements), 2, ',', '.');
