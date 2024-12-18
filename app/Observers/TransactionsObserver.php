@@ -108,7 +108,7 @@ class TransactionsObserver
                         default:
                             Wallet::query()
                                 ->where('user_id', $recipient->id)
-                                ->decrement('total', floatval(($discount_agreement * 2) - $discount_reward - floatval($transaction->amount / 10)));
+                                ->decrement('total', floatval($discount_agreement - $discount_reward));
                             break;
                     }
                 } else {
@@ -122,7 +122,7 @@ class TransactionsObserver
                 if ($indicator) {
                     $amount = floatval($discount_agreement - $discount_reward);
                 }
-                
+
                 $data = [
                     'user_id' => $recipient->id,
                     'transaction_id' => $transaction->id,
