@@ -9,7 +9,7 @@
                     <label class="text-sm text-bold" for=" validationTooltip01">Valor do Saque</label>
                     <input type="number" class="form-control withdrawalInput validationTooltip01"
                         id="withdrawal-amount"
-                        placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }},00"
+                        placeholder="Valor mínimo de R${{ \App\Providers\PaymentsServiceProvider::getWithdrawalMinimumAmount() }},00"
                         min="{{ \App\Providers\PaymentsServiceProvider::getDepositMinimumAmount() }}" step="1"
                         max="{{ \App\Providers\PaymentsServiceProvider::getDepositMaximumAmount() }}" required>
                 </div>
@@ -109,8 +109,7 @@
     </div> -->
 
     <div class="mt-4">
-        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit"
-            >
+        <button class="btn-block btn-round btn border btn-primary p-3 withdrawal-continue-btn" type="submit">
             {{ __('Request withdrawal') }}
         </button>
     </div>

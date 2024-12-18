@@ -41,12 +41,12 @@ class WithdrawalsController extends Controller
     public function requestWithdrawal(CreateWithdrawalRequest $request)
     {
         try {
-            $minimal = floatval(getSetting('payments.withdrawal_instant')) ?? 200;
 
             $amount = $request->request->get('amount');
             $message = $request->request->get('message');
             $identifier = $request->request->get('identifier');
             $user = Auth::user();
+            $minimal = $user->min_withdrawal;
 
             $data = [
                 'user_id' => $user->id,
@@ -69,12 +69,10 @@ class WithdrawalsController extends Controller
                 }
 
                 if (floatval($amount) === floatval(PaymentsServiceProvider::getWithdrawalMinimumAmount()) && floatval($amount) > $user->wallet->total) {
-                    return response()->json(
-                        [
-                            'success' => false,
-                            'message' => __("Você não tem crédito suficiente para sacar. O valor mínimo é: ", ['minAmount' => PaymentsServiceProvider::getWithdrawalMinimumAmount()])
-                        ]
-                    );
+                    return response()->json([
+                        'success' => false,
+                        'message' => __("Você não tem crédito suficiente para sacar. O valor mínimo é: R$:minAmount,00", ['minAmount' => $minimal]),
+                    ]);
                 }
 
                 if (floatval($amount) > $user->wallet->total) {

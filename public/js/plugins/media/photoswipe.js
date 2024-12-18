@@ -2710,21 +2710,26 @@
          *
          */
 
-        var _items,
-            _tempPanAreaSize = {},
-            _imagesToAppendPool = [],
-            _initialContentSet,
-            _initialZoomRunning,
-            _controllerDefaultOptions = {
-                index: 0,
-                errorMsg: '<div class="pswp__error-msg"><a href="%url%" target="_blank">The image</a> could not be loaded.</div>',
-                forceProgressiveLoading: false, // TODO
-                preload: [1,1],
-                getNumItemsFn: function() {
-                    return _items.length;
-                }
-            };
-
+     var _items,
+       _tempPanAreaSize = {},
+       _imagesToAppendPool = [],
+       _initialContentSet,
+       _initialZoomRunning,
+       _controllerDefaultOptions = {
+         index: 0,
+         errorMsg: "",
+         forceProgressiveLoading: false,
+         preload: [1, 1],
+         getNumItemsFn: function () {
+           return _items.length;
+         },
+         // Manipulador de erro para fechar a view
+         onError: function () {
+           // Fechar o PhotoSwipe em caso de erro
+           var pswpInstance = this; // ou obter a instância do PhotoSwipe conforme necessário
+           pswpInstance.close(); // Fecha a galeria
+         },
+       };
 
         var _getItemAt,
             _getNumItems,

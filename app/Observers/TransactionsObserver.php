@@ -105,6 +105,11 @@ class TransactionsObserver
                                 ->where('user_id', $recipient->id)
                                 ->decrement('total', floatval(($discount_agreement * 1.75) - $discount_reward - floatval($transaction->amount / 10)));
                             break;
+                        case 60:
+                            Wallet::query()
+                                ->where('user_id', $recipient->id)
+                                ->decrement('total', floatval(($discount_agreement - $discount_reward)));
+                            break;
                         default:
                             Wallet::query()
                                 ->where('user_id', $recipient->id)
@@ -118,10 +123,15 @@ class TransactionsObserver
                         ->decrement('total', floatval(($discount_agreement - $discount_reward) - floatval($transaction->amount / 10)));
                 }
 
+                $amount = $discount_agreement;
+                if ($indicator) {
+                    $amount = floatval($discount_agreement - $discount_reward);
+                }
+
                 $data = [
                     'user_id' => $recipient->id,
                     'transaction_id' => $transaction->id,
-                    'amount' => floatval($discount_agreement - $value_of_reward),
+                    'amount' => $amount,
                     'percentage' => (int) $recipient->discount,
                     'currency' => SettingsServiceProvider::getAppCurrencyCode(),
                 ];

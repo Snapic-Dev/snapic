@@ -5,6 +5,11 @@
 .card-img {
   border-radius: 0px !important;
 }
+.cropImageModal {
+  background-color: black;
+  height: 300px;
+  width: 200px;
+}
 
 @media (max-width: 767px) {
   .avatar-holder,

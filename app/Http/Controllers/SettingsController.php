@@ -324,6 +324,7 @@ class SettingsController extends Controller
         $user = Auth::user();
         $user->update([
             'name' => $request->get('name'),
+            'social_name' => $request->get('social_name'),
             'username' => $request->get('username'),
             'bio' => $request->get('bio'),
             'location' => $request->get('location'),
