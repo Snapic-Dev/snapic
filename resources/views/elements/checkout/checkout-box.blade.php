@@ -56,20 +56,20 @@
                                 </div>
                             </div>
                             <div class="payment-description mb-3 d-none p-2"></div>
-                                <div class="input-group mb-3 checkout-amount-input d-none p-2">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="amount-label">
-                                            @include('elements.icon',['icon'=>'cash-outline','variant'=>'medium','centered'=>false])
-                                        </span>
-                                    </div>
-                                    <input class="form-control uifield-amount" 
+                            <div class="input-group mb-3 checkout-amount-input d-none p-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="amount-label">
+                                        @include('elements.icon',['icon'=>'cash-outline','variant'=>'medium','centered'=>false])
+                                    </span>
+                                </div>
+                                <input class="form-control uifield-amount"
                                     placeholder="Insira o valor que deseja enviar" aria-label="Username" aria-describedby="amount-label" id="checkout-amount" type="number" min="1">
-                                    <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
-                                </div>
-                                <div class="mb-3 checkout-cpf-input d-none p-2">
-                                    <label for="checkout-cpf"><b>CPF</b><span style="color:blueviolet">*</span></label>
-                                    <input class="form-control uifield-amount cpf_input" required placeholder="000.000.000-00" aria-label="CPF" aria-describedby="cpf-label" id="checkout-cpf" type="text">
-                                </div>
+                                <div class="invalid-feedback">{{__('Please enter a valid amount.')}}</div>
+                            </div>
+                            <div class="mb-3 checkout-cpf-input d-none p-2">
+                                <label for="checkout-cpf"><b>CPF</b><span style="color:blueviolet">*</span></label>
+                                <input class="form-control uifield-amount cpf_input" required placeholder="000.000.000-00" aria-label="CPF" aria-describedby="cpf-label" id="checkout-cpf" type="text">
+                            </div>
                         </div>
                         <div class="mb-3 p-2">
                             <div class="total row">
@@ -229,6 +229,37 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('pp-buyItem');
+        const url = new URL(window.location.href);
+        const queryParams = new URLSearchParams(url.search);
+
+        function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(`${name}=`)) {
+                    return decodeURIComponent(cookie.substring(name.length + 1));
+                }
+            }
+            return null;
+        }
+
+        if (queryParams.has('ad')) {
+            const adValue = queryParams.get('ad');
+            document.cookie = `ad=${encodeURIComponent(adValue)}; path=/;`;
+            form.action = `${form.action}?ad=${encodeURIComponent(adValue)}`;
+            const newUrl = url.origin + url.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        } else {
+            const adCookie = getCookie('ad');
+            if (adCookie) {
+                form.action = `${form.action}?ad=${encodeURIComponent(adCookie)}`;
+            }
+        }
+    });
+</script>
 <script>
     const showCard = document.querySelectorAll('.show-card-form')
     const formSubmit = document.querySelector('.checkout-continue-btn')

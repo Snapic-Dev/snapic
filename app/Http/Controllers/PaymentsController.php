@@ -2,42 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewUserMessage;
-use App\Events\PaymentProcessed;
 use App\Helpers\PaymentHelper;
 use App\Http\Requests\CreateTransactionRequest;
-use App\Model\ReferralCodeUsage;
-use App\Model\Subscription;
 use App\Model\Transaction;
 use App\Model\Wallet;
-use App\Model\Withdrawal;
 use App\Providers\InvoiceServiceProvider;
 use App\Providers\NotificationServiceProvider;
 use App\Providers\PaymentRequestServiceProvider;
 use App\Providers\PaymentsServiceProvider;
+use App\Providers\PixelServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
-use App\Providers\WithdrawalsServiceProvider;
 use App\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-use MercadoPago\SDK;
-use Stripe\StripeClient;
-use Yabacon\Paystack;
-use Illuminate\Support\Facades\Http;
-use Carbon\Carbon;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\DB;
-use MercadoPago\Payment;
-use Pusher\Pusher;
 
 class PaymentsController extends Controller
 {
     protected $paymentHandler;
+    protected $pixelService;
     protected $MERCADOPAGO_BASE_URL;
     protected $ACCESS_TOKEN;
 
@@ -45,8 +31,9 @@ class PaymentsController extends Controller
      * PaymentsController constructor.
      * @param PaymentsServiceProvider $paymentsProvider
      */
-    public function __construct(PaymentHelper $paymentHandler)
+    public function __construct(PixelServiceProvider $pixelService, PaymentHelper $paymentHandler)
     {
+        $this->pixelService = $pixelService;
         $this->paymentHandler = $paymentHandler;
         $this->MERCADOPAGO_BASE_URL = 'https://api.mercadopago.com/v1/';
         $this->ACCESS_TOKEN = 'APP_USR-6211710841718220-100720-d609bab0ef91a88404a9785a065a804b-2025141516 ';
@@ -76,6 +63,7 @@ class PaymentsController extends Controller
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
             $transaction->save();
+            $event_result = $this->pixelService->registerPurchase($transaction->amount, "Iniciate checkout");
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
@@ -167,13 +155,14 @@ class PaymentsController extends Controller
             $body = json_decode($response->getBody(), true);
 
             if ($body['status'] === 'rejected' && $body['status_detail'] === 'cc_rejected_high_risk') {
+                $event_result = $this->pixelService->registerPurchase($amount, "Iniciate checkout");
                 throw new Exception('Seu pagamento foi rejeitado devido a alto risco. Tente outro método de pagamento ou contate seu banco.');
             }
 
             if ($body['status'] !== 'approved') {
+                $event_result = $this->pixelService->registerPurchase($amount, "Iniciate checkout");
                 throw new Exception('Pagamento recusado');
             }
-
             return $body;
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             return response()->json([
@@ -227,7 +216,12 @@ class PaymentsController extends Controller
             $transaction['taxes'] = $request->get('taxes');
             $transaction['stream_id'] = $request->get('stream');
             $errorMessage = __('Something went wrong with this transaction. Please try again');
+            $ad = $request->query('ad');
 
+            if ($ad) {
+                $ad = explode('=', $ad)[1] ?? $ad;
+                $transaction['ad'] = $ad;
+            }
             $recipientUser = User::query()->where('id', $transaction['recipient_user_id'])->first();
             if ($transaction['amount'] <= 0 || (!$recipientUser && $transactionType !== Transaction::DEPOSIT_TYPE)) {
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);

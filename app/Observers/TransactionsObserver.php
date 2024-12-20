@@ -8,6 +8,7 @@ use App\Model\Transaction;
 use App\Model\Wallet;
 use App\Model\Agreement;
 use App\Providers\PaymentsServiceProvider;
+use App\Providers\PixelServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\Providers\UsersServiceProvider;
 use App\User;
@@ -16,6 +17,17 @@ use Psr\Log\LogLevel;
 
 class TransactionsObserver
 {
+    protected $pixelService;
+
+    /**
+     * PaymentsController constructor.
+     * @param PaymentsServiceProvider $paymentsProvider
+     */
+    public function __construct(PixelServiceProvider $pixelService)
+    {
+        $this->pixelService = $pixelService;
+    }
+
     /**
      * Listen to the Transaction deleting event.
      *
@@ -40,6 +52,12 @@ class TransactionsObserver
         if ($transaction->status === Transaction::APPROVED_STATUS) {
             $this->discounts($transaction);
         }
+        if (
+            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
+            $transaction->ad
+        ) {
+            $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
+        }
     }
 
     /**
@@ -51,6 +69,13 @@ class TransactionsObserver
     {
         if ($transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS) {
             $this->discounts($transaction);
+        }
+
+        if (
+            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
+            $transaction->ad
+        ) {
+            $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
     }
 
