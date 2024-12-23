@@ -85,7 +85,30 @@
 </script>
 @endif
 <script src="{{asset('libs/pusher-js/dist/web/pusher.min.js')}}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const url = new URL(window.location.href);
+        const queryParams = new URLSearchParams(url.search);
 
+        function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(`${name}=`)) {
+                    return decodeURIComponent(cookie.substring(name.length + 1));
+                }
+            }
+            return null;
+        }
+
+        if (queryParams.has('ad')) {
+            const adValue = queryParams.get('ad');
+            document.cookie = `ad=${encodeURIComponent(adValue)}; path=/;`;
+            const newUrl = url.origin + url.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
 {{-- Favicon --}}
 <link rel="shortcut icon" href="{{ getSetting('site.favicon') }}" type="image/x-icon">
 
