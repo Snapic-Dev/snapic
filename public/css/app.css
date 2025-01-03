@@ -51,6 +51,34 @@ body {
   min-height: 100vh;
 }
 
+.boxPreview {
+  background-color: red;
+  height: 50px;
+  width: 50px;
+}
+
+.modalcheckout {
+   height: 700px;
+   width: 900px;
+   padding: 50px;
+}
+
+
+
+.boxTest {
+ padding:10px;
+}
+
+.boxPreview {
+  width: 90px;
+  height: 90px;
+  background-color: red;
+}
+
+.titleCheckoutModal {
+  font-size: 20px;
+}
+
 .bg-image {
   background-size: cover;
   background-position: center center;
@@ -1496,6 +1524,30 @@ input[type="range"]:focus::-moz-range-thumb{
   .linkAreaLoginLogo {
     justify-content: center;
   }
+
+  .modalcheckout {
+    height: 100%;
+    width: 100%;
+    padding: 50px;
+ }
+
+
+ .cardMember {
+  min-width: 300px;
+ }
+
+ .perfilArea {
+  justify-content: flex-start;
+ }
+
+ .boxTest {
+  width: 100%;
+  margin-top: 50px;
+ } 
+ .titleCheckoutModal {
+  text-align: center;
+  font-size: 20px;
+ }
 
   .logoArea {
     display: flex;

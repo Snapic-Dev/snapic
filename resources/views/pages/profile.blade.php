@@ -82,6 +82,11 @@ Minify::stylesheet([
                             {{ $followingUser }}
                         </span>
                     </span>
+                    <button class="d-flex flex-row align-items-center ml-2 p-1 pointer-cursor btn-follow-user border" data-placement="top" 
+                        data-toggle="modal" 
+                        data-target="#checkoutModal">
+                        Teste
+                    </button>
                     @if(Auth::check())
                     <div class="">
                         <span class="p-pill ml-2 pointer-cursor to-tooltip"
@@ -290,15 +295,15 @@ Minify::stylesheet([
                 @if($user->profile_access_price_6_months || $user->profile_access_price_12_months || $user->profile_access_price_3_months)
                 <div class="subscription-bundles d-none mt-4">
                     @if($user->profile_access_price_3_months)
-                    @include('elements.checkout.subscribe-button-90')
+                        @include('elements.checkout.subscribe-button-90')
                     @endif
 
                     @if($user->profile_access_price_6_months)
-                    @include('elements.checkout.subscribe-button-182')
+                        @include('elements.checkout.subscribe-button-182')
                     @endif
 
                     @if($user->profile_access_price_12_months)
-                    @include('elements.checkout.subscribe-button-365')
+                        @include('elements.checkout.subscribe-button-365')
                     @endif
 
                 </div>
@@ -380,6 +385,7 @@ Minify::stylesheet([
 @include('elements.messenger.send-user-message',['receiver'=>$user])
 @else
 @include('elements.modal-login')
+@include('elements.modal-checkout')
 @endif
 
 @include('elements.profile.qr-code-dialog')

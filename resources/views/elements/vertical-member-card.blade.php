@@ -1,4 +1,4 @@
-<div class="border rounded shadow-sm w-100">
+<div class="cardMember border rounded shadow-sm w-100 p-2">
     <div class="creator-header">
         <div style="background:url({{ $profile->cover }});" class="card-img suggestion-header-bg border-bottom"
             alt="{{ $profile->name }}"></div>
@@ -6,7 +6,7 @@
     <div class="ml-4 creator-body">
         <div class="row">
             <div class="col-12 col-md-auto">
-                <div class="d-flex justify-content-center">
+                <div class="d-flex perfilArea">
                     <img src="{{ $profile->avatar }}" class="avatar rounded-circle shadow" alt="{{ $profile->name }}" />
                 </div>
             </div>
@@ -30,28 +30,33 @@
     </div>
     <div class="">
         <div class="my-4 ml-4">
-            <ul class="list-unstyled">
-                <li class="d-flex align-items-center">@include('elements.icon', [
+            <ul class="list-unstyled p-2">
+                <li class="d-flex align-items-center text-sm mt-2">@include('elements.icon', [
                     'icon' => 'checkmark-sharp',
                     'centered' => false,
                     'classes' => 'mr-2 text-muted',
                     'variant' => 'medium',
                 ])
                     {{ __("Full access to this user's content") }}</li>
-                <li class="d-flex align-items-center">@include('elements.icon', [
+                <li class="d-flex align-items-center text-sm mt-2">@include('elements.icon', [
                     'icon' => 'checkmark-sharp',
                     'centered' => false,
                     'classes' => 'mr-2 text-muted',
                     'variant' => 'medium',
                 ])
                     {{ __('Direct message with this user') }}</li>
-                <li class="d-flex align-items-center">@include('elements.icon', [
+                <li class="d-flex align-items-center text-sm mt-2">@include('elements.icon', [
                     'icon' => 'checkmark-sharp',
                     'centered' => false,
                     'classes' => 'mr-2 text-muted',
                     'variant' => 'medium',
                 ])
                     {{ __('Cancel your subscription at any time') }}</li>
+                <li class="d-flex gap-3 mt-5">
+                    <div class="boxPreview mr-2"></div>
+                    <div class="boxPreview ml-2 mr-2""></div>
+                    <div class="boxPreview ml-2 mr-2"></div>
+                </li>
             </ul>
         </div>
     </div>
