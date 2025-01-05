@@ -141,14 +141,15 @@ class PaymentHelper
     private function preparePaymentData($dto)
     {
         $user = Auth::user();
+        $cpf = $dto['visitor_id'] ? '42895230803' : preg_replace('/[.-]/', '', $user->cpf);
         return [
             "calendario" => ["expiracao" => 3600],
             "devedor" => [
-                'cpf' => preg_replace('/[.-]/', '', $user->cpf),
+                'cpf' => $cpf,
                 "nome" => $user->username
             ],
             // "valor" => ['original' => '0.01'], // Valor de exemplo
-            "valor" => ['original' => number_format($dto['amount'], 2, '.', '')], // Valor de exemplo
+            "valor" => ['original' => number_format($dto['amount'], 2, '.', '')],
             "chave" => $this->credentials['client_identifier'],
             "solicitacaoPagador" => "Compra de créditos no Snapic.",
         ];

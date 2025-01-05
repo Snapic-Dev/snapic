@@ -67,6 +67,7 @@ Route::post('resendVerification', ['uses' => 'GenericController@resendConfirmati
 Route::get('socialAuth/{provider}', ['uses' => 'Auth\LoginController@redirectToProvider', 'as' => 'social.login.start']);
 Route::get('socialAuth/{provider}/callback', ['uses' => 'Auth\LoginController@handleProviderCallback', 'as' => 'social.login.callback']);
 Route::get('auth/google', ['uses' => 'Auth\SocialController@google', 'as' => 'google']);
+Route::post('register/visitor', ['uses' => 'Auth\VisitorController@register', 'as' => 'visitor']);
 
 /*
  * (User) Protected routes

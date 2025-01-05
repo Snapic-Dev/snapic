@@ -82,12 +82,8 @@ Minify::stylesheet([
                             {{ $followingUser }}
                         </span>
                     </span>
-                    <button class="d-flex flex-row align-items-center ml-2 p-1 pointer-cursor btn-follow-user border" data-placement="top" 
-                        data-toggle="modal" 
-                        data-target="#checkoutModal">
-                        Teste
-                    </button>
                     @if(Auth::check())
+
                     <div class="">
                         <span class="p-pill ml-2 pointer-cursor to-tooltip"
                             @if(!Auth::user()->email_verified_at && getSetting('site.enforce_email_validation'))
@@ -170,7 +166,6 @@ Minify::stylesheet([
                 @endif
             </div>
         </div>
-
         <div class="container pt-2 pl-0 pr-0">
 
             <div class="pt-2 pl-4 pr-4">
@@ -295,15 +290,15 @@ Minify::stylesheet([
                 @if($user->profile_access_price_6_months || $user->profile_access_price_12_months || $user->profile_access_price_3_months)
                 <div class="subscription-bundles d-none mt-4">
                     @if($user->profile_access_price_3_months)
-                        @include('elements.checkout.subscribe-button-90')
+                    @include('elements.checkout.subscribe-button-90')
                     @endif
 
                     @if($user->profile_access_price_6_months)
-                        @include('elements.checkout.subscribe-button-182')
+                    @include('elements.checkout.subscribe-button-182')
                     @endif
 
                     @if($user->profile_access_price_12_months)
-                        @include('elements.checkout.subscribe-button-365')
+                    @include('elements.checkout.subscribe-button-365')
                     @endif
 
                 </div>
@@ -378,14 +373,118 @@ Minify::stylesheet([
     <ion-icon name="heart"></ion-icon>
     <ion-icon name="heart-outline"></ion-icon>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+<script>
+    const queryParams = new URLSearchParams(window.location.search);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const isLoggedIn = @json(Auth::check());
+        const userId = +'{{$user->id}}';
+        const profileAccessPrice = +'{{$user->profile_access_price}}';
+        const bytes = CryptoJS.AES.decrypt(queryParams.get('visitor').split(" ").join("+"), 'chave-secreta');
+        const visitor_id = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (queryParams.has('visitor')) {
+            if (!isLoggedIn) {
+                try {
+                    await axios.post('/register/visitor', {
+                        id: visitor_id
+                    });
+                    location.reload();
+                } catch (error) {}
+            } else {
+                showPaymentModal(profileAccessPrice, userId, visitor_id);
+            }
+        }
+    });
+
+    async function showPaymentModal(amount, userId, visitor_id) {
+        window.scrollTo(0, 0);
+        $('#checkoutModal').modal('show');
+        const hostname = window.location.origin;
+        const url = `${hostname}/payment/initiate`;
+        try {
+            const response = await axios.post(url, {
+                amount,
+                provider: 'pix',
+                transaction_type: "one-month-subscription",
+                recipient_user_id: userId,
+                visitor_id: visitor_id,
+                visitor_provider: 'telegram'
+            });
+
+            updateModal(response.data, visitor_id);
+            launchToast("success", trans("Success"), "Pix gerado com sucesso");
+        } catch (error) {}
+        $('#checkoutModal').on('hidden.bs.modal', function() {
+            console.log('Modal fechado!');
+        });
+    }
+
+    function updateModal(data, visitor_id) {
+        const amountPix = document.getElementById("amountPix-2");
+        const qrcode = document.getElementById("qrcode-checkout-2");
+        amountPix.innerHTML = "";
+        qrcode.innerHTML = "";
+        amountPix.innerText = "R$ " + data.valor.original;
+        new QRCode(qrcode, {
+            text: data.pixCopiaECola,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+        });
+        $(".btnPix").attr("data-value", data.pixCopiaECola);
+        sendMessage(data.pixCopiaECola, visitor_id);
+        calculateTimeDifference();
+    }
+
+    function calculateTimeDifference() {
+        const expiration = new Date(Date.now() + 3600000);
+        const updateRemainingTime = () => {
+            const now = new Date();
+            const differenceInMilliseconds = expiration - now;
+
+            if (differenceInMilliseconds < 0) return document.getElementById('dataExpiration-2').innerText = "00:00:00";
+
+            const hours = String(Math.floor(differenceInMilliseconds / 3600000)).padStart(2, '0');
+            const minutes = String(Math.floor((differenceInMilliseconds % 3600000) / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((differenceInMilliseconds % 60000) / 1000)).padStart(2, '0');
+
+            document.getElementById('dataExpiration-2').innerText = `${hours}h ${minutes}min ${seconds}s`;
+        };
+
+        setInterval(updateRemainingTime, 1000);
+        updateRemainingTime();
+    }
+
+    async function sendMessage(pixCopiaECola, visitor_id) {
+        const BOT_TOKEN = '7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM';
+        const MESSAGE = `Olá! Seu pagamento foi gerado. Obrigado pela sua compra! 🎉
+
+Aqui está o código Pix para pagamento:
+${pixCopiaECola}`;
+        try {
+            await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                chat_id: visitor_id,
+                text: MESSAGE,
+            });
+        } catch (error) {}
+    }
+</script>
+
+
 
 @if(Auth::check())
 @include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
 @include('elements.checkout.checkout-box')
 @include('elements.messenger.send-user-message',['receiver'=>$user])
+@include('elements.modal-checkout')
 @else
 @include('elements.modal-login')
-@include('elements.modal-checkout')
 @endif
 
 @include('elements.profile.qr-code-dialog')

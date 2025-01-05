@@ -185,6 +185,78 @@ class AuthServiceProvider extends ServiceProvider
         return $user;
     }
 
+    public static function createVisitant($id)
+    {
+        $existingUser = User::where('username', 'u' . $id)->first();
+        if ($existingUser) {
+            return $existingUser;
+        }
+
+        $userData = [
+            'username' => 'u' . $id,
+            'settings' => collect([
+                'notification_email_new_sub' => 'true',
+                'notification_email_new_message' => env('notification_email_new_message', 'false'),
+                'notification_email_expiring_subs' => 'true',
+                'notification_email_renewals' => 'false',
+                'notification_email_new_tip' => 'true',
+                'notification_email_new_comment' => 'false',
+                'notification_email_new_post_created' => getSetting('profiles.default_new_post_notification_setting') ? 'true' : 'false',
+                'locale' => getSetting('site.default_site_language'),
+                'notification_email_new_ppv_unlock' => 'true',
+                'notification_email_creator_went_live' => 'false',
+            ]),
+            'enable_2fa' => false,
+        ];
+
+        if (isset($data['email_verified_at'])) {
+            $userData['email_verified_at'] = $data['email_verified_at'];
+        }
+
+        if (isset($data['auth_provider'])) {
+            $userData['auth_provider'] = $data['auth_provider'];
+        }
+        if (isset($data['auth_provider_id'])) {
+            $userData['auth_provider_id'] = $data['auth_provider_id'];
+        }
+        if (getSetting('security.default_2fa_on_register')) {
+            $userData['enable_2fa'] = true;
+        }
+        if (getSetting('profiles.default_profile_type_on_register') == 'free') {
+            $userData['paid_profile'] = 0;
+        }
+
+        if (getSetting('profiles.default_user_privacy_setting_on_register') && getSetting('profiles.default_user_privacy_setting_on_register')  == 'private') {
+            $userData['public_profile'] = false;
+        } else {
+            $userData['public_profile'] = true;
+        }
+
+        if (getSetting('profiles.default_profile_type_on_register') === 'open') {
+            $userData['open_profile'] = true;
+        }
+
+        if (getSetting('payments.default_subscription_price')) {
+            $price = str_replace(',', '.', getSetting('payments.default_subscription_price'));
+            $userData['profile_access_price'] = $price;
+            $userData['profile_access_price_6_months'] = $price;
+            $userData['profile_access_price_12_months'] = $price;
+        }
+
+        try {
+            $code = self::generateReferralCode(8);
+            $userData['referral_code'] = $code;
+        } catch (\Exception $exception) {
+        }
+
+        $user = User::create($userData);
+
+        if (isset($data['auth_provider']) && isset($data['auth_provider_id'])) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        return $user;
+    }
     /**
      * Function that generates new 2FA codes and emails them
      */

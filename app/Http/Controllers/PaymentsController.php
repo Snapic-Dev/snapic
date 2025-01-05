@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
 
 class PaymentsController extends Controller
 {
@@ -58,7 +59,6 @@ class PaymentsController extends Controller
     protected function processPixPayment($transaction)
     {
         $res = $this->paymentHandler->generationPixPayment($transaction);
-
         if (isset($res['status']) && $res['status'] === 'ATIVA') {
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
@@ -67,7 +67,6 @@ class PaymentsController extends Controller
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
-
             switch ($errorCode) {
                 case 'Documento CPF em devedor.cpf é inválido':
                     return response()->json([
@@ -198,10 +197,12 @@ class PaymentsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
+
     public function initiatePayment(CreateTransactionRequest $request)
     {
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
+
         try {
             $transaction = new Transaction();
             $transaction['sender_user_id'] = Auth::user()->id;
@@ -214,6 +215,8 @@ class PaymentsController extends Controller
             $transaction['currency'] = config('app.site.currency_code');
             $transaction['payment_provider'] = $request->get('provider');
             $transaction['taxes'] = $request->get('taxes');
+            $transaction['visitor_id'] = $request->get('visitor_id');
+            $transaction['visitor_provider'] = $request->get('visitor_provider');
             $transaction['stream_id'] = $request->get('stream');
             $errorMessage = __('Something went wrong with this transaction. Please try again');
             $ad = $request->query('ad');
@@ -444,13 +447,19 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
-                        if (!Auth::user()->cpf && !$request->get('cpf')) {
+                        if (
+                            !Auth::user()->cpf && !$request->get('cpf') &&
+                            !$request->get('visitor_id')
+                        ) {
                             return response()->json([
                                 'error' => 'CPF não cadastrado',
                                 'message' => 'Cadastre seu CPF para prosseguir!',
                             ], 401);
                         }
-                        if (!Auth::user()->cpf && $request->input('cpf')) {
+                        if (
+                            !Auth::user()->cpf && $request->input('cpf') &&
+                            !$request->get('visitor_id')
+                        ) {
                             $user = User::find(Auth::user()->id);
                             $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
@@ -530,6 +539,7 @@ class PaymentsController extends Controller
         return $this->paymentHandler->redirectByTransaction($transaction);
     }
 
+    // 7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM
 
     public function configWebhook(Request $request)
     {
@@ -589,6 +599,23 @@ class PaymentsController extends Controller
             Wallet::query()
                 ->where('user_id', $transaction->recipient_user_id)
                 ->increment('total', $amount);
+            if ($transaction->visitor_id) {
+                $botToken = '7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM';
+                $message = "Olá! Seu pagamento foi gerado. Obrigado pela sua compra! 🎉\n\nAqui está o código Pix para pagamento:\n{$pixCopiaECola}";
+
+                try {
+                    (new Client())->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                        'form_params' => [
+                            'chat_id' => $transaction->visitor_id,
+                            'text' => $message,
+                        ],
+                    ]);
+                    echo "Mensagem enviada com sucesso!";
+                } catch (\Exception $e) {
+                    echo "Erro ao enviar mensagem: " . $e->getMessage();
+                }
+            }
+
 
             if (
                 $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||

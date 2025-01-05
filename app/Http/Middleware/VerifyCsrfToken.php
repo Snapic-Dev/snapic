@@ -27,6 +27,6 @@ class VerifyCsrfToken extends Middleware
         'payment/webhook',
         'payment/webhook/config',
         'webhook/pix',
-
+        'register/visitor',
     ];
 }
