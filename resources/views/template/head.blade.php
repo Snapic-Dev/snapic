@@ -87,6 +87,7 @@
 <script src="{{asset('libs/pusher-js/dist/web/pusher.min.js')}}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         const url = new URL(window.location.href);
         const queryParams = new URLSearchParams(url.search);
 

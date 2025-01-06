@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Helpers\PaymentHelper;
 use App\Http\Requests\CreateTransactionRequest;
 use App\Model\Transaction;
-use App\Model\Wallet;
 use App\Providers\InvoiceServiceProvider;
 use App\Providers\NotificationServiceProvider;
-use App\Providers\PaymentRequestServiceProvider;
 use App\Providers\PaymentsServiceProvider;
 use App\Providers\PixelServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
+use GuzzleHttp\Client;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +18,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Client;
 
 class PaymentsController extends Controller
 {
@@ -59,6 +57,7 @@ class PaymentsController extends Controller
     protected function processPixPayment($transaction)
     {
         $res = $this->paymentHandler->generationPixPayment($transaction);
+
         if (isset($res['status']) && $res['status'] === 'ATIVA') {
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
@@ -67,6 +66,7 @@ class PaymentsController extends Controller
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
+
             switch ($errorCode) {
                 case 'Documento CPF em devedor.cpf é inválido':
                     return response()->json([
@@ -197,15 +197,14 @@ class PaymentsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-
     public function initiatePayment(CreateTransactionRequest $request)
     {
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
-
         try {
             $transaction = new Transaction();
-            $transaction['sender_user_id'] = Auth::user()->id;
+            $userId = $request->get('sender_user_id') ?? Auth::user()->id;
+            $transaction['sender_user_id'] = $userId;
             $transaction['recipient_user_id'] = $request->get('recipient_user_id');
             $transaction['post_id'] = $request->get('post_id');
             $transaction['user_message_id'] = $request->get('user_message_id');
@@ -215,8 +214,6 @@ class PaymentsController extends Controller
             $transaction['currency'] = config('app.site.currency_code');
             $transaction['payment_provider'] = $request->get('provider');
             $transaction['taxes'] = $request->get('taxes');
-            $transaction['visitor_id'] = $request->get('visitor_id');
-            $transaction['visitor_provider'] = $request->get('visitor_provider');
             $transaction['stream_id'] = $request->get('stream');
             $errorMessage = __('Something went wrong with this transaction. Please try again');
             $ad = $request->query('ad');
@@ -264,7 +261,6 @@ class PaymentsController extends Controller
                 case Transaction::STREAM_ACCESS:
                 case Transaction::POST_UNLOCK:
                 case Transaction::MESSAGE_UNLOCK:
-                    $userId = Auth::user()->id;
                     $postId = $transaction['post_id'];
                     $streamId = $transaction['stream_id'];
                     $messageId = $transaction['user_message_id'];
@@ -351,9 +347,6 @@ class PaymentsController extends Controller
                         $transaction['transfer_id'] = $res['id'];
                         $transaction->save();
 
-                        DB::table('wallets')
-                            ->where('user_id', $transaction['recipient_user_id'])
-                            ->increment('total', $transaction['amount']);
                         self::handleTransactionNotification($transaction);
                         return response()->json($res, 201);
                     }
@@ -447,19 +440,13 @@ class PaymentsController extends Controller
                     }
 
                     if ($transaction['payment_provider'] == Transaction::PIX_PROVIDER) {
-                        if (
-                            !Auth::user()->cpf && !$request->get('cpf') &&
-                            !$request->get('visitor_id')
-                        ) {
+                        if (!Auth::user()->cpf && !$request->get('cpf') && !$request->get('visitor_id')) {
                             return response()->json([
                                 'error' => 'CPF não cadastrado',
                                 'message' => 'Cadastre seu CPF para prosseguir!',
                             ], 401);
                         }
-                        if (
-                            !Auth::user()->cpf && $request->input('cpf') &&
-                            !$request->get('visitor_id')
-                        ) {
+                        if (!Auth::user()->cpf && $request->input('cpf') && !$request->get('visitor_id')) {
                             $user = User::find(Auth::user()->id);
                             $cleanedCpf = preg_replace('/[.\-]/', '', $request->input('cpf'));
 
@@ -494,6 +481,7 @@ class PaymentsController extends Controller
                 default:
                     return $this->paymentHandler->redirectByTransaction($transaction);
             }
+
             $transaction->save();
 
             if (
@@ -505,13 +493,6 @@ class PaymentsController extends Controller
                 $this->paymentHandler->createNewTipNotificationForCreditTransaction($transaction);
                 NotificationServiceProvider::createPPVNotificationByTransaction($transaction);
             }
-
-            if ($transaction['payment_provider'] === Transaction::MANUAL_PROVIDER) {
-                $manualPaymentFiles = $request->get('manual_payment_files');
-                $manualPaymentDescription = $request->get('manual_payment_description');
-                PaymentRequestServiceProvider::createDepositPaymentRequestByTransaction($transaction, $manualPaymentFiles, $manualPaymentDescription);
-            }
-
             if ($transaction != null) {
                 try {
                     $invoice = InvoiceServiceProvider::createInvoiceByTransaction($transaction);
@@ -539,7 +520,6 @@ class PaymentsController extends Controller
         return $this->paymentHandler->redirectByTransaction($transaction);
     }
 
-    // 7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM
 
     public function configWebhook(Request $request)
     {
@@ -596,9 +576,6 @@ class PaymentsController extends Controller
                 'e2eId' => $e2eid
             ]);
 
-            Wallet::query()
-                ->where('user_id', $transaction->recipient_user_id)
-                ->increment('total', $amount);
             if ($transaction->visitor_id) {
                 $botToken = '7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM';
                 $message = "Olá! Seu pagamento foi gerado. Obrigado pela sua compra! 🎉\n\nAqui está o código Pix para pagamento:\n{$pixCopiaECola}";
@@ -625,6 +602,7 @@ class PaymentsController extends Controller
             ) {
                 $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             }
+
             self::handleTransactionNotification($transaction);
 
             return response()->json(['message' => 'Pagamento Processado'], 200);

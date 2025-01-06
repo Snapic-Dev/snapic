@@ -194,6 +194,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $userData = [
             'username' => 'u' . $id,
+            'password' => Hash::make($id),
             'settings' => collect([
                 'notification_email_new_sub' => 'true',
                 'notification_email_new_message' => env('notification_email_new_message', 'false'),

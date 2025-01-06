@@ -140,7 +140,7 @@ class PaymentHelper
 
     private function preparePaymentData($dto)
     {
-        $user = Auth::user();
+        $user =  User::query()->where('id', (int) $dto->sender_user_id)->first();
         $cpf = $dto['visitor_id'] ? '42895230803' : preg_replace('/[.-]/', '', $user->cpf);
         return [
             "calendario" => ["expiracao" => 3600],

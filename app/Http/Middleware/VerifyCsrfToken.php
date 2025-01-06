@@ -22,11 +22,13 @@ class VerifyCsrfToken extends Middleware
         'beacon/feed',
         'transcoding/coconut/update',
         'payment/deposit',
+        'payment/initiate',
         'my/messenger/sendMessage',
         'my/messenger/sendCampaign',
         'payment/webhook',
         'payment/webhook/config',
         'webhook/pix',
         'register/visitor',
+        'login/visitor',
     ];
 }
