@@ -44,8 +44,9 @@ class VisitorController extends Controller
         $transaction['payment_provider'] = 'pix';
         $transaction['visitor_id'] = $request->get('visitor_id');
         $transaction['visitor_provider'] = 'telegram';
-        $transaction->save();
         $res = $this->paymentHandler->generationPixPayment($transaction);
+        $transaction['transfer_id'] = $res['txid'];
+        $transaction->save();
 
         $tokenData = $user->username . '&%&' . $request->get('visitor_id');
         $token = Crypt::encryptString($tokenData);

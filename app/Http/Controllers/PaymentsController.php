@@ -216,12 +216,7 @@ class PaymentsController extends Controller
             $transaction['taxes'] = $request->get('taxes');
             $transaction['stream_id'] = $request->get('stream');
             $errorMessage = __('Something went wrong with this transaction. Please try again');
-            $ad = $request->query('ad');
 
-            if ($ad) {
-                $ad = explode('=', $ad)[1] ?? $ad;
-                $transaction['ad'] = $ad;
-            }
             $recipientUser = User::query()->where('id', $transaction['recipient_user_id'])->first();
             if ($transaction['amount'] <= 0 || (!$recipientUser && $transactionType !== Transaction::DEPOSIT_TYPE)) {
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
@@ -577,8 +572,8 @@ class PaymentsController extends Controller
             ]);
 
             if ($transaction->visitor_id) {
-                $botToken = '7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM';
-                $message = "Olá! Seu pagamento foi gerado. Obrigado pela sua compra! 🎉\n\nAqui está o código Pix para pagamento:\n{$pixCopiaECola}";
+                $botToken = env('BOT_ID');
+                $message = "Olá! Seu pagamento foi confirmado!";
 
                 try {
                     (new Client())->post("https://api.telegram.org/bot{$botToken}/sendMessage", [

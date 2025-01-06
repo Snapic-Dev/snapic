@@ -54,7 +54,7 @@ class TransactionsObserver
         }
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->ad
+            $transaction->visitor_id
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
@@ -73,7 +73,7 @@ class TransactionsObserver
 
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->ad
+            $transaction->visitor_id
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
