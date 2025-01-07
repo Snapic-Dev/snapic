@@ -725,7 +725,7 @@ Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
                 ]);
             }
 
-            if ($transaction->ad || $transaction->visitor_id) {
+            if ($transaction->visitor_id) {
                 $this->pixelService->registerPurchase($transaction->amount, "Purchase");
             }
 
