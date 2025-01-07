@@ -53,6 +53,7 @@
     @include('elements.feed.post-list-management')
     @include('elements.photoswipe-container')
     @include('elements.checkout.checkout-box')
+    @include('elements.modal-terms')
 
     @include('elements.standard-dialog',[
         'dialogName' => 'comment-delete-dialog',

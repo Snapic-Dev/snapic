@@ -114,6 +114,7 @@ Minify::javascript([
 </div>
 
 @include('elements.checkout.checkout-box')
+@include('elements.modal-terms')
 @include('elements.report-user-or-post',['reportStatuses' => ListsHelper::getReportTypes()])
 
 @stop

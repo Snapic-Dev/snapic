@@ -143,5 +143,6 @@ Minify::stylesheet([
         </div>
     </div>
     @include('elements.checkout.checkout-box')
+    @include('elements.modal-terms')
 </div>
 @stop

@@ -108,7 +108,17 @@
             const newUrl = url.origin + url.pathname;
             window.history.replaceState({}, document.title, newUrl);
         }
+
+        const user = @json(Auth::user());
+        
+        if(user && !user.terms) {
+            console.log(user.terms);
+            $('#checkoutModal').modal('show');
+        }
+
     });
+
+
 </script>
 {{-- Favicon --}}
 <link rel="shortcut icon" href="{{ getSetting('site.favicon') }}" type="image/x-icon">

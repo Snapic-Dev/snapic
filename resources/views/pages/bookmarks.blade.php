@@ -71,6 +71,7 @@
                 @include('elements.feed.posts-loading-spinner')
             </div>
             @include('elements.checkout.checkout-box')
+            @include('elements.modal-terms')
         </div>
     </div>
 

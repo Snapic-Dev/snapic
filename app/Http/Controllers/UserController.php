@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -74,4 +75,20 @@ class UserController extends Controller
 
         return Redirect::route('voyager.users.index');
     }
+
+
+    public function updateTerms(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            $user->terms = Carbon::now();
+            $user->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Usuário não autenticado']);
+    }
+
 }

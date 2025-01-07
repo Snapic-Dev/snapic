@@ -44,6 +44,7 @@ class AuthServiceProvider extends ServiceProvider
             'email' => $data['email'],
             'username' => $data['name'],
             'password' => isset($data['password']) ? Hash::make($data['password']) : '',
+            'terms' => Carbon::now(),
             'settings' => collect([
                 'notification_email_new_sub' => 'true',
                 'notification_email_new_message' => env('notification_email_new_message', 'false'),
@@ -120,6 +121,7 @@ class AuthServiceProvider extends ServiceProvider
             'website' => $data['instagram'] ?? null,
             'phone' => $data['phone'],
             'niche' => $data['niche'],
+            'terms' => Carbon::now(),
             'discount' => 5,
             'settings' => collect([
                 'notification_email_new_sub' => 'true',

@@ -83,7 +83,7 @@ Minify::stylesheet([
                         </span>
                     </span>
                     <button data-toggle="modal"
-                    data-target="#checkoutModal">
+                        data-target="#checkoutModal">
                         Teste
                     </button>
                     @if(Auth::check())
@@ -481,16 +481,15 @@ ${pixCopiaECola}`;
 </script>
 
 
-
 @if(Auth::check())
-@include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
-@include('elements.checkout.checkout-box')
-@include('elements.messenger.send-user-message',['receiver'=>$user])
+    @include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
+    @include('elements.modal-terms')
+    @include('elements.messenger.send-user-message',['receiver'=>$user])
 @else
-@include('elements.modal-checkout')
-@include('elements.modal-login')
+    @include('elements.modal-login')
 @endif
 
+@include('elements.modal-login')
 @include('elements.profile.qr-code-dialog')
 
 @stop

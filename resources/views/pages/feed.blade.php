@@ -88,6 +88,7 @@
             </div>
         </div>
         @include('elements.checkout.checkout-box')
+        @include('elements.modal-terms')
     </div>
 
     <div class="d-none">

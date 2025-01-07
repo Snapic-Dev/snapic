@@ -117,6 +117,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
         Route::get('/settings/privacy/countries', ['uses' => 'SettingsController@getCountries', 'as' => 'settings.verify.countries']);
         Route::get('/settings/referrals', ['uses' => 'SettingsController@renderSettingReferrals', 'as' => 'settings.referrals']);
 
+ 
         // Profile save
         Route::get('/settings/{type?}', ['uses' => 'SettingsController@index', 'as'   => 'settings']);
         Route::post('/settings/account/save', ['uses' => 'SettingsController@saveAccount', 'as'   => 'settings.account.save']);
@@ -334,6 +335,9 @@ Route::get('/search/streams', ['uses' => 'SearchController@getStreamsSearch', 'a
 Route::get('/{username}', ['uses' => 'ProfileController@index', 'as'   => 'profile']);
 Route::get('/{username}/posts', ['uses' => 'ProfileController@getUserPosts', 'as'   => 'profile.posts']);
 Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams', 'as'   => 'profile.streams']);
+
+Route::post('/updateTerms',['uses' => 'UserController@updateTerms','as'=>'update.terms']);
+
 
 Route::fallback(function () {
     abort(404);

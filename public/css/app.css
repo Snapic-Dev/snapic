@@ -263,6 +263,10 @@ body {
   height: 48px;
 }
 
+.textModal {
+  font-size: 16px;
+}
+
 .post-box .post-content-data p {
   margin-bottom: 0px;
 }
@@ -1668,3 +1672,4 @@ input[type="range"]:focus::-moz-range-thumb{
   font-size: 12px;
   min-width: 200px;
 }
+
