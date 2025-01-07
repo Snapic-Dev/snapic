@@ -82,10 +82,7 @@ Minify::stylesheet([
                             {{ $followingUser }}
                         </span>
                     </span>
-                    <button data-toggle="modal"
-                        data-target="#checkoutModal">
-                        Teste
-                    </button>
+                
                     @if(Auth::check())
 
                     <div class="">
@@ -249,7 +246,6 @@ Minify::stylesheet([
                     @endif -->
 
             </div>
-            <button onclick="test()">test</button>
             <div class="bg-separator border-top border-bottom"></div>
 
             @include('elements.message-alert',['classes'=>'px-2 pt-4'])
