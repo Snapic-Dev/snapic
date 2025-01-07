@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Helpers\PaymentHelper;
 use App\Http\Requests\CreateTransactionRequest;
+use App\Model\Agreement;
+use App\Model\ReferralCodeUsage;
+use App\Model\Reward;
 use App\Model\Transaction;
+use App\Model\Wallet;
 use App\Providers\InvoiceServiceProvider;
 use App\Providers\NotificationServiceProvider;
 use App\Providers\PaymentsServiceProvider;
 use App\Providers\PixelServiceProvider;
 use App\Providers\PostsHelperServiceProvider;
+use App\Providers\SettingsServiceProvider;
+use App\Providers\UsersServiceProvider;
 use GuzzleHttp\Client;
 use App\User;
 use Illuminate\Http\Request;
@@ -541,6 +547,7 @@ class PaymentsController extends Controller
     public function webhook(Request $request)
     {
         try {
+
             $pix = $request->json('pix')[0] ?? null;
             $txid = $pix['txid'] ?? null;
             $amount = isset($pix['valor']) ? (float) $pix['valor'] : null;
@@ -568,7 +575,6 @@ class PaymentsController extends Controller
             if (!preg_match('/^[\w-]+$/', $txid)) {
                 return response()->json(['message' => 'txid inválido'], 400);
             }
-
             $transaction = Transaction::query()
                 ->where('transfer_id', $txid)
                 ->first();
@@ -577,11 +583,151 @@ class PaymentsController extends Controller
                 return response()->json(['message' => 'Transação não encontrada'], 404);
             }
 
-            $transaction->update([
-                'status' => 'approved',
-                'e2eId' => $e2eid
-            ]);
+            if (!$transaction->visitor_id) {
+                $transaction->update([
+                    'status' => 'approved',
+                    'e2eId' => $e2eid
+                ]);
+            } else {
 
+                $existingAgreement = Agreement::where(['transaction_id' => $transaction->id])->first();
+
+                if ($transaction->type === Transaction::DEPOSIT_TYPE || intval($transaction->recipient_user_id) === intval($transaction->sender_user_id) || $transaction->amount <= 0 || $existingAgreement) {
+                    return;
+                }
+
+                $recipient = User::query()->where('id', (int) $transaction->recipient_user_id)->first();
+
+                $percentage_reward = floatval(getSetting('referrals.fee_percentage')) ?? 5;
+                $discount_reward = floatval($percentage_reward  * ($transaction->amount / 100));
+
+                $referralCodeUsed = ReferralCodeUsage::where(['used_by' => $recipient->id])->first();
+                $indicator = null;
+                if ($referralCodeUsed) {
+                    $indicator = User::where(['referral_code' => $referralCodeUsed->referral_code])->first();
+                }
+                $percentage_agreement = +$recipient->discount;
+                $discount_agreement = floatval($transaction->amount * ($percentage_agreement / 100)) ?? 0;
+
+                $amount_agreement = $discount_agreement;
+                if ($indicator) {
+                    $amount_agreement = floatval($discount_agreement - $discount_reward);
+                }
+
+                $data = [
+                    'user_id' => $recipient->id,
+                    'transaction_id' => $transaction->id,
+                    'amount' => $amount_agreement,
+                    'percentage' => (int) $recipient->discount,
+                    'currency' => SettingsServiceProvider::getAppCurrencyCode(),
+                ];
+
+                if ($transaction->payment_provider !== Transaction::CREDIT_PROVIDER) {
+                    Wallet::query()
+                        ->where('user_id', $recipient->id)
+                        ->increment('total', $transaction->amount  - $discount_agreement);
+                }
+
+                Agreement::create($data);
+
+                if (getSetting('referrals.enabled') && $indicator) {
+                    $existingReward = Reward::where(['transaction_id' => $transaction->id])->first();
+                    if ($existingReward) return;
+
+                    if (getSetting('referrals.apply_for_months') && intval(getSetting('referrals.apply_for_months')) > 0) {
+                        $expiryDatetime = new \DateTime('-' . intval(getSetting('referrals.apply_for_months')) . ' months');
+                        if ($expiryDatetime >= $referralCodeUsed->created_at) {
+                            return;
+                        }
+                    }
+
+                    $totalEarnedByUser = 0;
+                    if (getSetting('referrals.fee_limit') && intval(getSetting('referrals.fee_limit')) > 0) {
+                        $totalEarnedByUser = UsersServiceProvider::getTotalAmountEarnedFromRewardsByUsers($indicator->id, $recipient->id);
+                        if ($totalEarnedByUser >= floatval(getSetting('referrals.fee_limit'))) {
+                            return;
+                        }
+                    }
+
+                    if ($discount_reward + $totalEarnedByUser >= floatval(getSetting('referrals.fee_limit')) || $discount_reward === 0) {
+                        return;
+                    }
+                    Wallet::query()
+                        ->where('user_id', $indicator->id)
+                        ->increment('total', $discount_reward);
+
+                    Reward::create([
+                        'from_user_id' => $recipient->id,
+                        'to_user_id' => $indicator->id,
+                        'reward_type' => Reward::FEE_PERCENTAGE_REWARD_TYPE,
+                        'transaction_id' => $transaction->id,
+                        'referral_code_usage_id' => $referralCodeUsed->id,
+                        'amount' => $discount_reward,
+                    ]);
+                }
+                Transaction::query()
+                    ->where('id', $transaction->id)
+                    ->update([
+                        'status' => 'approved',
+                        'e2eId' => $e2eid,
+                    ]);
+
+                $botToken = env('BOT_ID');
+                $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id;
+                $token = Crypt::encryptString($tokenData);
+                $username = 'u' . $transaction->visitor_id;
+
+                $url = "https://snapic.com.br/beatrizchaves?token=$token";
+
+                $message1 = "Amor, PARÁBENS🥳, Você acabou de assinar minha plataforma de conteúdo por 1 mês, Vou te mandar seus acessos😈";
+                $message2 = "Amor, Tenho certeza que vai amar❤️, Está aqui o seu link de acesso👇🏻";
+                $message3 = "
+Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
+
+**USERNAME:** *{$username}*
+**SENHA:** *{$transaction->visitor_id}*";
+
+                $client = new \GuzzleHttp\Client();
+
+                $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => $transaction->visitor_id,
+                        'text' => $message1
+                    ],
+                ]);
+
+                sleep(2);
+
+                $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => '8028490948',
+                        'text' => $message2,
+                        'reply_markup' => json_encode([
+                            'inline_keyboard' => [
+                                [
+                                    [
+                                        'text' => '⭐ Acessar página ⭐',
+                                        'url' => $url,
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ],
+                ]);
+                sleep(2);
+
+                $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => '8028490948',
+                        'text' => $message3,
+                        'parse_mode' => 'MarkdownV2',
+                    ],
+                ]);
+            }
+
+            if ($transaction->ad || $transaction->visitor_id) {
+                $this->pixelService->registerPurchase($transaction->amount, "Purchase");
+            }
 
             if (
                 $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||

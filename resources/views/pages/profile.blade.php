@@ -400,11 +400,12 @@ Minify::stylesheet([
 
 
 @if(Auth::check())
-    @include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
-    @include('elements.modal-terms')
-    @include('elements.messenger.send-user-message',['receiver'=>$user])
+@include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
+@include('elements.modal-terms')
+@include('elements.checkout.checkout-box')
+@include('elements.messenger.send-user-message',['receiver'=>$user])
 @else
-    @include('elements.modal-login')
+@include('elements.modal-login')
 @endif
 
 @include('elements.modal-login')
