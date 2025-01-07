@@ -52,11 +52,11 @@
                     'variant' => 'medium',
                 ])
                     {{ __('Cancel your subscription at any time') }}</li>
-                <li class="d-flex gap-3 mt-5">
+                <!-- <li class="d-flex gap-3 mt-5">
                     <div class="boxPreview mr-2"></div>
                     <div class="boxPreview ml-2 mr-2""></div>
                     <div class="boxPreview ml-2 mr-2"></div>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

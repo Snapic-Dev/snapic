@@ -82,6 +82,10 @@ Minify::stylesheet([
                             {{ $followingUser }}
                         </span>
                     </span>
+                    <button data-toggle="modal"
+                    data-target="#checkoutModal">
+                        Teste
+                    </button>
                     @if(Auth::check())
 
                     <div class="">
@@ -482,8 +486,8 @@ ${pixCopiaECola}`;
 @include('elements.lists.list-add-user-dialog',['user_id' => $user->id, 'lists' => ListsHelper::getUserLists()])
 @include('elements.checkout.checkout-box')
 @include('elements.messenger.send-user-message',['receiver'=>$user])
-@include('elements.modal-checkout')
 @else
+@include('elements.modal-checkout')
 @include('elements.modal-login')
 @endif
 
