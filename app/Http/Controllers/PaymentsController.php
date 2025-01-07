@@ -700,7 +700,7 @@ Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
 
                 $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
                     'form_params' => [
-                        'chat_id' => '8028490948',
+                        'chat_id' => $transaction->visitor_id,
                         'text' => $message2,
                         'reply_markup' => json_encode([
                             'inline_keyboard' => [
@@ -718,7 +718,7 @@ Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
 
                 $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
                     'form_params' => [
-                        'chat_id' => '8028490948',
+                        'chat_id' => $transaction->visitor_id,
                         'text' => $message3,
                         'parse_mode' => 'MarkdownV2',
                     ],
