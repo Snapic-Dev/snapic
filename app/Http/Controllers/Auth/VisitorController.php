@@ -43,6 +43,7 @@ class VisitorController extends Controller
         $transaction['currency'] = config('app.site.currency_code');
         $transaction['payment_provider'] = 'pix';
         $transaction['visitor_id'] = $request->get('visitor_id');
+        $transaction['ad'] = $request->get('visitor_id');
         $transaction['visitor_provider'] = 'telegram';
         $res = $this->paymentHandler->generationPixPayment($transaction);
         $transaction['transfer_id'] = $res['txid'];
