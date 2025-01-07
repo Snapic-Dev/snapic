@@ -55,11 +55,12 @@ class TransactionsObserver
         }
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->ad
+            ($transaction->visitor_id || $transaction->ad)
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
     }
+
 
     /**
      * Listen to the Transaction updated event
@@ -73,8 +74,7 @@ class TransactionsObserver
         }
 
         if (
-            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->ad
+            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS && ($transaction->visitor_id || $transaction->ad)
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
@@ -83,28 +83,54 @@ class TransactionsObserver
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS && $transaction->visitor_id
         ) {
             $botToken = env('BOT_ID');
-   
             $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id;
             $token = Crypt::encryptString($tokenData);
+            $username = 'u' . $transaction->visitor_id;
 
-            $message = "Olá! Seu pagamento foi confirmado! Clique no botão abaixo para acessar.";
-            $url = "https://snapic.com.br/influencer?token=$token";
+            $url = "https://snapic.com.br/beatrizchaves?token=$token";
+
+            $message1 = "Amor, PARÁBENS🥳, Você acabou de assinar minha plataforma de conteúdo por 1 mês, Vou te mandar seus acessos😈";
+            $message2 = "Amor, Tenho certeza que vai amar❤️, Está aqui o seu link de acesso👇🏻";
+            $message3 = "
+Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
+
+**USERNAME:** *{$username}*
+**SENHA:** *{$transaction->visitor_id}*";
 
             $client = new \GuzzleHttp\Client();
+
             $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
                 'form_params' => [
                     'chat_id' => $transaction->visitor_id,
-                    'text' => $message,
+                    'text' => $message1
+                ],
+            ]);
+
+            sleep(2);
+
+            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                'form_params' => [
+                    'chat_id' => '8028490948',
+                    'text' => $message2,
                     'reply_markup' => json_encode([
                         'inline_keyboard' => [
                             [
                                 [
-                                    'text' => 'Acessar página',
+                                    'text' => '⭐ Acessar página ⭐',
                                     'url' => $url,
                                 ],
                             ],
                         ],
                     ]),
+                ],
+            ]);
+            sleep(2);
+
+            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                'form_params' => [
+                    'chat_id' => '8028490948',
+                    'text' => $message3,
+                    'parse_mode' => 'MarkdownV2',
                 ],
             ]);
         }
