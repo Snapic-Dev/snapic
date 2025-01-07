@@ -63,7 +63,12 @@ class PaymentsController extends Controller
             $transaction['status'] = 'pending';
             $transaction['transfer_id'] = $res['txid'];
             $transaction->save();
-            $event_result = $this->pixelService->registerPurchase($transaction->amount, "Iniciate checkout");
+            if (
+                $transaction['ad'] ||
+                $transaction['visitor_id']
+            ) {
+                $event_result = $this->pixelService->registerPurchase($transaction->amount, "Iniciate checkout");
+            }
             return response()->json($res, 201);
         } else {
             $errorCode = $res['mensagem'] ?? null;
@@ -138,7 +143,7 @@ class PaymentsController extends Controller
         }
     }
 
-    public function generationCardPayment($token, $title, $user, $amount, $brand)
+    public function generationCardPayment($token, $title, $user, $amount, $brand, $transaction)
     {
         try {
             $idempotencyKey = uniqid();
@@ -155,7 +160,12 @@ class PaymentsController extends Controller
             $body = json_decode($response->getBody(), true);
 
             if ($body['status'] === 'rejected' && $body['status_detail'] === 'cc_rejected_high_risk') {
-                $event_result = $this->pixelService->registerPurchase($amount, "Iniciate checkout");
+                if (
+                    $transaction['ad'] ||
+                    $transaction['visitor_id']
+                ) {
+                    $event_result = $this->pixelService->registerPurchase($transaction->amount, "Iniciate checkout");
+                }
                 throw new Exception('Seu pagamento foi rejeitado devido a alto risco. Tente outro método de pagamento ou contate seu banco.');
             }
 
@@ -338,7 +348,7 @@ class PaymentsController extends Controller
                         $token = json_decode($request->input('card_token'), true);
                         $card_token = self::createToken($token);
                         $brand = self::getCardBrand($token['card_number']);
-                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand, $transaction);
                         $transaction['status'] = Transaction::APPROVED_STATUS;
                         $transaction['transfer_id'] = $res['id'];
                         $transaction->save();
@@ -382,7 +392,7 @@ class PaymentsController extends Controller
                         $token = json_decode($request->input('card_token'), true);
                         $card_token = self::createToken($token);
                         $brand = self::getCardBrand($token['card_number']);
-                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand, $transaction);
                         $transaction['status'] = Transaction::APPROVED_STATUS;
                         $transaction['transfer_id'] = $res['id'];
                         $transaction->save();
@@ -462,7 +472,7 @@ class PaymentsController extends Controller
                         $token = json_decode($request->input('card_token'), true);
                         $card_token = self::createToken($token);
                         $brand = self::getCardBrand($token['card_number']);
-                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand);
+                        $res = self::generationCardPayment($card_token, $transactionTitle, Auth::user(), $transaction['amount'], $brand, $transaction);
                         $transaction['status'] = Transaction::APPROVED_STATUS;
                         $transaction['transfer_id'] = $res['id'];
                         $transaction->save();
