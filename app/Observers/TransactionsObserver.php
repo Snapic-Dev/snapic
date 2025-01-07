@@ -12,7 +12,6 @@ use App\Providers\PixelServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\Providers\UsersServiceProvider;
 use App\User;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LogLevel;
 
@@ -55,12 +54,11 @@ class TransactionsObserver
         }
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            ($transaction->visitor_id || $transaction->ad)
+            $transaction->ad
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
     }
-
 
     /**
      * Listen to the Transaction updated event
@@ -74,65 +72,10 @@ class TransactionsObserver
         }
 
         if (
-            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS && ($transaction->visitor_id || $transaction->ad)
+            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
+            $transaction->ad
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
-        }
-
-        if (
-            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS && $transaction->visitor_id
-        ) {
-            $botToken = env('BOT_ID');
-            $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id;
-            $token = Crypt::encryptString($tokenData);
-            $username = 'u' . $transaction->visitor_id;
-
-            $url = "https://snapic.com.br/beatrizchaves?token=$token";
-
-            $message1 = "Amor, PARÁBENS🥳, Você acabou de assinar minha plataforma de conteúdo por 1 mês, Vou te mandar seus acessos😈";
-            $message2 = "Amor, Tenho certeza que vai amar❤️, Está aqui o seu link de acesso👇🏻";
-            $message3 = "
-Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
-
-**USERNAME:** *{$username}*
-**SENHA:** *{$transaction->visitor_id}*";
-
-            $client = new \GuzzleHttp\Client();
-
-            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                'form_params' => [
-                    'chat_id' => $transaction->visitor_id,
-                    'text' => $message1
-                ],
-            ]);
-
-            sleep(2);
-
-            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                'form_params' => [
-                    'chat_id' => '8028490948',
-                    'text' => $message2,
-                    'reply_markup' => json_encode([
-                        'inline_keyboard' => [
-                            [
-                                [
-                                    'text' => '⭐ Acessar página ⭐',
-                                    'url' => $url,
-                                ],
-                            ],
-                        ],
-                    ]),
-                ],
-            ]);
-            sleep(2);
-
-            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                'form_params' => [
-                    'chat_id' => '8028490948',
-                    'text' => $message3,
-                    'parse_mode' => 'MarkdownV2',
-                ],
-            ]);
         }
     }
 
