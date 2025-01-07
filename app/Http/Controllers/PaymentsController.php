@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Exception;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class PaymentsController extends Controller
@@ -570,23 +571,6 @@ class PaymentsController extends Controller
                 'status' => 'approved',
                 'e2eId' => $e2eid
             ]);
-
-            if ($transaction->visitor_id) {
-                $botToken = env('BOT_ID');
-                $message = "Olá! Seu pagamento foi confirmado!";
-
-                try {
-                    (new Client())->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                        'form_params' => [
-                            'chat_id' => $transaction->visitor_id,
-                            'text' => $message,
-                        ],
-                    ]);
-                    echo "Mensagem enviada com sucesso!";
-                } catch (\Exception $e) {
-                    echo "Erro ao enviar mensagem: " . $e->getMessage();
-                }
-            }
 
 
             if (

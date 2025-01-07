@@ -12,6 +12,7 @@ use App\Providers\PixelServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\Providers\UsersServiceProvider;
 use App\User;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LogLevel;
 
@@ -54,7 +55,7 @@ class TransactionsObserver
         }
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->visitor_id
+            $transaction->ad
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
         }
@@ -73,9 +74,39 @@ class TransactionsObserver
 
         if (
             $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS &&
-            $transaction->visitor_id
+            $transaction->ad
         ) {
             $event_result = $this->pixelService->registerPurchase($transaction->amount, "Purchase");
+        }
+
+        if (
+            $transaction->getOriginal('status') !== $transaction->status && $transaction->status === Transaction::APPROVED_STATUS && $transaction->visitor_id
+        ) {
+            $botToken = env('BOT_ID');
+   
+            $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id;
+            $token = Crypt::encryptString($tokenData);
+
+            $message = "Olá! Seu pagamento foi confirmado! Clique no botão abaixo para acessar.";
+            $url = "https://snapic.com.br/influencer?token=$token";
+
+            $client = new \GuzzleHttp\Client();
+            $client->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                'form_params' => [
+                    'chat_id' => $transaction->visitor_id,
+                    'text' => $message,
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => [
+                            [
+                                [
+                                    'text' => 'Acessar página',
+                                    'url' => $url,
+                                ],
+                            ],
+                        ],
+                    ]),
+                ],
+            ]);
         }
     }
 
