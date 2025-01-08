@@ -53,10 +53,10 @@ class VisitorController extends Controller
         $token = Crypt::encryptString($tokenData);
 
         return response()->json([
-            'username' => $recipient->username,
+            'username' => $user->username,
             'password' => $request->get('visitor_id'),
             'token' => $token,
-            'influencer' => $user->username,
+            'influencer' => $recipient->username,
             'pix' => $res['pixCopiaECola'],
             'amount' => $transaction['amount'],
         ], 201);
