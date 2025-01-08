@@ -49,14 +49,8 @@ class VisitorController extends Controller
         $transaction['transfer_id'] = $res['txid'];
         $transaction->save();
 
-        $tokenData = $user->username . '&%&' . $request->get('visitor_id');
-        $token = Crypt::encryptString($tokenData);
 
         return response()->json([
-            'username' => $user->username,
-            'password' => $request->get('visitor_id'),
-            'token' => $token,
-            'influencer' => $recipient->username,
             'pix' => $res['pixCopiaECola'],
             'amount' => $transaction['amount'],
         ], 201);
