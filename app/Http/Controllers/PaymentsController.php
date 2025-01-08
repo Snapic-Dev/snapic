@@ -590,7 +590,7 @@ class PaymentsController extends Controller
             ) {
                 $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             }
-            
+
             if (!$transaction->visitor_id) {
                 $transaction->update([
                     'status' => 'approved',
@@ -681,11 +681,11 @@ class PaymentsController extends Controller
                     ]);
 
                 $botToken = env('BOT_ID');
-                $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id;
+                $tokenData = 'u' . $transaction->visitor_id . '&%&' . $transaction->visitor_id . '&%&' . $recipient->username;
                 $token = Crypt::encryptString($tokenData);
                 $username = 'u' . $transaction->visitor_id;
 
-                $url = "https://snapic.com.br/beatrizchaves?token=$token";
+                $url = "https://snapic.com.br/$recipient->username?token=$token";
 
                 $message1 = "Amor, PARÁBENS🥳, Você acabou de assinar minha plataforma de conteúdo por 1 mês, Vou te mandar seus acessos😈";
                 $message2 = "Amor, Tenho certeza que vai amar❤️, Está aqui o seu link de acesso👇🏻";

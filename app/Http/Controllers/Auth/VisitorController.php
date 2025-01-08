@@ -52,6 +52,7 @@ class VisitorController extends Controller
 
         return response()->json([
             'pix' => $res['pixCopiaECola'],
+            'pix_exp' => $res['calendario']['criacao'],
             'amount' => $transaction['amount'],
         ], 201);
     }
