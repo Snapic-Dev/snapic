@@ -582,7 +582,15 @@ class PaymentsController extends Controller
             if (!$transaction) {
                 return response()->json(['message' => 'Transação não encontrada'], 404);
             }
-
+            if (
+                $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||
+                $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
+                $transaction->type === Transaction::YEARLY_SUBSCRIPTION
+            ) {
+                $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
+            }
+            
             if (!$transaction->visitor_id) {
                 $transaction->update([
                     'status' => 'approved',
@@ -727,15 +735,6 @@ Caso queira acessar outra vez, coloque esse acesso, amor👇🏻
 
             if ($transaction->visitor_id) {
                 $this->pixelService->registerPurchase($transaction->amount, "Purchase");
-            }
-
-            if (
-                $transaction->type === Transaction::ONE_MONTH_SUBSCRIPTION  ||
-                $transaction->type === Transaction::THREE_MONTHS_SUBSCRIPTION ||
-                $transaction->type === Transaction::SIX_MONTHS_SUBSCRIPTION ||
-                $transaction->type === Transaction::YEARLY_SUBSCRIPTION
-            ) {
-                $subscription = $this->paymentHandler->generateSubscriptionByTransaction($transaction);
             }
 
             self::handleTransactionNotification($transaction);
