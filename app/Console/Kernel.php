@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CronRenewSubscriptions',
         'App\Console\Commands\CronProcessEndingStreams',
         'App\Console\Commands\CronProcessExpiringStreams',
+        'App\Console\Commands\CronVisitorsTransactions',
     ];
 
     /**
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cron:end_streams')->everyFiveMinutes();
         $schedule->command('generateSitemap')->daily();
         $schedule->command('job:schedule-query')->daily();
+        $schedule->command('cron:renew_subscriptions')->everyMinute();
         $schedule->job(new InsertIntoAnalyticsJob)->daily();
     }
 

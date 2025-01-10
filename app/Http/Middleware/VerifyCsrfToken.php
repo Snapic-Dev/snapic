@@ -30,5 +30,6 @@ class VerifyCsrfToken extends Middleware
         'webhook/pix',
         'register/visitor',
         'login/visitor',
+        'generate/visitor',
     ];
 }

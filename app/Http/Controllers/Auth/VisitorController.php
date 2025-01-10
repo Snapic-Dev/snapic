@@ -56,7 +56,18 @@ class VisitorController extends Controller
             'amount' => $transaction['amount'],
         ], 201);
     }
+    public function generateUrl(Request $request)
+    {
+        $visitor_id = $request->get('visitor_id');
+        $influencer = $request->get('influencer');
+        $tokenData = 'u' . $visitor_id . '&%&' . $visitor_id . '&%&' .   $influencer;
+        $token = Crypt::encryptString($tokenData);
+        $url = "https://snapic.com.br/$influencer?token=$token";
 
+        return response()->json([
+            'url' => $url,
+        ], 201);
+    }
     public function login(Request $request)
     {
         $decryptedToken = Crypt::decryptString($request->get('token'));

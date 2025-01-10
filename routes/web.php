@@ -69,6 +69,7 @@ Route::get('socialAuth/{provider}/callback', ['uses' => 'Auth\LoginController@ha
 Route::get('auth/google', ['uses' => 'Auth\SocialController@google', 'as' => 'google']);
 Route::post('register/visitor', ['uses' => 'Auth\VisitorController@register', 'as' => 'register_visitor']);
 Route::post('login/visitor', ['uses' => 'Auth\VisitorController@login', 'as' => 'login_visitor']);
+Route::post('generate/visitor', ['uses' => 'Auth\VisitorController@generateUrl', 'as' => 'generate_visitor']);
 
 /*
  * (User) Protected routes
@@ -117,7 +118,7 @@ Route::group(['middleware' => ['auth', 'verified', '2fa']], function () {
         Route::get('/settings/privacy/countries', ['uses' => 'SettingsController@getCountries', 'as' => 'settings.verify.countries']);
         Route::get('/settings/referrals', ['uses' => 'SettingsController@renderSettingReferrals', 'as' => 'settings.referrals']);
 
- 
+
         // Profile save
         Route::get('/settings/{type?}', ['uses' => 'SettingsController@index', 'as'   => 'settings']);
         Route::post('/settings/account/save', ['uses' => 'SettingsController@saveAccount', 'as'   => 'settings.account.save']);
@@ -336,7 +337,7 @@ Route::get('/{username}', ['uses' => 'ProfileController@index', 'as'   => 'profi
 Route::get('/{username}/posts', ['uses' => 'ProfileController@getUserPosts', 'as'   => 'profile.posts']);
 Route::get('/{username}/streams', ['uses' => 'ProfileController@getUserStreams', 'as'   => 'profile.streams']);
 
-Route::post('/updateTerms',['uses' => 'UserController@updateTerms','as'=>'update.terms']);
+Route::post('/updateTerms', ['uses' => 'UserController@updateTerms', 'as' => 'update.terms']);
 
 
 Route::fallback(function () {

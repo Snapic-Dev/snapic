@@ -101,8 +101,8 @@ class PaymentHelper
             'base_uri' => $this->efipay_pix_url,
             'http_errors' => false,
             'verify' => false,
-            'cert' => ['certs/cert-production.p12', ''],
-            'ssl_key' => ['certs/cert-production.p12', '']
+            'cert' => [public_path('certs/cert-production.p12'), ''],
+            'ssl_key' => [public_path('certs/cert-production.p12'), '']
         ]);
     }
 
