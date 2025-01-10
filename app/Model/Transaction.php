@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     const PENDING_STATUS = 'pending';
+    const PENDING_STATUS_REVALIDATE = 'pending-revalidate';
     const CANCELED_STATUS = 'canceled';
     const APPROVED_STATUS = 'approved';
     const DECLINED_STATUS = 'declined';
