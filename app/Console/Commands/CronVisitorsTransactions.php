@@ -45,9 +45,6 @@ class CronVisitorsTransactions extends Command
      */
     public function handle()
     {
-        Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Processing expired subscriptions.\r\n");
-
-
         $transactionsMy = Transaction::whereNotNull('visitor_id')
             ->where('created_at', '<', Carbon::now()->subMinutes(30))
             ->where('status', 'pending')
@@ -85,21 +82,22 @@ class CronVisitorsTransactions extends Command
                 $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
                 $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
 
-                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                $botToken = env('BOT_ID');
+                $client->post("https://api.telegram.org/bot$botToken/sendMessage", [
                     'form_params' => [
-                        'chat_id' => '8028490948',
+                        'chat_id' => $transactionData['visitor_id'],
                         'text' => $message1,
                     ],
                 ]);
 
-                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                $client->post("https://api.telegram.org/bot$botToken/sendMessage", [
                     'form_params' => [
                         'chat_id' => $transactionData['visitor_id'],
                         'text' => $message2,
                     ],
                 ]);
 
-                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                $client->post("https://api.telegram.org/bot$botToken/sendMessage", [
                     'form_params' => [
                         'chat_id' => $transactionData['visitor_id'],
                         'text' => $pix,
@@ -111,9 +109,6 @@ class CronVisitorsTransactions extends Command
                 ]);
             }
         }
-
-
-        Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Finished processing subscriptions renew.\r\n");
         return 0;
     }
 }
