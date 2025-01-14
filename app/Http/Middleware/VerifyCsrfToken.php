@@ -31,5 +31,7 @@ class VerifyCsrfToken extends Middleware
         'register/visitor',
         'login/visitor',
         'generate/visitor',
+        'verify/visitor',
+        'remarketing/visitor',
     ];
 }

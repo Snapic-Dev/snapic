@@ -70,6 +70,8 @@ Route::get('auth/google', ['uses' => 'Auth\SocialController@google', 'as' => 'go
 Route::post('register/visitor', ['uses' => 'Auth\VisitorController@register', 'as' => 'register_visitor']);
 Route::post('login/visitor', ['uses' => 'Auth\VisitorController@login', 'as' => 'login_visitor']);
 Route::post('generate/visitor', ['uses' => 'Auth\VisitorController@generateUrl', 'as' => 'generate_visitor']);
+Route::post('verify/visitor', ['uses' => 'Auth\VisitorController@verify', 'as' => 'verify']);
+Route::post('remarketing/visitor', ['uses' => 'Auth\VisitorController@remarketing', 'as' => 'remarketing']);
 
 /*
  * (User) Protected routes

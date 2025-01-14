@@ -68,6 +68,7 @@ class VisitorController extends Controller
             'url' => $url,
         ], 201);
     }
+
     public function login(Request $request)
     {
         $decryptedToken = Crypt::decryptString($request->get('token'));
@@ -89,5 +90,58 @@ class VisitorController extends Controller
             return response()->json([], 200);
         }
         return response()->json([], 400);
+    }
+
+    public function verify(Request $request)
+    {
+        $visitor_id = $request->get('visitor_id');
+        $last_transaction = Transaction::where('visitor_id', $visitor_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($last_transaction->status !== Transaction::APPROVED_STATUS && $last_transaction->status !== 'pending-revalidate') {
+            return response()->json([
+                'status' => false
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => true
+            ], 200);
+        }
+    }
+
+    public function remarketing(Request $request)
+    {
+        $visitor_id = $request->get('visitor_id');
+        $username = 'u' . $visitor_id;
+        $user = User::query('username', $username)->first();
+
+        $influencer = $request->get('influencer');
+        $recipient = User::where('id', $influencer)->first();
+
+        $last_transaction = Transaction::where('visitor_id', $visitor_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $res = $this->paymentHandler->generationPixPayment($last_transaction);
+        $transaction = new Transaction();
+        $transaction['sender_user_id'] = $user->id;
+        $transaction['recipient_user_id'] = $recipient->id;
+        $transaction['type'] = 'one-month-subscription';
+        $transaction['status'] = 'pending-revalidate';
+        $transaction['amount'] = 9.90;
+        $transaction['currency'] = config('app.site.currency_code');
+        $transaction['payment_provider'] = 'pix';
+        $transaction['visitor_id'] = $request->get('visitor_id');
+        $transaction['ad'] = $request->get('visitor_id');
+        $transaction['visitor_provider'] = 'telegram';
+        $res = $this->paymentHandler->generationPixPayment($transaction);
+        $transaction['transfer_id'] = $res['txid'];
+        $transaction['transfer_id'] = $res['txid'];
+        $transaction->save();
+
+        return response()->json([
+            'pix' => $res['pixCopiaECola'],
+        ], 201);
     }
 }
