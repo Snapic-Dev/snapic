@@ -62,6 +62,22 @@ class CronVisitorsTransactions extends Command
 
         foreach ($transactionsMy as $transactionData) {
             try {
+                // Verificando se o bot foi bloqueado pelo usuário antes de enviar a mensagem
+                $botToken = env('BOT_ID');
+                $response = $client->get("https://api.telegram.org/bot$botToken/getChatMember", [
+                    'query' => [
+                        'chat_id' => $transactionData['visitor_id'],
+                        'user_id' => $transactionData['visitor_id'],
+                    ]
+                ]);
+
+                $responseData = json_decode($response->getBody(), true);
+
+                if (isset($responseData['error_code']) && $responseData['error_code'] == 400) {
+                    continue; // Pula para o próximo usuário
+                }
+
+                // Continue com o restante do processamento da transação
                 $transaction = new Transaction();
                 $transaction['sender_user_id'] = $transactionData['sender_user_id'];
                 $transaction['recipient_user_id'] = $transactionData['recipient_user_id'];
@@ -82,7 +98,6 @@ class CronVisitorsTransactions extends Command
                 $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
                 $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
 
-                $botToken = env('BOT_ID');
                 $client->post("https://api.telegram.org/bot$botToken/sendMessage", [
                     'form_params' => [
                         'chat_id' => $transactionData['visitor_id'],
@@ -104,11 +119,9 @@ class CronVisitorsTransactions extends Command
                     ],
                 ]);
             } catch (\Exception $e) {
-                Log::error('Erro ao processar transação: ' . $e->getMessage(), [
-                    'transactionData' => $transactionData,
-                ]);
             }
         }
+
         return 0;
     }
 }
