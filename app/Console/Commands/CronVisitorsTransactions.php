@@ -6,6 +6,7 @@ use App\Helpers\PaymentHelper;
 use App\Model\Transaction;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CronVisitorsTransactions extends Command
@@ -46,10 +47,21 @@ class CronVisitorsTransactions extends Command
     {
         Log::channel('cronjobs')->info('[*][' . date('H:i:s') . "] Processing expired subscriptions.\r\n");
 
+
         $transactionsMy = Transaction::whereNotNull('visitor_id')
-            ->where('created_at', '>', Carbon::now()->subMinutes(30))
+            ->where('created_at', '<', Carbon::now()->subMinutes(30))
             ->where('status', 'pending')
+            ->whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('transactions')
+                    ->groupBy('sender_user_id');
+            })
             ->get();
+
+
+        $client = new \GuzzleHttp\Client([
+            'verify' => false,
+        ]);
 
         foreach ($transactionsMy as $transactionData) {
             $transaction = new Transaction();
@@ -57,7 +69,7 @@ class CronVisitorsTransactions extends Command
             $transaction['recipient_user_id'] = $transactionData['recipient_user_id'];
             $transaction['type'] = 'one-month-subscription';
             $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
-            $transaction['amount'] = $transactionData['amount'] * (10 / 100);
+            $transaction['amount'] = 9.90;
             $transaction['currency'] = config('app.site.currency_code');
             $transaction['payment_provider'] = 'pix';
             $transaction['visitor_id'] = $transactionData['visitor_id'];
@@ -72,13 +84,10 @@ class CronVisitorsTransactions extends Command
             $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo  não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
             $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
 
-            $client = new \GuzzleHttp\Client([
-                'verify' => false,
-            ]);
 
             $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
                 'form_params' => [
-                    'chat_id' => $transactionData['visitor_id'],
+                    'chat_id' => '8028490948',
                     'text' => $message1,
                 ],
             ]);
