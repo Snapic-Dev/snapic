@@ -70,7 +70,7 @@ class CronVisitorsTransactions extends Command
 
             $pix = $res['pixCopiaECola'];
             $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo  não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
-            $message2 - "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
+            $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
 
             $client = new \GuzzleHttp\Client([
                 'verify' => false,
@@ -80,6 +80,20 @@ class CronVisitorsTransactions extends Command
                 'form_params' => [
                     'chat_id' => $transactionData['visitor_id'],
                     'text' => $message1,
+                ],
+            ]);
+
+            $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                'form_params' => [
+                    'chat_id' => $transactionData['visitor_id'],
+                    'text' => $message2,
+                ],
+            ]);
+
+            $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                'form_params' => [
+                    'chat_id' => $transactionData['visitor_id'],
+                    'text' => $pix,
                 ],
             ]);
         }
