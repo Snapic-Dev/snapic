@@ -112,11 +112,10 @@ class VisitorController extends Controller
 
     public function remarketing(Request $request)
     {
-        $recipient = User::where('id', $request->get('recipient_user_id'))->first();
-        $transactionMensality = $recipient->profile_access_price;
-        $percentage = $request->get('percentage');
+        $recipient = User::where('id', $request->get('influencer'))->first();
+        $percentage = $request->get('percentage') ?? 15;
 
-        $calculatePercentage = $transactionMensality - ($transactionMensality['amount'] * $percentage) / 100;
+        $amount = $recipient->profile_access_price * $percentage / 100;
 
         $visitor_id = $request->get('visitor_id');
         $username = 'u' . $visitor_id;
@@ -125,17 +124,12 @@ class VisitorController extends Controller
         $influencer = $request->get('influencer');
         $recipient = User::where('id', $influencer)->first();
 
-        $last_transaction = Transaction::where('visitor_id', $visitor_id)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        $res = $this->paymentHandler->generationPixPayment($last_transaction);
         $transaction = new Transaction();
         $transaction['sender_user_id'] = $user->id;
         $transaction['recipient_user_id'] = $recipient->id;
         $transaction['type'] = 'one-month-subscription';
         $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
-        $transaction['amount'] = $calculatePercentage;
+        $transaction['amount'] = $amount;
         $transaction['currency'] = config('app.site.currency_code');
         $transaction['payment_provider'] = 'pix';
         $transaction['visitor_id'] = $request->get('visitor_id');
@@ -146,6 +140,8 @@ class VisitorController extends Controller
         $transaction['transfer_id'] = $res['txid'];
         $transaction->save();
 
+        $res = $this->paymentHandler->generationPixPayment($transaction);
+        
         return response()->json([
             'pix' => $res['pixCopiaECola'],
         ], 201);
