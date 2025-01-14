@@ -64,47 +64,52 @@ class CronVisitorsTransactions extends Command
         ]);
 
         foreach ($transactionsMy as $transactionData) {
-            $transaction = new Transaction();
-            $transaction['sender_user_id'] = $transactionData['sender_user_id'];
-            $transaction['recipient_user_id'] = $transactionData['recipient_user_id'];
-            $transaction['type'] = 'one-month-subscription';
-            $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
-            $transaction['amount'] = 9.90;
-            $transaction['currency'] = config('app.site.currency_code');
-            $transaction['payment_provider'] = 'pix';
-            $transaction['visitor_id'] = $transactionData['visitor_id'];
-            $transaction['ad'] = $transactionData['visitor_id'];
-            $transaction['visitor_provider'] = 'telegram';
+            try {
+                $transaction = new Transaction();
+                $transaction['sender_user_id'] = $transactionData['sender_user_id'];
+                $transaction['recipient_user_id'] = $transactionData['recipient_user_id'];
+                $transaction['type'] = 'one-month-subscription';
+                $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
+                $transaction['amount'] = 9.90;
+                $transaction['currency'] = config('app.site.currency_code');
+                $transaction['payment_provider'] = 'pix';
+                $transaction['visitor_id'] = $transactionData['visitor_id'];
+                $transaction['ad'] = $transactionData['visitor_id'];
+                $transaction['visitor_provider'] = 'telegram';
 
-            $res = $this->paymentHelper->generationPixPayment($transaction);
-            $transaction['transfer_id'] = $res['txid'];
-            $transaction->save();
+                $res = $this->paymentHelper->generationPixPayment($transaction);
+                $transaction['transfer_id'] = $res['txid'];
+                $transaction->save();
 
-            $pix = $res['pixCopiaECola'];
-            $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo  não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
-            $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
+                $pix = $res['pixCopiaECola'];
+                $message1 = "Amor, Promoção Relâmpago das minhas assinaturas só pra você, R$9,90 para ter acesso a um mês inteiro comigo e um chat exclusivo não perde a chance de me ter na palma da sua mão por um preço de uma coxinha ❤️";
+                $message2 = "Esse é o código amor, É SÓ COPIAR E COLAR NO PIX que eu mando o acesso 👇🏻";
 
+                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => '8028490948',
+                        'text' => $message1,
+                    ],
+                ]);
 
-            $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
-                'form_params' => [
-                    'chat_id' => '8028490948',
-                    'text' => $message1,
-                ],
-            ]);
+                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => $transactionData['visitor_id'],
+                        'text' => $message2,
+                    ],
+                ]);
 
-            $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
-                'form_params' => [
-                    'chat_id' => $transactionData['visitor_id'],
-                    'text' => $message2,
-                ],
-            ]);
-
-            $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
-                'form_params' => [
-                    'chat_id' => $transactionData['visitor_id'],
-                    'text' => $pix,
-                ],
-            ]);
+                $client->post("https://api.telegram.org/bot7289936162:AAFKDXg3Y8YjnuB9rfteUi8PARLYKj8vbvM/sendMessage", [
+                    'form_params' => [
+                        'chat_id' => $transactionData['visitor_id'],
+                        'text' => $pix,
+                    ],
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao processar transação: ' . $e->getMessage(), [
+                    'transactionData' => $transactionData,
+                ]);
+            }
         }
 
 
