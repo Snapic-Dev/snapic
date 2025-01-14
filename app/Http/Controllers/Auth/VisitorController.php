@@ -112,6 +112,12 @@ class VisitorController extends Controller
 
     public function remarketing(Request $request)
     {
+        $recipient = User::where('id', $request->get('recipient_user_id'))->first();
+        $transactionMensality = $recipient->profile_access_price;
+        $percentage = $request->get('percentage');
+
+        $calculatePercentage = $transactionMensality - ($transactionMensality['amount'] * $percentage) / 100;
+
         $visitor_id = $request->get('visitor_id');
         $username = 'u' . $visitor_id;
         $user = User::query('username', $username)->first();
@@ -129,7 +135,7 @@ class VisitorController extends Controller
         $transaction['recipient_user_id'] = $recipient->id;
         $transaction['type'] = 'one-month-subscription';
         $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
-        $transaction['amount'] = 9.90;
+        $transaction['amount'] = $calculatePercentage;
         $transaction['currency'] = config('app.site.currency_code');
         $transaction['payment_provider'] = 'pix';
         $transaction['visitor_id'] = $request->get('visitor_id');
