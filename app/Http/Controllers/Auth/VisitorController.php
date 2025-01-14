@@ -99,7 +99,7 @@ class VisitorController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if ($last_transaction->status !== Transaction::APPROVED_STATUS && $last_transaction->status !== 'pending-revalidate') {
+        if ($last_transaction->status !== Transaction::APPROVED_STATUS && $last_transaction->status !== Transaction::PENDING_STATUS_REVALIDATE) {
             return response()->json([
                 'status' => false
             ], 200);
@@ -128,7 +128,7 @@ class VisitorController extends Controller
         $transaction['sender_user_id'] = $user->id;
         $transaction['recipient_user_id'] = $recipient->id;
         $transaction['type'] = 'one-month-subscription';
-        $transaction['status'] = 'pending-revalidate';
+        $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
         $transaction['amount'] = 9.90;
         $transaction['currency'] = config('app.site.currency_code');
         $transaction['payment_provider'] = 'pix';
