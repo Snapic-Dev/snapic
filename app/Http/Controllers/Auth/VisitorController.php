@@ -113,15 +113,18 @@ class VisitorController extends Controller
     public function remarketing(Request $request)
     {
         $recipient = User::where('id', $request->get('influencer'))->first();
-        $percentage = $request->get('percentage') ?? 15;
+        $percentage = floatval($request->get('percentage')) ?? 15;
 
         $amount = $recipient->profile_access_price * $percentage / 100;
+
+        $amount = number_format($amount, 2, '.', '');
 
         $visitor_id = $request->get('visitor_id');
         $username = 'u' . $visitor_id;
         $user = User::query('username', $username)->first();
 
         $influencer = $request->get('influencer');
+
         $recipient = User::where('id', $influencer)->first();
 
         $transaction = new Transaction();
@@ -141,6 +144,8 @@ class VisitorController extends Controller
 
         return response()->json([
             'pix' => $res['pixCopiaECola'],
+            'percentage' => $percentage,
+            'amount' => $amount
         ], 201);
     }
 }
