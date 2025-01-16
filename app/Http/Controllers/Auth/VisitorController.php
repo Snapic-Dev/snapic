@@ -128,7 +128,7 @@ class VisitorController extends Controller
         $transaction['sender_user_id'] = $user->id;
         $transaction['recipient_user_id'] = $recipient->id;
         $transaction['type'] = Transaction::ONE_MONTH_SUBSCRIPTION;
-        $transaction['status'] = Transaction::PENDING_STATUS;
+        $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
         $transaction['amount'] = $amount;
         $transaction['currency'] = config('app.site.currency_code');
         $transaction['payment_provider'] = Transaction::PIX_PROVIDER;
