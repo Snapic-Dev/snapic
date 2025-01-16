@@ -127,21 +127,18 @@ class VisitorController extends Controller
         $transaction = new Transaction();
         $transaction['sender_user_id'] = $user->id;
         $transaction['recipient_user_id'] = $recipient->id;
-        $transaction['type'] = 'one-month-subscription';
-        $transaction['status'] = Transaction::PENDING_STATUS_REVALIDATE;
+        $transaction['type'] = Transaction::ONE_MONTH_SUBSCRIPTION;
+        $transaction['status'] = Transaction::PENDING_STATUS;
         $transaction['amount'] = $amount;
         $transaction['currency'] = config('app.site.currency_code');
-        $transaction['payment_provider'] = 'pix';
+        $transaction['payment_provider'] = Transaction::PIX_PROVIDER;
         $transaction['visitor_id'] = $request->get('visitor_id');
         $transaction['ad'] = $request->get('visitor_id');
         $transaction['visitor_provider'] = 'telegram';
         $res = $this->paymentHandler->generationPixPayment($transaction);
         $transaction['transfer_id'] = $res['txid'];
-        $transaction['transfer_id'] = $res['txid'];
         $transaction->save();
 
-        $res = $this->paymentHandler->generationPixPayment($transaction);
-        
         return response()->json([
             'pix' => $res['pixCopiaECola'],
         ], 201);
